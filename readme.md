@@ -1,6 +1,6 @@
 <img src="https://github.com/fractalPlatform/Fractal/blob/master/assets/fractaltexto.png" width="520px">
 
-Build your ideas as simple as possible. Fractal.js is an intuitive framework for building applications and interactive content.
+Build your ideas as simple as possible. Fractal is an intuitive framework for building applications and interactive content.
 
 ## Why?
 
@@ -14,29 +14,23 @@ Build your ideas as simple as possible. Fractal.js is an intuitive framework for
 - Tools for socket.io integration
 - BDD and code coverage integrated (Work in progress)
 
-See the detailed [architecture here](https://github.com/fractalPlatform/Fractal.js/blob/master/docs/ARCHITECTURE.md).
+See the detailed [architecture here](https://github.com/fractalPlatform/Fractal/blob/master/docs/ARCHITECTURE.md).
 
 ## Make your own Fractal based app
 
-The recomended way is using webpack, please download the [fractal-quickstart](https://github.com/fractalPlatform/Fractal-quickstart) repo.
-
-Or install it in your browser with:
-
-```html
-<script src="dist/fractal.min.js"></script>
-```
+The recomended way is using webpack, please download the [Fractal-quickstart](https://github.com/fractalPlatform/Fractal-quickstart) repo (Comming soon...).
 
 Or in nodejs, browserify, webpack like environments:
 
 ```bash
-npm i --save fractal-js
+npm i --save fractal-framework
 ```
 
-See [Tutorial](https://github.com/fractalPlatform/Fractal.js/blob/master/docs/tutorials/tutorial.md) for getting started with Fractal.
+See [Tutorial](https://github.com/fractalPlatform/Fractal/blob/master/docs/tutorials/tutorial.md) for getting started with Fractal.
 
 ### Run the examples
 
-There are many useful examples at examples folder. Be sure that you have installed [Node.js](https://nodejs.org/en/), please [download Fractal source](https://github.com/fractalPlatform/Fractal.js/archive/master.zip) and extract them.
+There are many useful examples at examples folder. Be sure that you have installed [Node.js](https://nodejs.org/en/), please [download Fractal source](https://github.com/fractalPlatform/Fractal/archive/master.zip) and extract them.
 
 The examples you can run are:
 
@@ -46,7 +40,7 @@ The examples you can run are:
 - mailboxNoRouter
 - tasks
 
-Open a command window into `Fractal.js` folder and run:
+Open a command window into `Fractal` folder and run:
 
 ```bash
 npm i
@@ -61,7 +55,7 @@ npm i
 node server
 ```
 
-See the [README of the example](https://github.com/fractalPlatform/Fractal.js/tree/master/examples) you want to run for a detailed description.
+See the [README of the example](https://github.com/fractalPlatform/Fractal/tree/master/examples) you want to run for a detailed description.
 
 ## Building
 
@@ -129,7 +123,7 @@ What maybe great for this repo:
 - Document integration of manifest.json for webapps
 - Document of CSS tools for js and implement examples (PARTIAL)
 - Implement live examples
-- Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal.js
+- Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal
 - Implement the forms example and document the composing tools
 - Implement an i18n middleware example
 - Implement examples and document the service pattern

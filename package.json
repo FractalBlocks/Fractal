@@ -1,11 +1,17 @@
 {
-  "name": "fractal-fw",
+  "name": "fractal-framework",
   "version": "v0.0.2",
   "description": "An intuitive framework for building applications and interactive content",
-  "main": "lib/index.js",
+  "main": "lib/src/index.js",
+  "typings": "typings/index.d.ts",
+  "files": [
+    "lib/",
+    "typings/",
+    "LICENSE"
+  ],
   "scripts": {
     "lint": "tslint src/**/*.ts",
-    "build": "rimraf dist/ && tsc",
+    "build": "rimraf lib/ && tsc",
     "benchmarks": "ts-node benchmarks/index.ts",
     "prepublish": "typings install && npm run build",
     "compile": "cross-env NODE_ENV=production webpack --config webpack/dist.config.js --progress",
@@ -21,7 +27,7 @@
   "author": "Carlos Galarza <carloslfu@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fractalPlatform/Fractal.js.git"
+    "url": "https://github.com/fractalPlatform/Fractal.git"
   },
   "license": "MIT",
   "devDependencies": {
