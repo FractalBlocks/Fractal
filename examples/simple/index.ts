@@ -1,5 +1,5 @@
 import F from '../../src'
-import ViewDriver from '../../src/drivers/view'
+import viewDriver from '../../src/drivers/view'
 
 
 let moduleDef = F.def({
@@ -18,6 +18,6 @@ let moduleDef = F.def({
 F.run({
   module: moduleDef,
   drivers: {
-    view: ViewDriver,
+    view: viewDriver,
   },
 })

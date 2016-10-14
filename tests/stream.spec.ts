@@ -5,11 +5,11 @@ describe('Stream spec', function() {
   let stream$: Stream<number>
   it('Should return initial value', function() {
     stream$ = newStream<number>(12)
-    expect(stream$.value(undefined)).toBe(12)
+    expect(stream$.get()).toBe(12)
   })
   it('Should change the value', function() {
-    stream$.value(102)
-    expect(stream$.value(undefined)).toBe(102)
+    stream$.set(102)
+    expect(stream$.get()).toBe(102)
   })
   let sideEffect: number | undefined = undefined
   let subscriber = function(value: number) {
@@ -17,13 +17,21 @@ describe('Stream spec', function() {
   }
   it('Should subscribe a function', function() {
     stream$.subscribe(subscriber)
-    stream$.value(234)
+    stream$.set(234)
     expect(sideEffect).toBe(234)
   })
   it('Should unsubscribe a function', function() {
     sideEffect = undefined
     stream$.unsubscribe(subscriber)
-    stream$.value(401)
+    stream$.set(401)
     expect(sideEffect).toBe(undefined)
+  })
+  it('Should be chainable', function() {
+    let stream1$: Stream<number> = newStream<number>(12)
+    let stream2$: Stream<number> = newStream<number>(330)
+    stream1$.subscribe(stream2$.set)
+    stream$.unsubscribe(subscriber)
+    stream1$.set(234)
+    expect(stream1$.get()).toBe(stream2$.get())
   })
 })

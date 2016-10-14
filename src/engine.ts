@@ -1,17 +1,17 @@
-import { ModuleDef, Module, Model, Action } from './core'
-import { Context } from './composition'
+import { ModuleDef, Model, Action } from './core'
+import { Context, Module } from './composition'
 import { Driver, Drivers } from './driver'
 
 export interface EngineDef {
   log?: boolean
   logAll?: boolean
-  module: Module
+  module: ModuleDef<Model>
   drivers?: Drivers
 }
 
 export interface Engine {
   engineDef: EngineDef
-  reattach(module: Module): void
+  reattach(module: ModuleDef<Model>): void
   dispose(): void
 }
 
@@ -21,14 +21,13 @@ export default function run(engineDef: EngineDef): Engine {
     logAll: false,
   }
   engineDef = Object.assign(defaults, engineDef)
+  let module = engineDef.module
   let ctx: Context = {}
-  let state: Model = {
-    key: 'MainModule',
-  }
-  console.log(engineDef.module.moduleDef.interfaces['view'](ctx, state))
+  let state = module.init({key: module.name})
+
   return {
     engineDef,
-    reattach: (m: Module) => {},
-    dispose: () => {},
+    reattach(m: ModuleDef<Model>) {},
+    dispose() {},
   }
 }

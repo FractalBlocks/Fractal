@@ -31,32 +31,16 @@ export interface Interface {
   (ctx: Context, state: Model): DriverMsg
 }
 
-export interface Module {
-  moduleDef: ModuleDef<any>
-  state: Model
-  action$: Stream<Action<Model>>
-  interfaces: {
-    [interfaceName: string]: Interface
-  }
-}
-
-export function def(moduleDef: ModuleDef<Model>) : Module {
+export function def(moduleDef: ModuleDef<Model>) : ModuleDef<Model> {
   let defaults = {
     log: false,
     logAll: false,
   }
-  moduleDef = Object.assign(defaults, moduleDef)
-  let mDef: Module = {
-    moduleDef,
-    state: moduleDef.init({key: 'MainModule'}),
-    action$: newStream<Action<Model>>(undefined),
-    interfaces: {},
-  }
-  mDef.interfaces = {}
+  let mDef = Object.assign(defaults, moduleDef)
   return mDef
 }
 
-export default class {
-  def = def
-  run = run
+export default {
+  def,
+  run,
 }

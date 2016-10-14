@@ -1,9 +1,10 @@
 import core from './core'
+import viewDriver from './drivers/view'
 
-export class Fractal extends
-  core
-{}
-
-const fractal = new Fractal()
-
-export default fractal
+export default Object.assign(
+  core,
+{
+  drivers: {
+    view: viewDriver,
+  },
+})
