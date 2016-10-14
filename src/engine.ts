@@ -1,6 +1,7 @@
 import { ModuleDef, Model, Action } from './core'
-import { Context, Module } from './composition'
+import { merge, Context, Module } from './composition'
 import { Driver, Drivers } from './driver'
+import { newStream } from './stream'
 
 export interface EngineDef {
   log?: boolean
@@ -21,9 +22,18 @@ export default function run(engineDef: EngineDef): Engine {
     logAll: false,
   }
   engineDef = Object.assign(defaults, engineDef)
-  let module = engineDef.module
-  let ctx: Context = {}
-  let state = module.init({key: module.name})
+  let ctx: Context, state$, driverStreams = {}, module: Module
+
+  function attach() {
+    module = merge(engineDef.module)
+    ctx = module.ctx
+    let state$ = newStream<Model>(module.init({key: module.name}))
+    ctx.action$.subscribe(
+      action => state$.set(action({}, state$.get()))
+    )
+  }
+
+  attach()
 
   return {
     engineDef,

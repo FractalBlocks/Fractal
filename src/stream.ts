@@ -2,9 +2,9 @@
 export interface Stream<T> {
   set(val: T): void
   get(): T | undefined
-  subscriptions: [Subcription<T>] | undefined[]
-  subscribe(subscription: Subcription<T>): void
-  unsubscribe(subscription: Subcription<T>): boolean
+  subscribers: [Subcription<T>] | undefined[]
+  subscribe(subscriber: Subcription<T>): void
+  unsubscribe(subscriber: Subcription<T>): boolean
 }
 
 export interface Subcription<T> {
@@ -12,12 +12,12 @@ export interface Subcription<T> {
 }
 
 export function newStream<T>(initialValue: T | undefined): Stream<T> {
-  let subscriptions = []
+  let subscribers = []
   let state = {
     value: initialValue
   }
   function notify(value) {
-    for(let i = 0, subs; subs = subscriptions[i]; i++) {
+    for(let i = 0, subs; subs = subscribers[i]; i++) {
       subs(value)
     }
   }
@@ -29,18 +29,18 @@ export function newStream<T>(initialValue: T | undefined): Stream<T> {
     get() {
       return state.value
     },
-    subscriptions,
-    unsubscribe(subscription) {
-      let index = subscriptions.indexOf(subscription)
+    subscribers,
+    unsubscribe(subscriber) {
+      let index = subscribers.indexOf(subscriber)
       if (index != -1) {
-        subscriptions.splice(index, 1)
+        subscribers.splice(index, 1)
         return true
       } else {
         return false
       }
     },
-    subscribe(subscription) {
-      subscriptions.push(subscription)
+    subscribe(subscriber) {
+      subscribers.push(subscriber)
     },
   }
 }
