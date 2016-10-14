@@ -1,3 +1,4 @@
+
 import { Stream, newStream } from '../src/stream'
 
 describe('Stream spec', function() {

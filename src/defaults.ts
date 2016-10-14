@@ -2,7 +2,7 @@ export interface Defaults {
   [propName: string]: any
 }
 
-export function defaultValues<T extends Defaults>(defaults: Defaults): DefaultParams<T>  {
+export function defaultValues<T>(defaults: Defaults): DefaultParams<T>  {
   return function(object) {
     let newObject: Defaults = {}
     for (let key in defaults) {

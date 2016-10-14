@@ -3,7 +3,7 @@ import { Context } from './composition'
 import { Driver, Drivers } from './driver'
 import { Defaults, defaultValues } from './defaults'
 
-export interface EngineDef extends Defaults {
+export interface EngineDef {
   log?: boolean
   logAll?: boolean
   module: Module
@@ -17,7 +17,8 @@ export interface Engine {
 }
 
 const defaults = defaultValues<EngineDef>({
-  log: true,
+  log: false,
+  logAll: false,
 })
 
 export default function run(engineDef: EngineDef): Engine {

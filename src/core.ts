@@ -1,7 +1,8 @@
-import { Stream } from './stream'
+import { Stream, newStream } from './stream'
 import run from './engine'
 import { Context } from './composition'
 import { DriverMsg } from './driver'
+import { Defaults, defaultValues } from './defaults'
 
 export interface ModuleDef<Model> {
   name: string
@@ -36,19 +37,24 @@ export interface Module {
   state: Model
   action$: Stream<Action<Model>>
   interfaces: {
-    [interfaceName: string]: CtxInterface
+    [interfaceName: string]: Interface
   }
 }
 
-export interface CtxInterface {
-  (state: Model): DriverMsg
-}
+const defaults = defaultValues<ModuleDef<Model>>({
+  log: false,
+  logAll: false,
+})
 
 export function def(moduleDef: ModuleDef<Model>) : Module {
+  moduleDef = defaults(moduleDef)
   let mDef: Module = {
     moduleDef,
     state: moduleDef.init({key: 'MainModule'}),
+    action$: newStream<Action<Model>>(undefined),
+    interfaces: {},
   }
+  mDef.interfaces = {}
   return mDef
 }
 

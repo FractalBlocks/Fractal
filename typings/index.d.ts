@@ -1,4 +1,4 @@
-/// <reference path="globals/jasmine/index.d.ts" />
+/// <reference path="./globals/jasmine/index.d.ts" />
 declare var require: {
     <T>(path: string): T;
     (paths: string[], callback: (...modules: any[]) => void): void;

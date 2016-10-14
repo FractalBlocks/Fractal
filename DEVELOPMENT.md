@@ -1,12 +1,20 @@
 # Development
 
-Development and internal stuff
+We use BDD for building Fractal. This documents describe all about how Factal works.
+
+## Stucture
+
+(TODO-DOCS)
 
 ## Dependencies
 
-The folowing are the dependencies of fractal:
+The folowing are the dependencies of Fractal:
 
-- flyd: FRP tools
+(TODO-DOCS)
+
+Deprecated, Fractal.js stuff:
+
+- flyd: FRP tools (Replaced by src/stream.ts)
 - flyd-forwardto: flyd module
 - union-type: A library for defining and using union types (AKA disjoint unions)
 - addressbar: Used in Fractal Router
