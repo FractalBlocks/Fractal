@@ -14,7 +14,7 @@ Build your ideas as simple as possible. Fractal is an intuitive framework for bu
 - Tools for socket.io integration
 - BDD and code coverage integrated (Work in progress)
 
-See the detailed [architecture here](https://github.com/fractalPlatform/Fractal/blob/master/docs/ARCHITECTURE.md).
+See the detailed [architecture here](https://github.com/fractalPlatform/Fractal/blob/master/docs/ARCHITECTURE.md). In order to be scalable, Fractal is implemented using [Typescript](http://typescript.org)
 
 ## Make your own Fractal based app
 
@@ -66,16 +66,12 @@ For a production version run: `npm run compile`, and see the result in the `dist
 - Assets are static, these are copied to the dist folder when you compile the app.
 - Resources are dynamic these are inserted when your require (e.g. require('../resources/myresource.png') ) them, this are serialized and inserted into code.
 
-
-## Typescript
-
-In order to be scalable, Fractal is implemented in Typescript (Work in progress).
-
 ### TODOs
 
 - Implement a way to dispach actions without union-type library
 - Implement Fractal-quickstart in Typescript
 - Implement tests and code coverage for Fractal-quistart
+- In order to modules has no side effects, implement styles like a task (initial task)
 
 ## TODOs
 

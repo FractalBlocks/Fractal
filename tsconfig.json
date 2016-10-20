@@ -15,7 +15,8 @@
     "typings/index.d.ts"
   ],
   "include": [
-    "tests/**/*.spec.ts"
+    "tests/**/*.spec.ts",
+    "examples/**/*.ts"
   ],
   "exclude": [
     "node_modules"

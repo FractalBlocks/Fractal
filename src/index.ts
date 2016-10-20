@@ -1,11 +1,11 @@
 import core from './core'
-import eventDriver from './drivers/event'
-import viewDriver from './drivers/view'
+import eventDriver from './interfaces/event'
+import viewDriver from './interfaces/view'
 
 export default Object.assign(
   core,
 {
-  drivers: {
+  interfaces: {
     event: eventDriver,
     view: viewDriver,
   },

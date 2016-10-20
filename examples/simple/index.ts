@@ -1,23 +1,26 @@
 import F from '../../src'
-import viewDriver from '../../src/drivers/view'
 
 
-let moduleDef = F.def({
-  name: 'Main',
-  init: ({key}) => ({
-    key,
-  }),
-  interfaces: {
-    view: (ctx, s) => ({
-      tagName: 'div',
-      content: 'Typescript is awesome!!',
-    })
-  },
-})
+let module = F.def({
+    name: 'Main',
+    init: ({key}) => ({key}),
+    actions: {
+    },
+    interfaces: {
+      event: (ctx, actions, s) => ({
+        tagName: s.key,
+        content: 'Typescript is awesome!!',
+      }),
+    }
+  })
 
-F.run({
-  module: moduleDef,
-  drivers: {
-    view: viewDriver,
-  },
-})
+  let value = undefined
+  function onValue(val) {
+    value = val
+  }
+  let engine = F.run({
+    module,
+    interfaces: {
+      event: F.interfaces.event(onValue),
+    },
+  })
