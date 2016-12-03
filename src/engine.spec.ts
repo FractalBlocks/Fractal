@@ -7,20 +7,23 @@ describe('Engine functionality', function() {
     count: number
   }
 
+  let actions = {
+    SetCount: (count: number) => (state: MainModel) => {
+      state.count = count
+      return state
+    },
+  }
+
   let moduleDef: ModuleDef<MainModel> = {
     name: 'Main',
-    init: ({key}): MainModel => ({
+    init: ({key}) => ({
       key,
       count: 12,
     }),
     inputs: {
-      data: (ctx, actions, data) => actions.SetData(data),
+      data: (ctx, data) => actions.SetCount(data),
     },
-    actions: {
-      SetData: (data, state) => {
-        return state
-      },
-    },
+    actions,
     interfaces: {
       event: (ctx, i, s) => ({
         tagName: s.key,
@@ -36,6 +39,7 @@ describe('Engine functionality', function() {
   function onValue(val) {
     value = val
   }
+
   let engine = F.run({
     module,
     interfaces: {
@@ -48,3 +52,33 @@ describe('Engine functionality', function() {
     expect(value.content).toBe('Typescript is awesome!!')
   })
 })
+
+// ------
+
+
+// interface M {
+//   a: {
+//     [someAction: string]: { (): number }
+//   }
+// }
+
+// class Actions {
+//   [someAction: string]: { (): number }
+// }
+
+// let c: M = {
+//   a: class extends Actions {
+//     s = () => 9
+//     d = () => 9
+//   },
+// }
+
+// let b = new c.a()
+
+// b.d
+
+
+// class Module {
+
+// }
+

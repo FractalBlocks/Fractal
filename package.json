@@ -63,7 +63,7 @@
     "style-loader": "^0.13.1",
     "ts-loader": "^0.9.0",
     "ts-node": "^1.4.3",
-    "typescript": "^2.1.0-dev.20161014",
+    "typescript": "^2.2.0-dev.20161202",
     "url-loader": "^0.5.6",
     "webpack": "^1.13.2",
     "webpack-cordova-plugin": "^0.1.5",

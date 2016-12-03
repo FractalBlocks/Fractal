@@ -15,7 +15,7 @@
     "typings/index.d.ts"
   ],
   "include": [
-    "tests/**/*.spec.ts",
+    "src/**/*.spec.ts",
     "examples/**/*.ts"
   ],
   "exclude": [

@@ -34,7 +34,7 @@ export interface ActionsDef<Model> {
 }
 
 export interface Action<Model> {
-  (data: {}, state: Model): Model
+  (data: any, state: Model): Model
 }
 
 export interface Task<functionTypes, DataTypes> extends Array<any> {

@@ -4,6 +4,7 @@ Build your ideas as simple as possible. Fractal is an intuitive framework for bu
 
 ## Why?
 
+- Easy integrable and emmbedable by design
 - A clear and flexible architecture that scales
 - Its clear and concise, all you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
 - Gives you powerful patterns and composing tools that helps to build small and large apps
@@ -11,7 +12,6 @@ Build your ideas as simple as possible. Fractal is an intuitive framework for bu
 - The state is isolated, this mean is serializable and you can hot-swap code updating the UI without reload the navigator
 - You can lazy loading modules
 - Router module for easely URL integration and server side rendering (Work in progress)
-- Tools for socket.io integration
 - BDD and code coverage integrated (Work in progress)
 
 See the detailed [architecture here](https://github.com/fractalPlatform/Fractal/blob/master/docs/ARCHITECTURE.md). In order to be scalable, Fractal is implemented using [Typescript](http://typescript.org)
@@ -77,6 +77,8 @@ For a production version run: `npm run compile`, and see the result in the `dist
 
 What are missing for this repo:
 
+- Rename Tasks to services, and use the term service-message
+- Cancelable callbacks from subcribables in tasks
 - Update free-style dependency to version 2.0
 - Document use cases on stateless components and modules
 - Evaluate flatten composing
