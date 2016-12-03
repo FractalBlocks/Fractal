@@ -1,5 +1,5 @@
 import { Stream, newStream } from './stream'
-import run from './engine'
+import { run } from './engine'
 import { Context } from './composition'
 import { InterfaceMsg } from './interface'
 
@@ -26,7 +26,9 @@ export interface InputsDef<Model> {
 }
 
 export interface Input<Model> {
-  (ctx: Context, actions: ActionsDef<Model>, data: {}): void | Task<any, any> | Action<Model> | (Task<any, any> | Action<Model>)[]
+  (ctx: Context): {
+    (data: any): Update<Model> | void | Task
+  }
 }
 
 export interface ActionsDef<Model> {
@@ -34,10 +36,10 @@ export interface ActionsDef<Model> {
 }
 
 export interface Action<Model> {
-  (data: any, state: Model): Model
+  (data: any): Update<Model>
 }
 
-export interface Task<functionTypes, DataTypes> extends Array<any> {
+export interface Task extends Array<any> {
   0: string // task name
   1: string // task function
   2: Object // task data
@@ -48,7 +50,7 @@ export interface Update<Model> {
 }
 
 export interface Interface<Model> {
-  (ctx: Context, actions: ActionsDef<Model>, state: Model): InterfaceMsg
+  (ctx: Context, state: Model): InterfaceMsg
 }
 
 export function def(moduleDef: ModuleDef<Model>) : ModuleDef<Model> {

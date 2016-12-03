@@ -1,4 +1,4 @@
-import { ModuleDef, Model, Action } from './core'
+import { ModuleDef, Model, Action, Update } from './core'
 import { merge, Context, Module } from './composition'
 import { InterfaceDriver, InterfaceMsg } from './interface'
 import { newStream, Stream } from './stream'
@@ -18,7 +18,7 @@ export interface Engine {
   dispose(): void
 }
 
-export default function run(engineDef: EngineDef): Engine {
+export function run(engineDef: EngineDef): Engine {
   let defaults = {
     log: false,
     logAll: false,
@@ -26,20 +26,45 @@ export default function run(engineDef: EngineDef): Engine {
   engineDef = Object.assign(defaults, engineDef)
   let ctx: Context, state$,
    driverStreams: { [driverName: string]: Stream<InterfaceMsg> } = {},
-   module: Module
+   moduleObj: Module
 
   function attach(state: Model | undefined) {
     // ModuleDef -> Module
-    module = merge(engineDef.module)
-    ctx = module.ctx
+    moduleObj = merge(engineDef.module)
+    ctx = moduleObj.ctx
     // action$ --> state$
-    let state$ = newStream<Model>(module.init({key: module.name}))
-    ctx.action$.subscribe(
-      action => state$.set(action(state$.get()))
+    let state$ = newStream<Model>(moduleObj.def.init({key: moduleObj.def.name}))
+    ctx.do$.subscribe(
+      executable => {
+        if (typeof executable === 'function') {
+          // single update
+          state$.set((<Update<Model>>executable)(state$.get()))
+        } else if (executable instanceof Array) {
+          if (executable[0] && typeof executable[0] === 'string') {
+            // single task
+            console.log('unhandled task TODO-ENGINE'); console.log(executable)
+          } else if (executable[0] instanceof Array) {
+            // list of updates and tasks
+            for (let i = 0, len = executable.length; i < len; i++) {
+              if (typeof executable[i] === 'function') {
+                // is an update
+                state$.set((<Update<Model>>executable[i])(state$.get()))
+              } else if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
+                // single task
+                console.log('unhandled task TODO-ENGINE'); console.log(executable[i])
+              } else {
+                console.warn('unrecognized executable at runtime')
+              }
+            }
+          } else {
+            console.warn('unrecognized executable at runtime')
+          }
+        }
+      }
     )
     // state$ --> driverStreams
-    for(let driverName in module.interfaces) {
-      driverStreams[driverName] = newStream(module.interfaces[driverName](state$.get()))
+    for(let driverName in moduleObj.def.interfaces) {
+      driverStreams[driverName] = newStream(moduleObj.def.interfaces[driverName](state$.get()))
       engineDef.interfaces[driverName][(state == undefined) ? 'attach' : 'reattach'](driverStreams[driverName])
     }
   }

@@ -3,34 +3,47 @@ import { ModuleDef, Model } from '../src/core'
 
 describe('Engine functionality', function() {
 
+  let name = 'Main'
+
   interface MainModel extends Model {
     count: number
   }
 
+  let init = ({key}) => ({
+    key,
+    count: 0,
+  })
+
   let actions = {
-    SetCount: (count: number) => (state: MainModel) => {
+    Set: (count: number) => (state: MainModel) => {
       state.count = count
+      return state
+    },
+    Inc: () => (state: MainModel) => {
+      state.count ++
       return state
     },
   }
 
-  let moduleDef: ModuleDef<MainModel> = {
-    name: 'Main',
-    init: ({key}) => ({
-      key,
-      count: 12,
+  let inputs = {
+    set: ctx => (n: number) => ctx.do$(actions.Set(n)),
+    inc: ctx => () => ctx.do$(actions.Inc()),
+  }
+
+  let interfaces = {
+    event: (ctx, s) => ({
+      tagName: s.key,
+      content: 'Typescript is awesome!! ' + s.count,
+      subscribe: inputs.inc(ctx),
     }),
-    inputs: {
-      data: (ctx, data) => actions.SetCount(data),
-    },
+  }
+
+  let moduleDef: ModuleDef<MainModel> = {
+    name,
+    init,
+    inputs,
     actions,
-    interfaces: {
-      event: (ctx, i, s) => ({
-        tagName: s.key,
-        content: 'Typescript is awesome!! ' + s.count,
-        // handler: i.data,
-      }),
-    },
+    interfaces,
   }
 
   let module = F.def(moduleDef)
@@ -47,38 +60,13 @@ describe('Engine functionality', function() {
     }
   })
 
-  it('Should have initial state', function() {
+  it('should have initial state', function() {
     expect(value.tagName).toBe('Main')
-    expect(value.content).toBe('Typescript is awesome!!')
+    expect(value.content).toBe('Typescript is awesome!! 0')
   })
+
+  it('should react to input', () => {
+    value.handler()
+  })
+
 })
-
-// ------
-
-
-// interface M {
-//   a: {
-//     [someAction: string]: { (): number }
-//   }
-// }
-
-// class Actions {
-//   [someAction: string]: { (): number }
-// }
-
-// let c: M = {
-//   a: class extends Actions {
-//     s = () => 9
-//     d = () => 9
-//   },
-// }
-
-// let b = new c.a()
-
-// b.d
-
-
-// class Module {
-
-// }
-

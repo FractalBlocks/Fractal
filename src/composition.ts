@@ -1,41 +1,35 @@
-import { ModuleDef, Model, Action, Update, Interface } from './core'
+import { ModuleDef, Model, Action, Update, Interface, Task } from './core'
 import { Stream, newStream } from '../src/stream'
 import { InterfaceMsg } from './interface'
 
 export interface Context {
-  action$: Stream<Update<Model>>
+  do$: Stream<Executable | Executable[]>
 }
+
+type Executable = Update<Model> | Task
 
 export interface CtxInterface {
   (state: Model): InterfaceMsg
 }
 
 export interface Module {
-  moduleDef: ModuleDef<any>
-  name: string
+  def: ModuleDef<any>
   ctx: Context
-  init(params: Model): Model
-  interfaces: {
-    [interfaceName: string]: CtxInterface
-  }
 }
 
-export function merge(moduleDef: ModuleDef<Model>): Module {
+export function merge(def: ModuleDef<Model>): Module {
   let ctx: Context = {
-    action$: newStream<Update<Model>>(undefined)
+    do$: newStream<Executable | Executable[]>(undefined)
   }
   let interfaces = {}
-  for(let name in moduleDef.interfaces) {
+  for(let name in def.interfaces) {
     interfaces[name] = function(state) {
-      return moduleDef.interfaces[name](ctx, moduleDef.actions, state)
+      return def.interfaces[name](ctx, state)
     }
   }
   return {
-    moduleDef,
-    name: moduleDef.name,
-    init: moduleDef.init,
+    def,
     ctx,
-    interfaces,
   }
 }
 
