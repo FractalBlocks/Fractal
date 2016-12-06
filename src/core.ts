@@ -8,7 +8,7 @@ export interface ModuleDef<Model> {
   log?: boolean
   logAll?: boolean
   init(params: Model): Model
-  inputs: InputsDef<Model>
+  inputs: Inputs<Model>
   actions?: ActionsDef<Model>
   interfaces: Interfaces<Model>
 }
@@ -21,7 +21,7 @@ export interface Model {
   key: string
 }
 
-export interface InputsDef<Model> {
+export interface Inputs<Model> {
   [inputName: string]: Input<Model>
 }
 
@@ -53,16 +53,6 @@ export interface Interface<Model> {
   (ctx: Context, state: Model): InterfaceMsg
 }
 
-export function def(moduleDef: ModuleDef<Model>) : ModuleDef<Model> {
-  let defaults = {
-    log: false,
-    logAll: false,
-  }
-  let mDef = Object.assign(defaults, moduleDef)
-  return mDef
-}
-
 export default {
-  def,
   run,
 }

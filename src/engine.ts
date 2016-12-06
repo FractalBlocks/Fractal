@@ -62,10 +62,16 @@ export function run(engineDef: EngineDef): Engine {
         }
       }
     )
+    // creates driverStreams
+    for (let name in moduleObj.def.interfaces) {
+      driverStreams[name] = newStream(moduleObj.def.interfaces[name](moduleObj.ctx, state$.get()))
+      engineDef.interfaces[name][(state == undefined) ? 'attach' : 'reattach'](driverStreams[name])
+    }
     // state$ --> driverStreams
-    for(let driverName in moduleObj.def.interfaces) {
-      driverStreams[driverName] = newStream(moduleObj.def.interfaces[driverName](moduleObj.ctx, state$.get()))
-      engineDef.interfaces[driverName][(state == undefined) ? 'attach' : 'reattach'](driverStreams[driverName])
+    for (let name in  driverStreams) {
+      state$.subscribe(
+        state => driverStreams[name].set(moduleObj.def.interfaces[name](moduleObj.ctx, state))
+      )
     }
   }
 

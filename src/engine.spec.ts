@@ -1,5 +1,7 @@
-import F from '../src'
-import { ModuleDef, Model } from '../src/core'
+import F from './index'
+import { ModuleDef, Model, Interfaces } from './core'
+import { Context } from './composition'
+import { newStream } from './stream'
 
 describe('Engine functionality', function() {
 
@@ -26,19 +28,20 @@ describe('Engine functionality', function() {
   }
 
   let inputs = {
-    set: ctx => (n: number) => ctx.do$(actions.Set(n)),
-    inc: ctx => () => ctx.do$(actions.Inc()),
+    set: (ctx: Context) => (n: number) => ctx.do$.set(actions.Set(n)),
+    inc: (ctx: Context) => () => ctx.do$.set(actions.Inc()),
   }
 
-  let interfaces = {
+  let interfaces: Interfaces<MainModel> = {
     event: (ctx, s) => ({
       tagName: s.key,
       content: 'Typescript is awesome!! ' + s.count,
       subscribe: inputs.inc(ctx),
+      a: inputs
     }),
   }
 
-  let moduleDef: ModuleDef<MainModel> = {
+  let mDef: ModuleDef<MainModel> = {
     name,
     init,
     inputs,
@@ -46,27 +49,30 @@ describe('Engine functionality', function() {
     interfaces,
   }
 
-  let module = F.def(moduleDef)
-
-  let value = undefined
+  let value$ = newStream<any>(undefined)
   function onValue(val) {
-    value = val
+    value$.set(val)
   }
 
   let engine = F.run({
-    module,
+    module: mDef,
     interfaces: {
       event: F.interfaces.event(onValue),
     }
   })
 
   it('should have initial state', function() {
+    let value = value$.get()
     expect(value.tagName).toBe('Main')
     expect(value.content).toBe('Typescript is awesome!! 0')
   })
 
-  it('should react to input', () => {
-    value.handler()
+  it('should react to input', (done) => {
+    value$.subscribe(value => {
+      expect(value.content).toBe('Typescript is awesome!! 1')
+      done()
+    })
+    value$.get().subscribe()
   })
 
 })

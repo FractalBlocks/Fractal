@@ -1,6 +1,6 @@
 {
   "name": "fractal-framework",
-  "version": "v0.0.3-preview",
+  "version": "v0.0.3-rc0",
   "description": "An intuitive framework for building applications and interactive content",
   "main": "lib/src/index.js",
   "typings": "typings/index.d.ts",
@@ -10,7 +10,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "test:watch": "karma start --no-single-run --auto-watch"
   },
   "author": "Carlos Galarza <carloslfu@gmail.com>",
   "repository": {
