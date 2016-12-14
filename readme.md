@@ -14,7 +14,7 @@ Build your ideas as simple as possible. Fractal is an intuitive framework for bu
 - Router module for easely URL integration and server side rendering (Work in progress)
 - BDD and code coverage integrated (Work in progress)
 
-See the detailed [architecture here](https://github.com/fractalPlatform/Fractal/blob/master/docs/ARCHITECTURE.md). In order to be scalable, Fractal is implemented using [Typescript](http://typescript.org)
+See the detailed [architecture here](https://github.com/fractalPlatform/Fractal/blob/master/docs/ARCHITECTURE.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
 
 ## Make your own Fractal based app
 
