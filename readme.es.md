@@ -1,10 +1,11 @@
 <img src="https://github.com/fractalPlatform/Fractal.js/blob/master/assets/textlogo.png" width="520px">
 
+(DEPRECATED)
+(TODO: Update. Translate the english version)
+
 Construye tus ideas tan simple como sea posible. Fractal.js es un framework intuitivo para construir aplicaciones y contenido interactivo.
 
 Tomamos lo mejor de [functional-frontend-architecture](https://github.com/paldepind/functional-frontend-architecture) y la arquitectura [ELM](https://github.com/evancz/elm-architecture-tutorial/) (Modelos Vista Actualizador), lo adaptamos con patrones fáciles de utilizar en la `Programación Funcional Reactiva` ([Functional Reactive Programing](https://en.wikipedia.org/wiki/Functional_reactive_programming)).
-
-(TODO: Update. Translate the english version)
 
 ## ¿Por qué?
 

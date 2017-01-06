@@ -1,7 +1,7 @@
 {
   "name": "fractal-framework",
-  "version": "v0.0.3-rc0",
-  "description": "An intuitive framework for building applications and interactive content",
+  "version": "v0.0.4-rc0",
+  "description": "An intuitive minimalist framework for building applications and interactive content",
   "main": "lib/src/index.js",
   "typings": "typings/index.d.ts",
   "files": [
@@ -11,7 +11,9 @@
   ],
   "scripts": {
     "test": "karma start",
-    "test:watch": "karma start --no-single-run --auto-watch"
+    "test:watch": "karma start --no-single-run --auto-watch",
+    "general": "cross-env NODE_ENV=development node tasktool",
+    "general-compile": "cross-env NODE_ENV=production node tasktool"
   },
   "author": "Carlos Galarza <carloslfu@gmail.com>",
   "repository": {
@@ -19,9 +21,13 @@
     "url": "https://github.com/fractalPlatform/Fractal.git"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "cross-env": "^3.1.4",
+    "snabbdom": "^0.5.4"
+  },
   "devDependencies": {
-    "awesome-typescript-loader": "^3.0.0-beta.9",
+    "awesome-typescript-loader": "^3.0.0-beta.17",
+    "html-webpack-plugin": "^2.26.0",
     "istanbul-instrumenter-loader": "^1.1.0",
     "jasmine": "^2.5.2",
     "karma": "^1.3.0",
@@ -34,7 +40,8 @@
     "karma-webpack": "^1.8.0",
     "source-map-loader": "^0.1.5",
     "ts-helpers": "^1.1.2",
-    "typescript": "^2.2.0-dev.20161203",
-    "webpack": "^2.1.0-beta.27"
+    "typescript": "^2.2.0-dev.20170102",
+    "webpack": "^2.1.0-beta.27",
+    "webpack-dev-server": "^1.16.2"
   }
 }

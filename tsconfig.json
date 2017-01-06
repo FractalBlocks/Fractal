@@ -3,7 +3,7 @@
     "target": "es5",
     "outDir": "lib",
     "module": "commonjs",
-    "lib": ["dom", "es5", "scripthost", "es2015.proxy"],
+    "lib": ["dom", "es5", "scripthost"],
     "sourceMap": true
   },
   "formatCodeOptions": {

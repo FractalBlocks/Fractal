@@ -20,7 +20,7 @@ export default {
   },
 
   resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
+    extensions: ['.webpack.js', '.web.js', '.ts', '.js']
   },
 
   module: {
@@ -28,7 +28,7 @@ export default {
       // {test: /\.jsx?$/, loader: "eslint-loader", exclude: vendorModules},
     ],
     loaders: [
-      { test: /\.ts$/, loader: 'ts-loader' },
+      { test: /\.ts$/, loader: 'awesome-typescript-loader' },
       { test: /\.css$/, loader: "style-loader!css-loader" },
       { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
       { test: /\.jpg$/, loader: "url-loader?mimetype=image/jpg" },

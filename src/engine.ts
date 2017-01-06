@@ -1,6 +1,6 @@
 import { ModuleDef, Model, Action, Update } from './core'
 import { merge, Context, Module } from './composition'
-import { InterfaceDriver, InterfaceMsg } from './interface'
+import { InterfaceHandler, InterfaceMsg } from './interface'
 import { newStream, Stream } from './stream'
 
 export interface EngineDef {
@@ -8,7 +8,7 @@ export interface EngineDef {
   logAll?: boolean
   module: ModuleDef<Model>
   interfaces?: {
-    [interfaceDriverName: string]: InterfaceDriver
+    [name: string]: InterfaceHandler
   }
 }
 
@@ -16,17 +16,25 @@ export interface Engine {
   engineDef: EngineDef
   reattach(module: ModuleDef<Model>): void
   dispose(): void
+  isDisposed: boolean
+  state$: Stream<Model>
+  interfaces: {
+    [name: string]: InterfaceHandler
+  },
+  driverStreams: {
+    [name: string]: Stream<InterfaceMsg>
+  }
 }
 
-export function run(engineDef: EngineDef): Engine {
-  let defaults = {
+export function run(engineDefinition: EngineDef): Engine {
+  let engineDef = {
     log: false,
     logAll: false,
+    ...engineDefinition,
   }
-  engineDef = Object.assign(defaults, engineDef)
   let ctx: Context, state$,
-   driverStreams: { [driverName: string]: Stream<InterfaceMsg> } = {},
-   moduleObj: Module
+    driverStreams: { [driverName: string]: Stream<InterfaceMsg> } = {},
+    moduleObj: Module
 
   function attach(state: Model | undefined) {
     // ModuleDef -> Module
@@ -63,9 +71,14 @@ export function run(engineDef: EngineDef): Engine {
       }
     )
     // creates driverStreams
-    for (let name in moduleObj.def.interfaces) {
-      driverStreams[name] = newStream(moduleObj.def.interfaces[name](moduleObj.ctx, state$.get()))
-      engineDef.interfaces[name][(state == undefined) ? 'attach' : 'reattach'](driverStreams[name])
+    for (let name in engineDef.interfaces) {
+      if (moduleObj.def.interfaces[name]) {
+        driverStreams[name] = newStream(moduleObj.def.interfaces[name](moduleObj.ctx, state$.get()))
+        engineDef.interfaces[name][(state == undefined) ? 'attach' : 'reattach'](driverStreams[name])
+      } else {
+        // TODO: document that drivers are renamed interface handlers
+        console.warn(`Root Module has no interface called ${name}, unused interface handler`)
+      }
     }
     // state$ --> driverStreams
     for (let name in  driverStreams) {
@@ -80,6 +93,23 @@ export function run(engineDef: EngineDef): Engine {
   return {
     engineDef,
     reattach(m: ModuleDef<Model>) {},
-    dispose() {},
+    dispose() {
+      // dispose all streams
+      ctx.do$.dispose()
+      for (let name in driverStreams) {
+        driverStreams[name].dispose()
+      }
+      for (let name in engineDef.interfaces) {
+        if (engineDef.interfaces[name].state$) {
+          engineDef.interfaces[name].state$.dispose()
+        }
+      }
+      this.isDisposed = true
+    },
+    isDisposed: false,
+    // related to internals
+    state$,
+    interfaces: engineDef.interfaces,
+    driverStreams,
   }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="1">
+
+  <testsuite name="interfaces-view"
+    errors="0" failures="0" hostname="" id="" package="interfaces-view" skipped="0"
+    tests="1" time="11.79" timestamp="Tue, 03 Jan 2017 16:05:09 GMT">
+  
+    <testcase name="Guinea Pig Assert Title" time="11.79" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+  
+  </testsuite>
+</testsuites>

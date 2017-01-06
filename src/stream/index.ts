@@ -1,10 +1,11 @@
 
 export interface Stream<T> {
-  set(val: T): void
-  get(): T | undefined
-  subscribe(subscriber: Subscription<T>): void
-  unsubscribe(subscriber: Subscription<T>): boolean
-  removeSubscribers(subscriber: Subscription<T>): void
+  set (val: T): void
+  get (): T | undefined
+  subscribe (subscriber: Subscription<T>): void
+  unsubscribe (subscriber: Subscription<T>): boolean
+  removeSubscribers (subscriber: Subscription<T>): void
+  dispose (): void
 }
 
 export interface Subscription<T> {
@@ -13,7 +14,7 @@ export interface Subscription<T> {
 
 export function newStream<T>(initialValue: T | undefined): Stream<T> {
   let _subscribers: Subscription<T>[] = []
-  let state = initialValue
+  let _state = initialValue
 
   function notify(value) {
     for(let i = 0, subs; subs = _subscribers[i]; i++) {
@@ -21,17 +22,17 @@ export function newStream<T>(initialValue: T | undefined): Stream<T> {
     }
   }
   return {
-    set(value) {
-      state = value
+    set (value) {
+      _state = value
       notify(value)
     },
-    get() {
-      return state
+    get () {
+      return _state
     },
-    removeSubscribers() {
+    removeSubscribers () {
       _subscribers = []
     },
-    unsubscribe(subscriber) {
+    unsubscribe (subscriber) {
       let index = _subscribers.indexOf(subscriber)
       if (index != -1) {
         _subscribers.splice(index, 1)
@@ -40,8 +41,15 @@ export function newStream<T>(initialValue: T | undefined): Stream<T> {
         return false
       }
     },
-    subscribe(subscriber) {
+    subscribe (subscriber) {
       _subscribers.push(subscriber)
+    },
+    dispose () {
+      _subscribers = null
+      _state = null
+      for (let prop in this) {
+        this[prop] = null
+      }
     },
   }
 }

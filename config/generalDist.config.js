@@ -32,12 +32,9 @@ module.exports = {
   },
 
   module: {
-    preLoaders: [
-      // {test: /\.jsx?$/, loader: "eslint-loader", exclude: vendorModules},
-    ],
     loaders: [
-      { test: /\.ts$/, loader: 'ts-loader' },
-      { test: /\.css$/, loader: "style-loader!css-loader" },
+      { test: /\.ts$/, loader: 'awesome-typescript-loader' },
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
       { test: /\.jpg$/, loader: "url-loader?mimetype=image/jpg" },
       { test: /\.bmp$/, loader: "url-loader?mimetype=image/bmp" },
@@ -90,6 +87,5 @@ module.exports = {
       minRatio: 0.8,
     })
   ],
-  debug: false,
   watch: false,
 }

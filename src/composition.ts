@@ -4,6 +4,7 @@ import { InterfaceMsg } from './interface'
 
 export interface Context {
   do$: Stream<Executable | Executable[]>
+  do: any
 }
 
 type Executable = Update<Model> | Task
@@ -18,8 +19,11 @@ export interface Module {
 }
 
 export function merge(def: ModuleDef<Model>): Module {
+  let do$ = newStream<Executable | Executable[]>(undefined)
+  do$.set
   let ctx: Context = {
-    do$: newStream<Executable | Executable[]>(undefined)
+    do$,
+    do: do$.set,
   }
   let interfaces = {}
   for(let name in def.interfaces) {

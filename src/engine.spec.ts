@@ -1,6 +1,5 @@
-import F from './index'
-import { ModuleDef, Model, Interfaces } from './core'
-import { Context } from './composition'
+import { ModuleDef, Model, Interfaces, Context, run } from './index'
+import eventInterface from './interfaces/event'
 import { newStream } from './stream'
 
 describe('Engine functionality', function() {
@@ -28,8 +27,8 @@ describe('Engine functionality', function() {
   }
 
   let inputs = {
-    set: (ctx: Context) => (n: number) => ctx.do$.set(actions.Set(n)),
-    inc: (ctx: Context) => () => ctx.do$.set(actions.Inc()),
+    set: (ctx: Context) => (n: number) => ctx.do(actions.Set(n)),
+    inc: (ctx: Context) => () => ctx.do(actions.Inc()),
   }
 
   let interfaces: Interfaces<MainModel> = {
@@ -37,7 +36,6 @@ describe('Engine functionality', function() {
       tagName: s.key,
       content: 'Typescript is awesome!! ' + s.count,
       subscribe: inputs.inc(ctx),
-      a: inputs
     }),
   }
 
@@ -54,10 +52,10 @@ describe('Engine functionality', function() {
     value$.set(val)
   }
 
-  let engine = F.run({
+  let engine = run({
     module: mDef,
     interfaces: {
-      event: F.interfaces.event(onValue),
+      event: eventInterface(onValue),
     }
   })
 

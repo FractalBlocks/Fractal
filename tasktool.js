@@ -21,14 +21,14 @@ if (process.env.NODE_ENV.trim() == 'development') {
   console.log('Development server for ' + path + '/' + option + ' launched ...')
   cmd = spawn('node', [
     'node_modules/webpack-dev-server/bin/webpack-dev-server.js',
-    '--config', 'webpack/generalDevServer.config.js',
+    '--config', 'config/generalDevServer.config.js',
     '--progress'
   ])
 } else {
   console.log('Compiler for ' + path + '/' + option + ' launched ...')
   cmd = spawn('node', [
     'node_modules/webpack/bin/webpack.js',
-    '--config', 'webpack/generalDist.config.js',
+    '--config', 'config/generalDist.config.js',
     '--progress'
   ])
 }
