@@ -4,7 +4,7 @@ export interface Stream<T> {
   get (): T | undefined
   subscribe (subscriber: Subscription<T>): void
   unsubscribe (subscriber: Subscription<T>): boolean
-  removeSubscribers (subscriber: Subscription<T>): void
+  removeSubscribers (): void
   dispose (): void
 }
 

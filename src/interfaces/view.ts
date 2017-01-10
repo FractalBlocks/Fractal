@@ -1,16 +1,18 @@
 import { InterfaceHandler, InterfaceMsg } from '../interface'
-import snabbdom = require('snabbdom')
-import classModule = require('snabbdom/modules/class')
-import attributesModule = require('snabbdom/modules/attributes')
-import propsModule = require('snabbdom/modules/props')
-import eventlistenersModule = require('snabbdom/modules/eventlisteners')
-import styleModule = require('snabbdom/modules/style')
-import h = require('snabbdom/h')
+import { Context } from '../composition'
+import { init } from 'snabbdom'
+import classModule from 'snabbdom/modules/class'
+import attributesModule from 'snabbdom/modules/attributes'
+import propsModule from 'snabbdom/modules/props'
+import eventlistenersModule from 'snabbdom/modules/eventlisteners'
+import styleModule from 'snabbdom/modules/style'
+import h from 'snabbdom/h'
+import { VNode } from 'snabbdom/vnode'
 import { newStream, Stream } from '../stream'
 import scanMapStream from '../stream/scanMap'
 
 // Common snabbdom patch function (convention over configuration)
-const patch = snabbdom.init([
+const patch = init([
   classModule,
   attributesModule,
   propsModule,
@@ -18,9 +20,13 @@ const patch = snabbdom.init([
   styleModule,
 ])
 
-export default function (selector, patchfn = patch): InterfaceHandler {
+export interface ViewInterface {
+  (ctx: Context, s): VNode
+}
+
+export function viewHandler (selector, patchfn = patch): InterfaceHandler {
   let lastContainer,
-    state$ = newStream<snabbdom.VNode>(undefined)
+    state$ = newStream<VNode>(undefined)
 
   function wraperPatch(o, n) {
     let newContainer = patchfn(o, n)
@@ -28,14 +34,14 @@ export default function (selector, patchfn = patch): InterfaceHandler {
     return newContainer
   }
 
-  function subscriber (vnode: snabbdom.VNode) {
+  function subscriber (vnode: VNode) {
     let vnode_mapped = h('div' + selector, { key: selector }, [vnode])
     state$.set(wraperPatch(state$.get(), vnode_mapped))
   }
 
   return {
     state$,
-    attach: (vnode$: Stream<snabbdom.VNode>) => {
+    attach: (vnode$: Stream<VNode>) => {
       window.addEventListener('DOMContentLoaded', function() {
         let container = document.querySelector(selector)
         state$.set(container)
@@ -43,8 +49,8 @@ export default function (selector, patchfn = patch): InterfaceHandler {
         subscriber(vnode$.get())
       })
     },
-    reattach: (vnode$: Stream<snabbdom.VNode>) => {
-      vnode$.set(lastContainer)
+    reattach: (vnode$: Stream<VNode>) => {
+      state$.set(lastContainer)
       vnode$.subscribe(subscriber)
       subscriber(vnode$.get())
     },

@@ -1,13 +1,14 @@
 // Test bed component
 
-import { run, ModuleDef, Model, Interfaces, Context, Interface } from '../index'
+import { run, ModuleDef, Context, Interface } from '../index'
 
 
 export default function (interfaceObjBuilder, interfaceHandler) {
 
   let name = 'TestBed'
 
-  interface MainModel extends Model {
+  interface MainModel {
+    key: string
     count: number
   }
 
@@ -32,16 +33,14 @@ export default function (interfaceObjBuilder, interfaceHandler) {
     inc: (ctx: Context) => () => ctx.do$.set(actions.Inc()),
   }
 
-  let interfaces: Interfaces<MainModel> = {
-    interfaceObj: interfaceObjBuilder(inputs),
-  }
-
   let mDef: ModuleDef<MainModel> = {
     name,
     init,
     inputs,
     actions,
-    interfaces,
+    interfaces: {
+      interfaceObj: interfaceObjBuilder(inputs),
+    },
   }
 
   return run({

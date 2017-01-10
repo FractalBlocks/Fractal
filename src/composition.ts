@@ -1,4 +1,4 @@
-import { ModuleDef, Model, Action, Update, Interface, Task } from './core'
+import { ModuleDef, Action, Update, Interface, Task } from './core'
 import { Stream, newStream } from '../src/stream'
 import { InterfaceMsg } from './interface'
 
@@ -7,10 +7,10 @@ export interface Context {
   do: any
 }
 
-type Executable = Update<Model> | Task
+type Executable = Update<any> | Task
 
 export interface CtxInterface {
-  (state: Model): InterfaceMsg
+  state: InterfaceMsg
 }
 
 export interface Module {
@@ -18,7 +18,7 @@ export interface Module {
   ctx: Context
 }
 
-export function merge(def: ModuleDef<Model>): Module {
+export function merge(def: ModuleDef<any>): Module {
   let do$ = newStream<Executable | Executable[]>(undefined)
   do$.set
   let ctx: Context = {

@@ -1,5 +1,4 @@
 import { Stream } from './stream'
-import { Model } from './core'
 
 export interface InterfaceHandler {
   state$: Stream<any> | undefined

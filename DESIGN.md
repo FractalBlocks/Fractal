@@ -32,6 +32,10 @@ FractalBlocks UI follows the same topics
 - task handler: is a part of an engine that handle tasks, performing side effects of certain type
 - input: is a part of a module that is a dispatcher for actions and tasks
 
+## Ideas
+
+- Implement hooks for component lifecycle, Init hook can perform style insert side effect
+
 ## Scripts
 
 List of possible commands, we maintain package.json as simple as possible

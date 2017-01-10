@@ -2,33 +2,34 @@
 
 let webpack = require('webpack')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
-
+let CheckerPlugin = require('awesome-typescript-loader').CheckerPlugin
+let path = require('path')
 
 let vendorModules = /(node_modules|bower_components)/
 
 let option = process.env.OPTION
-let path = process.env.OPTION_PATH
+let pathName = process.env.OPTION_PATH
 
 module.exports = {
-  target: 'web',
-  entry: {
-    app: './' + path + '/' + option + '/index.ts',
-  },
+  entry: './' + pathName + '/' + option + '/index.ts',
 
   output: {
-    path: './' + path + '/' + option,
-    filename: 'app.js',
-    pathinfo: true,
+    path: __dirname + '/' + pathName + ''/ + option,
+    filename: '[name].js',
     publicPath: '',
   },
 
   resolve: {
-    extensions: ['.webpack.js', '.web.js', '.ts', '.js'],
+    extensions: ['.ts', '.js'],
   },
 
   module: {
     loaders: [
-      { test: /\.ts/, loader: 'awesome-typescript-loader' },
+      {
+        test: /\.ts$/,
+        exclude: __dirname + '/node_modules',
+        loader: 'awesome-typescript-loader',
+      },
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.(woff|woff2|eot|ttf|svg)$/, loader: 'url-loader?limit=100000' },
       { test: /\.jpg$/, loader: 'url-loader?mimetype=image/jpg' },
@@ -38,9 +39,11 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('init.js'),
+    new webpack.HotModuleReplacementPlugin(),
+    new CheckerPlugin(),
+    new webpack.optimize.CommonsChunkPlugin('init'),
     new HtmlWebpackPlugin({
-      title: path,
+      title: pathName,
       minify: process.env.NODE_ENV === 'production' ? {
         removeComments: true,
         removeCommentsFromCDATA: true,
@@ -55,22 +58,19 @@ module.exports = {
         removeScriptTypeAttributes: true,
         removeStyleLinkTypeAttributes: true,
       } : false,
-      template: './' + path + '/' + option + '/index.html',
-    }),
-    new webpack.HotModuleReplacementPlugin()
+      template: './' + pathName + '/' + option + '/index.ejs',
+    })
   ],
   devtool: 'source-map',
   profile: false,
 
   devServer: {
-    contentBase: './public',
+    contentBase: './',
     port: 3000,
 
     hot: true,
     inline: true,
     historyApiFallback: true,
-
-    colors: true,
     stats: 'normal',
   },
 }

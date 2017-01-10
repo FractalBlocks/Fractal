@@ -1,12 +1,13 @@
-import { ModuleDef, Model, Interfaces, Context, run } from './index'
-import eventInterface from './interfaces/event'
+import { ModuleDef, Context, run } from './index'
+import { eventHandler, EventInterface } from './interfaces/event'
 import { newStream } from './stream'
 
 describe('Engine functionality', function() {
 
   let name = 'Main'
 
-  interface MainModel extends Model {
+  interface MainModel {
+    key: string
     count: number
   }
 
@@ -31,20 +32,21 @@ describe('Engine functionality', function() {
     inc: (ctx: Context) => () => ctx.do(actions.Inc()),
   }
 
-  let interfaces: Interfaces<MainModel> = {
-    event: (ctx, s) => ({
+  let event: EventInterface =
+    (ctx, s: MainModel) => ({
       tagName: s.key,
       content: 'Typescript is awesome!! ' + s.count,
       subscribe: inputs.inc(ctx),
-    }),
-  }
+    })
 
   let mDef: ModuleDef<MainModel> = {
     name,
     init,
     inputs,
     actions,
-    interfaces,
+    interfaces: {
+      event,
+    },
   }
 
   let value$ = newStream<any>(undefined)
@@ -55,7 +57,7 @@ describe('Engine functionality', function() {
   let engine = run({
     module: mDef,
     interfaces: {
-      event: eventInterface(onValue),
+      event: eventHandler(onValue),
     }
   })
 

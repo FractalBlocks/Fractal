@@ -3,40 +3,36 @@ import { run } from './engine'
 import { Context } from './composition'
 import { InterfaceMsg } from './interface'
 
-export interface ModuleDef<Model> {
+export interface ModuleDef<T> {
   name: string
   log?: boolean
   logAll?: boolean
-  init(params: Model): Model
-  inputs: Inputs<Model>
-  actions?: ActionsDef<Model>
-  interfaces: Interfaces<Model>
+  init(params: { key: string }): T
+  inputs?: Inputs<T>
+  actions?: ActionsDef<T>
+  interfaces: Interfaces<T>
 }
 
 export interface Interfaces<Model> {
   [interfaceName: string]: Interface<Model>
 }
 
-export interface Model {
-  key: string
+export interface Inputs<T> {
+  [inputName: string]: Input<T>
 }
 
-export interface Inputs<Model> {
-  [inputName: string]: Input<Model>
-}
-
-export interface Input<Model> {
+export interface Input<T> {
   (ctx: Context): {
-    (data: any): Update<Model> | void | Task
+    (data: any): Update<T> | void | Task
   }
 }
 
-export interface ActionsDef<Model> {
-  [actionName: string]: Action<Model>
+export interface ActionsDef<T> {
+  [actionName: string]: Action<T>
 }
 
-export interface Action<Model> {
-  (data: any): Update<Model>
+export interface Action<T> {
+  (data: any): Update<T>
 }
 
 export interface Task extends Array<any> {
@@ -45,12 +41,12 @@ export interface Task extends Array<any> {
   2: Object // task data
 }
 
-export interface Update<Model> {
-  (state: Model): Model
+export interface Update<T> {
+  (state: T): T
 }
 
-export interface Interface<Model> {
-  (ctx: Context, state: Model): InterfaceMsg
+export interface Interface<T> {
+  (ctx: Context, state: T): InterfaceMsg
 }
 
 export default {

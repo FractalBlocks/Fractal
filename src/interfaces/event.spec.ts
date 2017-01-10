@@ -1,5 +1,5 @@
-import eventInterface from './event'
-import testBed from './_testBed'
+import { eventHandler } from './event'
+import testBed from './_testBed.spec'
 import { newStream } from '../stream'
 
 
@@ -14,7 +14,7 @@ import { newStream } from '../stream'
     testBed(i => (ctx, s) => ({
       count: s.count,
       subscribe: i.inc(ctx),
-    }), eventInterface(onValue))
+    }), eventHandler(onValue))
 
     it('should have initial state', function() {
       let interfaceMsg = interfaceMsg$.get()

@@ -1,8 +1,12 @@
 import { InterfaceHandler, InterfaceMsg } from '../interface'
 import { Stream } from '../stream'
-import { Model } from '../core'
+import { Context } from '../composition'
 
-export default function(cb: (interfaceMsg: InterfaceMsg) => void): InterfaceHandler {
+export interface EventInterface {
+  (ctx: Context, s): InterfaceMsg
+}
+
+export function eventHandler (cb: (interfaceMsg: InterfaceMsg) => void): InterfaceHandler {
   function subscriber(driverMsg: InterfaceMsg) {
     cb(driverMsg)
   }

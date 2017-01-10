@@ -1,7 +1,7 @@
 import { Engine } from '../index'
-import viewInterface from './view'
-import testBed from './_testBed'
-import h = require('snabbdom/h')
+import { viewHandler } from './view'
+import testBed from './_testBed.spec'
+import h from 'snabbdom/h'
 
 
   describe('View interface behaviours', function() {
@@ -24,7 +24,7 @@ import h = require('snabbdom/h')
             click: i.inc(ctx),
           },
         }, s.count + '')
-      , viewInterface('#app'))
+      , viewHandler('#app'))
     })
 
     // afterEach(() => {
