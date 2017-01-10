@@ -1,5 +1,5 @@
 import { Context, ModuleDef } from '../../src'
-import { styleGroup, StyleGroup } from '../../src/utils/styles'
+import { styleGroup, StyleGroup } from '../../src/utils/style'
 
 import { ViewInterface } from '../../src/interfaces/view'
 import h from 'snabbdom/h'
