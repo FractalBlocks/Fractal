@@ -1,12 +1,11 @@
-import { ModuleDef, Action, Update } from './core'
-import { merge, Context, Module } from './composition'
+import { Module, Action, Update, Task, Context, Executable } from './core'
 import { InterfaceHandler, InterfaceMsg } from './interface'
 import { newStream, Stream } from './stream'
 
 export interface EngineDef {
   log?: boolean
   logAll?: boolean
-  module: ModuleDef<any>
+  module: Module<any>
   interfaces?: {
     [name: string]: InterfaceHandler
   }
@@ -14,7 +13,7 @@ export interface EngineDef {
 
 export interface Engine {
   engineDef: EngineDef
-  reattach(module: ModuleDef<any>): void
+  reattach(module: Module<any>): void
   dispose(): void
   isDisposed: boolean
   state$: Stream<any>
@@ -26,22 +25,29 @@ export interface Engine {
   }
 }
 
+
 export function run(engineDefinition: EngineDef): Engine {
   let engineDef = {
     log: false,
     logAll: false,
     ...engineDefinition,
   }
-  let ctx: Context, state$ = newStream<any>(undefined),
+  let state$ = newStream<any>(undefined),
     driverStreams: { [driverName: string]: Stream<InterfaceMsg> } = {},
-    moduleObj: Module, execute
+    moduleObj: Module<any>, execute
+
+  let do$ = newStream<Executable | Executable[]>(undefined)
+
+  let ctx: Context = {
+    do$,
+    do: do$.set,
+  }
 
   function attach(state) {
-    // ModuleDef -> Module
-    moduleObj = merge(engineDef.module)
-    ctx = moduleObj.ctx
+    // Module -> Module
+    moduleObj = engineDef.module
     // action$ --> state$
-    let newState = (state !== undefined) ? state : moduleObj.def.init({key: moduleObj.def.name})
+    let newState = (state !== undefined) ? state : moduleObj.init({key: moduleObj.name})
     state$.set(newState)
     execute = executable => {
       if (typeof executable === 'function') {
@@ -72,8 +78,8 @@ export function run(engineDefinition: EngineDef): Engine {
     ctx.do$.subscribe(execute)
     // creates driverStreams
     for (let name in engineDef.interfaces) {
-      if (moduleObj.def.interfaces[name]) {
-        driverStreams[name] = newStream(moduleObj.def.interfaces[name](moduleObj.ctx, state$.get()))
+      if (moduleObj.interfaces[name]) {
+        driverStreams[name] = newStream(moduleObj.interfaces[name](ctx, state$.get()))
         engineDef.interfaces[name][(state == undefined) ? 'attach' : 'reattach'](driverStreams[name])
       } else {
         // TODO: document that drivers are renamed interface handlers
@@ -83,7 +89,7 @@ export function run(engineDefinition: EngineDef): Engine {
     // state$ --> driverStreams
     for (let name in  driverStreams) {
       state$.subscribe(
-        state => driverStreams[name].set(moduleObj.def.interfaces[name](moduleObj.ctx, state))
+        state => driverStreams[name].set(moduleObj.interfaces[name](ctx, state))
       )
     }
   }
@@ -98,11 +104,11 @@ export function run(engineDefinition: EngineDef): Engine {
 
   return {
     engineDef,
-    reattach(m: ModuleDef<any>) {
+    reattach(m: Module<any>) {
       disposeDriverStreams()
       state$.removeSubscribers()
       ctx.do$.unsubscribe(execute)
-      // let newState = (R.equals(moduleDef.init({key: 'mainModule'}), reModule.init({key: 'mainModule'}))) ? state$() : reModule.init({key: 'mainModule'})
+      // let newState = (R.equals(module.init({key: 'mainModule'}), reModule.init({key: 'mainModule'}))) ? state$() : reModule.init({key: 'mainModule'})
       let newState = state$.get()
       engineDef.module = m
       attach(newState)

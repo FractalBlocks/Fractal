@@ -15,7 +15,6 @@ Overview of files
 - core.ts: Set of core interfaces of Fractal
 - interface.ts: Set of interfaces (TS) for Fractal Interfaces
 - engine.ts: Interfaces and `run()` function for making Fractal Engines
-- composition.ts: Interfaces and `merge()` function for composing modules
 - interfaces/: Set of built-in Fractal Interfaces, do something when state changes
 - -- event.ts: Executes a callback
 - -- view.ts: Render a Snabbdom view

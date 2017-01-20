@@ -1,5 +1,5 @@
 import { InterfaceHandler, InterfaceMsg } from '../interface'
-import { Context } from '../composition'
+import { Context } from '../core'
 import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
 import attributesModule from 'snabbdom/modules/attributes'

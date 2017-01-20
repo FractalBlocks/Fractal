@@ -1,5 +1,3 @@
-// VALIDATED (all conf file with this tag are not pending of deprecation)
-
 /**
  * @author: @AngularClass (unmodified configuration)
  */

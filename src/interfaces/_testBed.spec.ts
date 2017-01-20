@@ -1,6 +1,6 @@
 // Test bed component
 
-import { run, ModuleDef, Context, Interface } from '../index'
+import { run, Module, Context, Interface } from '../index'
 
 
 export default function (interfaceObjBuilder, interfaceHandler) {
@@ -33,7 +33,7 @@ export default function (interfaceObjBuilder, interfaceHandler) {
     inc: (ctx: Context) => () => ctx.do$.set(actions.Inc()),
   }
 
-  let mDef: ModuleDef<MainModel> = {
+  let mDef: Module<MainModel> = {
     name,
     init,
     inputs,

@@ -18,6 +18,7 @@ FractalBlocks UI follows the same topics
 
 ## Dependencies
 
+- Fractal core should not have any dependencies, this is a design choice
 - Maintain package.json as simple as possible, less dependencies, less scripts ...
 
 ## Concepts

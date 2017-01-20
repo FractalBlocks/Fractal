@@ -1,4 +1,4 @@
-import { Context, ModuleDef } from '../../src'
+import { Context, Module } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
 
 import { ViewInterface } from '../../src/interfaces/view'
@@ -44,31 +44,48 @@ h('div', {
       click: inputs.inc(ctx),
     },
   }, `${s.count}`),
+  h('div', {
+    class: { [style.reset]: true },
+    on: {
+      click: () => inputs.set(ctx)(0),
+    },
+  }, 'reset'),
 ])
 
 
 let styleObj: StyleGroup = {
   base: {
+    width: '120px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: '10px',
-    backgroundColor: 'grey',
+    backgroundColor: '#C1C6CC',
   },
   count: {
     width: '30px',
     height: '30px',
-    margin: '10px',
+    marginRight: '10px',
     borderRadius: '50%',
     color: 'white',
-    backgroundColor: 'blue',
+    fontSize: '20px',
+    backgroundColor: '#3232F2',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  reset: {
+    padding: '4px',
+    color: 'white',
+    fontSize: '18px',
+    backgroundColor: '#EA1818',
   },
 }
 
 let style: any = styleGroup(styleObj, name)
 
 
-let mDef: ModuleDef<MainModel> = {
+let mDef: Module<MainModel> = {
   name,
   init,
   inputs,

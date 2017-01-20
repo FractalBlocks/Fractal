@@ -2,6 +2,7 @@
 bundle/
 lib/
 coverage/
+reports/
 webpack-stats.json
 
 # npm stuff

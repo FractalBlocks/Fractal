@@ -1,4 +1,4 @@
-import { ModuleDef, Context, run } from './index'
+import { Module, Context, run } from './index'
 import { eventHandler, EventInterface } from './interfaces/event'
 import { newStream } from './stream'
 
@@ -39,7 +39,7 @@ describe('Engine functionality', function() {
       subscribe: inputs.inc(ctx),
     })
 
-  let mDef: ModuleDef<MainModel> = {
+  let mDef: Module<MainModel> = {
     name,
     init,
     inputs,

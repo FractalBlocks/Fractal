@@ -1,6 +1,6 @@
 import { InterfaceHandler, InterfaceMsg } from '../interface'
 import { Stream } from '../stream'
-import { Context } from '../composition'
+import { Context } from '../core'
 
 export interface EventInterface {
   (ctx: Context, s): InterfaceMsg

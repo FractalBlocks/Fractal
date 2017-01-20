@@ -1,4 +1,4 @@
-import { Context, ModuleDef } from '../../src'
+import { Context, Module } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
 import { hashMap, HashMap, get } from 'mori'
 import { evolve } from '../../src/utils/mori'
@@ -15,7 +15,7 @@ let init = ({key}) => hashMap<string, any>(
 
 let actions = {
   Set: (count: number) => evolve('count', () => count),
-  Inc: () => evolve('count', x => x + 10),
+  Inc: () => evolve('count', x => x + 1),
 }
 
 let inputs = {
@@ -59,7 +59,7 @@ let styleObj: StyleGroup = {
 let style: any = styleGroup(styleObj, name)
 
 
-let mDef: ModuleDef<HashMap<string, any>> = {
+let mDef: Module<HashMap<string, any>> = {
   name,
   init,
   inputs,

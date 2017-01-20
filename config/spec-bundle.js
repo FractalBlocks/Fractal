@@ -1,5 +1,3 @@
-// VALIDATED (all conf file with this tag are not pending of deprecation)
-
 // Based on AngularClass starter setup for angular 2 and webpack
 
 Error.stackTraceLimit = Infinity

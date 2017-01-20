@@ -1,9 +1,8 @@
 import { Stream, newStream } from './stream'
 import { run } from './engine'
-import { Context } from './composition'
 import { InterfaceMsg } from './interface'
 
-export interface ModuleDef<T> {
+export interface Module<T> {
   name: string
   log?: boolean
   logAll?: boolean
@@ -47,6 +46,17 @@ export interface Update<T> {
 
 export interface Interface<T> {
   (ctx: Context, state: T): InterfaceMsg
+}
+
+export interface Context {
+  do$: Stream<Executable | Executable[]>
+  do: any
+}
+
+export type Executable = Update<any> | Task
+
+export interface CtxInterface {
+  state: InterfaceMsg
 }
 
 export default {

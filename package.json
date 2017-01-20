@@ -1,6 +1,6 @@
 {
   "name": "fractal-framework",
-  "version": "v0.0.4-rc1",
+  "version": "v0.0.4-rc2",
   "description": "An intuitive minimalist framework for building applications and interactive content",
   "main": "lib/src/index.js",
   "typings": "typings/index.d.ts",
@@ -11,9 +11,7 @@
   ],
   "scripts": {
     "test": "karma start",
-    "test:watch": "karma start --no-single-run --auto-watch",
-    "general": "cross-env NODE_ENV=development node tasktool",
-    "general-compile": "cross-env NODE_ENV=production node tasktool"
+    "test:watch": "karma start --no-single-run --auto-watch"
   },
   "author": "Carlos Galarza <carloslfu@gmail.com>",
   "repository": {
