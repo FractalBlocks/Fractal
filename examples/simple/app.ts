@@ -1,4 +1,4 @@
-import { Context, Module } from '../../src'
+import { Context, Component } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
 
 import { ViewInterface } from '../../src/interfaces/view'
@@ -85,7 +85,7 @@ let styleObj: StyleGroup = {
 let style: any = styleGroup(styleObj, name)
 
 
-let mDef: Module<MainModel> = {
+let mDef: Component<MainModel> = {
   name,
   init,
   inputs,

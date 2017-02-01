@@ -1,5 +1,11 @@
 # Fractal is now in Typescript
 
+## TODOS:
+
+- Rename inputs with commands
+
+## Philosophy
+
 We will focus on next topics:
 
 - Simple API + simple architecture (do other diagram like architecture diagram, but focus on what is useful for users)
@@ -23,19 +29,21 @@ FractalBlocks UI follows the same topics
 
 ## Concepts
 
-- module: is a small or big part of your app, and is designed for composition.
-- engine: an engine runs one module (AKA root module), connecting it to external world. A module can be composed of more modules in a module tree
-- interface: is the part of a module that is responsible of communications (external world, AKA side effects)
-- interface handler: is a part of an engine that handle interfaces of root module. Performs a certain type of side effects.
-- state: is the part of a module related to their data
-- action: is a part of a module that is the unique way to update the state
-- task: is an information related to a specific side effect, tasks are dispatched by modules via inputs (see later)
-- task handler: is a part of an engine that handle tasks, performing side effects of certain type
-- input: is a part of a module that is a dispatcher for actions and tasks
+- component: is a small or big part of your app, and is designed for composition.
+- module: a module runs one component (AKA root component), connecting it to external world. A component can be composed of more components in a tree
+- interface: is the part of a component that is responsible of communications (external world, AKA side effects)
+- interface handler: is a part of an module that handle interfaces of root component. Performs a certain type of side effects.
+- state: is the part of a component related to their data
+- action: is a part of a component that is the unique way to update the state
+- task: is an information related to a specific side effect, tasks are dispatched by components via inputs (see later)
+- task handler: is a part of an module that handle tasks, performing side effects of certain type
+- input: is a part of a component that is a dispatcher for actions and tasks
 
 ## Ideas
 
 - Implement hooks for component lifecycle, Init hook can perform style insert side effect
+- Filesystem driven structure
+- IMPORTANT: styles showld be separated and are function of palette and other globals (maximum customization and weight)
 
 ## Scripts
 

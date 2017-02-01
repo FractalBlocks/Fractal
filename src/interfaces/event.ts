@@ -2,6 +2,8 @@ import { InterfaceHandler, InterfaceMsg } from '../interface'
 import { Stream } from '../stream'
 import { Context } from '../core'
 
+// this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
+
 export interface EventInterface {
   (ctx: Context, s): InterfaceMsg
 }

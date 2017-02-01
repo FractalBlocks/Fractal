@@ -1,52 +1,52 @@
 // Test bed component
 
-import { run, Module, Context, Interface } from '../index'
+// import { run, Module, Context, Interface } from '../index'
 
 
-export default function (interfaceObjBuilder, interfaceHandler) {
+// export default function (interfaceObjBuilder, interfaceHandler) {
 
-  let name = 'TestBed'
+//   let name = 'TestBed'
 
-  interface MainModel {
-    key: string
-    count: number
-  }
+//   interface MainModel {
+//     key: string
+//     count: number
+//   }
 
-  let init = ({key}) => ({
-    key,
-    count: 0,
-  })
+//   let init = ({key}) => ({
+//     key,
+//     count: 0,
+//   })
 
-  let actions = {
-    Set: (count: number) => (state: MainModel) => {
-      state.count = count
-      return state
-    },
-    Inc: () => (state: MainModel) => {
-      state.count ++
-      return state
-    },
-  }
+//   let actions = {
+//     Set: (count: number) => (state: MainModel) => {
+//       state.count = count
+//       return state
+//     },
+//     Inc: () => (state: MainModel) => {
+//       state.count ++
+//       return state
+//     },
+//   }
 
-  let inputs = {
-    set: (ctx: Context) => (n: number) => ctx.do$.set(actions.Set(n)),
-    inc: (ctx: Context) => () => ctx.do$.set(actions.Inc()),
-  }
+//   let inputs = {
+//     set: (ctx: Context) => (n: number) => ctx.do$.set(actions.Set(n)),
+//     inc: (ctx: Context) => () => ctx.do$.set(actions.Inc()),
+//   }
 
-  let mDef: Module<MainModel> = {
-    name,
-    init,
-    inputs,
-    actions,
-    interfaces: {
-      interfaceObj: interfaceObjBuilder(inputs),
-    },
-  }
+//   let mDef: Module<MainModel> = {
+//     name,
+//     init,
+//     inputs,
+//     actions,
+//     interfaces: {
+//       interfaceObj: interfaceObjBuilder(inputs),
+//     },
+//   }
 
-  return run({
-    module: mDef,
-    interfaces: {
-      interfaceObj: interfaceHandler,
-    },
-  })
-}
+//   return run({
+//     module: mDef,
+//     interfaces: {
+//       interfaceObj: interfaceHandler,
+//     },
+//   })
+// }

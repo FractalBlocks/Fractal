@@ -1,4 +1,4 @@
-import { Context, Module } from '../../src'
+import { Context, Component } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
 import { hashMap, HashMap, get } from 'mori'
 import { evolve } from '../../src/utils/mori'
@@ -59,7 +59,7 @@ let styleObj: StyleGroup = {
 let style: any = styleGroup(styleObj, name)
 
 
-let mDef: Module<HashMap<string, any>> = {
+let mDef: Component<HashMap<string, any>> = {
   name,
   init,
   inputs,

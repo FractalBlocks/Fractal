@@ -22,7 +22,7 @@ There are TODOs for short term:
 
 There are TODOs for medium term:
 
-- Research(experiment, observe and write) about multi-engine apps
+- Research(experiment, observe and write) about multi-module apps
 - Implement fractal-native using anvil
   - Implement flyd-java
   - Implement union-type-java
@@ -35,7 +35,6 @@ There are TODOs for medium term:
 
 What are missing for this repo:
 
-- Rename Tasks to services, and use the term service-message
 - Cancelable callbacks from subcribables in tasks
 - Update free-style dependency to version 2.0
 - Document use cases on stateless components and modules
@@ -50,7 +49,7 @@ What are missing for this repo:
 - Implement on demand large app loading example (@carloslfu)
 - Implement pouchdb integration example (@carloslfu)
 - Implement the Router inspired on [react-router](https://github.com/ReactTraining/react-router) (STARTED - @carloslfu)
-- Implement register of modules definitions and dispose them when dispose engine (MEMORY)
+- Implement register of modules definitions and dispose them when dispose module (MEMORY)
 - Implement a way to attach disposables to module definitions
 - Implement names for all the modules and examples
 - Implement tests in TESTS.md and document all TODOs
@@ -87,7 +86,6 @@ What maybe great for this repo:
 - Improve and update examples, are very outdated (PARTIAL IMPLEMENTED)
 - Implement and document server side routing example
 - screenInfo as a Global listener(middleware) // maybe deprecated?
-- Separate fractal examples into other git repo, with fractalEngine as module // (EVALUATE)
 - Improve documentation of fractal
 - Fix dependencies and verify that examples works
 - Improve documentation of fractal-examples

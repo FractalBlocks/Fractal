@@ -11,10 +11,12 @@
 
 Overview of files
 
-- stream.ts: Implementation of a basic stream
 - core.ts: Set of core interfaces of Fractal
-- interface.ts: Set of interfaces (TS) for Fractal Interfaces
-- engine.ts: Interfaces and `run()` function for making Fractal Engines
+- module.ts: Interfaces and `run()` function for making Fractal Modules
 - interfaces/: Set of built-in Fractal Interfaces, do something when state changes
 - -- event.ts: Executes a callback
 - -- view.ts: Render a Snabbdom view
+- stream/: Set of function for implementing streams
+- -- index.ts: Implementation of a basic stream
+- -- map.ts: Implementation of a stream mapping
+- -- scan.ts: Implementation of a stream scanning
