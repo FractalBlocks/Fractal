@@ -40,8 +40,6 @@
     "karma-webpack": "^1.8.0",
     "source-map-loader": "^0.1.5",
     "ts-helpers": "^1.1.2",
-    "typescript": "^2.2.0-dev.20170102",
-    "webpack": "^2.2.0-rc.3",
-    "webpack-dev-server": "^2.2.0-rc.0"
+    "typescript": "^2.2.0-dev.20170102"
   }
 }
