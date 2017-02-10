@@ -73,6 +73,8 @@ export interface DispatchData extends Array<any> {
   - If EventData has transferred via CHANNEL, the DispatchData is returned via this CHANNEL
   - the interface / task handler pass DispatchData to dispatch function
   - dispatch function fires the event in the respective component
+
+ The objective of this flow is allow handlers to be excecuted in workers or even remotely o.O
  */
 export type EventFunction = {
   (eventObject: Object): any

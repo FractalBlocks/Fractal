@@ -37,7 +37,6 @@ h('div', {
   }, `${get(s, 'count')}`),
 ])
 
-
 let styleObj: StyleGroup = {
   base: {
     padding: '10px',
