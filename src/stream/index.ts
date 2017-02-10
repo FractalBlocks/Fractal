@@ -12,7 +12,7 @@ export interface Subscription<T> {
   (value: T): void
 }
 
-export function newStream<T>(initialValue: T | undefined): Stream<T> {
+export function newStream<T> (initialValue: T | undefined): Stream<T> {
   let _subscribers: Subscription<T>[] = []
   let _state = initialValue
 
@@ -21,6 +21,7 @@ export function newStream<T>(initialValue: T | undefined): Stream<T> {
       subs(value)
     }
   }
+
   return {
     set (value) {
       _state = value
