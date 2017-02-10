@@ -1,15 +1,20 @@
-import { InterfaceHandler, InterfaceMsg } from '../interface'
-import { Stream } from '../stream'
-import { Context } from '../core'
+import { Context, InterfaceHandler, InterfaceMsg, dispatch, EventData, DispatchData, Module } from '../index'
 
 // this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
 
-export interface EventInterface {
-  (ctx: Context, s): InterfaceMsg
+export type EventMsg = InterfaceMsg
+
+export interface EventResponse extends InterfaceMsg {
+  _dispatch: {
+    (dispatchData: DispatchData): void
+  }
 }
 
-export function eventHandler (cb: (interfaceMsg: InterfaceMsg) => void): InterfaceHandler {
-  function subscriber(driverMsg: InterfaceMsg) {
+export const eventHandler = (cb: (interfaceMsg: InterfaceMsg) => void) => (mod: Module): InterfaceHandler => {
+  function subscriber (driverMsg: EventResponse) {
+    driverMsg._dispatch = dispatchData => {
+      dispatch(mod, dispatchData)
+    }
     cb(driverMsg)
   }
   return {

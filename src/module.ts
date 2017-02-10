@@ -1,4 +1,16 @@
-import { Component, Action, Update, Task, Context, ComponentSpace, Executable, Dispatcher, DispatchFunction } from './core'
+import {
+  Component,
+  Action,
+  Update,
+  Task,
+  Context,
+  ComponentSpace,
+  ComponentIndex,
+  Executable,
+  EventData,
+  DispatchData,
+  EventFunction,
+} from './core'
 import { InterfaceHandler, InterfaceMsg } from './interface'
 import { newStream, Stream } from './stream'
 
@@ -62,12 +74,16 @@ export function merge (ctx: Context, ns: string, name: string, component: Compon
 
 export function mergeAll (ctx: Context, ns: string, components: { [name: string]: Component }) {
   let space: ComponentSpace = { state: {}, inputs: {} }
-  // ctx.components[ns + '$' + name] = {}
+  // ctx.components[ns + '$' + name] = {} TODO: CRITICAL
 }
 
 // create an input dispatch array
-export function dispatch (ctx: Context, inputName: string, paramFn?: DispatchFunction): Dispatcher {
+export function on (ctx: Context, inputName: string, paramFn?: EventFunction): EventData {
    return [ctx.id, inputName, paramFn]
+}
+
+export function dispatch (componentIndex: ComponentIndex, dispatchData: DispatchData) {
+  componentIndex[dispatchData[0]].inputs[dispatchData[1]](dispatchData[2])
 }
 
 // function for running a root component
@@ -135,10 +151,13 @@ export function run (moduleDefinition: ModuleDef): Module {
   function attach (state) {
     // root component
     component = moduleDef.root
-    // action$ --> state$
-    let newState = (state !== undefined) ? state : component.state({key: component.name})
     // inital state
-    ctx.components['root'].state = newState
+    let newState = (state !== undefined) ? state : component.state({key: component.name})
+    // reserve root space
+    ctx.components['root'] = {
+      state: newState,
+      inputs: {},
+    }
 
     // creates driverStreams
     for (let name in moduleDef.interfaces) {
