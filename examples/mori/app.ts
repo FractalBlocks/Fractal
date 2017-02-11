@@ -8,7 +8,7 @@ import h from 'snabbdom/h'
 
 let name = 'Main'
 
-let init = ({key}) => hashMap<string, any>(
+let state = ({key}) => hashMap<string, any>(
   'key', key,
   'count', 0,
 )
@@ -58,9 +58,9 @@ let styleObj: StyleGroup = {
 let style: any = styleGroup(styleObj, name)
 
 
-let mDef: Component<HashMap<string, any>> = {
+let mDef: Component = {
   name,
-  init,
+  state,
   inputs,
   actions,
   interfaces: {

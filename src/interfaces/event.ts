@@ -1,8 +1,6 @@
-import { Context, InterfaceHandler, InterfaceMsg, dispatch, EventData, DispatchData, Module } from '../index'
+import { Context, InterfaceHandler, InterfaceMsg, dispatch, EventData, DispatchData, ComponentIndex } from '../index'
 
 // this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
-
-export type EventMsg = InterfaceMsg
 
 export interface EventResponse extends InterfaceMsg {
   _dispatch: {
@@ -10,24 +8,28 @@ export interface EventResponse extends InterfaceMsg {
   }
 }
 
-export const eventHandler = (cb: (interfaceMsg: InterfaceMsg) => void) => (mod: Module): InterfaceHandler => {
-  function subscriber (driverMsg: EventResponse) {
-    driverMsg._dispatch = dispatchData => {
-      dispatch(mod, dispatchData)
+export interface EventInterface {
+  (ctx: Context, s): InterfaceMsg
+}
+
+export const eventHandler: InterfaceHandler = (cb: (eventResponse: EventResponse) => void) => dispatch => {
+  function subscriber (driverMsg: InterfaceMsg) {
+    driverMsg['_dispatch'] = dispatchData => {
+      dispatch(dispatchData)
     }
-    cb(driverMsg)
+    cb(<EventResponse> driverMsg)
   }
   return {
     state$: undefined,
-    attach(driver$) {
-      driver$.subscribe(subscriber)
-      subscriber(driver$.get())
+    attach(handler$) {
+      handler$.subscribe(subscriber)
+      subscriber(handler$.get())
     },
-    reattach(driver$) {
-      driver$.subscribe(subscriber)
+    reattach(handler$) {
+      handler$.subscribe(subscriber)
     },
-    dispose(driver$) {
-      driver$.unsubscribe(subscriber)
+    dispose(handler$) {
+      handler$.unsubscribe(subscriber)
     }
   }
 }

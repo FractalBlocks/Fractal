@@ -1,8 +1,8 @@
-import { Component, Context, run, getState, getInterface, dispatch } from './index'
+import { Component, Context, run, getState, getInterface, ev } from './index'
 import { eventHandler, EventInterface } from './interfaces/event'
 import { newStream } from './stream'
 
-describe('1 Component + module functionality', function() {
+describe('1 Component + module functionality', function () {
 
   let name = 'Main'
 
@@ -22,7 +22,7 @@ describe('1 Component + module functionality', function() {
     },
   }
 
-  let inputs = (ctx: Context) => ({
+  let events = (ctx: Context) => ({
     set: (n: number) => ctx.do(actions.Set(n)),
     inc: () => ctx.do(actions.Inc()),
   })
@@ -31,13 +31,13 @@ describe('1 Component + module functionality', function() {
     (ctx, s) => ({
       tagName: s.key,
       content: 'Fractal is awesome!! ' + s.count,
-      handler: dispatch(ctx, 'inc'),
+      handler: ev(ctx, 'inc'),
     })
 
   let root: Component = {
     name,
     state,
-    inputs,
+    events,
     actions,
     interfaces: {
       event,
@@ -68,7 +68,8 @@ describe('1 Component + module functionality', function() {
       done()
     })
     // extract value and dispatch handler
-    value$.get().handler
+    let value = value$.get()
+    value._dispatch(value.handler)
   })
 
 })

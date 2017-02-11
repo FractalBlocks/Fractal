@@ -10,7 +10,7 @@ export interface Component {
   // the changing stuff (AKA variables)
   state (params: { key: string }): any
   // dispatchers for actions and tasks
-  inputs?: Inputs
+  events?: Events
   // unique way to change the state
   actions?: {
     [actionName: string]: Action
@@ -27,13 +27,15 @@ export interface Component {
   onInit? (ctx: Context): void
 }
 
-export interface Inputs {
-  (ctx: Context): {
-    [name: string]: Input
-  }
+export interface Events {
+  (ctx: Context): EventIndex
 }
 
-export interface Input {
+export interface EventIndex {
+  [name: string]: Event
+}
+
+export interface Event {
   (data: any): Update | void | Task
 }
 
@@ -100,9 +102,11 @@ export interface Context {
   warn: {
     (source: string, description: string): void
   }
+  warnLog: any[]
   error: {
     (source: string, description: string): void
   }
+  errorLog: any[]
 }
 
 export interface ComponentIndex {
@@ -112,9 +116,7 @@ export interface ComponentIndex {
 // contextualized space in the component index
 export interface ComponentSpace {
   state: any
-  inputs: {
-    [name: string]: Input
-  }
+  events: EventIndex
 }
 
 export type Executable = Update | Task

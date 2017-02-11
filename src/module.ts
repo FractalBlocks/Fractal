@@ -11,15 +11,17 @@ import {
   DispatchData,
   EventFunction,
 } from './core'
-import { InterfaceHandler, InterfaceMsg } from './interface'
+import { InterfaceHandler, InterfaceMsg, InterfaceHandlerObject } from './interface'
 import { newStream, Stream } from './stream'
 
 export interface ModuleDef {
   log?: boolean
   logAll?: boolean
   root: Component
-  interfaces?: {
-    [name: string]: InterfaceHandler
+  interfaces: {
+    [name: string]: {
+      (dispatchFunction: DispatchFunction): InterfaceHandlerObject
+    }
   }
 }
 
@@ -30,7 +32,7 @@ export interface Module {
   isDisposed: boolean
   interfaces: {
     [name: string]: InterfaceHandler
-  },
+  }
   driverStreams: {
     [name: string]: Stream<InterfaceMsg>
   }
@@ -68,22 +70,33 @@ export function merge (ctx: Context, ns: string, name: string, component: Compon
   }
   ctx.components[identifier] = {
     state: component.state({key: name}),
-    inputs: component.inputs(createContext(ctx, ctx.id, identifier)),
+    events: component.events(createContext(ctx, ctx.id, identifier)),
   }
 }
 
 export function mergeAll (ctx: Context, ns: string, components: { [name: string]: Component }) {
-  let space: ComponentSpace = { state: {}, inputs: {} }
+  let space: ComponentSpace = { state: {}, events: {} }
   // ctx.components[ns + '$' + name] = {} TODO: CRITICAL
 }
 
-// create an input dispatch array
-export function on (ctx: Context, inputName: string, paramFn?: EventFunction): EventData {
+// create an EventData array
+export function ev (ctx: Context, inputName: string, paramFn?: EventFunction): EventData {
    return [ctx.id, inputName, paramFn]
 }
 
-export function dispatch (componentIndex: ComponentIndex, dispatchData: DispatchData) {
-  componentIndex[dispatchData[0]].inputs[dispatchData[1]](dispatchData[2])
+// dispatch an event to the respective component
+export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
+  let event = ctx.components[dispatchData[0]].events[dispatchData[1]]
+  if (event) {
+    event(dispatchData[2])
+  } else {
+    ctx.warn('dispatch', `there are no event named '${dispatchData[1]}' in module ${dispatchData[1]}`)
+  }
+}
+
+// dispatch function type used for handlers
+export interface DispatchFunction {
+  (dispatchData: DispatchData): void
 }
 
 // function for running a root component
@@ -93,9 +106,11 @@ export function run (moduleDefinition: ModuleDef): Module {
     logAll: false,
     ...moduleDefinition,
   }
+
   // let state$ = newStream<any>(undefined),
-  let driverStreams: { [driverName: string]: Stream<InterfaceMsg> } = {},
-    component: Component
+  let driverStreams: { [driverName: string]: Stream<InterfaceMsg> } = {}
+  // root component
+  let component: Component
 
   // root context
   let ctx: Context = {
@@ -104,18 +119,30 @@ export function run (moduleDefinition: ModuleDef): Module {
     components: {}, // component index
     // error and warning handling
     warn: (source, description) => {
+      ctx.warnLog.push([source, description])
       console.warn(`source: ${source}, description: ${description}`)
     },
     error: (source, description) => {
+      ctx.errorLog.push([source, description])
       console.error(`source: ${source}, description: ${description}`)
     },
+    warnLog: [],
+    errorLog: [],
+  }
+
+  // pass DispatchFunction to every handler
+  let interfaces = {}
+  let dispatchFn: DispatchFunction = (dispatchData) => dispatch(ctx, dispatchData)
+  // TODO: optimize for (let in) with for (Object.keys())
+  for (let name in moduleDef.interfaces) {
+    interfaces[name] = moduleDef.interfaces[name](dispatchFn)
   }
 
   function execute (componentId: string, executable: Executable | Executable[]) {
     let componentSpace = ctx.components[componentId]
     if (typeof executable === 'function') {
       // single update
-      componentSpace.state = (<Update>executable)(componentSpace.state)
+      componentSpace.state = (<Update> executable)(componentSpace.state)
       notifyHandlers()
     } else if (executable instanceof Array) {
       if (executable[0] && typeof executable[0] === 'string') {
@@ -156,7 +183,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     // reserve root space
     ctx.components['root'] = {
       state: newState,
-      inputs: {},
+      events: component.events(ctx),
     }
 
     // creates driverStreams
@@ -164,7 +191,7 @@ export function run (moduleDefinition: ModuleDef): Module {
       if (component.interfaces[name]) {
         driverStreams[name] = newStream(component.interfaces[name](ctx, ctx.components['root'].state))
         // connect interface handlers to driver stream
-        moduleDef.interfaces[name][(state == undefined) ? 'attach' : 'reattach'](driverStreams[name])
+        interfaces[name][(state == undefined) ? 'attach' : 'reattach'](driverStreams[name])
       } else {
         // TODO: document that drivers are renamed interface hanstatedlers
         console.warn(`Root Module has no interface called ${name}, unused interface handler`)
@@ -197,7 +224,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     },
     isDisposed: false,
     // related to internals
-    interfaces: moduleDef.interfaces,
+    interfaces,
     driverStreams,
   }
 }
