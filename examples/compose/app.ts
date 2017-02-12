@@ -1,4 +1,4 @@
-import { Context, Component } from '../../src'
+import { Context, Component, stateOf, interfaceOf } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
 
 import { ViewInterface } from '../../src/interfaces/view'
@@ -10,7 +10,7 @@ let components = {
   counter: require('./counter').default,
 }
 
-let init = ({key}) => ({
+let state = ({key}) => ({
   key,
   count: 0,
 })
@@ -26,7 +26,7 @@ let actions = {
   },
 }
 
-let inputs = (ctx: Context) => ({
+let events = (ctx: Context) => ({
   set: (n: number) => ctx.do(actions.Set(n)),
   inc: () => ctx.do(actions.Inc()),
 })
@@ -37,8 +37,8 @@ h('div', {
   key: name,
   class: { [style.base]: true },
 }, [
-  ctx.state('counter'),
-  ctx.interface('counter', 'view'),
+  stateOf(ctx, 'counter'),
+  interfaceOf(ctx, 'counter', 'view'),
 ])
 
 let style: any = styleGroup({
@@ -55,8 +55,8 @@ let style: any = styleGroup({
 
 let mDef: Component = {
   name,
-  init,
-  inputs,
+  state,
+  events,
   actions,
   components,
   interfaces: {

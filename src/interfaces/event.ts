@@ -12,10 +12,10 @@ export interface EventInterface {
   (ctx: Context, s): InterfaceMsg
 }
 
-export const eventHandler: InterfaceHandler = (cb: (eventResponse: EventResponse) => void) => dispatch => {
+export const eventHandler: InterfaceHandler = (cb: (evRes: EventResponse) => void) => mod => {
   function subscriber (driverMsg: InterfaceMsg) {
     driverMsg['_dispatch'] = dispatchData => {
-      dispatch(dispatchData)
+      mod.dispatch(dispatchData)
     }
     cb(<EventResponse> driverMsg)
   }

@@ -38,6 +38,8 @@ FractalBlocks UI follows the same topics
 - task: is an information related to a specific side effect, tasks are dispatched by components via inputs (see later)
 - task handler: is a part of an module that handle tasks, performing side effects of certain type
 - input: is a part of a component that is a dispatcher for actions and tasks
+- component lifecycle
+- Fractal arquitecture: is the whole way in that data and functionality are handled
 
 ## Ideas
 

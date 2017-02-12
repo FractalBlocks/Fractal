@@ -4,11 +4,11 @@ We use BDD for building Fractal. This documents describe all about how Factal wo
 
 ## Stucture
 
-(TODO-DOCS)
+See the reference (TODO: put a link to structure reference).
 
 ## Code conventions
 
-We use UpperCamelCase for types and LowerCamelCase for values (functions are values) (TODO-DOCS)
+We follow the Fractal Standards for Software Quality (TODO: put the link) that describes conventions for coding
 
 ## Core Dependencies
 

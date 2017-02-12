@@ -11,7 +11,12 @@ import {
   DispatchData,
   EventFunction,
 } from './core'
-import { InterfaceHandler, InterfaceMsg, InterfaceHandlerObject } from './interface'
+import {
+  InterfaceHandler,
+  InterfaceFunction,
+  InterfaceMsg,
+  InterfaceHandlerObject,
+} from './interface'
 import { newStream, Stream } from './stream'
 
 export interface ModuleDef {
@@ -19,9 +24,7 @@ export interface ModuleDef {
   logAll?: boolean
   root: Component
   interfaces: {
-    [name: string]: {
-      (dispatchFunction: DispatchFunction): InterfaceHandlerObject
-    }
+    [name: string]: InterfaceFunction
   }
 }
 
@@ -30,53 +33,76 @@ export interface Module {
   reattach(root: Component): void
   dispose(): void
   isDisposed: boolean
+  // related to internals
   interfaces: {
     [name: string]: InterfaceHandler
   }
   driverStreams: {
     [name: string]: Stream<InterfaceMsg>
   }
+  // thing for testing (exposes wirings!!)
+  ctx: Context
+}
+
+// API from module to handlers
+export interface ModuleAPI {
+  dispatch: {
+    (dispatchData: DispatchData): void
+  }
+  merge: {
+    (parentId: string, name: string, component: Component): void
+  }
+  mergeAll: {
+    (parentId: string, components: { [name: string]: Component }): void
+  }
 }
 
 // create context for a component
-function createContext (ctx: Context, parent: string, name: string): Context {
-  let id = `${parent}$${name}`
+export function createContext (ctx: Context, name: string): Context {
+  let id = `${ctx.id}$${name}`
   return {
     id,
     components: ctx.components,
     // delegation
-    warn: ctx.warn,
-    error: ctx.error,
     do: ctx.do,
+    warn: ctx.warn,
+    warnLog: ctx.warnLog,
+    error: ctx.error,
+    errorLog: ctx.errorLog,
   }
 }
 
-// extracts the state from a certain component
-export function getState (ctx, name) {
-  return ctx.components[`${this.self}$${name}`].state
+// gets the state from a certain component
+export function stateOf (ctx, name) {
+  return ctx.components[`${ctx.id}$${name}`].state
 }
 
-// extracts an interface message from a certain component
-export function getInterface (ctx, name, interfaceName) {
-  let componentSpace = ctx.components[`${this.self}$${name}`]
-  return componentSpace.interfaces[interfaceName](componentSpace.state)
+// gets an interface message from a certain component
+export function interfaceOf (ctx: Context, name: string, interfaceName: string) {
+  let componentSpace = ctx.components[`${ctx.id}$${name}`]
+  return componentSpace.interfaces[interfaceName](ctx, componentSpace.state)
 }
 
 // add a module to the module index
-export function merge (ctx: Context, ns: string, name: string, component: Component) {
-  let identifier = ns + '$' + name // namespaced name
-  if (ctx.components[identifier]) {
-    return ctx.warn(ctx.id, `overwriting module ${identifier}`)
+export function merge (ctx: Context, name: string, component: Component) {
+  let id = ctx.id + '$' + name // namespaced name
+  if (ctx.components[id]) {
+    ctx.warn('merge', `module '${ctx.id}' has overwritten module '${id}'`)
   }
-  ctx.components[identifier] = {
+
+  let childCtx = createContext(ctx, name)
+
+  ctx.components[id] = {
+    ctx: childCtx,
     state: component.state({key: name}),
-    events: component.events(createContext(ctx, ctx.id, identifier)),
+    events: component.events(childCtx),
+    interfaces: component.interfaces
   }
 }
 
-export function mergeAll (ctx: Context, ns: string, components: { [name: string]: Component }) {
-  let space: ComponentSpace = { state: {}, events: {} }
-  // ctx.components[ns + '$' + name] = {} TODO: CRITICAL
+export function mergeAll (ctx: Context, components: { [name: string]: Component }) {
+  // let space: ComponentSpace = { state: {}, events: {} }
+  // ctx.components[parentId + '$' + name] = {} TODO: CRITICAL
 }
 
 // create an EventData array
@@ -86,117 +112,134 @@ export function ev (ctx: Context, inputName: string, paramFn?: EventFunction): E
 
 // dispatch an event to the respective component
 export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
-  let event = ctx.components[dispatchData[0]].events[dispatchData[1]]
+  let component = ctx.components[dispatchData[0]]
+  if (!component) {
+    return ctx.error('dispatch', `there are no module with id '${dispatchData[0]}'`)
+  }
+  let event = component.events[dispatchData[1]]
   if (event) {
     event(dispatchData[2])
   } else {
-    ctx.warn('dispatch', `there are no event named '${dispatchData[1]}' in module ${dispatchData[1]}`)
+    ctx.error('dispatch', `there are no event with id '${dispatchData[1]}' in module '${dispatchData[0]}'`)
   }
-}
-
-// dispatch function type used for handlers
-export interface DispatchFunction {
-  (dispatchData: DispatchData): void
 }
 
 // function for running a root component
 export function run (moduleDefinition: ModuleDef): Module {
-  let moduleDef = {
-    log: false,
-    logAll: false,
-    ...moduleDefinition,
-  }
-
-  // let state$ = newStream<any>(undefined),
+  // internal module state
   let driverStreams: { [driverName: string]: Stream<InterfaceMsg> } = {}
   // root component
   let component: Component
-
+  let moduleDef
   // root context
-  let ctx: Context = {
-    id: 'root',
-    do: (executable: Executable) => execute('root', executable),
-    components: {}, // component index
-    // error and warning handling
-    warn: (source, description) => {
-      ctx.warnLog.push([source, description])
-      console.warn(`source: ${source}, description: ${description}`)
-    },
-    error: (source, description) => {
-      ctx.errorLog.push([source, description])
-      console.error(`source: ${source}, description: ${description}`)
-    },
-    warnLog: [],
-    errorLog: [],
-  }
+  let ctx: Context
+  let interfaces
 
-  // pass DispatchFunction to every handler
-  let interfaces = {}
-  let dispatchFn: DispatchFunction = (dispatchData) => dispatch(ctx, dispatchData)
-  // TODO: optimize for (let in) with for (Object.keys())
-  for (let name in moduleDef.interfaces) {
-    interfaces[name] = moduleDef.interfaces[name](dispatchFn)
-  }
-
-  function execute (componentId: string, executable: Executable | Executable[]) {
-    let componentSpace = ctx.components[componentId]
-    if (typeof executable === 'function') {
-      // single update
-      componentSpace.state = (<Update> executable)(componentSpace.state)
-      notifyHandlers()
-    } else if (executable instanceof Array) {
-      if (executable[0] && typeof executable[0] === 'string') {
-        // single task
-        console.warn('unhandled task TODO-ENGINE')
-      } else if (executable[0] instanceof Array) {
-        // list of updates and tasks
-        for (let i = 0, len = executable.length; i < len; i++) {
-          if (typeof executable[i] === 'function') {
-            // is an update
-            componentSpace.state = (<Update>executable[i])(componentSpace.state)
-            notifyHandlers()
-          } else if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
-            // single task
-            console.warn('unhandled task TODO-ENGINE')
-            console.warn(executable[i])
-          } else {
-            console.warn('unrecognized executable at runtime')
-          }
-        }
-      } else {
-        console.warn('unrecognized executable at runtime')
-      }
-    }
-  }
-
-  function notifyHandlers () {
-    for (let name in  driverStreams) {
-      driverStreams[name].set(component.interfaces[name](ctx, ctx.components['root'].state))
-    }
-  }
-
+  // attach root component
   function attach (state) {
+    moduleDef = {
+      log: false,
+      logAll: false,
+      ...moduleDefinition,
+    }
+
     // root component
     component = moduleDef.root
+    let rootName = component.name
+
+    // root context
+    ctx = {
+      id: rootName,
+      do: (executable: Executable) => execute(rootName, executable),
+      // component index
+      components: {},
+      // error and warning handling
+      warn: (source, description) => {
+        ctx.warnLog.push([source, description])
+        console.warn(`source: ${source}, description: ${description}`)
+      },
+      warnLog: [],
+      error: (source, description) => {
+        ctx.errorLog.push([source, description])
+        console.error(`source: ${source}, description: ${description}`)
+      },
+      errorLog: [],
+    }
+
+    // pass DispatchFunction to every handler
+    interfaces = {}
+    // API for modules
+    let moduleAPI: ModuleAPI = {
+      // dispatch function type used for handlers
+      dispatch: (dispatchData) => dispatch(ctx, dispatchData),
+      // merge a component to the component index
+      merge: (parentId, name, component) => merge(ctx, name, component),
+      // merge many components to the component index
+      mergeAll: (parentId, components) => mergeAll(ctx, components),
+    }
+    // TODO: optimize for (let in) with for (Object.keys())
+    for (let name in moduleDef.interfaces) {
+      interfaces[name] = moduleDef.interfaces[name](moduleAPI)
+    }
     // inital state
-    let newState = (state !== undefined) ? state : component.state({key: component.name})
+    let newState = (state !== undefined) ? state : component.state({key: rootName})
     // reserve root space
-    ctx.components['root'] = {
+    ctx.components[rootName] = {
+      ctx,
       state: newState,
       events: component.events(ctx),
+      interfaces,
     }
 
     // creates driverStreams
     for (let name in moduleDef.interfaces) {
       if (component.interfaces[name]) {
-        driverStreams[name] = newStream(component.interfaces[name](ctx, ctx.components['root'].state))
+        driverStreams[name] = newStream(component.interfaces[name](ctx, ctx.components[rootName].state))
         // connect interface handlers to driver stream
         interfaces[name][(state == undefined) ? 'attach' : 'reattach'](driverStreams[name])
       } else {
         // TODO: document that drivers are renamed interface hanstatedlers
-        console.warn(`Root Module has no interface called ${name}, unused interface handler`)
+        console.warn(`'${rootName}' module has no interface called '${name}', unused interface handler`)
       }
     }
+
+    function execute (componentId: string, executable: Executable | Executable[]) {
+      let componentSpace = ctx.components[componentId]
+      if (typeof executable === 'function') {
+        // single update
+        componentSpace.state = (<Update> executable)(componentSpace.state)
+        notifyHandlers()
+      } else if (executable instanceof Array) {
+        if (executable[0] && typeof executable[0] === 'string') {
+          // single task
+          console.warn('unhandled task TODO-ENGINE')
+        } else if (executable[0] instanceof Array) {
+          // list of updates and tasks
+          for (let i = 0, len = executable.length; i < len; i++) {
+            if (typeof executable[i] === 'function') {
+              // is an update
+              componentSpace.state = (<Update>executable[i])(componentSpace.state)
+              notifyHandlers()
+            } else if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
+              // single task
+              console.warn('unhandled task TODO-ENGINE')
+              console.warn(executable[i])
+            } else {
+              console.warn('unrecognized executable at runtime')
+            }
+          }
+        } else {
+          console.warn('unrecognized executable at runtime')
+        }
+      }
+    }
+
+    function notifyHandlers () {
+      for (let name in  driverStreams) {
+        driverStreams[name].set(component.interfaces[name](ctx, ctx.components[rootName].state))
+      }
+    }
+
   }
 
   attach(undefined)
@@ -209,6 +252,7 @@ export function run (moduleDefinition: ModuleDef): Module {
 
   return {
     moduleDef,
+    // reattach root component, used for hot swaping
     reattach (comp: Component) {
       disposeDriverStreams()
       let lastComponents = ctx.components
@@ -226,5 +270,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     // related to internals
     interfaces,
     driverStreams,
+    // root context
+    ctx,
   }
 }

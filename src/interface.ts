@@ -1,10 +1,8 @@
 import { Stream } from './stream'
-import { DispatchFunction } from './module'
+import { ModuleAPI } from './module'
 
 export interface InterfaceHandler {
-  (any): {
-    (dispatch: DispatchFunction): InterfaceHandlerObject
-  }
+  (any): InterfaceFunction
 }
 
 export interface InterfaceHandlerObject {
@@ -16,4 +14,9 @@ export interface InterfaceHandlerObject {
 
 export interface InterfaceMsg {
   [interfaceName: string]: any
+}
+
+// interface function passed via ModuleDef
+export interface InterfaceFunction {
+  (mod: ModuleAPI): InterfaceHandlerObject
 }

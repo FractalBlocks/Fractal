@@ -13,11 +13,11 @@ export interface Component {
   events?: Events
   // unique way to change the state
   actions?: {
-    [actionName: string]: Action
+    [name: string]: Action
   }
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
   interfaces: {
-    [interfaceName: string]: Interface
+    [name: string]: Interface
   }
   // other components
   components?: {
@@ -115,8 +115,12 @@ export interface ComponentIndex {
 
 // contextualized space in the component index
 export interface ComponentSpace {
+  ctx: Context
   state: any
   events: EventIndex
+  interfaces: {
+    [name: string]: Interface
+  }
 }
 
 export type Executable = Update | Task
