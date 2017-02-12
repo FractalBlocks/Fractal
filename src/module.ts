@@ -10,6 +10,7 @@ import {
   EventData,
   DispatchData,
   EventFunction,
+  Interface,
 } from './core'
 import {
   InterfaceHandler,
@@ -35,9 +36,9 @@ export interface Module {
   isDisposed: boolean
   // related to internals
   interfaces: {
-    [name: string]: InterfaceHandler
+    [name: string]: InterfaceHandlerObject
   }
-  driverStreams: {
+  interfaceStreams: {
     [name: string]: Stream<InterfaceMsg>
   }
   // thing for testing (exposes wirings!!)
@@ -64,6 +65,7 @@ export function createContext (ctx: Context, name: string): Context {
     id,
     components: ctx.components,
     // delegation
+    interfaceStreams: ctx.interfaceStreams,
     do: ctx.do,
     warn: ctx.warn,
     warnLog: ctx.warnLog,
@@ -118,22 +120,66 @@ export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
   }
   let event = component.events[dispatchData[1]]
   if (event) {
-    event(dispatchData[2])
+    execute(ctx, event(dispatchData[2]))
   } else {
     ctx.error('dispatch', `there are no event with id '${dispatchData[1]}' in module '${dispatchData[0]}'`)
   }
 }
 
+export function execute (ctx: Context, executable: Executable | Executable[]) {
+  let componentSpace = ctx.components[ctx.id]
+  if (typeof executable === 'function') {
+    // single update
+    componentSpace.state = (<Update> executable)(componentSpace.state)
+    notifyInterfaceHandlers(ctx)
+  } else if (executable instanceof Array) {
+    if (executable[0] && typeof executable[0] === 'string') {
+      // single task
+      console.warn('unhandled task TODO-ENGINE')
+    } else if (executable[0] instanceof Array) {
+      // list of updates and tasks
+      for (let i = 0, len = executable.length; i < len; i++) {
+        if (typeof executable[i] === 'function') {
+          // is an update
+          componentSpace.state = (<Update>executable[i])(componentSpace.state)
+          notifyInterfaceHandlers(ctx)
+        } else if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
+          // single task
+          console.warn('unhandled task TODO-ENGINE')
+          console.warn(executable[i])
+        } else {
+          console.warn('unrecognized executable at runtime')
+        }
+      }
+    } else {
+      console.warn('unrecognized executable at runtime')
+    }
+  }
+}
+
+// permorms interface recalculation
+export function notifyInterfaceHandlers (ctx: Context) {
+  let space = ctx.components[ctx.id]
+  for (let name in  ctx.interfaceStreams) {
+    ctx.interfaceStreams[name].set(space.interfaces[name](ctx, space.state))
+  }
+}
+
+export interface InterfaceHandlerStreams {
+  [driverName: string]: Stream<InterfaceMsg>
+}
+
 // function for running a root component
 export function run (moduleDefinition: ModuleDef): Module {
   // internal module state
-  let driverStreams: { [driverName: string]: Stream<InterfaceMsg> } = {}
   // root component
   let component: Component
-  let moduleDef
+  let moduleDef: ModuleDef
   // root context
   let ctx: Context
-  let interfaces
+  let interfaceHanlerObjects: {
+    [name: string]: InterfaceHandlerObject
+  }
 
   // attach root component
   function attach (state) {
@@ -150,9 +196,10 @@ export function run (moduleDefinition: ModuleDef): Module {
     // root context
     ctx = {
       id: rootName,
-      do: (executable: Executable) => execute(rootName, executable),
       // component index
       components: {},
+      do: executable => execute(ctx, executable),
+      interfaceStreams: {},
       // error and warning handling
       warn: (source, description) => {
         ctx.warnLog.push([source, description])
@@ -166,8 +213,6 @@ export function run (moduleDefinition: ModuleDef): Module {
       errorLog: [],
     }
 
-    // pass DispatchFunction to every handler
-    interfaces = {}
     // API for modules
     let moduleAPI: ModuleAPI = {
       // dispatch function type used for handlers
@@ -177,9 +222,11 @@ export function run (moduleDefinition: ModuleDef): Module {
       // merge many components to the component index
       mergeAll: (parentId, components) => mergeAll(ctx, components),
     }
+    // pass DispatchFunction to every handler
+    interfaceHanlerObjects = {}
     // TODO: optimize for (let in) with for (Object.keys())
     for (let name in moduleDef.interfaces) {
-      interfaces[name] = moduleDef.interfaces[name](moduleAPI)
+      interfaceHanlerObjects[name] = moduleDef.interfaces[name](moduleAPI)
     }
     // inital state
     let newState = (state !== undefined) ? state : component.state({key: rootName})
@@ -188,55 +235,18 @@ export function run (moduleDefinition: ModuleDef): Module {
       ctx,
       state: newState,
       events: component.events(ctx),
-      interfaces,
+      interfaces: component.interfaces,
     }
 
-    // creates driverStreams
+    // creates interfaceStreams (interface recalculation)
     for (let name in moduleDef.interfaces) {
       if (component.interfaces[name]) {
-        driverStreams[name] = newStream(component.interfaces[name](ctx, ctx.components[rootName].state))
-        // connect interface handlers to driver stream
-        interfaces[name][(state == undefined) ? 'attach' : 'reattach'](driverStreams[name])
+        ctx.interfaceStreams[name] = newStream(component.interfaces[name](ctx, ctx.components[rootName].state))
+        // connect interface handlers to driver streams
+        interfaceHanlerObjects[name][(state == undefined) ? 'attach' : 'reattach'](ctx.interfaceStreams[name])
       } else {
         // TODO: document that drivers are renamed interface hanstatedlers
         console.warn(`'${rootName}' module has no interface called '${name}', unused interface handler`)
-      }
-    }
-
-    function execute (componentId: string, executable: Executable | Executable[]) {
-      let componentSpace = ctx.components[componentId]
-      if (typeof executable === 'function') {
-        // single update
-        componentSpace.state = (<Update> executable)(componentSpace.state)
-        notifyHandlers()
-      } else if (executable instanceof Array) {
-        if (executable[0] && typeof executable[0] === 'string') {
-          // single task
-          console.warn('unhandled task TODO-ENGINE')
-        } else if (executable[0] instanceof Array) {
-          // list of updates and tasks
-          for (let i = 0, len = executable.length; i < len; i++) {
-            if (typeof executable[i] === 'function') {
-              // is an update
-              componentSpace.state = (<Update>executable[i])(componentSpace.state)
-              notifyHandlers()
-            } else if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
-              // single task
-              console.warn('unhandled task TODO-ENGINE')
-              console.warn(executable[i])
-            } else {
-              console.warn('unrecognized executable at runtime')
-            }
-          }
-        } else {
-          console.warn('unrecognized executable at runtime')
-        }
-      }
-    }
-
-    function notifyHandlers () {
-      for (let name in  driverStreams) {
-        driverStreams[name].set(component.interfaces[name](ctx, ctx.components[rootName].state))
       }
     }
 
@@ -244,17 +254,11 @@ export function run (moduleDefinition: ModuleDef): Module {
 
   attach(undefined)
 
-  function disposeDriverStreams () {
-    for (var i = 0, keys = Object.keys(driverStreams); i < keys.length; i++) {
-      driverStreams[keys[i]].dispose()
-    }
-  }
-
   return {
     moduleDef,
     // reattach root component, used for hot swaping
     reattach (comp: Component) {
-      disposeDriverStreams()
+      disposeinterfaceStreams(ctx)
       let lastComponents = ctx.components
       ctx.components = {}
       // TODO: use a deepmerge algoritm
@@ -263,14 +267,20 @@ export function run (moduleDefinition: ModuleDef): Module {
     dispose () {
       // dispose all streams
       ctx.components = {}
-      disposeDriverStreams()
+      disposeinterfaceStreams(ctx)
       this.isDisposed = true
     },
     isDisposed: false,
     // related to internals
-    interfaces,
-    driverStreams,
+    interfaces: interfaceHanlerObjects,
+    interfaceStreams: ctx.interfaceStreams,
     // root context
     ctx,
+  }
+}
+
+export function disposeinterfaceStreams (ctx: Context) {
+  for (var i = 0, keys = Object.keys(ctx.interfaceStreams); i < keys.length; i++) {
+    ctx.interfaceStreams[keys[i]].dispose()
   }
 }

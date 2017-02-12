@@ -23,6 +23,7 @@ export const eventHandler: InterfaceHandler = (cb: (evRes: EventResponse) => voi
     state$: undefined,
     attach(handler$) {
       handler$.subscribe(subscriber)
+      // get first calculation
       subscriber(handler$.get())
     },
     reattach(handler$) {

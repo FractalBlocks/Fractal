@@ -5,6 +5,11 @@ export interface InterfaceHandler {
   (any): InterfaceFunction
 }
 
+// interface function passed via ModuleDef
+export interface InterfaceFunction {
+  (mod: ModuleAPI): InterfaceHandlerObject
+}
+
 export interface InterfaceHandlerObject {
   state$: Stream<any> | undefined
   attach(driver$: Stream<InterfaceMsg>): void
@@ -14,9 +19,4 @@ export interface InterfaceHandlerObject {
 
 export interface InterfaceMsg {
   [interfaceName: string]: any
-}
-
-// interface function passed via ModuleDef
-export interface InterfaceFunction {
-  (mod: ModuleAPI): InterfaceHandlerObject
 }

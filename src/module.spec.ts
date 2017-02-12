@@ -36,6 +36,7 @@ let actions = {
 let events = (ctx: Context) => ({
   set: (n: number) => ctx.do(actions.Set(n)),
   inc: () => ctx.do(actions.Inc()),
+  task: () => ctx.do
 })
 
 let event: EventInterface =
@@ -62,6 +63,7 @@ describe('Context functions', function () {
   let rootCtx: Context = {
     id: 'Main',
     do: (executable: Executable) => doLog.push(executable),
+    interfaceStreams: {},
     components: {}, // component index
     // error and warning handling
     warn: (source, description) => {
@@ -118,11 +120,16 @@ describe('Context functions', function () {
       .toEqual(['merge', `module 'Main' has overwritten module 'Main$child'`])
   })
 
+  let state
+
   it('Should get the state from a certain component (stateOf)', () => {
-    expect(stateOf(rootCtx, 'child')['count']).toEqual(0)
+    state = stateOf(rootCtx, 'child')
+    expect(state.count).toEqual(0)
   })
 
-
+  it('Should get an interface message from a certain component (stateOf)', () => {
+    expect(interfaceOf(rootCtx, 'child', 'event')).toEqual(event(rootCtx, state))
+  })
 
 })
 
@@ -146,14 +153,16 @@ describe('One Component + module functionality', function () {
     expect(value.content).toBe('Fractal is awesome!! 0')
   })
 
+  // Events should dispatch actions and intefaces are recalculated
+
   let value
 
-  it('should react to input (dispatch function)', done => {
+  it('should react to an event (dispatch function)', done => {
     value$.subscribe(value => {
       expect(value.content).toBe('Fractal is awesome!! 1')
       done()
     })
-    // extract value and dispatch handler
+    // extract value and dispatch interface handlers
     value = value$.get()
     value._dispatch(value.handler)
   })
@@ -172,6 +181,12 @@ describe('One Component + module functionality', function () {
       'dispatch',
       `there are no event with id 'someEvent' in module 'Main'`,
     ])
+  })
+
+  // Events should dispatch task handlers
+
+  it('Should giv', () => {
+
   })
 
 })

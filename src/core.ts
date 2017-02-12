@@ -1,4 +1,4 @@
-import { Stream, newStream } from './stream'
+import { Stream } from './stream'
 import { InterfaceMsg } from './interface'
 
 export interface Component {
@@ -36,7 +36,7 @@ export interface EventIndex {
 }
 
 export interface Event {
-  (data: any): Update | void | Task
+  (data: any): Update | Task | Executable[]
 }
 
 export interface Action {
@@ -90,10 +90,11 @@ export interface Interface {
   (ctx: Context, state): InterfaceMsg
 }
 
+// describes an excecution context
 export interface Context {
   // Namespace for component
   id: string
-  do: { // execute a Task or an Update (side efects)
+  do: {
     (executable: Executable): void
   }
   // global component index
@@ -107,6 +108,9 @@ export interface Context {
     (source: string, description: string): void
   }
   errorLog: any[]
+  interfaceStreams: {
+    [name: string]: Stream<InterfaceMsg>
+  }
 }
 
 export interface ComponentIndex {

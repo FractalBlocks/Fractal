@@ -10,7 +10,7 @@ We will focus on next topics:
 
 - Simple API + simple architecture (do other diagram like architecture diagram, but focus on what is useful for users)
 - Focus on small and emmbedable modules
-- Tasks are atomic are not grouped
+- Tasks are atomic
 - Small code (removing some dependencies), ALAP
 - Mori for persistent data structures
 - Typed views via new Snabbdom with Typescript
