@@ -1,5 +1,6 @@
 import { Stream } from './stream'
 import { InterfaceMsg } from './interface'
+import { Task, TaskRunner } from './task'
 
 export interface Component {
   // component name, used for debugging
@@ -23,7 +24,7 @@ export interface Component {
   components?: {
     [name: string]: Component
   }
-  // lifecycle hooks
+  // lifecycle hooks (TODO)
   onInit? (ctx: Context): void
 }
 
@@ -41,13 +42,6 @@ export interface Event {
 
 export interface Action {
   (data: any): Update
-}
-
-// a task executes some kind of side effect (output) - Comunications stuff
-export interface Task extends Array<any> {
-  0: string // task name
-  1: string // task function
-  2: Object // task data
 }
 
 // is the data of an event, refers to some event of a component - Comunications stuff
@@ -108,6 +102,9 @@ export interface Context {
     (source: string, description: string): void
   }
   errorLog: any[]
+  taskRunners: {
+    [name: string]: TaskRunner
+  }
   interfaceStreams: {
     [name: string]: Stream<InterfaceMsg>
   }

@@ -2,7 +2,6 @@ import {
   Component,
   Action,
   Update,
-  Task,
   Context,
   ComponentSpace,
   ComponentIndex,
@@ -18,12 +17,16 @@ import {
   InterfaceMsg,
   InterfaceHandlerObject,
 } from './interface'
+import { Task, TaskFunction } from './task'
 import { newStream, Stream } from './stream'
 
 export interface ModuleDef {
   log?: boolean
   logAll?: boolean
   root: Component
+  tasks: {
+    [name: string]: TaskFunction
+  }
   interfaces: {
     [name: string]: InterfaceFunction
   }
@@ -65,8 +68,9 @@ export function createContext (ctx: Context, name: string): Context {
     id,
     components: ctx.components,
     // delegation
-    interfaceStreams: ctx.interfaceStreams,
     do: ctx.do,
+    interfaceStreams: ctx.interfaceStreams,
+    taskRunners: ctx.taskRunners,
     warn: ctx.warn,
     warnLog: ctx.warnLog,
     error: ctx.error,
@@ -135,7 +139,10 @@ export function execute (ctx: Context, executable: Executable | Executable[]) {
   } else if (executable instanceof Array) {
     if (executable[0] && typeof executable[0] === 'string') {
       // single task
-      console.warn('unhandled task TODO-ENGINE')
+      if (!ctx.taskRunners[executable[0]]) {
+        return ctx.error('execute', `there are no task handler for ${executable[0]}`)
+      }
+      ctx.taskRunners[executable[0]](executable[1])
     } else if (executable[0] instanceof Array) {
       // list of updates and tasks
       for (let i = 0, len = executable.length; i < len; i++) {
@@ -145,8 +152,7 @@ export function execute (ctx: Context, executable: Executable | Executable[]) {
           notifyInterfaceHandlers(ctx)
         } else if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
           // single task
-          console.warn('unhandled task TODO-ENGINE')
-          console.warn(executable[i])
+          ctx.taskRunners[executable[i][0]](executable[i][1])
         } else {
           console.warn('unrecognized executable at runtime')
         }
@@ -199,6 +205,7 @@ export function run (moduleDefinition: ModuleDef): Module {
       // component index
       components: {},
       do: executable => execute(ctx, executable),
+      taskRunners: {},
       interfaceStreams: {},
       // error and warning handling
       warn: (source, description) => {
@@ -222,11 +229,15 @@ export function run (moduleDefinition: ModuleDef): Module {
       // merge many components to the component index
       mergeAll: (parentId, components) => mergeAll(ctx, components),
     }
-    // pass DispatchFunction to every handler
+    // pass ModuleAPI to every InterfaceFunction
     interfaceHanlerObjects = {}
     // TODO: optimize for (let in) with for (Object.keys())
     for (let name in moduleDef.interfaces) {
       interfaceHanlerObjects[name] = moduleDef.interfaces[name](moduleAPI)
+    }
+    // pass ModuleAPI to every TaskFunction
+    for (let name in moduleDef.tasks) {
+      ctx.taskRunners[name] = moduleDef.tasks[name](moduleAPI)
     }
     // inital state
     let newState = (state !== undefined) ? state : component.state({key: rootName})

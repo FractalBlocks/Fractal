@@ -9,6 +9,9 @@ import {
   Executable,
   createContext,
   Update,
+  Task,
+  TaskHandler,
+  DispatchData,
 } from './index'
 import { eventHandler, EventInterface } from './interfaces/event'
 import { newStream } from './stream'
@@ -34,9 +37,9 @@ let actions = {
 }
 
 let events = (ctx: Context) => ({
-  set: (n: number) => ctx.do(actions.Set(n)),
-  inc: () => ctx.do(actions.Inc()),
-  task: () => ctx.do
+  set: (n: number) => actions.Set(n),
+  inc: () => actions.Inc(),
+  task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
 })
 
 let event: EventInterface =
@@ -44,6 +47,7 @@ let event: EventInterface =
     tagName: s.key,
     content: 'Fractal is awesome!! ' + s.count,
     handler: ev(ctx, 'inc'),
+    handler2: ev(ctx, 'task'),
   })
 
 let root: Component = {
@@ -63,6 +67,7 @@ describe('Context functions', function () {
   let rootCtx: Context = {
     id: 'Main',
     do: (executable: Executable) => doLog.push(executable),
+    taskRunners: {},
     interfaceStreams: {},
     components: {}, // component index
     // error and warning handling
@@ -91,9 +96,9 @@ describe('Context functions', function () {
     expect(lastDo).toEqual(update)
   })
 
-  it('Should delegate warn function', () => {
+  it('Should put an entry in warnLog when warn function is invoked', () => {
     let warn = ['child', 'warn 1']
-    ctx.warn(warn[0], warn[1])
+    rootCtx.warn(warn[0], warn[1])
     let lastWarn = rootCtx.warnLog[rootCtx.warnLog.length - 1]
     expect(lastWarn).toEqual(warn)
   })
@@ -140,8 +145,18 @@ describe('One Component + module functionality', function () {
     value$.set(val)
   }
 
+  let taskLog = []
+
+  let logTask: TaskHandler = log => mod => (data: {info: any, cb: DispatchData}) => {
+    log.push(data.info)
+    mod.dispatch(data.cb)
+  }
+
   let app = run({
     root,
+    tasks: {
+      log: logTask(taskLog),
+    },
     interfaces: {
       event: eventHandler(onValue),
     }
@@ -167,6 +182,20 @@ describe('One Component + module functionality', function () {
     value._dispatch(value.handler)
   })
 
+  it('Should put an entry in errorLog when error function is invoked', () => {
+    let error = ['child', 'error 1']
+    app.ctx.error(error[0], error[1])
+    let lastError = app.ctx.errorLog[app.ctx.errorLog.length - 1]
+    expect(lastError).toEqual(error)
+  })
+
+  it('Should delegate warn function', () => {
+    let warn = ['child', 'warn 1']
+    app.ctx.warn(warn[0], warn[1])
+    let lastWarn = app.ctx.warnLog[app.ctx.warnLog.length - 1]
+    expect(lastWarn).toEqual(warn)
+  })
+
   it('should log an error when try to dispatch an event of an inexistent module', () => {
     value._dispatch(['someId', 'someEvent'])
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
@@ -175,18 +204,24 @@ describe('One Component + module functionality', function () {
     ])
   })
 
+  // Events should dispatch tasks to its handlers and those can dispatch events
+
+  it('Should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
+    value$.removeSubscribers()
+    value$.subscribe(value => {
+      expect(value.content).toBe('Fractal is awesome!! 2')
+      done()
+    })
+    value._dispatch(value.handler2)
+    expect(taskLog[taskLog.length - 1]).toEqual('info')
+  })
+
   it('should log an error when try to dispatch an inexistent event of a module', () => {
     value._dispatch(['Main', 'someEvent'])
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
       'dispatch',
       `there are no event with id 'someEvent' in module 'Main'`,
     ])
-  })
-
-  // Events should dispatch task handlers
-
-  it('Should giv', () => {
-
   })
 
 })
