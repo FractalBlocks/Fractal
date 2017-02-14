@@ -24,7 +24,7 @@ export interface ModuleDef {
   log?: boolean
   logAll?: boolean
   root: Component
-  tasks: {
+  tasks?: {
     [name: string]: TaskFunction
   }
   interfaces: {
@@ -68,7 +68,6 @@ export function createContext (ctx: Context, name: string): Context {
     id,
     components: ctx.components,
     // delegation
-    do: ctx.do,
     interfaceStreams: ctx.interfaceStreams,
     taskRunners: ctx.taskRunners,
     warn: ctx.warn,
@@ -132,34 +131,45 @@ export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
 
 export function execute (ctx: Context, executable: Executable | Executable[]) {
   let componentSpace = ctx.components[ctx.id]
+
   if (typeof executable === 'function') {
     // single update
     componentSpace.state = (<Update> executable)(componentSpace.state)
     notifyInterfaceHandlers(ctx)
-  } else if (executable instanceof Array) {
-    if (executable[0] && typeof executable[0] === 'string') {
-      // single task
-      if (!ctx.taskRunners[executable[0]]) {
-        return ctx.error('execute', `there are no task handler for ${executable[0]}`)
-      }
-      ctx.taskRunners[executable[0]](executable[1])
-    } else if (executable[0] instanceof Array) {
-      // list of updates and tasks
-      for (let i = 0, len = executable.length; i < len; i++) {
-        if (typeof executable[i] === 'function') {
-          // is an update
-          componentSpace.state = (<Update>executable[i])(componentSpace.state)
-          notifyInterfaceHandlers(ctx)
-        } else if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
-          // single task
-          ctx.taskRunners[executable[i][0]](executable[i][1])
-        } else {
-          console.warn('unrecognized executable at runtime')
+  } else {
+    /* istanbul ignore else */
+    if (executable instanceof Array) {
+      if (executable[0] && typeof executable[0] === 'string') {
+        // single task
+        if (!ctx.taskRunners[executable[0]]) {
+          return ctx.error('execute', `there are no task handler for ${executable[0]}`)
+        }
+        ctx.taskRunners[executable[0]](executable[1])
+      } else {
+        /* istanbul ignore else */
+        if (executable[0] instanceof Array || typeof executable[0] === 'function') {
+          // list of updates and tasks
+          for (let i = 0, len = executable.length; i < len; i++) {
+            if (typeof executable[i] === 'function') {
+              // is an update
+              componentSpace.state = (<Update>executable[i])(componentSpace.state)
+              notifyInterfaceHandlers(ctx)
+            } else {
+                /* istanbul ignore else */
+                if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
+                // single task
+                if (!ctx.taskRunners[executable[i][0]]) {
+                  return ctx.error('execute', `there are no task handler for ${executable[i][0]}`)
+                }
+                ctx.taskRunners[executable[i][0]](executable[i][1])
+              }
+            }
+            // the else branch never occurs because of Typecript check
+          }
         }
       }
-    } else {
-      console.warn('unrecognized executable at runtime')
     }
+    // the else branch never occurs because of Typecript check
   }
 }
 
@@ -204,7 +214,6 @@ export function run (moduleDefinition: ModuleDef): Module {
       id: rootName,
       // component index
       components: {},
-      do: executable => execute(ctx, executable),
       taskRunners: {},
       interfaceStreams: {},
       // error and warning handling
@@ -250,14 +259,13 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
 
     // creates interfaceStreams (interface recalculation)
-    for (let name in moduleDef.interfaces) {
-      if (component.interfaces[name]) {
+    for (let name in component.interfaces) {
+      if (interfaceHanlerObjects[name]) {
         ctx.interfaceStreams[name] = newStream(component.interfaces[name](ctx, ctx.components[rootName].state))
         // connect interface handlers to driver streams
         interfaceHanlerObjects[name][(state == undefined) ? 'attach' : 'reattach'](ctx.interfaceStreams[name])
       } else {
-        // TODO: document that drivers are renamed interface hanstatedlers
-        console.warn(`'${rootName}' module has no interface called '${name}', unused interface handler`)
+        return ctx.error('InterfaceHandlers', `'${rootName}' module has no interface called '${name}', missing interface handler`)
       }
     }
 

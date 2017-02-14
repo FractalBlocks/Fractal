@@ -20,10 +20,6 @@ export interface Component {
   interfaces: {
     [name: string]: Interface
   }
-  // other components
-  components?: {
-    [name: string]: Component
-  }
   // lifecycle hooks (TODO)
   onInit? (ctx: Context): void
 }
@@ -88,9 +84,6 @@ export interface Interface {
 export interface Context {
   // Namespace for component
   id: string
-  do: {
-    (executable: Executable): void
-  }
   // global component index
   components: ComponentIndex
   // error and warning delegation

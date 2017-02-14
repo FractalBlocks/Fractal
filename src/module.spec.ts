@@ -40,14 +40,28 @@ let events = (ctx: Context) => ({
   set: (n: number) => actions.Set(n),
   inc: () => actions.Inc(),
   task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
+  wrongTask: (): Task => ['wrongTask', {}],
+  executableListWrong: (): Executable[] => [
+    ['wrongTask2', {}],
+  ],
+  executableListTask: (): Executable[] => [
+    ['log', { info: 'info2', cb: ev(ctx, 'inc') }],
+  ],
+  executableListAction: (): Executable[] => [
+    actions.Inc(),
+  ],
 })
 
 let event: EventInterface =
   (ctx, s) => ({
     tagName: s.key,
     content: 'Fractal is awesome!! ' + s.count,
-    handler: ev(ctx, 'inc'),
-    handler2: ev(ctx, 'task'),
+    inc: ev(ctx, 'inc'),
+    task: ev(ctx, 'task'),
+    wrongTask: ev(ctx, 'wrongTask'),
+    executableListWrong: ev(ctx, 'executableListWrong'),
+    executableListTask: ev(ctx, 'executableListTask'),
+    executableListAction: ev(ctx, 'executableListAction'),
   })
 
 let root: Component = {
@@ -66,7 +80,6 @@ describe('Context functions', function () {
 
   let rootCtx: Context = {
     id: 'Main',
-    do: (executable: Executable) => doLog.push(executable),
     taskRunners: {},
     interfaceStreams: {},
     components: {}, // component index
@@ -87,13 +100,6 @@ describe('Context functions', function () {
   it('Should create a child context (createContext)', () => {
     ctx = createContext(rootCtx, 'child')
     expect(ctx).toBeDefined()
-  })
-
-  it('Should delegate do function (executables)', () => {
-    let update: Update = (state) => state
-    ctx.do(update)
-    let lastDo = doLog[doLog.length - 1]
-    expect(lastDo).toEqual(update)
   })
 
   it('Should put an entry in warnLog when warn function is invoked', () => {
@@ -162,6 +168,17 @@ describe('One Component + module functionality', function () {
     }
   })
 
+  it('Should log an error when module dont have an InterfaceHandler', () => {
+    let app = run({
+      root,
+      interfaces: {},
+    })
+    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+      'InterfaceHandlers',
+      `'Main' module has no interface called 'event', missing interface handler`,
+    ])
+  })
+
   it('should have initial state', () => {
     let value = value$.get()
     expect(value.tagName).toBe('Main')
@@ -179,7 +196,7 @@ describe('One Component + module functionality', function () {
     })
     // extract value and dispatch interface handlers
     value = value$.get()
-    value._dispatch(value.handler)
+    value._dispatch(value.inc)
   })
 
   it('Should put an entry in errorLog when error function is invoked', () => {
@@ -204,24 +221,70 @@ describe('One Component + module functionality', function () {
     ])
   })
 
-  // Events should dispatch tasks to its handlers and those can dispatch events
-
-  it('Should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
-    value$.removeSubscribers()
-    value$.subscribe(value => {
-      expect(value.content).toBe('Fractal is awesome!! 2')
-      done()
-    })
-    value._dispatch(value.handler2)
-    expect(taskLog[taskLog.length - 1]).toEqual('info')
-  })
-
   it('should log an error when try to dispatch an inexistent event of a module', () => {
     value._dispatch(['Main', 'someEvent'])
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
       'dispatch',
       `there are no event with id 'someEvent' in module 'Main'`,
     ])
+  })
+
+  // Events should dispatch tasks to its handlers and those can dispatch events
+
+  it('Should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
+    value$.removeSubscribers()
+    value$.subscribe(value => {
+      expect(value.content).toBe('Fractal is awesome!! 2')
+      expect(taskLog[taskLog.length - 1]).toEqual('info')
+      done()
+    })
+    value._dispatch(value.task)
+  })
+
+  it('Should log an error when try to dispatch an task that has no task handler', () => {
+    value$.removeSubscribers()
+    value._dispatch(value.wrongTask)
+    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+      'execute',
+      'there are no task handler for wrongTask',
+    ])
+  })
+
+  // Executable lists
+
+  it('Should dispatch an error if try to dispatch an executable list with a task with no handler', () => {
+    value$.removeSubscribers()
+    value._dispatch(value.executableListWrong)
+    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+      'execute',
+      'there are no task handler for wrongTask2',
+    ])
+  })
+
+  it('Should dispatch an executable list that contains a task', done => {
+    value$.removeSubscribers()
+    value$.subscribe(value => {
+      expect(value.content).toBe('Fractal is awesome!! 3')
+      expect(taskLog[taskLog.length - 1]).toEqual('info2')
+      done()
+    })
+    value._dispatch(value.executableListTask)
+  })
+
+  it('Should dispatch an executable list that contains an action', done => {
+    value$.removeSubscribers()
+    value$.subscribe(value => {
+      expect(value.content).toBe('Fractal is awesome!! 4')
+      done()
+    })
+    value._dispatch(value.executableListAction)
+  })
+
+  // dispose module
+
+  it('Should dispose a module', () => {
+    app.dispose()
+    expect(app.ctx.components).toEqual({})
   })
 
 })
