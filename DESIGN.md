@@ -2,6 +2,7 @@
 
 ## TODOS:
 
+- Module should have an error and warning handler for log reporting middleware (DX)
 - Integrate standard linter + trailing commas with tslint
 
 ## Philosophy
@@ -12,6 +13,7 @@ We will focus on next topics:
 - Focus on small and emmbedable components
 - Tasks are atomic
 - Small code (removing some dependencies), ALAP
+- Modules never crash at runtime, but performs a good error hadling and reporting
 - Mori for persistent data structures
 - Typed views via new Snabbdom with Typescript
 - Better composing API
