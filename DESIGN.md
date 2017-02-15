@@ -2,14 +2,14 @@
 
 ## TODOS:
 
-- Rename inputs with commands
+- Integrate standard linter + trailing commas with tslint
 
 ## Philosophy
 
 We will focus on next topics:
 
 - Simple API + simple architecture (do other diagram like architecture diagram, but focus on what is useful for users)
-- Focus on small and emmbedable modules
+- Focus on small and emmbedable components
 - Tasks are atomic
 - Small code (removing some dependencies), ALAP
 - Mori for persistent data structures
@@ -43,9 +43,7 @@ FractalBlocks UI follows the same topics
 
 ## Ideas
 
-- Implement hooks for component lifecycle, Init hook can perform style insert side effect
-- Filesystem driven structure
-- IMPORTANT: styles showld be separated and are function of palette and other globals (maximum customization and weight)
+- IMPORTANT: styles showld be separated and are a function of palette and other globals (maximum customization and weight)
 
 ## Scripts
 
