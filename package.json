@@ -11,7 +11,8 @@
   ],
   "scripts": {
     "test": "karma start",
-    "test:watch": "karma start --no-single-run --auto-watch"
+    "test:watch": "karma start --no-single-run --auto-watch",
+    "dev": "webpack-dev-server --config config/webpack-dev.config.js --hot --inline --port 3000 --entry"
   },
   "author": "Carlos Galarza <carloslfu@gmail.com>",
   "repository": {
@@ -25,7 +26,7 @@
     "typestyle": "^0.23.0"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^3.0.0-beta.17",
+    "awesome-typescript-loader": "^3.0.3",
     "cross-env": "^3.1.4",
     "html-webpack-plugin": "^2.26.0",
     "istanbul-instrumenter-loader": "^1.2.0",
@@ -41,6 +42,7 @@
     "source-map-loader": "^0.1.6",
     "ts-helpers": "^1.1.2",
     "typescript": "^2.2.1-insiders.20170209",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
   }
 }

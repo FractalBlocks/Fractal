@@ -13,6 +13,7 @@ const path = require('path')
 const DefinePlugin = require('webpack/lib/DefinePlugin')
 const LoaderOptionsPlugin = require('webpack/lib/LoaderOptionsPlugin')
 const ContextReplacementPlugin = require('webpack/lib/ContextReplacementPlugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 /**
  * Webpack Constants
@@ -52,12 +53,7 @@ module.exports = function (options) {
        *
        * See: http://webpack.github.io/docs/configuration.html#resolve-extensions
        */
-      extensions: ['.ts', '.js'],
-
-      /**
-       * Make sure root is src
-       */
-      modules: [ path.resolve(__dirname, 'src'), 'node_modules' ]
+      extensions: ['.ts', '.js']
 
     },
 
@@ -110,11 +106,14 @@ module.exports = function (options) {
             sourceMap: false,
             inlineSourceMap: true,
             compilerOptions: {
+
               // Remove TypeScript helpers to be injected
               // below by DefinePlugin
               removeComments: true
+
             }
-          }
+          },
+          exclude: [/\.e2e\.ts$/]
         },
 
         /**
@@ -124,26 +123,19 @@ module.exports = function (options) {
          */
         {
           test: /\.json$/,
-          loader: 'json-loader',
-          exclude: [helpers.root('src/index.html')]
+          loader: 'json-loader'
         },
 
         /**
-         * Instruments JS files with Istanbul for subsequent code coverage reporting.
-         * Instrument only testing sources.
+         * Raw loader support for *.css files
+         * Returns file content as string
          *
-         * See: https://github.com/deepsweet/istanbul-instrumenter-loader
+         * See: https://github.com/webpack/raw-loader
          */
         {
-          enforce: 'post',
-          test: /\.(js|ts)$/,
-          loader: 'istanbul-instrumenter-loader',
-          include: helpers.root('src'),
-          exclude: [
-            /\.(e2e|spec)\.ts$/,
-            /node_modules/
-          ]
-        }
+          test: /\.css$/,
+          loaders: ['css-loader']
+        },
 
       ]
     },
@@ -174,7 +166,9 @@ module.exports = function (options) {
           'HMR': false,
         }
       }),
-
+      new HtmlWebpackPlugin({
+        template: 'examples/index.ejs',
+      }),
        /**
        * Plugin LoaderOptionsPlugin (experimental)
        *

@@ -3,6 +3,7 @@
     "target": "es5",
     "outDir": "lib",
     "module": "commonjs",
+    "moduleResolution": "node",
     "lib": ["dom", "es5", "scripthost"],
     "sourceMap": true
   },
@@ -20,5 +21,9 @@
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "awesomeTypescriptLoaderOptions": {
+    "forkChecker": true,
+    "useWebpackText": true
+  }
 }
