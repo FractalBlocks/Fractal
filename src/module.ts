@@ -54,10 +54,10 @@ export interface ModuleAPI {
     (dispatchData: DispatchData): void
   }
   merge: {
-    (parentId: string, name: string, component: Component): void
+    (name: string, component: Component): void
   }
   mergeAll: {
-    (parentId: string, components: { [name: string]: Component }): void
+    (components: { [name: string]: Component }): void
   }
 }
 
@@ -65,9 +65,9 @@ export interface ModuleAPI {
 export function createContext (ctx: Context, name: string): Context {
   let id = `${ctx.id}$${name}`
   return {
-    id,
-    components: ctx.components,
+    id, // the component id
     // delegation
+    components: ctx.components,
     interfaceStreams: ctx.interfaceStreams,
     taskRunners: ctx.taskRunners,
     warn: ctx.warn,
@@ -83,9 +83,18 @@ export function stateOf (ctx, name) {
 }
 
 // gets an interface message from a certain component
-export function interfaceOf (ctx: Context, name: string, interfaceName: string) {
-  let componentSpace = ctx.components[`${ctx.id}$${name}`]
-  return componentSpace.interfaces[interfaceName](ctx, componentSpace.state)
+export function interfaceOf (ctx: Context, name: string, interfaceName: string): InterfaceMsg {
+  let id = `${ctx.id}$${name}`
+  let componentSpace = ctx.components[id]
+  if (!componentSpace) {
+    ctx.error('interfaceOf', `there are no module '${id}'`)
+    return {}
+  }
+  if (!componentSpace.interfaces[interfaceName]) {
+    ctx.error('interfaceOf', `there are no interface '${interfaceName}' in module '${id}'`)
+    return {}
+  }
+  return componentSpace.interfaces[interfaceName](componentSpace.ctx, componentSpace.state)
 }
 
 // add a module to the module index
@@ -234,9 +243,9 @@ export function run (moduleDefinition: ModuleDef): Module {
       // dispatch function type used for handlers
       dispatch: (dispatchData) => dispatch(ctx, dispatchData),
       // merge a component to the component index
-      merge: (parentId, name, component) => merge(ctx, name, component),
+      merge: (name, component) => merge(ctx, name, component),
       // merge many components to the component index
-      mergeAll: (parentId, components) => mergeAll(ctx, components),
+      mergeAll: (components) => mergeAll(ctx, components),
     }
     // pass ModuleAPI to every InterfaceFunction
     interfaceHanlerObjects = {}
@@ -256,6 +265,10 @@ export function run (moduleDefinition: ModuleDef): Module {
       state: newState,
       events: component.events(ctx),
       interfaces: component.interfaces,
+    }
+    // lifecycle hook: init
+    if (component.hooks && component.hooks['init']) {
+      component.hooks['init'](moduleAPI, ctx)
     }
 
     // creates interfaceStreams (interface recalculation)

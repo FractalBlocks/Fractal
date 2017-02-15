@@ -1,6 +1,7 @@
 import { Stream } from './stream'
 import { InterfaceMsg } from './interface'
 import { Task, TaskRunner } from './task'
+import { ModuleAPI } from './module'
 
 export interface Component {
   // component name, used for debugging
@@ -20,8 +21,14 @@ export interface Component {
   interfaces: {
     [name: string]: Interface
   }
-  // lifecycle hooks (TODO)
-  onInit? (ctx: Context): void
+  // lifecycle hooks: init, destroy
+  hooks?: Hooks
+}
+
+export interface Hooks {
+  [name: string]: {
+    (mod: ModuleAPI, ctx: Context): void
+  }
 }
 
 export interface Events {

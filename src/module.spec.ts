@@ -12,6 +12,7 @@ import {
   Task,
   TaskHandler,
   DispatchData,
+  Hooks,
 } from './index'
 import { eventHandler, EventInterface } from './interfaces/event'
 import { newStream } from './stream'
@@ -138,8 +139,24 @@ describe('Context functions', function () {
     expect(state.count).toEqual(0)
   })
 
-  it('Should get an interface message from a certain component (stateOf)', () => {
-    expect(interfaceOf(rootCtx, 'child', 'event')).toEqual(event(rootCtx, state))
+  it('Should get an interface message from a certain component (interfaceOf)', () => {
+    expect(interfaceOf(rootCtx, 'child', 'event')).toEqual(event(createContext(rootCtx, 'child'), state))
+  })
+
+  it('Should log an error if try to get an interface message from an inexistent component (interfaceOf)', () => {
+    interfaceOf(rootCtx, 'wrong', 'event')
+    expect(rootCtx.errorLog[rootCtx.errorLog.length - 1]).toEqual([
+      'interfaceOf',
+      `there are no module 'Main$wrong'`,
+    ])
+  })
+
+  it('Should log an error if try to get an inexistent interface message from a certain component (interfaceOf)', () => {
+    interfaceOf(rootCtx, 'child', 'wrong')
+    expect(rootCtx.errorLog[rootCtx.errorLog.length - 1]).toEqual([
+      'interfaceOf',
+      `there are no interface 'wrong' in module 'Main$child'`,
+    ])
   })
 
 })
@@ -288,3 +305,88 @@ describe('One Component + module functionality', function () {
   })
 
 })
+
+describe('Component composition', () => {
+
+  // for building new components reutilize the existents
+
+  let child: Component = {
+    name: 'Child',
+    state,
+    events,
+    actions,
+    interfaces: {
+      event,
+    },
+  }
+
+  let hooks: Hooks = {
+    init: (mod, ctx) => {
+      mod.merge('child', child)
+    },
+  }
+
+  let mainEvent: EventInterface =
+    (ctx, s) => ({
+      tagName: s.key,
+      content: 'Fractal is awesome!! ' + s.count,
+      inc: ev(ctx, 'inc'),
+      task: ev(ctx, 'task'),
+      wrongTask: ev(ctx, 'wrongTask'),
+      executableListWrong: ev(ctx, 'executableListWrong'),
+      executableListTask: ev(ctx, 'executableListTask'),
+      executableListAction: ev(ctx, 'executableListAction'),
+      childEvent: interfaceOf(ctx, 'child', 'event'),
+    })
+
+  let main: Component = {
+    name: 'Main',
+    state,
+    hooks,
+    events,
+    actions,
+    interfaces: {
+      event: mainEvent,
+    },
+  }
+
+  let taskLog = []
+
+  let value // temporally variable
+  let value$ = newStream<any>(undefined)
+  function onValue(val) {
+    value$.set(val)
+  }
+
+  let logTask: TaskHandler = log => mod => (data: {info: any, cb: DispatchData}) => {
+    log.push(data.info)
+    mod.dispatch(data.cb)
+  }
+
+  let app = run({
+    root: main,
+    tasks: {
+      log: logTask(taskLog),
+    },
+    interfaces: {
+      event: eventHandler(onValue),
+    }
+  })
+
+  it('Should call init, merge add the component to index, and merge child interface in main interface, also should dataflow be right', done => {
+    value$.subscribe(value => {
+      expect(value.content).toBe('Fractal is awesome!! 1')
+      // expect(app.ctx.components['Main$child']).toBeDefined()
+      expect(value.childEvent.content).toBe('Fractal is awesome!! 0')
+      done()
+    })
+    // extract value and dispatch interface handlers
+    value = value$.get()
+    value._dispatch(value.inc)
+  })
+
+  // TODO: tests for reattach functionality
+
+})
+
+
