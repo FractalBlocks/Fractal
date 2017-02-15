@@ -248,7 +248,7 @@ describe('One Component + module functionality', function () {
 
   // Events should dispatch tasks to its handlers and those can dispatch events
 
-  it('Should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
+  it('should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
     value$.removeSubscribers()
     value$.subscribe(value => {
       expect(value.content).toBe('Fractal is awesome!! 2')
@@ -258,7 +258,7 @@ describe('One Component + module functionality', function () {
     value._dispatch(value.task)
   })
 
-  it('Should log an error when try to dispatch an task that has no task handler', () => {
+  it('should log an error when try to dispatch an task that has no task handler', () => {
     value$.removeSubscribers()
     value._dispatch(value.wrongTask)
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
@@ -269,7 +269,7 @@ describe('One Component + module functionality', function () {
 
   // Executable lists
 
-  it('Should dispatch an error if try to dispatch an executable list with a task with no handler', () => {
+  it('should dispatch an error if try to dispatch an executable list with a task with no handler', () => {
     value$.removeSubscribers()
     value._dispatch(value.executableListWrong)
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
@@ -278,7 +278,7 @@ describe('One Component + module functionality', function () {
     ])
   })
 
-  it('Should dispatch an executable list that contains a task', done => {
+  it('should dispatch an executable list that contains a task', done => {
     value$.removeSubscribers()
     value$.subscribe(value => {
       expect(value.content).toBe('Fractal is awesome!! 3')
@@ -288,7 +288,7 @@ describe('One Component + module functionality', function () {
     value._dispatch(value.executableListTask)
   })
 
-  it('Should dispatch an executable list that contains an action', done => {
+  it('should dispatch an executable list that contains an action', done => {
     value$.removeSubscribers()
     value$.subscribe(value => {
       expect(value.content).toBe('Fractal is awesome!! 4')
@@ -299,7 +299,7 @@ describe('One Component + module functionality', function () {
 
   // dispose module
 
-  it('Should dispose a module', () => {
+  it('should dispose a module', () => {
     app.dispose()
     expect(app.ctx.components).toEqual({})
   })
@@ -373,10 +373,10 @@ describe('Component composition', () => {
     }
   })
 
-  it('Should call init, merge add the component to index, and merge child interface in main interface, also should dataflow be right', done => {
+  it('should call init, merge add the component to index, and merge child interface in main interface, also should dataflow be right', done => {
     value$.subscribe(value => {
       expect(value.content).toBe('Fractal is awesome!! 1')
-      // expect(app.ctx.components['Main$child']).toBeDefined()
+      expect(app.ctx.components['Main$child']).toBeDefined()
       expect(value.childEvent.content).toBe('Fractal is awesome!! 0')
       done()
     })
@@ -384,6 +384,17 @@ describe('Component composition', () => {
     value = value$.get()
     value._dispatch(value.inc)
   })
+
+  it('should react to events', done => {
+    value$.removeSubscribers()
+    value$.subscribe(value => {
+      expect(value.childEvent.content).toBe('Fractal is awesome!! 1')
+      done()
+    })
+    value._dispatch(value.childEvent.inc)
+  })
+
+  // TODO: tests for mergeAll functionality
 
   // TODO: tests for reattach functionality
 

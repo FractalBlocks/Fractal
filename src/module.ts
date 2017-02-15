@@ -59,6 +59,12 @@ export interface ModuleAPI {
   mergeAll: {
     (components: { [name: string]: Component }): void
   }
+  warn: {
+    (source, description): void
+  }
+  error: {
+    (source, description): void
+  }
 }
 
 // create context for a component
@@ -83,7 +89,7 @@ export function stateOf (ctx, name) {
 }
 
 // gets an interface message from a certain component
-export function interfaceOf (ctx: Context, name: string, interfaceName: string): InterfaceMsg {
+export function interfaceOf (ctx: Context, name: string, interfaceName: string): any {
   let id = `${ctx.id}$${name}`
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
@@ -132,14 +138,14 @@ export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
   }
   let event = component.events[dispatchData[1]]
   if (event) {
-    execute(ctx, event(dispatchData[2]))
+    execute(ctx, dispatchData[0], event(dispatchData[2]))
   } else {
     ctx.error('dispatch', `there are no event with id '${dispatchData[1]}' in module '${dispatchData[0]}'`)
   }
 }
 
-export function execute (ctx: Context, executable: Executable | Executable[]) {
-  let componentSpace = ctx.components[ctx.id]
+export function execute (ctx: Context, id: string, executable: Executable | Executable[]) {
+  let componentSpace = ctx.components[id]
 
   if (typeof executable === 'function') {
     // single update
@@ -161,7 +167,7 @@ export function execute (ctx: Context, executable: Executable | Executable[]) {
           for (let i = 0, len = executable.length; i < len; i++) {
             if (typeof executable[i] === 'function') {
               // is an update
-              componentSpace.state = (<Update>executable[i])(componentSpace.state)
+              componentSpace.state = (<Update> executable[i])(componentSpace.state)
               notifyInterfaceHandlers(ctx)
             } else {
                 /* istanbul ignore else */
@@ -207,35 +213,39 @@ export function run (moduleDefinition: ModuleDef): Module {
   }
 
   // attach root component
-  function attach (state) {
+  function attach (comp?: Component, lastComponents?: ComponentIndex) {
     moduleDef = {
       log: false,
       logAll: false,
       ...moduleDefinition,
     }
-
-    // root component
-    component = moduleDef.root
+    // root component, take account of hot swaping
+    component = comp ? comp : moduleDef.root
     let rootName = component.name
-
-    // root context
-    ctx = {
-      id: rootName,
-      // component index
-      components: {},
-      taskRunners: {},
-      interfaceStreams: {},
-      // error and warning handling
-      warn: (source, description) => {
-        ctx.warnLog.push([source, description])
-        console.warn(`source: ${source}, description: ${description}`)
-      },
-      warnLog: [],
-      error: (source, description) => {
-        ctx.errorLog.push([source, description])
-        console.error(`source: ${source}, description: ${description}`)
-      },
-      errorLog: [],
+    // if is hot swaping, do not recalculat context
+    if (!lastComponents) {
+      // root context
+      ctx = {
+        id: rootName,
+        // component index
+        components: {},
+        taskRunners: {},
+        interfaceStreams: {},
+        // error and warning handling
+        warn: (source, description) => {
+          ctx.warnLog.push([source, description])
+          console.warn(`source: ${source}, description: ${description}`)
+        },
+        warnLog: [],
+        error: (source, description) => {
+          ctx.errorLog.push([source, description])
+          console.error(`source: ${source}, description: ${description}`)
+        },
+        errorLog: [],
+      }
+    } else {
+      // hot swaping mode changes the id of root context
+      ctx.id = rootName
     }
 
     // API for modules
@@ -246,19 +256,25 @@ export function run (moduleDefinition: ModuleDef): Module {
       merge: (name, component) => merge(ctx, name, component),
       // merge many components to the component index
       mergeAll: (components) => mergeAll(ctx, components),
+      // delegated methods
+      warn: ctx.warn,
+      error: ctx.error,
     }
     // pass ModuleAPI to every InterfaceFunction
-    interfaceHanlerObjects = {}
-    // TODO: optimize for (let in) with for (Object.keys())
-    for (let name in moduleDef.interfaces) {
-      interfaceHanlerObjects[name] = moduleDef.interfaces[name](moduleAPI)
-    }
-    // pass ModuleAPI to every TaskFunction
-    for (let name in moduleDef.tasks) {
-      ctx.taskRunners[name] = moduleDef.tasks[name](moduleAPI)
+    // if is not hot swaping
+    if (!lastComponents) {
+      interfaceHanlerObjects = {}
+      // TODO: optimize for (let in) with for (Object.keys())
+      for (let name in moduleDef.interfaces) {
+        interfaceHanlerObjects[name] = moduleDef.interfaces[name](moduleAPI)
+      }
+      // pass ModuleAPI to every TaskFunction
+      for (let name in moduleDef.tasks) {
+        ctx.taskRunners[name] = moduleDef.tasks[name](moduleAPI)
+      }
     }
     // inital state
-    let newState = (state !== undefined) ? state : component.state({key: rootName})
+    let newState = component.state({key: rootName})
     // reserve root space
     ctx.components[rootName] = {
       ctx,
@@ -270,13 +286,21 @@ export function run (moduleDefinition: ModuleDef): Module {
     if (component.hooks && component.hooks['init']) {
       component.hooks['init'](moduleAPI, ctx)
     }
-
+    // preserves state on hot swaping - TODO: make a deepmerge
+    if (lastComponents) {
+      for (let i = 0, ids = Object.keys(lastComponents), len = ids.length; i < len; i++) {
+        // if the component still existing
+        if (ctx.components[ids[i]]) {
+          ctx.components[ids[i]].state = lastComponents[ids[i]].state
+        }
+      }
+    }
     // creates interfaceStreams (interface recalculation)
     for (let name in component.interfaces) {
       if (interfaceHanlerObjects[name]) {
         ctx.interfaceStreams[name] = newStream(component.interfaces[name](ctx, ctx.components[rootName].state))
         // connect interface handlers to driver streams
-        interfaceHanlerObjects[name][(state == undefined) ? 'attach' : 'reattach'](ctx.interfaceStreams[name])
+        interfaceHanlerObjects[name][(lastComponents) ? 'reattach' : 'attach'](ctx.interfaceStreams[name])
       } else {
         return ctx.error('InterfaceHandlers', `'${rootName}' module has no interface called '${name}', missing interface handler`)
       }
@@ -294,7 +318,7 @@ export function run (moduleDefinition: ModuleDef): Module {
       let lastComponents = ctx.components
       ctx.components = {}
       // TODO: use a deepmerge algoritm
-      attach(lastComponents)
+      attach(comp, lastComponents)
     },
     dispose () {
       // dispose all streams

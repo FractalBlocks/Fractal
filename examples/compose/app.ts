@@ -58,7 +58,7 @@ let style: any = styleGroup({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '10px',
+    padding: '12px',
     backgroundColor: '#DDE2E9',
   },
   childCount: {
