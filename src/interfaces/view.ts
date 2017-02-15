@@ -24,7 +24,8 @@ export interface ViewInterface {
   (ctx: Context, s): VNode
 }
 
-export function viewHandler (selector, patchfn = patch): InterfaceHandler {
+export const viewHandler: InterfaceHandler = (selectorElm, patchfn = patch) => mod => {
+  let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let lastContainer,
     state$ = newStream<VNode>(undefined)
 
@@ -43,7 +44,10 @@ export function viewHandler (selector, patchfn = patch): InterfaceHandler {
     state$,
     attach: (vnode$: Stream<VNode>) => {
       window.addEventListener('DOMContentLoaded', function() {
-        let container = document.querySelector(selector)
+        let container = selector !== '' ? document.querySelector(selector) : selectorElm
+        if (!container) {
+          return mod.error('view', `There are no element matching selector '${selector}'`)
+        }
         state$.set(container)
         vnode$.subscribe(subscriber)
         subscriber(vnode$.get())
