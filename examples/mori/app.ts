@@ -1,4 +1,4 @@
-import { Context, Component } from '../../src'
+import { Context, Component, ev } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
 import { hashMap, HashMap, get } from 'mori'
 import { evolve } from '../../src/utils/mori'
@@ -18,10 +18,10 @@ let actions = {
   Inc: () => evolve('count', x => x + 1),
 }
 
-let inputs = {
-  set: (ctx: Context) => (n: number) => ctx.do(actions.Set(n)),
-  inc: (ctx: Context) => () => ctx.do(actions.Inc()),
-}
+let events = (ctx: Context) => ({
+  set: n => actions.Set(n),
+  inc: () => actions.Inc(),
+})
 
 let view: ViewInterface = (ctx, s) =>
 
@@ -32,7 +32,7 @@ h('div', {
   h('div', {
     class: { [style.count]: true },
     on: {
-      click: inputs.inc(ctx),
+      click: ev(ctx, 'inc'),
     },
   }, `${get(s, 'count')}`),
 ])
@@ -61,7 +61,7 @@ let style: any = styleGroup(styleObj, name)
 let mDef: Component = {
   name,
   state,
-  inputs,
+  events,
   actions,
   interfaces: {
     view,
