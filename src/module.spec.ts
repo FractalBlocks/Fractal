@@ -392,6 +392,18 @@ describe('Component composition', () => {
     expect(Object.keys(app.ctx.components).length).toEqual(0)
   })
 
+  it('should log an error when unmerge an inexistent component', () => {
+    app = run({
+      root: main,
+      interfaces: {
+        event: eventHandler(() => 0),
+      },
+    })
+    app.ctx.id = 'wrong'
+    unmerge(app.ctx)
+    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual(['unmerge', `there is no component name 'wrong'`])
+  })
+
 })
 
 describe('Hot swapping', () => {

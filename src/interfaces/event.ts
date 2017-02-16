@@ -29,8 +29,6 @@ export const eventHandler: InterfaceHandler = (cb: (evRes: EventResponse) => voi
     reattach(handler$) {
       handler$.subscribe(subscriber)
     },
-    dispose(handler$) {
-      handler$.unsubscribe(subscriber)
-    }
+    dispose() {}
   }
 }

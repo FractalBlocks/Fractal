@@ -58,8 +58,6 @@ export const viewHandler: InterfaceHandler = (selectorElm, patchfn = patch) => m
       vnode$.subscribe(subscriber)
       subscriber(vnode$.get())
     },
-    dispose: () => {
-      state$.unsubscribe(subscriber)
-    },
+    dispose: () => {},
   }
 }

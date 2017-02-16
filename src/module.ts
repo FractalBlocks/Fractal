@@ -142,8 +142,8 @@ export function mergeAll (ctx: Context, components: { [name: string]: Component 
 // remove a component to the component index
 export function unmerge (ctx: Context): void {
   let componentSpace = ctx.components[ctx.id]
-  if (componentSpace) {
-    ctx.error('unmerge', `there is no component name '${ctx.id}'`)
+  if (!componentSpace) {
+    return ctx.error('unmerge', `there is no component name '${ctx.id}'`)
   }
   // decomposition
   let components = componentSpace.def.components
@@ -249,7 +249,7 @@ export function run (moduleDefinition: ModuleDef): Module {
   let moduleAPI: ModuleAPI
   // root context
   let ctx: Context
-  let interfaceHanlerObjects: {
+  let interfaceHandlerObjects: {
     [name: string]: InterfaceHandlerObject
   }
 
@@ -304,10 +304,10 @@ export function run (moduleDefinition: ModuleDef): Module {
     // pass ModuleAPI to every InterfaceFunction
     // if is not hot swapping
     if (!lastComponents) {
-      interfaceHanlerObjects = {}
+      interfaceHandlerObjects = {}
       // TODO: optimize for (let in) with for (Object.keys())
       for (let name in moduleDef.interfaces) {
-        interfaceHanlerObjects[name] = moduleDef.interfaces[name](moduleAPI)
+        interfaceHandlerObjects[name] = moduleDef.interfaces[name](moduleAPI)
       }
       // pass ModuleAPI to every TaskFunction
       for (let name in moduleDef.tasks) {
@@ -327,10 +327,10 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
     // creates interfaceStreams (interface recalculation)
     for (let name in component.interfaces) {
-      if (interfaceHanlerObjects[name]) {
+      if (interfaceHandlerObjects[name]) {
         ctx.interfaceStreams[name] = newStream(component.interfaces[name](ctx, ctx.components[rootName].state))
         // connect interface handlers to driver streams
-        interfaceHanlerObjects[name][(lastComponents) ? 'reattach' : 'attach'](ctx.interfaceStreams[name])
+        interfaceHandlerObjects[name][(lastComponents) ? 'reattach' : 'attach'](ctx.interfaceStreams[name])
       } else {
         return ctx.error('InterfaceHandlers', `'${rootName}' module has no interface called '${name}', missing interface handler`)
       }
@@ -354,11 +354,14 @@ export function run (moduleDefinition: ModuleDef): Module {
       // dispose all streams
       unmerge(ctx)
       disposeinterfaceStreams(ctx)
+      for (let i = 0, names = Object.keys(interfaceHandlerObjects), len = names.length; i < len; i++) {
+        interfaceHandlerObjects[names[i]].dispose()
+      }
       this.isDisposed = true
     },
     isDisposed: false,
     // related to internals
-    interfaces: interfaceHanlerObjects,
+    interfaces: interfaceHandlerObjects,
     interfaceStreams: ctx.interfaceStreams,
     // root context
     moduleAPI,
