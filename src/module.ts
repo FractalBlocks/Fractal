@@ -320,6 +320,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     if (lastComponents) {
       for (let i = 0, ids = Object.keys(lastComponents), len = ids.length; i < len; i++) {
         // if the component still existing
+        /* istanbul ignore else */
         if (ctx.components[ids[i]]) {
           ctx.components[ids[i]].state = lastComponents[ids[i]].state
         }

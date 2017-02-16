@@ -482,5 +482,83 @@ describe('Lifecycle hooks', () => {
 })
 
 describe('Hot swapping', () => {
-  // TODO: tests for reattach functionality
+   let child: Component = {
+    name: 'Child',
+    state,
+    events,
+    actions,
+    interfaces: {
+      event,
+    },
+  }
+  let components = {
+    child1: child,
+    child2: child,
+    child3: child,
+  }
+  let mainEventV1: EventInterface =
+    (ctx, s) => ({
+      tagName: s.key,
+      content: 'Fractal is awesome!! ' + s.count,
+      inc: ev(ctx, 'inc'),
+      childEvent1: interfaceOf(ctx, 'child1', 'event'),
+      childEvent2: interfaceOf(ctx, 'child2', 'event'),
+      childEvent3: interfaceOf(ctx, 'child3', 'event'),
+    })
+
+  let mainV1: Component = {
+    name: 'Main',
+    state,
+    components,
+    events,
+    actions,
+    interfaces: {
+      event: mainEventV1,
+    },
+  }
+
+  let mainEventV2: EventInterface =
+    (ctx, s) => ({
+      tagName: s.key,
+      content: 'Fractal is awesome V2!! ' + s.count + ' :D',
+      inc: ev(ctx, 'inc'),
+      childEvent1: interfaceOf(ctx, 'child1', 'event'),
+      childEvent2: interfaceOf(ctx, 'child2', 'event'),
+      childEvent3: interfaceOf(ctx, 'child3', 'event'),
+    })
+
+  let mainV2: Component = {
+    name: 'Main',
+    state,
+    components,
+    events,
+    actions,
+    interfaces: {
+      event: mainEventV2,
+    },
+  }
+
+  let app: Module
+
+  let value$ = newStream<any>(undefined)
+  function onValue(val) {
+    value$.set(val)
+  }
+
+  let value
+
+  it('Should call init in all component tree when initialize the module', () => {
+    app = run({
+      root: mainV1,
+      interfaces: {
+        event: eventHandler(onValue),
+      },
+    })
+    app.reattach(mainV2)
+    value = value$.get()
+    expect(value.content).toBe('Fractal is awesome V2!! 0 :D')
+    expect(value.childEvent1.content).toBe('Fractal is awesome!! 0')
+    expect(value.childEvent2.content).toBe('Fractal is awesome!! 0')
+    expect(value.childEvent3.content).toBe('Fractal is awesome!! 0')
+  })
 })
