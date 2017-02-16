@@ -13,6 +13,7 @@ import {
   Task,
   TaskHandler,
   DispatchData,
+  dispatch,
   Hooks,
   unmerge,
 } from './index'
@@ -335,11 +336,6 @@ describe('Component composition', () => {
       tagName: s.key,
       content: 'Fractal is awesome!! ' + s.count,
       inc: ev(ctx, 'inc'),
-      task: ev(ctx, 'task'),
-      wrongTask: ev(ctx, 'wrongTask'),
-      executableListWrong: ev(ctx, 'executableListWrong'),
-      executableListTask: ev(ctx, 'executableListTask'),
-      executableListAction: ev(ctx, 'executableListAction'),
       childEvent1: interfaceOf(ctx, 'child1', 'event'),
       childEvent2: interfaceOf(ctx, 'child2', 'event'),
       childEvent3: interfaceOf(ctx, 'child3', 'event'),
@@ -402,6 +398,85 @@ describe('Component composition', () => {
     app.ctx.id = 'wrong'
     unmerge(app.ctx)
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual(['unmerge', `there is no component name 'wrong'`])
+  })
+
+})
+
+describe('Lifecycle hooks', () => {
+  let disposeLog = []
+
+  let hooks: Hooks = {
+    init: ctx => {
+      dispatch(ctx, ev(ctx, 'inc'))
+    },
+    destroy: ctx => {
+      let parts = ctx.id.split('$')
+      disposeLog.push(parts[parts.length - 1])
+    },
+  }
+
+  let child: Component = {
+    name: 'Child',
+    state,
+    hooks,
+    events,
+    actions,
+    interfaces: {
+      event,
+    },
+  }
+  let components = {
+    child1: child,
+    child2: child,
+    child3: child,
+  }
+  let mainEvent: EventInterface =
+    (ctx, s) => ({
+      tagName: s.key,
+      content: 'Fractal is awesome!! ' + s.count,
+      inc: ev(ctx, 'inc'),
+      childEvent1: interfaceOf(ctx, 'child1', 'event'),
+      childEvent2: interfaceOf(ctx, 'child2', 'event'),
+      childEvent3: interfaceOf(ctx, 'child3', 'event'),
+    })
+
+  let main: Component = {
+    name: 'Main',
+    state,
+    hooks,
+    components,
+    events,
+    actions,
+    interfaces: {
+      event: mainEvent,
+    },
+  }
+
+  let app: Module
+
+  let value$ = newStream<any>(undefined)
+  function onValue(val) {
+    value$.set(val)
+  }
+
+  let value
+
+  it('Should call init in all component tree when initialize the module', () => {
+    app = run({
+      root: main,
+      interfaces: {
+        event: eventHandler(onValue),
+      },
+    })
+    value = value$.get()
+    expect(value.childEvent1.content).toBe('Fractal is awesome!! 1')
+    expect(value.childEvent2.content).toBe('Fractal is awesome!! 1')
+    expect(value.childEvent3.content).toBe('Fractal is awesome!! 1')
+  })
+
+  it('Should call destroy in all component tree when dispose the module', () => {
+    app.dispose()
+    expect(disposeLog).toEqual(['child1', 'child2', 'child3', 'Main'])
   })
 
 })
