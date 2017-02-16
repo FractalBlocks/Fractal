@@ -2,22 +2,22 @@ import { Context, InterfaceHandler, InterfaceMsg, dispatch, EventData, DispatchD
 
 // this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
 
-export interface EventResponse extends InterfaceMsg {
+export interface ValueResponse extends InterfaceMsg {
   _dispatch: {
     (dispatchData: DispatchData): void
   }
 }
 
-export interface EventInterface {
+export interface ValueInterface {
   (ctx: Context, s): InterfaceMsg
 }
 
-export const eventHandler: InterfaceHandler = (cb: (evRes: EventResponse) => void) => mod => {
+export const valueHandler: InterfaceHandler = (cb: (evRes: ValueResponse) => void) => mod => {
   function subscriber (driverMsg: InterfaceMsg) {
     driverMsg['_dispatch'] = dispatchData => {
       mod.dispatch(dispatchData)
     }
-    cb(<EventResponse> driverMsg)
+    cb(<ValueResponse> driverMsg)
   }
   return {
     state$: undefined,
@@ -28,6 +28,7 @@ export const eventHandler: InterfaceHandler = (cb: (evRes: EventResponse) => voi
     },
     reattach(handler$) {
       handler$.subscribe(subscriber)
+      subscriber(handler$.get())
     },
     dispose() {}
   }

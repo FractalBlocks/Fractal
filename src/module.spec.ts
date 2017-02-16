@@ -17,7 +17,7 @@ import {
   Hooks,
   unmerge,
 } from './index'
-import { eventHandler, EventInterface } from './interfaces/event'
+import { valueHandler, ValueInterface } from './interfaces/value'
 import { newStream } from './stream'
 
 // Component definition to perform tests
@@ -56,7 +56,7 @@ let events = (ctx: Context) => ({
   ],
 })
 
-let event: EventInterface =
+let childValue: ValueInterface =
   (ctx, s) => ({
     tagName: s.key,
     content: 'Fractal is awesome!! ' + s.count,
@@ -74,7 +74,7 @@ let root: Component = {
   events,
   actions,
   interfaces: {
-    event,
+    value: childValue,
   },
 }
 
@@ -143,11 +143,11 @@ describe('Context functions', function () {
   })
 
   it('Should get an interface message from a certain component (interfaceOf)', () => {
-    expect(interfaceOf(rootCtx, 'child', 'event')).toEqual(event(createContext(rootCtx, 'child'), state))
+    expect(interfaceOf(rootCtx, 'child', 'value')).toEqual(childValue(createContext(rootCtx, 'child'), state))
   })
 
   it('Should log an error if try to get an interface message from an inexistent component (interfaceOf)', () => {
-    interfaceOf(rootCtx, 'wrong', 'event')
+    interfaceOf(rootCtx, 'wrong', 'value')
     expect(rootCtx.errorLog[rootCtx.errorLog.length - 1]).toEqual([
       'interfaceOf',
       `there are no module 'Main$wrong'`,
@@ -184,7 +184,7 @@ describe('One Component + module functionality', function () {
       log: logTask(taskLog),
     },
     interfaces: {
-      event: eventHandler(onValue),
+      value: valueHandler(onValue),
     }
   })
 
@@ -195,7 +195,7 @@ describe('One Component + module functionality', function () {
     })
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
       'InterfaceHandlers',
-      `'Main' module has no interface called 'event', missing interface handler`,
+      `'Main' module has no interface called 'value', missing interface handler`,
     ])
   })
 
@@ -321,7 +321,7 @@ describe('Component composition', () => {
     events,
     actions,
     interfaces: {
-      event,
+      value: childValue,
     },
   }
 
@@ -331,14 +331,14 @@ describe('Component composition', () => {
     child3: child,
   }
 
-  let mainEvent: EventInterface =
+  let mainValue: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
       content: 'Fractal is awesome!! ' + s.count,
       inc: ev(ctx, 'inc'),
-      childEvent1: interfaceOf(ctx, 'child1', 'event'),
-      childEvent2: interfaceOf(ctx, 'child2', 'event'),
-      childEvent3: interfaceOf(ctx, 'child3', 'event'),
+      childValue1: interfaceOf(ctx, 'child1', 'value'),
+      childValue2: interfaceOf(ctx, 'child2', 'value'),
+      childValue3: interfaceOf(ctx, 'child3', 'value'),
     })
 
   let main: Component = {
@@ -348,7 +348,7 @@ describe('Component composition', () => {
     events,
     actions,
     interfaces: {
-      event: mainEvent,
+      value: mainValue,
     },
   }
 
@@ -363,7 +363,7 @@ describe('Component composition', () => {
     app = run({
       root: main,
       interfaces: {
-        event: eventHandler(onValue2),
+        value: valueHandler(onValue2),
       }
     })
     expect(app.ctx.components['Main$child1']).toBeDefined()
@@ -375,12 +375,12 @@ describe('Component composition', () => {
     let value = value2$.get()
     value2$.removeSubscribers()
     value2$.subscribe(value => {
-      expect(value.childEvent1.content).toBe('Fractal is awesome!! 1')
-      expect(value.childEvent2.content).toBe('Fractal is awesome!! 0')
-      expect(value.childEvent3.content).toBe('Fractal is awesome!! 0')
+      expect(value.childValue1.content).toBe('Fractal is awesome!! 1')
+      expect(value.childValue2.content).toBe('Fractal is awesome!! 0')
+      expect(value.childValue3.content).toBe('Fractal is awesome!! 0')
       done()
     })
-    value._dispatch(value.childEvent1.inc)
+    value._dispatch(value.childValue1.inc)
   })
 
   it('should unmerge a component tree', () => {
@@ -392,7 +392,7 @@ describe('Component composition', () => {
     app = run({
       root: main,
       interfaces: {
-        event: eventHandler(() => 0),
+        value: valueHandler(() => 0),
       },
     })
     app.ctx.id = 'wrong'
@@ -422,7 +422,7 @@ describe('Lifecycle hooks', () => {
     events,
     actions,
     interfaces: {
-      event,
+      value: childValue,
     },
   }
   let components = {
@@ -430,14 +430,14 @@ describe('Lifecycle hooks', () => {
     child2: child,
     child3: child,
   }
-  let mainEvent: EventInterface =
+  let mainValue: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
       content: 'Fractal is awesome!! ' + s.count,
       inc: ev(ctx, 'inc'),
-      childEvent1: interfaceOf(ctx, 'child1', 'event'),
-      childEvent2: interfaceOf(ctx, 'child2', 'event'),
-      childEvent3: interfaceOf(ctx, 'child3', 'event'),
+      childValue1: interfaceOf(ctx, 'child1', 'value'),
+      childValue2: interfaceOf(ctx, 'child2', 'value'),
+      childValue3: interfaceOf(ctx, 'child3', 'value'),
     })
 
   let main: Component = {
@@ -448,7 +448,7 @@ describe('Lifecycle hooks', () => {
     events,
     actions,
     interfaces: {
-      event: mainEvent,
+      value: mainValue,
     },
   }
 
@@ -465,13 +465,13 @@ describe('Lifecycle hooks', () => {
     app = run({
       root: main,
       interfaces: {
-        event: eventHandler(onValue),
+        value: valueHandler(onValue),
       },
     })
     value = value$.get()
-    expect(value.childEvent1.content).toBe('Fractal is awesome!! 1')
-    expect(value.childEvent2.content).toBe('Fractal is awesome!! 1')
-    expect(value.childEvent3.content).toBe('Fractal is awesome!! 1')
+    expect(value.childValue1.content).toBe('Fractal is awesome!! 1')
+    expect(value.childValue2.content).toBe('Fractal is awesome!! 1')
+    expect(value.childValue3.content).toBe('Fractal is awesome!! 1')
   })
 
   it('Should call destroy in all component tree when dispose the module', () => {
@@ -488,7 +488,7 @@ describe('Hot swapping', () => {
     events,
     actions,
     interfaces: {
-      event,
+      value: childValue,
     },
   }
   let components = {
@@ -496,14 +496,14 @@ describe('Hot swapping', () => {
     child2: child,
     child3: child,
   }
-  let mainEventV1: EventInterface =
+  let mainValueV1: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
       content: 'Fractal is awesome!! ' + s.count,
       inc: ev(ctx, 'inc'),
-      childEvent1: interfaceOf(ctx, 'child1', 'event'),
-      childEvent2: interfaceOf(ctx, 'child2', 'event'),
-      childEvent3: interfaceOf(ctx, 'child3', 'event'),
+      childValue1: interfaceOf(ctx, 'child1', 'value'),
+      childValue2: interfaceOf(ctx, 'child2', 'value'),
+      childValue3: interfaceOf(ctx, 'child3', 'value'),
     })
 
   let mainV1: Component = {
@@ -513,18 +513,18 @@ describe('Hot swapping', () => {
     events,
     actions,
     interfaces: {
-      event: mainEventV1,
+      value: mainValueV1,
     },
   }
 
-  let mainEventV2: EventInterface =
+  let mainValueV2: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
       content: 'Fractal is awesome V2!! ' + s.count + ' :D',
       inc: ev(ctx, 'inc'),
-      childEvent1: interfaceOf(ctx, 'child1', 'event'),
-      childEvent2: interfaceOf(ctx, 'child2', 'event'),
-      childEvent3: interfaceOf(ctx, 'child3', 'event'),
+      childValue1: interfaceOf(ctx, 'child1', 'value'),
+      childValue2: interfaceOf(ctx, 'child2', 'value'),
+      childValue3: interfaceOf(ctx, 'child3', 'value'),
     })
 
   let mainV2: Component = {
@@ -534,7 +534,7 @@ describe('Hot swapping', () => {
     events,
     actions,
     interfaces: {
-      event: mainEventV2,
+      value: mainValueV2,
     },
   }
 
@@ -551,14 +551,14 @@ describe('Hot swapping', () => {
     app = run({
       root: mainV1,
       interfaces: {
-        event: eventHandler(onValue),
+        value: valueHandler(onValue),
       },
     })
     app.reattach(mainV2)
     value = value$.get()
     expect(value.content).toBe('Fractal is awesome V2!! 0 :D')
-    expect(value.childEvent1.content).toBe('Fractal is awesome!! 0')
-    expect(value.childEvent2.content).toBe('Fractal is awesome!! 0')
-    expect(value.childEvent3.content).toBe('Fractal is awesome!! 0')
+    expect(value.childValue1.content).toBe('Fractal is awesome!! 0')
+    expect(value.childValue2.content).toBe('Fractal is awesome!! 0')
+    expect(value.childValue3.content).toBe('Fractal is awesome!! 0')
   })
 })
