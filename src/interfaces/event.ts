@@ -1,4 +1,4 @@
-import { Context, InterfaceHandler, InterfaceMsg, dispatch, EventData, DispatchData, ComponentIndex } from '../index'
+import { Context, InterfaceHandler, InterfaceMsg, dispatch, EventData, DispatchData } from '../index'
 
 // this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
 

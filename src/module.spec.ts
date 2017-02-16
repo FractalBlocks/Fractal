@@ -394,5 +394,6 @@ describe('Component composition', () => {
 
 })
 
-// TODO: tests for reattach functionality
-
+describe('Hot swapping', () => {
+  // TODO: tests for reattach functionality
+})

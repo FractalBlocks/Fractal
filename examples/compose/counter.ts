@@ -42,7 +42,7 @@ h('div', {
   h('div', {
     class: { [style.reset]: true },
     on: {
-      click: () => ev(ctx, 'set', () => 0),
+      click: ev(ctx, 'set', () => 0),
     },
   }, 'reset'),
 ])

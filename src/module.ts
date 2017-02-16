@@ -260,10 +260,10 @@ export function run (moduleDefinition: ModuleDef): Module {
       logAll: false,
       ...moduleDefinition,
     }
-    // root component, take account of hot swaping
+    // root component, take account of hot swapping
     component = comp ? comp : moduleDef.root
     let rootName = component.name
-    // if is hot swaping, do not recalculat context
+    // if is hot swapping, do not recalculat context
     if (!lastComponents) {
       // root context
       ctx = {
@@ -285,8 +285,8 @@ export function run (moduleDefinition: ModuleDef): Module {
         errorLog: [],
       }
     } else {
-      // hot swaping mode changes the id of root context
-      ctx.id = rootName
+      // hot swaping mode preserves root context, but restore id to '' because this way merge knows is root context
+      ctx.id = ''
     }
 
     // API for modules
@@ -302,7 +302,7 @@ export function run (moduleDefinition: ModuleDef): Module {
       error: ctx.error,
     }
     // pass ModuleAPI to every InterfaceFunction
-    // if is not hot swaping
+    // if is not hot swapping
     if (!lastComponents) {
       interfaceHanlerObjects = {}
       // TODO: optimize for (let in) with for (Object.keys())
@@ -316,7 +316,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
     // merges main component and ctx.id now contains it name
     ctx = merge(ctx, component.name, component)
-    // preserves state on hot swaping - TODO: make a deepmerge
+    // preserves state on hot swapping - TODO: make a deepmerge
     if (lastComponents) {
       for (let i = 0, ids = Object.keys(lastComponents), len = ids.length; i < len; i++) {
         // if the component still existing
@@ -342,7 +342,7 @@ export function run (moduleDefinition: ModuleDef): Module {
 
   return {
     moduleDef,
-    // reattach root component, used for hot swaping
+    // reattach root component, used for hot swapping
     reattach (comp: Component) {
       disposeinterfaceStreams(ctx)
       let lastComponents = ctx.components

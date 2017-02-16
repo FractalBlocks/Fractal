@@ -16,12 +16,6 @@ let state = ({key}) => ({
   count: 0,
 })
 
-let hooks: Hooks = {
-  init: (mod, ctx) => {
-    mod.merge('counter', components.counter)
-  },
-}
-
 let actions = {
   Set: (count: number) => state => {
     state.count = count
@@ -70,7 +64,7 @@ let style: any = styleGroup({
 let mDef: Component = {
   name,
   state,
-  hooks,
+  components,
   events,
   actions,
   interfaces: {
