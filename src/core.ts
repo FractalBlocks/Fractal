@@ -9,6 +9,10 @@ export interface Component {
   // log all
   log?: boolean
   logAll?: boolean
+  // composition
+  components?: {
+    [name: string]: Component
+  }
   // the changing stuff (AKA variables)
   state (params: { key: string }): any
   // dispatchers for actions and tasks
@@ -27,7 +31,7 @@ export interface Component {
 
 export interface Hooks {
   [name: string]: {
-    (mod: ModuleAPI, ctx: Context): void
+    (ctx: Context): void
   }
 }
 
@@ -92,7 +96,7 @@ export interface Context {
   // Namespace for component
   id: string
   // global component index
-  components: ComponentIndex
+  components: ComponentSpaceIndex
   // error and warning delegation
   warn: {
     (source: string, description: string): void
@@ -110,7 +114,7 @@ export interface Context {
   }
 }
 
-export interface ComponentIndex {
+export interface ComponentSpaceIndex {
   [id: string]: ComponentSpace
 }
 
@@ -119,9 +123,7 @@ export interface ComponentSpace {
   ctx: Context
   state: any
   events: EventIndex
-  interfaces: {
-    [name: string]: Interface
-  }
+  def: Component
 }
 
 export type Executable = Update | Task

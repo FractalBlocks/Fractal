@@ -1,5 +1,6 @@
 import {
   Component,
+  Module,
   Context,
   run,
   merge,
@@ -13,6 +14,7 @@ import {
   TaskHandler,
   DispatchData,
   Hooks,
+  unmerge,
 } from './index'
 import { eventHandler, EventInterface } from './interfaces/event'
 import { newStream } from './stream'
@@ -129,7 +131,7 @@ describe('Context functions', function () {
     // Should overwrite
     expect(ctx.components[`Main$child`].state.count).toEqual(0)
     expect(rootCtx.warnLog[rootCtx.warnLog.length - 1])
-      .toEqual(['merge', `module 'Main' has overwritten module 'Main$child'`])
+      .toEqual(['merge', `component 'Main' has overwritten component 'Main$child'`])
   })
 
   let state
@@ -308,6 +310,8 @@ describe('One Component + module functionality', function () {
 
 describe('Component composition', () => {
 
+  // Managed composition
+
   // for building new components reutilize the existents
 
   let child: Component = {
@@ -320,10 +324,10 @@ describe('Component composition', () => {
     },
   }
 
-  let hooks: Hooks = {
-    init: (mod, ctx) => {
-      mod.merge('child', child)
-    },
+  let components = {
+    child1: child,
+    child2: child,
+    child3: child,
   }
 
   let mainEvent: EventInterface =
@@ -336,13 +340,15 @@ describe('Component composition', () => {
       executableListWrong: ev(ctx, 'executableListWrong'),
       executableListTask: ev(ctx, 'executableListTask'),
       executableListAction: ev(ctx, 'executableListAction'),
-      childEvent: interfaceOf(ctx, 'child', 'event'),
+      childEvent1: interfaceOf(ctx, 'child1', 'event'),
+      childEvent2: interfaceOf(ctx, 'child2', 'event'),
+      childEvent3: interfaceOf(ctx, 'child3', 'event'),
     })
 
   let main: Component = {
     name: 'Main',
     state,
-    hooks,
+    components,
     events,
     actions,
     interfaces: {
@@ -350,54 +356,43 @@ describe('Component composition', () => {
     },
   }
 
-  let taskLog = []
+  let app: Module
 
-  let value // temporally variable
-  let value$ = newStream<any>(undefined)
-  function onValue(val) {
-    value$.set(val)
+  let value2$ = newStream<any>(undefined)
+  function onValue2(val) {
+    value2$.set(val)
   }
 
-  let logTask: TaskHandler = log => mod => (data: {info: any, cb: DispatchData}) => {
-    log.push(data.info)
-    mod.dispatch(data.cb)
-  }
-
-  let app = run({
-    root: main,
-    tasks: {
-      log: logTask(taskLog),
-    },
-    interfaces: {
-      event: eventHandler(onValue),
-    }
+  it('Should merge child components', () => {
+    app = run({
+      root: main,
+      interfaces: {
+        event: eventHandler(onValue2),
+      }
+    })
+    expect(app.ctx.components['Main$child1']).toBeDefined()
+    expect(app.ctx.components['Main$child2']).toBeDefined()
+    expect(app.ctx.components['Main$child3']).toBeDefined()
   })
 
-  it('should call init, merge add the component to index, and merge child interface in main interface, also should dataflow be right', done => {
-    value$.subscribe(value => {
-      expect(value.content).toBe('Fractal is awesome!! 1')
-      expect(app.ctx.components['Main$child']).toBeDefined()
-      expect(value.childEvent.content).toBe('Fractal is awesome!! 0')
+  it('a child should react to events', done => {
+    let value = value2$.get()
+    value2$.removeSubscribers()
+    value2$.subscribe(value => {
+      expect(value.childEvent1.content).toBe('Fractal is awesome!! 1')
+      expect(value.childEvent2.content).toBe('Fractal is awesome!! 0')
+      expect(value.childEvent3.content).toBe('Fractal is awesome!! 0')
       done()
     })
-    // extract value and dispatch interface handlers
-    value = value$.get()
-    value._dispatch(value.inc)
+    value._dispatch(value.childEvent1.inc)
   })
 
-  it('should react to events', done => {
-    value$.removeSubscribers()
-    value$.subscribe(value => {
-      expect(value.childEvent.content).toBe('Fractal is awesome!! 1')
-      done()
-    })
-    value._dispatch(value.childEvent.inc)
+  it('should unmerge a component tree', () => {
+    unmerge(app.ctx)
+    expect(Object.keys(app.ctx.components).length).toEqual(0)
   })
-
-  // TODO: tests for mergeAll functionality
-
-  // TODO: tests for reattach functionality
 
 })
 
+// TODO: tests for reattach functionality
 

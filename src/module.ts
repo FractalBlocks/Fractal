@@ -4,7 +4,7 @@ import {
   Update,
   Context,
   ComponentSpace,
-  ComponentIndex,
+  ComponentSpaceIndex,
   Executable,
   EventData,
   DispatchData,
@@ -44,7 +44,8 @@ export interface Module {
   interfaceStreams: {
     [name: string]: Stream<InterfaceMsg>
   }
-  // thing for testing (exposes wirings!!)
+  moduleAPI: ModuleAPI
+  // Root component context
   ctx: Context
 }
 
@@ -69,7 +70,7 @@ export interface ModuleAPI {
 
 // create context for a component
 export function createContext (ctx: Context, name: string): Context {
-  let id = `${ctx.id}$${name}`
+  let id = ctx.id === '' ? name : `${ctx.id}$${name}`
   return {
     id, // the component id
     // delegation
@@ -96,18 +97,19 @@ export function interfaceOf (ctx: Context, name: string, interfaceName: string):
     ctx.error('interfaceOf', `there are no module '${id}'`)
     return {}
   }
-  if (!componentSpace.interfaces[interfaceName]) {
+  if (!componentSpace.def.interfaces[interfaceName]) {
     ctx.error('interfaceOf', `there are no interface '${interfaceName}' in module '${id}'`)
     return {}
   }
-  return componentSpace.interfaces[interfaceName](componentSpace.ctx, componentSpace.state)
+  return componentSpace.def.interfaces[interfaceName](componentSpace.ctx, componentSpace.state)
 }
 
-// add a module to the module index
-export function merge (ctx: Context, name: string, component: Component) {
-  let id = ctx.id + '$' + name // namespaced name
+// add a component to the component index
+export function merge (ctx: Context, name: string, component: Component): Context {
+  // namespaced name if is a child
+  let id = ctx.id === '' ? name : ctx.id + '$' + name
   if (ctx.components[id]) {
-    ctx.warn('merge', `module '${ctx.id}' has overwritten module '${id}'`)
+    ctx.warn('merge', `component '${ctx.id}' has overwritten component '${id}'`)
   }
 
   let childCtx = createContext(ctx, name)
@@ -116,13 +118,51 @@ export function merge (ctx: Context, name: string, component: Component) {
     ctx: childCtx,
     state: component.state({key: name}),
     events: component.events(childCtx),
-    interfaces: component.interfaces
+    def: component,
+  }
+  // composition
+  if (component.components) {
+    mergeAll(childCtx, component.components)
+  }
+  // lifecycle hook: init
+  if (component.hooks && component.hooks['init']) {
+    component.hooks['init'](childCtx)
+  }
+
+  return childCtx
+}
+
+// add many components to the component index
+export function mergeAll (ctx: Context, components: { [name: string]: Component }) {
+  for (let i = 0, names = Object.keys(components), len = names.length; i < len; i++) {
+    merge(ctx, names[i], components[names[i]])
   }
 }
 
-export function mergeAll (ctx: Context, components: { [name: string]: Component }) {
-  // let space: ComponentSpace = { state: {}, events: {} }
-  // ctx.components[parentId + '$' + name] = {} TODO: CRITICAL
+// remove a component to the component index
+export function unmerge (ctx: Context): void {
+  let componentSpace = ctx.components[ctx.id]
+  if (componentSpace) {
+    ctx.error('unmerge', `there is no component name '${ctx.id}'`)
+  }
+  // decomposition
+  let components = componentSpace.def.components
+  if (components) {
+    unmergeAll(ctx, components)
+  }
+  // lifecycle hook: destroy
+  if (componentSpace.def.hooks && componentSpace.def.hooks['destroy']) {
+    componentSpace.def.hooks['destroy'](ctx)
+  }
+
+  delete ctx.components[ctx.id]
+}
+
+// add many components to the component index
+export function unmergeAll (ctx: Context, components: { [name: string]: Component }) {
+  for (let i = 0, ids = Object.keys(components), len = ids.length; i < len; i++) {
+    unmerge(ctx.components[ctx.id + '$' + ids[i]].ctx)
+  }
 }
 
 // create an EventData array
@@ -192,7 +232,7 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
 export function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.id]
   for (let name in  ctx.interfaceStreams) {
-    ctx.interfaceStreams[name].set(space.interfaces[name](ctx, space.state))
+    ctx.interfaceStreams[name].set(space.def.interfaces[name](ctx, space.state))
   }
 }
 
@@ -206,6 +246,7 @@ export function run (moduleDefinition: ModuleDef): Module {
   // root component
   let component: Component
   let moduleDef: ModuleDef
+  let moduleAPI: ModuleAPI
   // root context
   let ctx: Context
   let interfaceHanlerObjects: {
@@ -213,7 +254,7 @@ export function run (moduleDefinition: ModuleDef): Module {
   }
 
   // attach root component
-  function attach (comp?: Component, lastComponents?: ComponentIndex) {
+  function attach (comp?: Component, lastComponents?: ComponentSpaceIndex) {
     moduleDef = {
       log: false,
       logAll: false,
@@ -226,7 +267,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     if (!lastComponents) {
       // root context
       ctx = {
-        id: rootName,
+        id: '',
         // component index
         components: {},
         taskRunners: {},
@@ -249,7 +290,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
 
     // API for modules
-    let moduleAPI: ModuleAPI = {
+    moduleAPI = {
       // dispatch function type used for handlers
       dispatch: (dispatchData) => dispatch(ctx, dispatchData),
       // merge a component to the component index
@@ -273,19 +314,8 @@ export function run (moduleDefinition: ModuleDef): Module {
         ctx.taskRunners[name] = moduleDef.tasks[name](moduleAPI)
       }
     }
-    // inital state
-    let newState = component.state({key: rootName})
-    // reserve root space
-    ctx.components[rootName] = {
-      ctx,
-      state: newState,
-      events: component.events(ctx),
-      interfaces: component.interfaces,
-    }
-    // lifecycle hook: init
-    if (component.hooks && component.hooks['init']) {
-      component.hooks['init'](moduleAPI, ctx)
-    }
+    // merges main component and ctx.id now contains it name
+    ctx = merge(ctx, component.name, component)
     // preserves state on hot swaping - TODO: make a deepmerge
     if (lastComponents) {
       for (let i = 0, ids = Object.keys(lastComponents), len = ids.length; i < len; i++) {
@@ -322,7 +352,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     },
     dispose () {
       // dispose all streams
-      ctx.components = {}
+      unmerge(ctx)
       disposeinterfaceStreams(ctx)
       this.isDisposed = true
     },
@@ -331,6 +361,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     interfaces: interfaceHanlerObjects,
     interfaceStreams: ctx.interfaceStreams,
     // root context
+    moduleAPI,
     ctx,
   }
 }
