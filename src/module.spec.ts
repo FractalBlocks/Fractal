@@ -395,9 +395,62 @@ describe('Component composition', () => {
         value: valueHandler(() => 0),
       },
     })
-    app.ctx.id = 'wrong'
-    unmerge(app.ctx)
-    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual(['unmerge', `there is no component name 'wrong'`])
+    unmerge(app.ctx, 'wrong')
+    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+      'unmerge',
+      `there is no component with name 'wrong' at component 'Main'`,
+    ])
+  })
+
+  // module API
+
+  it('module API merge should merge a component', () => {
+    app = run({
+      root: main,
+      interfaces: {
+        value: valueHandler(() => 0),
+      },
+    })
+    app.moduleAPI.merge('mainChild', main)
+    expect(app.ctx.components['Main$mainChild']).toBeDefined()
+    expect(app.ctx.components['Main$mainChild$child1']).toBeDefined()
+    expect(app.ctx.components['Main$mainChild$child2']).toBeDefined()
+    expect(app.ctx.components['Main$mainChild$child3']).toBeDefined()
+  })
+
+  it('module API mergeAll should merge many components', () => {
+    app.moduleAPI.mergeAll({
+      fancyChild1: child,
+      fancyChild2: child,
+      fancyChild3: child,
+    })
+    expect(app.ctx.components['Main$fancyChild1']).toBeDefined()
+    expect(app.ctx.components['Main$fancyChild2']).toBeDefined()
+    expect(app.ctx.components['Main$fancyChild3']).toBeDefined()
+  })
+
+  it('module API unmerge should unmerge a component tree', () => {
+    app.moduleAPI.unmerge('mainChild')
+    expect(app.ctx.components['Main$mainChild']).toBeUndefined()
+    expect(app.ctx.components['Main$mainChild$child1']).toBeUndefined()
+    expect(app.ctx.components['Main$mainChild$child2']).toBeUndefined()
+    expect(app.ctx.components['Main$mainChild$child3']).toBeUndefined()
+  })
+
+  it('module API unmergeAll should unmerge many components', () => {
+    app.moduleAPI.mergeAll({
+      fancyChild1: child,
+      fancyChild2: child,
+      fancyChild3: child,
+    })
+    app.moduleAPI.unmergeAll([
+      'fancyChild1',
+      'fancyChild2',
+      'fancyChild3',
+    ])
+    expect(app.ctx.components['Main$fancyChild1']).toBeUndefined()
+    expect(app.ctx.components['Main$fancyChild2']).toBeUndefined()
+    expect(app.ctx.components['Main$fancyChild3']).toBeUndefined()
   })
 
 })

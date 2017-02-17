@@ -123,6 +123,10 @@ export interface ComponentSpace {
   ctx: Context
   state: any
   events: EventIndex
+  // component index for dynamic handling (new and dispose)
+  components: {
+    [name: string]: true
+  }
   def: Component
 }
 

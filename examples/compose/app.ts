@@ -1,10 +1,8 @@
 import { Context, Component, stateOf, interfaceOf, Hooks } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
-
 import { ViewInterface } from '../../src/interfaces/view'
-import {  } from 'snabbdom'
 import h from 'snabbdom/h'
-Node
+
 let name = 'Main'
 
 let components = {

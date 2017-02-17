@@ -60,6 +60,12 @@ export interface ModuleAPI {
   mergeAll: {
     (components: { [name: string]: Component }): void
   }
+  unmerge: {
+    (name: string): void
+  }
+  unmergeAll: {
+    (components: string[]): void
+  }
   warn: {
     (source, description): void
   }
@@ -112,12 +118,17 @@ export function merge (ctx: Context, name: string, component: Component): Contex
     ctx.warn('merge', `component '${ctx.id}' has overwritten component '${id}'`)
   }
 
+  if (ctx.components[ctx.id] && !ctx.components[ctx.id].components[name]) {
+    ctx.components[ctx.id].components[name] = true
+  }
+
   let childCtx = createContext(ctx, name)
 
   ctx.components[id] = {
     ctx: childCtx,
     state: component.state({key: name}),
     events: component.events(childCtx),
+    components: Object.assign({}, component.components || {}),
     def: component,
   }
   // composition
@@ -139,29 +150,34 @@ export function mergeAll (ctx: Context, components: { [name: string]: Component 
   }
 }
 
-// remove a component to the component index
-export function unmerge (ctx: Context): void {
-  let componentSpace = ctx.components[ctx.id]
+// remove a component to the component index, if name is not defined dispose the root
+export function unmerge (ctx: Context, name?:  string): void {
+  let id = name ? ctx.id + '$' + name : ctx.id
+  let componentSpace = ctx.components[id]
   if (!componentSpace) {
-    return ctx.error('unmerge', `there is no component name '${ctx.id}'`)
+    return ctx.error('unmerge', `there is no component with name '${name}' at component '${ctx.id}'`)
+  }
+  if (name) {
+    delete ctx.components[ctx.id].components[name]
   }
   // decomposition
-  let components = componentSpace.def.components
+  let components = componentSpace.components
+  /* istanbul ignore else */
   if (components) {
-    unmergeAll(ctx, components)
+    unmergeAll(ctx.components[id].ctx, Object.keys(components))
   }
   // lifecycle hook: destroy
   if (componentSpace.def.hooks && componentSpace.def.hooks['destroy']) {
-    componentSpace.def.hooks['destroy'](ctx)
+    componentSpace.def.hooks['destroy'](ctx.components[id].ctx)
   }
 
-  delete ctx.components[ctx.id]
+  delete ctx.components[id]
 }
 
 // add many components to the component index
-export function unmergeAll (ctx: Context, components: { [name: string]: Component }) {
-  for (let i = 0, ids = Object.keys(components), len = ids.length; i < len; i++) {
-    unmerge(ctx.components[ctx.id + '$' + ids[i]].ctx)
+export function unmergeAll (ctx: Context, components: string[]) {
+  for (let i = 0, len = components.length; i < len; i++) {
+    unmerge(ctx, components[i])
   }
 }
 
@@ -292,11 +308,15 @@ export function run (moduleDefinition: ModuleDef): Module {
     // API for modules
     moduleAPI = {
       // dispatch function type used for handlers
-      dispatch: (dispatchData) => dispatch(ctx, dispatchData),
+      dispatch: (dispatchData: DispatchData) => dispatch(ctx, dispatchData),
       // merge a component to the component index
-      merge: (name, component) => merge(ctx, name, component),
+      merge: (name: string, component: Component) => merge(ctx, name, component),
       // merge many components to the component index
-      mergeAll: (components) => mergeAll(ctx, components),
+      mergeAll: (components: { [name: string]: Component }) => mergeAll(ctx, components),
+      // unmerge a component to the component index
+      unmerge: (name: string) => unmerge(ctx, name),
+      // unmerge many components to the component index
+      unmergeAll: (components: string[]) => unmergeAll(ctx, components),
       // delegated methods
       warn: ctx.warn,
       error: ctx.error,
