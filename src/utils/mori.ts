@@ -19,5 +19,5 @@ export function evolve(..._args): { (hashMapObj: HashMap<string, any>): HashMap<
   }
 }
 
-export const get = moriGet<string, any>
+export const get = (t, key) => moriGet<string, any>(t, key)
 
