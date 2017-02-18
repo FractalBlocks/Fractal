@@ -1,3 +1,4 @@
+[![codecov](https://codecov.io/gh/fractalPlatform/Fractal/branch/master/graph/badge.svg)](https://codecov.io/gh/fractalPlatform/Fractal)
 [![Build Status](https://travis-ci.org/fractalPlatform/Fractal.svg?branch=master)](https://travis-ci.org/fractalPlatform/Fractal)
 
 <img src="https://github.com/fractalPlatform/Fractal/blob/master/assets/fractaltexto.png" width="520px">
