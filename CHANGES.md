@@ -15,3 +15,6 @@
 - Modules are renamed Components to be similar to Angular 2 (DX)
 - Engines are renamed Modules to be similar to Angular 2 (DX)
 - Various performance optimization replacing for in by typical for loop
+- Events system
+- Component system
+- 100% coverage
