@@ -2,3 +2,5 @@ language: node_js
 node_js:
 - node #for latest node_js version
 # after_script:
+env:
+- TRAVIS=true
