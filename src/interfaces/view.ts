@@ -37,11 +37,11 @@ export const viewHandler: InterfaceHandler = selectorElm => mod => {
 
   function subscriber (vnode: VNode) {
     let vnode_mapped = h('div' + selector, { key: selector }, [vnode])
-    state$.set(wraperPatch(state$.get(), vnode_mapped))
+    state = wraperPatch(state$.get(), vnode_mapped)
   }
 
   return {
-    state$,
+    state,
     attach: (vnode$: Stream<VNode>) => {
       window.addEventListener('DOMContentLoaded', function() {
         let container = selector !== '' ? document.querySelector(selector) : selectorElm

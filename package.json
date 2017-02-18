@@ -1,7 +1,7 @@
 {
   "name": "fractal-framework",
   "version": "v0.0.4-rc2",
-  "description": "An intuitive minimalist framework for building applications and interactive content",
+  "description": "A minimalist and powerful framework for building applications and interactive content",
   "main": "lib/src/index.js",
   "typings": "typings/index.d.ts",
   "files": [
