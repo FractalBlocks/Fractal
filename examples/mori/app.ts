@@ -1,14 +1,14 @@
 import { Context, Component, ev } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
-import { hashMap, HashMap, get } from 'mori'
-import { evolve } from '../../src/utils/mori'
+import { hashMap, HashMap } from 'mori'
+import { evolve, get } from '../../src/utils/mori'
 
 import { ViewInterface } from '../../src/interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'Main'
 
-let state = ({key}) => hashMap<string, any>(
+let state = ({key}) => hashMap<string, string>(
   'key', key,
   'count', 0,
 )
