@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "test": "karma start",
-    "codecov": "codecov -f coverage/*.json",
     "test:watch": "karma start --no-single-run --auto-watch",
+    "posttest": "codecov -f coverage/*.json",
     "dev": "webpack-dev-server --config config/webpack-dev.config.js --hot --inline --port 3000 --entry"
   },
   "author": "Carlos Galarza <carloslfu@gmail.com>",

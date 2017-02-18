@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/fractalPlatform/Fractal.svg?branch=master)](https://travis-ci.org/fractalPlatform/Fractal)
+
 <img src="https://github.com/fractalPlatform/Fractal/blob/master/assets/fractaltexto.png" width="520px">
 
 Build your ideas as simple as possible. Fractal is an intuitive framework for building applications and interactive content.
