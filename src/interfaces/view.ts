@@ -8,8 +8,6 @@ import eventlistenersModule from './viewEventlisteners'
 import styleModule from 'snabbdom/modules/style'
 import h from 'snabbdom/h'
 import { VNode } from 'snabbdom/vnode'
-import { newStream, Stream } from '../stream'
-import scanMapStream from '../stream/scanMap'
 
 export interface ViewInterface {
   (ctx: Context, s): VNode

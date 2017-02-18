@@ -85,7 +85,7 @@ describe('Context functions', function () {
   let rootCtx: Context = {
     id: 'Main',
     taskRunners: {},
-    interfaceStreams: {},
+    interfaceHandlerFunctions: {},
     components: {}, // component index
     // error and warning handling
     warn: (source, description) => {

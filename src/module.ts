@@ -15,9 +15,9 @@ import {
   InterfaceFunction,
   InterfaceMsg,
   InterfaceHandlerObject,
+  InterfaceHandlerFunction,
 } from './interface'
 import { Task, TaskFunction } from './task'
-import { newStream, Stream } from './stream'
 
 export interface ModuleDef {
   log?: boolean
@@ -40,8 +40,8 @@ export interface Module {
   interfaces: {
     [name: string]: InterfaceHandlerObject
   }
-  interfaceStreams: {
-    [name: string]: Stream<InterfaceMsg>
+  interfaceHandlerFunctions: {
+    [name: string]: InterfaceHandlerFunction
   }
   moduleAPI: ModuleAPI
   // Root component context
@@ -80,7 +80,7 @@ export function createContext (ctx: Context, name: string): Context {
     id, // the component id
     // delegation
     components: ctx.components,
-    interfaceStreams: ctx.interfaceStreams,
+    interfaceHandlerFunctions: ctx.interfaceHandlerFunctions,
     taskRunners: ctx.taskRunners,
     warn: ctx.warn,
     warnLog: ctx.warnLog,
@@ -246,13 +246,9 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
 // permorms interface recalculation
 export function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.id]
-  for (let name in  ctx.interfaceStreams) {
-    ctx.interfaceStreams[name].set(space.def.interfaces[name](ctx, space.state))
+  for (let name in  ctx.interfaceHandlerFunctions) {
+    ctx.interfaceHandlerFunctions[name](space.def.interfaces[name](ctx, space.state))
   }
-}
-
-export interface InterfaceHandlerStreams {
-  [driverName: string]: Stream<InterfaceMsg>
 }
 
 // function for running a root component
@@ -286,7 +282,7 @@ export function run (moduleDefinition: ModuleDef): Module {
         // component index
         components: {},
         taskRunners: {},
-        interfaceStreams: {},
+        interfaceHandlerFunctions: {},
         // error and warning handling
         warn: (source, description) => {
           ctx.warnLog.push([source, description])
@@ -345,12 +341,11 @@ export function run (moduleDefinition: ModuleDef): Module {
         }
       }
     }
-    // creates interfaceStreams (interface recalculation)
+
     for (let name in component.interfaces) {
       if (interfaceHandlerObjects[name]) {
-        ctx.interfaceStreams[name] = newStream(component.interfaces[name](ctx, ctx.components[rootName].state))
-        // connect interface handlers to driver streams
-        interfaceHandlerObjects[name][(lastComponents) ? 'reattach' : 'attach'](ctx.interfaceStreams[name])
+        ctx.interfaceHandlerFunctions[name] = interfaceHandlerObjects[name].handle
+        ctx.interfaceHandlerFunctions[name](component.interfaces[name](ctx, ctx.components[rootName].state))
       } else {
         return ctx.error('InterfaceHandlers', `'${rootName}' module has no interface called '${name}', missing interface handler`)
       }
@@ -364,7 +359,6 @@ export function run (moduleDefinition: ModuleDef): Module {
     moduleDef,
     // reattach root component, used for hot swapping
     reattach (comp: Component) {
-      disposeinterfaceStreams(ctx)
       let lastComponents = ctx.components
       ctx.components = {}
       // TODO: use a deepmerge algoritm
@@ -373,7 +367,6 @@ export function run (moduleDefinition: ModuleDef): Module {
     dispose () {
       // dispose all streams
       unmerge(ctx)
-      disposeinterfaceStreams(ctx)
       for (let i = 0, names = Object.keys(interfaceHandlerObjects), len = names.length; i < len; i++) {
         interfaceHandlerObjects[names[i]].dispose()
       }
@@ -382,15 +375,9 @@ export function run (moduleDefinition: ModuleDef): Module {
     isDisposed: false,
     // related to internals
     interfaces: interfaceHandlerObjects,
-    interfaceStreams: ctx.interfaceStreams,
+    interfaceHandlerFunctions: ctx.interfaceHandlerFunctions,
     // root context
     moduleAPI,
     ctx,
-  }
-}
-
-export function disposeinterfaceStreams (ctx: Context) {
-  for (var i = 0, keys = Object.keys(ctx.interfaceStreams); i < keys.length; i++) {
-    ctx.interfaceStreams[keys[i]].dispose()
   }
 }
