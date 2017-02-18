@@ -16,7 +16,7 @@ export interface Component {
   // the changing stuff (AKA variables)
   state (params: { key: string }): any
   // dispatchers for actions and tasks
-  events?: Events
+  inputs?: Inputs
   // unique way to change the state
   actions?: {
     [name: string]: Action
@@ -35,15 +35,15 @@ export interface Hooks {
   }
 }
 
-export interface Events {
-  (ctx: Context): EventIndex
+export interface Inputs {
+  (ctx: Context): InputIndex
 }
 
-export interface EventIndex {
-  [name: string]: Event
+export interface InputIndex {
+  [name: string]: Input
 }
 
-export interface Event {
+export interface Input {
   (data: any): Update | Task | Executable[]
 }
 
@@ -52,17 +52,17 @@ export interface Action {
 }
 
 // is the data of an event, refers to some event of a component - Comunications stuff
-export interface EventData extends Array<any> {
+export interface InputData extends Array<any> {
   0: string // component index identifier
   1: string // input name
-  2?: EventFunction // a dispatcher function is optional
+  2?: any // a dispatcher function / value is optional
 }
 
 // dispatcher data comes from an interface / task handler as a result of processing EventData (from a event) - Comunications stuff
 export interface DispatchData extends Array<any> {
   0: string // component index identifier
   1: string // input name
-  2?: any // data from an interface / task handler ( result of EventFunction )
+  2?: any // data from an interface / task handler ( result of function or value )
 }
 
 /* function that can be serialized securely, is pure and should not have contextual dependencies,
@@ -70,18 +70,15 @@ export interface DispatchData extends Array<any> {
    and handlers still dispatch inputs, a solution for serializing event callbacks.
    this function is executed by interface / task handlers and his result is passed as a value to the dispatched component event of DispatchData
  Event Flow:
-  - EventData (from component interface / task) comes with some data depending on the context
+  - InputData (from component interface / task) comes with some data depending on the context
   - If needed, some handy / fancy CHANNEL serialize and transmit it
-  - External things occurs and the EventFunction are excecuted (if exists) giving DispatchData as a result
+  - External things occurs and the function (InputData[2]) are excecuted passing it the event data (if exists, if not the value is taken) giving DispatchData as a result
   - If EventData has transferred via CHANNEL, the DispatchData is returned via this CHANNEL
   - the interface / task handler pass DispatchData to dispatch function
-  - dispatch function fires the event in the respective component
+  - dispatch function fires the input in the respective component
 
  The objective of this flow is allow handlers to be excecuted in workers or even remotely o.O
  */
-export type EventFunction = {
-  (eventObject: Object): any
-}
 
 export interface Update {
   (state: any): any
@@ -122,7 +119,7 @@ export interface ComponentSpaceIndex {
 export interface ComponentSpace {
   ctx: Context
   state: any
-  events: EventIndex
+  inputs: InputIndex
   // component index for dynamic handling (new and dispose)
   components: {
     [name: string]: true

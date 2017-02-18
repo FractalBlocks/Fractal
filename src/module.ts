@@ -6,9 +6,8 @@ import {
   ComponentSpace,
   ComponentSpaceIndex,
   Executable,
-  EventData,
+  InputData,
   DispatchData,
-  EventFunction,
   Interface,
 } from './core'
 import {
@@ -127,7 +126,7 @@ export function merge (ctx: Context, name: string, component: Component): Contex
   ctx.components[id] = {
     ctx: childCtx,
     state: component.state({key: name}),
-    events: component.events(childCtx),
+    inputs: component.inputs(childCtx),
     components: Object.assign({}, component.components || {}),
     def: component,
   }
@@ -182,8 +181,8 @@ export function unmergeAll (ctx: Context, components: string[]) {
 }
 
 // create an EventData array
-export function ev (ctx: Context, inputName: string, paramFn?: EventFunction): EventData {
-   return [ctx.id, inputName, paramFn]
+export function ev (ctx: Context, inputName: string, param?: any): InputData {
+   return [ctx.id, inputName, param]
 }
 
 // dispatch an event to the respective component
@@ -192,7 +191,7 @@ export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
   if (!component) {
     return ctx.error('dispatch', `there are no module with id '${dispatchData[0]}'`)
   }
-  let event = component.events[dispatchData[1]]
+  let event = component.inputs[dispatchData[1]]
   if (event) {
     execute(ctx, dispatchData[0], event(dispatchData[2]))
   } else {

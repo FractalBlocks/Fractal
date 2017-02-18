@@ -25,7 +25,7 @@ let actions = {
   },
 }
 
-let events = (ctx: Context) => ({
+let inputs = (ctx: Context) => ({
   set: (n: number) => actions.Set(n),
   inc: () => actions.Inc(),
 })
@@ -63,7 +63,7 @@ let mDef: Component = {
   name,
   state,
   components,
-  events,
+  inputs,
   actions,
   interfaces: {
     view,

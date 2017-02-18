@@ -18,7 +18,7 @@ let actions = {
   Inc: () => evolve('count', x => x + 1),
 }
 
-let events = (ctx: Context) => ({
+let inputs = (ctx: Context) => ({
   set: n => actions.Set(n),
   inc: () => actions.Inc(),
 })
@@ -61,7 +61,7 @@ let style: any = styleGroup(styleObj, name)
 let mDef: Component = {
   name,
   state,
-  events,
+  inputs,
   actions,
   interfaces: {
     view,

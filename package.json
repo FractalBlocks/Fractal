@@ -43,6 +43,7 @@
     "karma-webpack": "^2.0.2",
     "source-map-loader": "^0.1.6",
     "ts-helpers": "^1.1.2",
+    "tslint": "^4.4.2",
     "typescript": "^2.2.1-insiders.20170209",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0"

@@ -40,7 +40,7 @@ let actions = {
   },
 }
 
-let events = (ctx: Context) => ({
+let inputs = (ctx: Context) => ({
   set: (n: number) => actions.Set(n),
   inc: () => actions.Inc(),
   task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
@@ -71,7 +71,7 @@ let childValue: ValueInterface =
 let root: Component = {
   name,
   state,
-  events,
+  inputs,
   actions,
   interfaces: {
     value: childValue,
@@ -205,7 +205,7 @@ describe('One Component + module functionality', function () {
     expect(value.content).toBe('Fractal is awesome!! 0')
   })
 
-  // Events should dispatch actions and intefaces are recalculated
+  // Inputs should dispatch actions and intefaces are recalculated
 
   let value
 
@@ -318,7 +318,7 @@ describe('Component composition', () => {
   let child: Component = {
     name: 'Child',
     state,
-    events,
+    inputs,
     actions,
     interfaces: {
       value: childValue,
@@ -345,7 +345,7 @@ describe('Component composition', () => {
     name: 'Main',
     state,
     components,
-    events,
+    inputs,
     actions,
     interfaces: {
       value: mainValue,
@@ -472,7 +472,7 @@ describe('Lifecycle hooks', () => {
     name: 'Child',
     state,
     hooks,
-    events,
+    inputs,
     actions,
     interfaces: {
       value: childValue,
@@ -498,7 +498,7 @@ describe('Lifecycle hooks', () => {
     state,
     hooks,
     components,
-    events,
+    inputs,
     actions,
     interfaces: {
       value: mainValue,
@@ -538,7 +538,7 @@ describe('Hot swapping', () => {
    let child: Component = {
     name: 'Child',
     state,
-    events,
+    inputs,
     actions,
     interfaces: {
       value: childValue,
@@ -563,7 +563,7 @@ describe('Hot swapping', () => {
     name: 'Main',
     state,
     components,
-    events,
+    inputs,
     actions,
     interfaces: {
       value: mainValueV1,
@@ -584,7 +584,7 @@ describe('Hot swapping', () => {
     name: 'Main',
     state,
     components,
-    events,
+    inputs,
     actions,
     interfaces: {
       value: mainValueV2,

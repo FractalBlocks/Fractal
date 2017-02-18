@@ -4,33 +4,33 @@ import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
 import attributesModule from 'snabbdom/modules/attributes'
 import propsModule from 'snabbdom/modules/props'
-import eventlistenersModule from 'snabbdom/modules/eventlisteners'
+import eventlistenersModule from './viewEventlisteners'
 import styleModule from 'snabbdom/modules/style'
 import h from 'snabbdom/h'
 import { VNode } from 'snabbdom/vnode'
 import { newStream, Stream } from '../stream'
 import scanMapStream from '../stream/scanMap'
 
-// Common snabbdom patch function (convention over configuration)
-const patch = init([
-  classModule,
-  attributesModule,
-  propsModule,
-  eventlistenersModule,
-  styleModule,
-])
-
 export interface ViewInterface {
   (ctx: Context, s): VNode
 }
 
-export const viewHandler: InterfaceHandler = (selectorElm, patchfn = patch) => mod => {
+export const viewHandler: InterfaceHandler = selectorElm => mod => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let lastContainer,
     state$ = newStream<VNode>(undefined)
 
+  // Common snabbdom patch function (convention over configuration)
+  let patchFn = init([
+    classModule,
+    attributesModule,
+    propsModule,
+    eventlistenersModule(mod.dispatch),
+    styleModule,
+  ])
+
   function wraperPatch(o, n) {
-    let newContainer = patchfn(o, n)
+    let newContainer = patchFn(o, n)
     lastContainer = newContainer
     return newContainer
   }

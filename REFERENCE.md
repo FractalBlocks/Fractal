@@ -20,3 +20,5 @@ Overview of files
 - -- index.ts: Implementation of a basic stream
 - -- map.ts: Implementation of a stream mapping
 - -- scan.ts: Implementation of a stream scanning
+
+TODO: complete docs

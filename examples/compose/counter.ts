@@ -22,7 +22,7 @@ let actions = {
   },
 }
 
-let events = (ctx: Context) => ({
+let inputs = (ctx: Context) => ({
   set: (n: number) => actions.Set(n),
   inc: () => actions.Inc(),
 })
@@ -42,7 +42,7 @@ h('div', {
   h('div', {
     class: { [style.reset]: true },
     on: {
-      click: ev(ctx, 'set', () => 0),
+      click: ev(ctx, 'set', 0),
     },
   }, 'reset'),
 ])
@@ -83,7 +83,7 @@ let style: any = styleGroup(styleObj, name)
 let mDef: Component = {
   name,
   state,
-  events,
+  inputs,
   actions,
   interfaces: {
     view,

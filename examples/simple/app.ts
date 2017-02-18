@@ -22,7 +22,7 @@ let actions = {
   },
 }
 
-let events = (ctx: Context) => ({
+let inputs = (ctx: Context) => ({
   set: (n: number) => actions.Set(n),
   inc: () => actions.Inc(),
 })
@@ -83,7 +83,7 @@ let style: any = styleGroup(styleObj, name)
 let mDef: Component = {
   name,
   state,
-  events,
+  inputs,
   actions,
   interfaces: {
     view,
