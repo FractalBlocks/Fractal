@@ -3,26 +3,18 @@ import { InterfaceHandler } from '../interface'
 declare var self: any
 
 export const workerInterface: InterfaceHandler = (name: string) => mod => {
-  let lastValue
-  let subscriber = value => {
-    lastValue = value
-    self.postMessage([name, 'value', value])
-  }
-
   return {
-    state$: undefined,
-    attach: stream$ => {
-      stream$.subscribe(subscriber)
-      subscriber(stream$.get())
-      self.postMessage([name, 'attach'])
-    },
-    reattach: stream$ => {
-      stream$.subscribe(subscriber)
-      subscriber(stream$.get())
-      self.postMessage([name, 'reattach'])
+    state: undefined,
+    handle: value => {
+      self.postMessage(['interface', name, 'value', value])
     },
     dispose: () => {
-      self.postMessage([name, 'dispose'])
+      self.postMessage(['interface', name, 'dispose'])
     },
   }
 }
+
+export function runWorker (p: any) {
+
+}
+
