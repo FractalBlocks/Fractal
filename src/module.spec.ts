@@ -18,7 +18,6 @@ import {
   unmerge,
 } from './index'
 import { valueHandler, ValueInterface } from './interfaces/value'
-import { newStream } from './stream'
 
 // Component definition to perform tests
 
@@ -85,7 +84,7 @@ describe('Context functions', function () {
   let rootCtx: Context = {
     id: 'Main',
     taskRunners: {},
-    interfaceStreams: {},
+    interfaceHandlerFunctions: {},
     components: {}, // component index
     // error and warning handling
     warn: (source, description) => {
@@ -166,9 +165,13 @@ describe('Context functions', function () {
 
 describe('One Component + module functionality', function () {
 
-  let value$ = newStream<any>(undefined)
+  let valueFn
+  let lastValue
   function onValue(val) {
-    value$.set(val)
+    lastValue = val
+    if (valueFn) {
+      valueFn(val)
+    }
   }
 
   let taskLog = []
@@ -200,7 +203,7 @@ describe('One Component + module functionality', function () {
   })
 
   it('should have initial state', () => {
-    let value = value$.get()
+    let value = lastValue
     expect(value.tagName).toBe('Main')
     expect(value.content).toBe('Fractal is awesome!! 0')
   })
@@ -210,12 +213,12 @@ describe('One Component + module functionality', function () {
   let value
 
   it('should react to an event (dispatch function)', done => {
-    value$.subscribe(value => {
+    valueFn = value => {
       expect(value.content).toBe('Fractal is awesome!! 1')
       done()
-    })
+    }
     // extract value and dispatch interface handlers
-    value = value$.get()
+    value = lastValue
     value._dispatch(value.inc)
   })
 
@@ -252,17 +255,16 @@ describe('One Component + module functionality', function () {
   // Events should dispatch tasks to its handlers and those can dispatch events
 
   it('should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
-    value$.removeSubscribers()
-    value$.subscribe(value => {
+    valueFn = value => {
       expect(value.content).toBe('Fractal is awesome!! 2')
       expect(taskLog[taskLog.length - 1]).toEqual('info')
       done()
-    })
+    }
     value._dispatch(value.task)
   })
 
   it('should log an error when try to dispatch an task that has no task handler', () => {
-    value$.removeSubscribers()
+    valueFn = undefined
     value._dispatch(value.wrongTask)
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
       'execute',
@@ -273,7 +275,7 @@ describe('One Component + module functionality', function () {
   // Executable lists
 
   it('should dispatch an error if try to dispatch an executable list with a task with no handler', () => {
-    value$.removeSubscribers()
+    valueFn = undefined
     value._dispatch(value.executableListWrong)
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
       'execute',
@@ -282,21 +284,19 @@ describe('One Component + module functionality', function () {
   })
 
   it('should dispatch an executable list that contains a task', done => {
-    value$.removeSubscribers()
-    value$.subscribe(value => {
+    valueFn = value => {
       expect(value.content).toBe('Fractal is awesome!! 3')
       expect(taskLog[taskLog.length - 1]).toEqual('info2')
       done()
-    })
+    }
     value._dispatch(value.executableListTask)
   })
 
   it('should dispatch an executable list that contains an action', done => {
-    value$.removeSubscribers()
-    value$.subscribe(value => {
+    valueFn = value => {
       expect(value.content).toBe('Fractal is awesome!! 4')
       done()
-    })
+    }
     value._dispatch(value.executableListAction)
   })
 
@@ -354,16 +354,20 @@ describe('Component composition', () => {
 
   let app: Module
 
-  let value2$ = newStream<any>(undefined)
-  function onValue2(val) {
-    value2$.set(val)
+  let valueFn
+  let lastValue
+  function onValue(val) {
+    lastValue = val
+    if (valueFn) {
+      valueFn(val)
+    }
   }
 
   it('Should merge child components', () => {
     app = run({
       root: main,
       interfaces: {
-        value: valueHandler(onValue2),
+        value: valueHandler(onValue),
       }
     })
     expect(app.ctx.components['Main$child1']).toBeDefined()
@@ -372,14 +376,13 @@ describe('Component composition', () => {
   })
 
   it('a child should react to events', done => {
-    let value = value2$.get()
-    value2$.removeSubscribers()
-    value2$.subscribe(value => {
+    let value = lastValue
+    valueFn = value => {
       expect(value.childValue1.content).toBe('Fractal is awesome!! 1')
       expect(value.childValue2.content).toBe('Fractal is awesome!! 0')
       expect(value.childValue3.content).toBe('Fractal is awesome!! 0')
       done()
-    })
+    }
     value._dispatch(value.childValue1.inc)
   })
 
@@ -507,9 +510,13 @@ describe('Lifecycle hooks', () => {
 
   let app: Module
 
-  let value$ = newStream<any>(undefined)
+  let valueFn
+  let lastValue
   function onValue(val) {
-    value$.set(val)
+    lastValue = val
+    if (valueFn) {
+      valueFn(val)
+    }
   }
 
   let value
@@ -521,7 +528,7 @@ describe('Lifecycle hooks', () => {
         value: valueHandler(onValue),
       },
     })
-    value = value$.get()
+    value = lastValue
     expect(value.childValue1.content).toBe('Fractal is awesome!! 1')
     expect(value.childValue2.content).toBe('Fractal is awesome!! 1')
     expect(value.childValue3.content).toBe('Fractal is awesome!! 1')
@@ -593,9 +600,13 @@ describe('Hot swapping', () => {
 
   let app: Module
 
-  let value$ = newStream<any>(undefined)
+  let valueFn
+  let lastValue
   function onValue(val) {
-    value$.set(val)
+    lastValue = val
+    if (valueFn) {
+      valueFn(val)
+    }
   }
 
   let value
@@ -608,7 +619,7 @@ describe('Hot swapping', () => {
       },
     })
     app.reattach(mainV2)
-    value = value$.get()
+    value = lastValue
     expect(value.content).toBe('Fractal is awesome V2!! 0 :D')
     expect(value.childValue1.content).toBe('Fractal is awesome!! 0')
     expect(value.childValue2.content).toBe('Fractal is awesome!! 0')

@@ -8,8 +8,6 @@ import eventlistenersModule from './viewEventlisteners'
 import styleModule from 'snabbdom/modules/style'
 import h from 'snabbdom/h'
 import { VNode } from 'snabbdom/vnode'
-import { newStream, Stream } from '../stream'
-import scanMapStream from '../stream/scanMap'
 
 export interface ViewInterface {
   (ctx: Context, s): VNode
@@ -17,8 +15,8 @@ export interface ViewInterface {
 
 export const viewHandler: InterfaceHandler = selectorElm => mod => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
-  let lastContainer,
-    state$ = newStream<VNode>(undefined)
+  let lastContainer
+  let state
 
   // Common snabbdom patch function (convention over configuration)
   let patchFn = init([
@@ -35,28 +33,26 @@ export const viewHandler: InterfaceHandler = selectorElm => mod => {
     return newContainer
   }
 
-  function subscriber (vnode: VNode) {
+  function handler (vnode: VNode) {
     let vnode_mapped = h('div' + selector, { key: selector }, [vnode])
-    state$.set(wraperPatch(state$.get(), vnode_mapped))
+    state = wraperPatch(state, vnode_mapped)
   }
 
   return {
-    state$,
-    attach: (vnode$: Stream<VNode>) => {
-      window.addEventListener('DOMContentLoaded', function() {
-        let container = selector !== '' ? document.querySelector(selector) : selectorElm
-        if (!container) {
-          return mod.error('view', `There are no element matching selector '${selector}'`)
-        }
-        state$.set(container)
-        vnode$.subscribe(subscriber)
-        subscriber(vnode$.get())
-      })
-    },
-    reattach: (vnode$: Stream<VNode>) => {
-      state$.set(lastContainer)
-      vnode$.subscribe(subscriber)
-      subscriber(vnode$.get())
+    state,
+    handle: (value: VNode) => {
+      if (!state) {
+        window.addEventListener('DOMContentLoaded', function() {
+          let container = selector !== '' ? document.querySelector(selector) : selectorElm
+          if (!container) {
+            return mod.error('view', `There are no element matching selector '${selector}'`)
+          }
+          state = container
+          handler(state)
+        })
+      } else {
+        handler(state)
+      }
     },
     dispose: () => {},
   }

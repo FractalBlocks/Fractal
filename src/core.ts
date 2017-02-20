@@ -1,5 +1,4 @@
-import { Stream } from './stream'
-import { InterfaceMsg } from './interface'
+import { InterfaceMsg, InterfaceHandlerFunction } from './interface'
 import { Task, TaskRunner } from './task'
 import { ModuleAPI } from './module'
 
@@ -106,8 +105,8 @@ export interface Context {
   taskRunners: {
     [name: string]: TaskRunner
   }
-  interfaceStreams: {
-    [name: string]: Stream<InterfaceMsg>
+  interfaceHandlerFunctions: {
+    [name: string]: InterfaceHandlerFunction
   }
 }
 

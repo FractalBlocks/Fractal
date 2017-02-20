@@ -1,11 +1,9 @@
 // import { eventHandler } from './event'
 // import testBed from './_testBed.spec'
-// import { newStream } from '../stream'
 
 
 //   describe('Event interface behaviours', function() {
 
-//     let interfaceMsg$ = newStream<any>(undefined)
 
 //     function onValue(val) {
 //       interfaceMsg$.set(val)

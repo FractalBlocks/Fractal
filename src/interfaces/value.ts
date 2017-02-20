@@ -13,22 +13,13 @@ export interface ValueInterface {
 }
 
 export const valueHandler: InterfaceHandler = (cb: (evRes: ValueResponse) => void) => mod => {
-  function subscriber (driverMsg: InterfaceMsg) {
-    driverMsg['_dispatch'] = dispatchData => {
-      mod.dispatch(dispatchData)
-    }
-    cb(<ValueResponse> driverMsg)
-  }
   return {
-    state$: undefined,
-    attach(handler$) {
-      handler$.subscribe(subscriber)
-      // get first calculation
-      subscriber(handler$.get())
-    },
-    reattach(handler$) {
-      handler$.subscribe(subscriber)
-      subscriber(handler$.get())
+    state: undefined,
+    handle(driverMsg) {
+      driverMsg['_dispatch'] = dispatchData => {
+        mod.dispatch(dispatchData)
+      }
+      cb(<ValueResponse> driverMsg)
     },
     dispose() {}
   }

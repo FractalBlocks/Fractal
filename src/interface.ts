@@ -1,4 +1,3 @@
-import { Stream } from './stream'
 import { ModuleAPI } from './module'
 
 export interface InterfaceHandler {
@@ -11,10 +10,15 @@ export interface InterfaceFunction {
 }
 
 export interface InterfaceHandlerObject {
-  state$: Stream<any> | undefined
-  attach(driver$: Stream<InterfaceMsg>): void
-  reattach(driver$: Stream<InterfaceMsg>): void
-  dispose(): void
+  state: any
+  handle: InterfaceHandlerFunction
+  dispose: {
+    (): void
+  }
+}
+
+export interface InterfaceHandlerFunction {
+  (value: InterfaceMsg): void
 }
 
 export interface InterfaceMsg {
