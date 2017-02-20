@@ -46,19 +46,3 @@ FractalBlocks UI follows the same topics
 ## Ideas
 
 - IMPORTANT: styles showld be separated and are a function of palette and other globals (maximum customization and weight)
-
-## Scripts
-
-List of possible commands, we maintain package.json as simple as possible
-
-"lint": "tslint src/**/*.ts",
-"build": "rimraf lib/ && tsc",
-"benchmarks": "ts-node benchmarks/index.ts",
-"prepublish": "typings install && npm run build",
-"compile": "cross-env NODE_ENV=production webpack --config webpack/dist.config.js --progress",
-"compile-dev": "cross-env NODE_ENV=production webpack --config webpack/dist-dev.config.js --progress",
-"compile-server": "cross-env NODE_ENV=production webpack --config webpack/webpack-server.config.js --progress",
-"test-dev": "webpack-dev-server --config webpack/test-dev.config.js --progress",
-"postinstall": "typings install dt~jasmine --save --global",
-"test": "ts-node node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
-"test:coverage": "ts-node node_modules/istanbul/lib/cli.js cover -e .ts  -x \"*.d.ts\" -x \"*.spec.ts\" node_modules/jasmine/bin/jasmine.js -- JASMINE_CONFIG_PATH=jasmine.json"
