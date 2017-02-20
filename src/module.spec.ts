@@ -112,7 +112,7 @@ describe('Context functions', function () {
     expect(lastWarn).toEqual(warn)
   })
 
-  it('Should delegate error function', () => {
+  it('Should put an entry in errorLog when error function is invoked', () => {
     let error = ['child', 'error 1']
     ctx.error(error[0], error[1])
     let lastError = rootCtx.errorLog[rootCtx.errorLog.length - 1]
@@ -181,6 +181,8 @@ describe('One Component + module functionality', function () {
     mod.dispatch(data.cb)
   }
 
+  let lastLog
+
   let app = run({
     root,
     tasks: {
@@ -188,18 +190,24 @@ describe('One Component + module functionality', function () {
     },
     interfaces: {
       value: valueHandler(onValue),
-    }
+    },
+    warn: (source, description) => lastLog = [source, description],
+    error: (source, description) => lastLog = [source, description],
   })
 
-  it('Should log an error when module dont have an InterfaceHandler', () => {
+  it('Should log an error and notify error callback when module dont have an InterfaceHandler', () => {
     let app = run({
       root,
       interfaces: {},
+      warn: (source, description) => lastLog = [source, description],
+      error: (source, description) => lastLog = [source, description],
     })
-    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+    let log = [
       'InterfaceHandlers',
       `'Main' module has no interface called 'value', missing interface handler`,
-    ])
+    ]
+    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual(log)
+    expect(lastLog).toEqual(log)
   })
 
   it('should have initial state', () => {
@@ -234,6 +242,7 @@ describe('One Component + module functionality', function () {
     app.ctx.warn(warn[0], warn[1])
     let lastWarn = app.ctx.warnLog[app.ctx.warnLog.length - 1]
     expect(lastWarn).toEqual(warn)
+    expect(lastLog).toEqual(warn)
   })
 
   it('should log an error when try to dispatch an event of an inexistent module', () => {

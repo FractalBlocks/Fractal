@@ -20,14 +20,21 @@ import {
 import { Task, TaskFunction } from './task'
 
 export interface ModuleDef {
+  root: Component
   log?: boolean
   logAll?: boolean
-  root: Component
   tasks?: {
     [name: string]: TaskFunction
   }
   interfaces: {
     [name: string]: InterfaceFunction
+  }
+  // callbacks (side effects) for log messages
+  warn?: {
+    (source: string, description: string): void
+  }
+  error?: {
+    (source: string, description: string): void
   }
 }
 
@@ -286,12 +293,16 @@ export function run (moduleDefinition: ModuleDef): Module {
         // error and warning handling
         warn: (source, description) => {
           ctx.warnLog.push([source, description])
-          console.warn(`source: ${source}, description: ${description}`)
+          if (moduleDef.warn) {
+            moduleDef.warn(source, description)
+          }
         },
         warnLog: [],
         error: (source, description) => {
           ctx.errorLog.push([source, description])
-          console.error(`source: ${source}, description: ${description}`)
+          if (moduleDef.error) {
+            moduleDef.error(source, description)
+          }
         },
         errorLog: [],
       }
