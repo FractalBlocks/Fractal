@@ -16,9 +16,5 @@ Overview of files
 - interfaces/: Set of built-in Fractal Interfaces, do something when state changes
 - -- event.ts: Executes a callback
 - -- view.ts: Render a Snabbdom view
-- stream/: Set of function for implementing streams
-- -- index.ts: Implementation of a basic stream
-- -- map.ts: Implementation of a stream mapping
-- -- scan.ts: Implementation of a stream scanning
 
 TODO: complete docs

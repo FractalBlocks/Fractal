@@ -18,3 +18,4 @@
 - Events system
 - Component system
 - 100% coverage
+- Remove stream implementation
