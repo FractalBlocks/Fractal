@@ -4,6 +4,7 @@
 
 - Module should have an error and warning handler for log reporting middleware (DX)
 - Integrate standard linter + trailing commas with tslint
+- Make Fractal works with awesome fuse-box
 
 ## Philosophy
 
