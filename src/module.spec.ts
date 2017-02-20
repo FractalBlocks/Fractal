@@ -237,18 +237,18 @@ describe('One Component + module functionality', function () {
   })
 
   it('should log an error when try to dispatch an event of an inexistent module', () => {
-    value._dispatch(['someId', 'someEvent'])
+    value._dispatch(['someId', 'someInput'])
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
       'dispatch',
       `there are no module with id 'someId'`,
     ])
   })
 
-  it('should log an error when try to dispatch an inexistent event of a module', () => {
-    value._dispatch(['Main', 'someEvent'])
+  it('should log an error when try to dispatch an inexistent input of a module', () => {
+    value._dispatch(['Main', 'someInput'])
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
       'dispatch',
-      `there are no event with id 'someEvent' in module 'Main'`,
+      `there are no input with id 'someInput' in module 'Main'`,
     ])
   })
 

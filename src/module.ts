@@ -180,22 +180,22 @@ export function unmergeAll (ctx: Context, components: string[]) {
   }
 }
 
-// create an EventData array
+// create an InputData array
 export function ev (ctx: Context, inputName: string, param?: any): InputData {
    return [ctx.id, inputName, param]
 }
 
-// dispatch an event to the respective component
+// dispatch an input based on DispatchData to the respective component
 export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
   let component = ctx.components[dispatchData[0]]
   if (!component) {
     return ctx.error('dispatch', `there are no module with id '${dispatchData[0]}'`)
   }
-  let event = component.inputs[dispatchData[1]]
-  if (event) {
-    execute(ctx, dispatchData[0], event(dispatchData[2]))
+  let input = component.inputs[dispatchData[1]]
+  if (input) {
+    execute(ctx, dispatchData[0], input(dispatchData[2]))
   } else {
-    ctx.error('dispatch', `there are no event with id '${dispatchData[1]}' in module '${dispatchData[0]}'`)
+    ctx.error('dispatch', `there are no input with id '${dispatchData[1]}' in module '${dispatchData[0]}'`)
   }
 }
 
