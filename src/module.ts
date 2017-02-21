@@ -26,19 +26,15 @@ export interface ModuleDef {
   tasks?: {
     [name: string]: TaskFunction
   }
-  interfaces?: {
+  interfaces: {
     [name: string]: InterfaceFunction
   }
-  // allow passing centralized interfaces / tasks like utils/workerInterfaces
-  mergeTasks?: {
-    (mod: ModuleAPI): {
-      [name: string]: TaskRunner
-    }
+  // lifecycle hooks for modules
+  init?: {
+    (mod: ModuleAPI): void
   }
-  mergeInterfaces?: {
-    (mod: ModuleAPI): {
-      [name: string]: InterfaceHandlerObject
-    }
+  destroy?: {
+    (mod: ModuleAPI): void
   }
   // callbacks (side effects) for log messages
   warn?: {
@@ -153,8 +149,8 @@ export function merge (ctx: Context, name: string, component: Component): Contex
     mergeAll(childCtx, component.components)
   }
   // lifecycle hook: init
-  if (component.hooks && component.hooks['init']) {
-    component.hooks['init'](childCtx)
+  if (component.init) {
+    component.init(childCtx)
   }
 
   return childCtx
@@ -184,8 +180,8 @@ export function unmerge (ctx: Context, name?:  string): void {
     unmergeAll(ctx.components[id].ctx, Object.keys(components))
   }
   // lifecycle hook: destroy
-  if (componentSpace.def.hooks && componentSpace.def.hooks['destroy']) {
-    componentSpace.def.hooks['destroy'](ctx.components[id].ctx)
+  if (componentSpace.def.destroy) {
+    componentSpace.def.destroy(ctx.components[id].ctx)
   }
 
   delete ctx.components[id]
@@ -342,27 +338,14 @@ export function run (moduleDefinition: ModuleDef): Module {
     if (!lastComponents) {
       interfaceHandlerObjects = {}
       // pass ModuleAPI to every InterfaceFunction
-      if (moduleDef.interfaces) {
-        for (let i = 0, names = Object.keys(moduleDef.interfaces), len = names.length; i < len; i++) {
-          interfaceHandlerObjects[names[i]] = moduleDef.interfaces[names[i]](moduleAPI)
-        }
+      for (let i = 0, names = Object.keys(moduleDef.interfaces), len = names.length; i < len; i++) {
+        interfaceHandlerObjects[names[i]] = moduleDef.interfaces[names[i]](moduleAPI)
       }
-      // merge interfaces via mergeInterfaces
-      if (moduleDef.mergeInterfaces) {
-        let mergeableInterfaces = moduleDef.mergeInterfaces(moduleAPI)
-        interfaceHandlerObjects = Object.assign(interfaceHandlerObjects, mergeableInterfaces)
-      }
-
       // pass ModuleAPI to every TaskFunction
       if (moduleDef.tasks) {
         for (let i = 0, names = Object.keys(moduleDef.tasks), len = names.length; i < len; i++) {
           ctx.taskRunners[names[i]] = moduleDef.tasks[names[i]](moduleAPI)
         }
-      }
-      // merge tasks via mergeTasks
-      if (moduleDef.mergeTasks) {
-        let mergeableTasks = moduleDef.mergeTasks(moduleAPI)
-        ctx.taskRunners = Object.assign(ctx.taskRunners, mergeableTasks)
       }
     }
     // merges main component and ctx.id now contains it name

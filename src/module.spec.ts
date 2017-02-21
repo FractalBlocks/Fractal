@@ -193,6 +193,11 @@ describe('One Component + module functionality', function () {
     error: (source, description) => lastLog = [source, description],
   })
 
+  it('should have initial state', () => {
+    expect(lastValue.tagName).toBe('Main')
+    expect(lastValue.content).toBe('Fractal is awesome!! 0')
+  })
+
   it('Should log an error and notify error callback when module dont have an InterfaceHandler', () => {
     let app = run({
       root,
@@ -206,65 +211,6 @@ describe('One Component + module functionality', function () {
     ]
     expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual(log)
     expect(lastLog).toEqual(log)
-  })
-
-  it('Should merges interfaces in a central way (useful for utils/workerInterfaces)', () => {
-    let valueFn
-    let lastValue
-    function onValue(val) {
-      lastValue = val
-      if (valueFn) {
-        valueFn(val)
-      }
-    }
-    let logTask: TaskHandler = log => mod => (data: { cb: DispatchData }) => {
-      mod.dispatch(data.cb)
-    }
-    let app = run({
-      root,
-      mergeTasks: mod => ({
-        log: logTask(taskLog)(mod),
-      }),
-      mergeInterfaces: mod => ({
-        value: valueHandler(onValue)(mod),
-      }),
-    })
-    expect(app.interfaces['value']).toBeDefined()
-    expect(lastValue.tagName).toBe('Main')
-    expect(lastValue.content).toBe('Fractal is awesome!! 0')
-  })
-
-  it('Should merges tasks in a central way (useful for utils/workerTasks)', done => {
-    let valueFn
-    let lastValue
-    function onValue(val) {
-      lastValue = val
-      if (valueFn) {
-        valueFn(val)
-      }
-    }
-    let app = run({
-      root,
-      mergeTasks: mod => ({
-        log: logTask(taskLog)(mod),
-      }),
-      interfaces: {
-        value: valueHandler(onValue),
-      },
-    })
-
-    valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 1')
-      done()
-    }
-    // extract value and dispatch interface handlers
-    value = lastValue
-    value._dispatch(value.inc)
-  })
-
-  it('should have initial state', () => {
-    expect(lastValue.tagName).toBe('Main')
-    expect(lastValue.content).toBe('Fractal is awesome!! 0')
   })
 
   // Inputs should dispatch actions and intefaces are recalculated
@@ -521,20 +467,19 @@ describe('Component composition', () => {
 describe('Lifecycle hooks', () => {
   let disposeLog = []
 
-  let hooks: Hooks = {
-    init: ctx => {
-      dispatch(ctx, ev(ctx, 'inc'))
-    },
-    destroy: ctx => {
-      let parts = ctx.id.split('$')
-      disposeLog.push(parts[parts.length - 1])
-    },
+  let init = ctx => {
+    dispatch(ctx, ev(ctx, 'inc'))
+  }
+  let destroy = ctx => {
+    let parts = ctx.id.split('$')
+    disposeLog.push(parts[parts.length - 1])
   }
 
   let child: Component = {
     name: 'Child',
     state,
-    hooks,
+    init,
+    destroy,
     inputs,
     actions,
     interfaces: {
@@ -559,7 +504,8 @@ describe('Lifecycle hooks', () => {
   let main: Component = {
     name: 'Main',
     state,
-    hooks,
+    init,
+    destroy,
     components,
     inputs,
     actions,

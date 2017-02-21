@@ -25,11 +25,10 @@ export interface Component {
     [name: string]: Interface
   }
   // lifecycle hooks: init, destroy
-  hooks?: Hooks
-}
-
-export interface Hooks {
-  [name: string]: {
+  init?: {
+    (ctx: Context): void
+  }
+  destroy?: {
     (ctx: Context): void
   }
 }
