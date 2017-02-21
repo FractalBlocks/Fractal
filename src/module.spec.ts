@@ -14,7 +14,6 @@ import {
   TaskHandler,
   DispatchData,
   dispatch,
-  Hooks,
   unmerge,
 } from './index'
 import { valueHandler, ValueInterface } from './interfaces/value'

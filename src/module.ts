@@ -370,6 +370,10 @@ export function run (moduleDefinition: ModuleDef): Module {
       }
     }
 
+    if (moduleDef.init) {
+      moduleDef.init(moduleAPI)
+    }
+
   }
 
   attach(undefined)
@@ -384,6 +388,9 @@ export function run (moduleDefinition: ModuleDef): Module {
       attach(comp, lastComponents)
     },
     dispose () {
+      if (moduleDef.destroy) {
+        moduleDef.destroy(moduleAPI)
+      }
       // dispose all streams
       unmerge(ctx)
       for (let i = 0, names = Object.keys(interfaceHandlerObjects), len = names.length; i < len; i++) {

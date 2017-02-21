@@ -1,6 +1,7 @@
 export { deepmerge } from './deepmerge'
-import { style as typeStyle, types } from 'typestyle'
+import { style as typeStyle, types, getStyles as _getStyles } from 'typestyle'
 
+export const getStyles = _getStyles
 
 export interface StyleClasses {
   base: string

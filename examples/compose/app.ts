@@ -1,4 +1,4 @@
-import { Context, Component, stateOf, interfaceOf, Hooks } from '../../src'
+import { Context, Component, stateOf, interfaceOf } from '../../src'
 import { styleGroup, StyleGroup } from '../../src/utils/style'
 import { ViewInterface } from '../../src/interfaces/view'
 import h from 'snabbdom/h'

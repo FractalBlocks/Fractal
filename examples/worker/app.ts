@@ -1,5 +1,5 @@
-import { Context, Component, stateOf, interfaceOf, Hooks } from '../../src'
-import { styleGroup, StyleGroup } from '../../src/utils/style'
+import { Context, Component, stateOf, interfaceOf, execute } from '../../src'
+import { styleGroup, StyleGroup, getStyles } from '../../src/utils/style'
 import { ViewInterface } from '../../src/interfaces/view'
 import h from 'snabbdom/h'
 
@@ -7,6 +7,10 @@ let name = 'Main'
 
 let components = {
   counter: require('./counter').default,
+}
+
+let init = ctx => {
+  execute(ctx, ctx.id, ['styles', getStyles()])
 }
 
 let state = ({key}) => ({

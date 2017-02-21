@@ -5,7 +5,22 @@ import { ModuleAPI } from '../module'
 
 declare var self: any
 
-export const workerInterfaces = (names: string[]) => (mod: ModuleAPI) => {
+export const workerInterface = (name: string) => (mod: ModuleAPI) => {
+
+  let interfaceObjects = {}
+
+  return {
+    state: undefined,
+    handle: value => {
+      self.postMessage(['interface', name, 'value', value])
+    },
+    dispose: () => {
+      self.postMessage(['interface', name, 'dispose'])
+    },
+  }
+}
+
+export const workerTasks = (names: string[]) => (mod: ModuleAPI) => {
 
   self.onmessage = ev => {
     let data = ev.data
