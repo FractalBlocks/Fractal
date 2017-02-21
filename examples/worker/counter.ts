@@ -17,7 +17,7 @@ let actions = {
     return state
   },
   Inc: () => state => {
-    state.count ++
+    state.count += 10
     return state
   },
 }
@@ -80,7 +80,7 @@ let styleObj: StyleGroup = {
 let style: any = styleGroup(styleObj, name)
 
 
-let mDef: Component = {
+let counter: Component = {
   name,
   state,
   inputs,
@@ -90,4 +90,4 @@ let mDef: Component = {
   },
 }
 
-export default mDef
+export default counter

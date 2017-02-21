@@ -1,15 +1,17 @@
-import { runWorker } from '../../src/utils/worker'
+import { runWorker, WorkerAPI } from '../../src/utils/worker'
 import { viewHandler } from '../../src/interfaces/view'
-import { logFns } from '../../src/utils/log'
+import { warn, error } from '../../src/utils/log'
+import { styleTask } from '../../src/tasks/style'
 
 // all communicatios are transfered via postMessage
 let moduleWorker = runWorker({
-  worker: require("worker-loader!./worker"),
-  task: {
-
+  worker: new (<any> require('worker-loader!./worker')),
+  tasks: {
+    style: styleTask('app-styles'),
   },
   interfaces: {
     view: viewHandler('#app'),
   },
-  ...logFns,
+  warn,
+  error,
 })

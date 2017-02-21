@@ -11,7 +11,7 @@ import {
   createContext,
   Update,
   Task,
-  TaskHandler,
+  Handler,
   DispatchData,
   dispatch,
   unmerge,
@@ -82,8 +82,8 @@ describe('Context functions', function () {
 
   let rootCtx: Context = {
     id: 'Main',
-    taskRunners: {},
-    interfaceHandlerFunctions: {},
+    taskHandlers: {},
+    interfaceHandlers: {},
     components: {}, // component index
     // error and warning handling
     warn: (source, description) => {
@@ -173,10 +173,14 @@ describe('One Component + module functionality', function () {
 
   let taskLog = []
 
-  let logTask: TaskHandler = log => mod => (data: {info: any, cb: DispatchData}) => {
-    log.push(data.info)
-    mod.dispatch(data.cb)
-  }
+  let logTask: Handler = log => mod => ({
+    state: undefined,
+    handle: (data: {info: any, cb: DispatchData}) => {
+      log.push(data.info)
+      mod.dispatch(data.cb)
+    },
+    dispose: () => {},
+  })
 
   let lastLog
   let initialized = false

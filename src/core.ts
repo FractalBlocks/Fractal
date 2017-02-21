@@ -1,5 +1,5 @@
-import { InterfaceMsg, InterfaceHandlerFunction } from './interface'
-import { Task, TaskRunner } from './task'
+import { HandlerMsg, HandlerFunction } from './handler'
+import { HandlerObject } from './handler'
 import { ModuleAPI } from './module'
 
 export interface Component {
@@ -83,7 +83,13 @@ export interface Update {
 }
 
 export interface Interface {
-  (ctx: Context, state): InterfaceMsg
+  (ctx: Context, state): HandlerMsg
+}
+
+// a task executes some kind of side effect (output) - Comunications stuff
+export interface Task extends Array<any> {
+  0: string // task name
+  1?: any // task data
 }
 
 // describes an excecution context
@@ -101,11 +107,11 @@ export interface Context {
     (source: string, description: string): void
   }
   errorLog: any[]
-  taskRunners: {
-    [name: string]: TaskRunner
+  taskHandlers: {
+    [name: string]: HandlerObject
   }
-  interfaceHandlerFunctions: {
-    [name: string]: InterfaceHandlerFunction
+  interfaceHandlers: {
+    [name: string]: HandlerObject
   }
 }
 
@@ -128,5 +134,5 @@ export interface ComponentSpace {
 export type Executable = Update | Task
 
 export interface CtxInterface {
-  state: InterfaceMsg
+  state: HandlerMsg
 }

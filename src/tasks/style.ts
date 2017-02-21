@@ -1,9 +1,18 @@
 // insert styles in a DOM container at head
 
-import { TaskHandler } from '../index'
+import { Handler } from '../handler'
 
-export const style: TaskHandler = (containerName: string) => mod => {
-  return function (value) {
+export const styleTask: Handler = (containerName: string) => mod => {
+  let container = document.createElement('style')
+  document.head.appendChild(container)
 
+  return {
+    state: container,
+    handle: style => {
+      container.innerHTML = <any> style
+    },
+    dispose: () => {
+      container.remove()
+    },
   }
 }

@@ -10,29 +10,8 @@ let components = {
 }
 
 let init = ctx => {
-  execute(ctx, ctx.id, ['styles', getStyles()])
+  execute(ctx, ctx.id, ['style', getStyles()])
 }
-
-let state = ({key}) => ({
-  key,
-  count: 0,
-})
-
-let actions = {
-  Set: (count: number) => state => {
-    state.count = count
-    return state
-  },
-  Inc: () => state => {
-    state.count ++
-    return state
-  },
-}
-
-let inputs = (ctx: Context) => ({
-  set: (n: number) => actions.Set(n),
-  inc: () => actions.Inc(),
-})
 
 let view: ViewInterface = (ctx, s) =>
 
@@ -63,16 +42,17 @@ let style: any = styleGroup({
 }, name)
 
 
-let mDef: Component = {
+let main: Component = {
   name,
-  state,
+  init,
+  state: ({key}) => ({}),
   components,
-  inputs,
-  actions,
+  // inputs,
+  // actions,
   interfaces: {
     view,
   },
 }
 
-export default mDef
+export default main
 

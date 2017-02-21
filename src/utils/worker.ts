@@ -1,49 +1,33 @@
-import { InterfaceHandler, InterfaceFunction, InterfaceHandlerObject } from '../interface'
-import { TaskFunction } from '../task'
+import { Handler, HandlerInterface, HandlerObject } from '../handler'
 import { Component, DispatchData } from '../core'
 import { ModuleAPI } from '../module'
 
-declare var self: any
+declare var self: WorkerAPI
 
-export const workerInterface = (name: string) => (mod: ModuleAPI) => {
-
-  let interfaceObjects = {}
-
-  return {
-    state: undefined,
-    handle: value => {
-      self.postMessage(['interface', name, 'value', value])
-    },
-    dispose: () => {
-      self.postMessage(['interface', name, 'dispose'])
-    },
+export interface WorkerAPI {
+  postMessage: {
+    (value: any): void
+  }
+  onmessage?: {
+    (ev: WorkerEvent): void
   }
 }
 
-export const workerTasks = (names: string[]) => (mod: ModuleAPI) => {
+export interface WorkerEvent {
+  data: any
+}
 
-  self.onmessage = ev => {
-    let data = ev.data
-    if (data[0] === 'dispatch') {
-      return mod.dispatch(data[1])
-    }
+export const workerHandler = (type: 'interface' | 'task', name: string, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
+  let _self = workerAPI ? workerAPI : self
+  return {
+    state: undefined,
+    handle: value => {
+      _self.postMessage([type, name, 'handle', value])
+    },
+    dispose: () => {
+      _self.postMessage([type, name, 'dispose'])
+    },
   }
-
-  let interfaceObjects = {}
-
-  for (let i = 0, len = names.length; i < len; i++) {
-    interfaceObjects[names[i]] = {
-      state: undefined,
-      handle: value => {
-        self.postMessage(['interface', names[i], 'value', value])
-      },
-      dispose: () => {
-        self.postMessage(['interface', names[i], 'dispose'])
-      },
-    }
-  }
-
-  return interfaceObjects
 }
 
 export interface WorkerModuleDef {
@@ -51,10 +35,10 @@ export interface WorkerModuleDef {
   log?: boolean
   logAll?: boolean
   tasks?: {
-    [name: string]: TaskFunction
+    [name: string]: HandlerInterface
   }
   interfaces: {
-    [name: string]: InterfaceFunction
+    [name: string]: HandlerInterface
   }
   warn: {
     (source, description): void
@@ -65,8 +49,10 @@ export interface WorkerModuleDef {
 }
 
 export function runWorker (def: WorkerModuleDef) {
-  let worker = new def.worker()
-  let interfaceObjects: { [name: string]: InterfaceHandlerObject } = {}
+  let worker: WorkerAPI = def.worker
+
+  let taskObjects: { [name: string]: HandlerObject } = {}
+  let interfaceObjects: { [name: string]: HandlerObject } = {}
 
   // API for modules
   let moduleAPI: ModuleAPI = {
@@ -85,20 +71,38 @@ export function runWorker (def: WorkerModuleDef) {
     error: def.error,
   }
 
-  for (let i = 0, names = Object.keys(def.interfaces), len = names.length ; i < len; i++) {
-    interfaceObjects[names[i]] = def.interfaces[names[i]](moduleAPI)
+  if (def.tasks) {
+    for (let i = 0, names = Object.keys(def.tasks), len = names.length ; i < len; i++) {
+      taskObjects[names[i]] = def.tasks[names[i]](moduleAPI)
+    }
+  }
+  if (def.interfaces) {
+    for (let i = 0, names = Object.keys(def.interfaces), len = names.length ; i < len; i++) {
+      interfaceObjects[names[i]] = def.interfaces[names[i]](moduleAPI)
+    }
   }
 
   worker.onmessage = ev => {
     let data = ev.data
     switch (data[0]) {
       case 'interface':
-        if (data[2] === 'value') {
+        if (data[2] === 'handle') {
           return interfaceObjects[data[1]].handle(data[3])
         }
         if (data[2] === 'dispose') {
           return interfaceObjects[data[1]].dispose()
         }
+        moduleAPI.error('runWorker', 'wrong interface method')
+        break
+      case 'task':
+        if (data[2] === 'handle') {
+          return taskObjects[data[1]].handle(data[3])
+        }
+        if (data[2] === 'dispose') {
+          return taskObjects[data[1]].dispose()
+        }
+        moduleAPI.error('runWorker', 'wrong interface method')
+        break
     }
   }
 

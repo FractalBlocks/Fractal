@@ -1,18 +1,18 @@
-import { Context, InterfaceHandler, InterfaceMsg, DispatchData } from '../index'
+import { Context, Handler, HandlerMsg, DispatchData } from '../index'
 
 // this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
 
-export interface ValueResponse extends InterfaceMsg {
+export interface ValueResponse extends HandlerMsg {
   _dispatch: {
     (dispatchData: DispatchData): void
   }
 }
 
 export interface ValueInterface {
-  (ctx: Context, s): InterfaceMsg
+  (ctx: Context, s): HandlerMsg
 }
 
-export const valueHandler: InterfaceHandler = (cb: (evRes: ValueResponse) => void) => mod => {
+export const valueHandler: Handler = (cb: (evRes: ValueResponse) => void) => mod => {
   return {
     state: undefined,
     handle(driverMsg) {

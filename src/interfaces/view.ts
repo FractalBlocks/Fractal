@@ -1,4 +1,4 @@
-import { InterfaceHandler, InterfaceMsg } from '../interface'
+import { Handler } from '../handler'
 import { Context } from '../core'
 import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
@@ -13,7 +13,7 @@ export interface ViewInterface {
   (ctx: Context, s): VNode
 }
 
-export const viewHandler: InterfaceHandler = selectorElm => mod => {
+export const viewHandler: Handler = selectorElm => mod => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let lastContainer
   let state
@@ -27,7 +27,7 @@ export const viewHandler: InterfaceHandler = selectorElm => mod => {
     styleModule,
   ])
 
-  function wraperPatch(o, n) {
+  function wraperPatch (o, n) {
     let newContainer = patchFn(o, n)
     lastContainer = newContainer
     return newContainer

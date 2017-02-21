@@ -11,23 +11,21 @@ import {
   Interface,
 } from './core'
 import {
-  InterfaceHandler,
-  InterfaceFunction,
-  InterfaceMsg,
-  InterfaceHandlerObject,
-  InterfaceHandlerFunction,
-} from './interface'
-import { Task, TaskFunction, TaskRunner } from './task'
+  HandlerInterface,
+  HandlerMsg,
+  HandlerObject,
+  HandlerFunction,
+} from './handler'
 
 export interface ModuleDef {
   root: Component
   log?: boolean
   logAll?: boolean
   tasks?: {
-    [name: string]: TaskFunction
+    [name: string]: HandlerInterface
   }
   interfaces: {
-    [name: string]: InterfaceFunction
+    [name: string]: HandlerInterface
   }
   // lifecycle hooks for modules
   init?: {
@@ -51,11 +49,11 @@ export interface Module {
   dispose(): void
   isDisposed: boolean
   // related to internals
-  interfaces: {
-    [name: string]: InterfaceHandlerObject
+  interfaceHandlers: {
+    [name: string]: HandlerObject
   }
-  interfaceHandlerFunctions: {
-    [name: string]: InterfaceHandlerFunction
+  taskHandlers: {
+    [name: string]: HandlerObject
   }
   moduleAPI: ModuleAPI
   // Root component context
@@ -94,8 +92,8 @@ export function createContext (ctx: Context, name: string): Context {
     id, // the component id
     // delegation
     components: ctx.components,
-    interfaceHandlerFunctions: ctx.interfaceHandlerFunctions,
-    taskRunners: ctx.taskRunners,
+    interfaceHandlers: ctx.interfaceHandlers,
+    taskHandlers: ctx.taskHandlers,
     warn: ctx.warn,
     warnLog: ctx.warnLog,
     error: ctx.error,
@@ -140,7 +138,7 @@ export function merge (ctx: Context, name: string, component: Component): Contex
   ctx.components[id] = {
     ctx: childCtx,
     state: component.state({key: name}),
-    inputs: component.inputs(childCtx),
+    inputs: component.inputs ? component.inputs(childCtx) : {},
     components: Object.assign({}, component.components || {}),
     def: component,
   }
@@ -201,11 +199,11 @@ export function ev (ctx: Context, inputName: string, param?: any): InputData {
 
 // dispatch an input based on DispatchData to the respective component
 export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
-  let component = ctx.components[dispatchData[0]]
-  if (!component) {
+  let componentSpace = ctx.components[dispatchData[0]]
+  if (!componentSpace) {
     return ctx.error('dispatch', `there are no module with id '${dispatchData[0]}'`)
   }
-  let input = component.inputs[dispatchData[1]]
+  let input = componentSpace.inputs[dispatchData[1]]
   if (input) {
     execute(ctx, dispatchData[0], input(dispatchData[2]))
   } else {
@@ -225,10 +223,10 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
     if (executable instanceof Array) {
       if (executable[0] && typeof executable[0] === 'string') {
         // single task
-        if (!ctx.taskRunners[executable[0]]) {
+        if (!ctx.taskHandlers[executable[0]]) {
           return ctx.error('execute', `there are no task handler for ${executable[0]}`)
         }
-        ctx.taskRunners[executable[0]](executable[1])
+        ctx.taskHandlers[executable[0]].handle(executable[1])
       } else {
         /* istanbul ignore else */
         if (executable[0] instanceof Array || typeof executable[0] === 'function') {
@@ -242,10 +240,10 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
                 /* istanbul ignore else */
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
                 // single task
-                if (!ctx.taskRunners[executable[i][0]]) {
+                if (!ctx.taskHandlers[executable[i][0]]) {
                   return ctx.error('execute', `there are no task handler for ${executable[i][0]}`)
                 }
-                ctx.taskRunners[executable[i][0]](executable[i][1])
+                ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
               }
             }
             // the else branch never occurs because of Typecript check
@@ -260,8 +258,8 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
 // permorms interface recalculation
 export function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.id]
-  for (let name in  ctx.interfaceHandlerFunctions) {
-    ctx.interfaceHandlerFunctions[name](space.def.interfaces[name](ctx, space.state))
+  for (let name in  ctx.interfaceHandlers) {
+    ctx.interfaceHandlers[name].handle(space.def.interfaces[name](ctx, space.state))
   }
 }
 
@@ -274,8 +272,8 @@ export function run (moduleDefinition: ModuleDef): Module {
   let moduleAPI: ModuleAPI
   // root context
   let ctx: Context
-  let interfaceHandlerObjects: {
-    [name: string]: InterfaceHandlerObject
+  let interfaceHandlers: {
+    [name: string]: HandlerObject
   }
 
   // attach root component
@@ -295,8 +293,8 @@ export function run (moduleDefinition: ModuleDef): Module {
         id: '',
         // component index
         components: {},
-        taskRunners: {},
-        interfaceHandlerFunctions: {},
+        taskHandlers: {},
+        interfaceHandlers: {},
         // error and warning handling
         warn: (source, description) => {
           ctx.warnLog.push([source, description])
@@ -336,15 +334,15 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
     // if is not hot swapping
     if (!lastComponents) {
-      interfaceHandlerObjects = {}
+      interfaceHandlers = {}
       // pass ModuleAPI to every InterfaceFunction
       for (let i = 0, names = Object.keys(moduleDef.interfaces), len = names.length; i < len; i++) {
-        interfaceHandlerObjects[names[i]] = moduleDef.interfaces[names[i]](moduleAPI)
+        interfaceHandlers[names[i]] = moduleDef.interfaces[names[i]](moduleAPI)
       }
       // pass ModuleAPI to every TaskFunction
       if (moduleDef.tasks) {
         for (let i = 0, names = Object.keys(moduleDef.tasks), len = names.length; i < len; i++) {
-          ctx.taskRunners[names[i]] = moduleDef.tasks[names[i]](moduleAPI)
+          ctx.taskHandlers[names[i]] = moduleDef.tasks[names[i]](moduleAPI)
         }
       }
     }
@@ -362,9 +360,9 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
 
     for (let name in component.interfaces) {
-      if (interfaceHandlerObjects[name]) {
-        ctx.interfaceHandlerFunctions[name] = interfaceHandlerObjects[name].handle
-        ctx.interfaceHandlerFunctions[name](component.interfaces[name](ctx, ctx.components[rootName].state))
+      if (interfaceHandlers[name]) {
+        ctx.interfaceHandlers[name] = interfaceHandlers[name]
+        ctx.interfaceHandlers[name].handle(component.interfaces[name](ctx, ctx.components[rootName].state))
       } else {
         return ctx.error('InterfaceHandlers', `'${rootName}' module has no interface called '${name}', missing interface handler`)
       }
@@ -393,15 +391,15 @@ export function run (moduleDefinition: ModuleDef): Module {
       }
       // dispose all streams
       unmerge(ctx)
-      for (let i = 0, names = Object.keys(interfaceHandlerObjects), len = names.length; i < len; i++) {
-        interfaceHandlerObjects[names[i]].dispose()
+      for (let i = 0, names = Object.keys(interfaceHandlers), len = names.length; i < len; i++) {
+        interfaceHandlers[names[i]].dispose()
       }
       this.isDisposed = true
     },
     isDisposed: false,
     // related to internals
-    interfaces: interfaceHandlerObjects,
-    interfaceHandlerFunctions: ctx.interfaceHandlerFunctions,
+    interfaceHandlers: ctx.interfaceHandlers,
+    taskHandlers: ctx.taskHandlers,
     // root context
     moduleAPI,
     ctx,

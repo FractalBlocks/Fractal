@@ -1,5 +1,5 @@
 import { run } from '../../src'
-import { workerInterface } from '../../src/utils/worker'
+import { workerHandler, WorkerAPI } from '../../src/utils/worker'
 
 let app = run({
   root: require('./app').default,
@@ -12,8 +12,11 @@ let app = run({
       }
     }
   },
+  tasks: {
+    style: workerHandler('task', 'style'),
+  },
   interfaces: {
-    view: workerInterface('view'),
+    view: workerHandler('interface', 'view'),
   },
 })
 
