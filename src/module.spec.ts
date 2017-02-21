@@ -179,9 +179,17 @@ describe('One Component + module functionality', function () {
   }
 
   let lastLog
+  let initialized = false
+  let disposed = false
 
   let app = run({
     root,
+    init: () => {
+      initialized = true
+    },
+    destroy: () => {
+      disposed = true
+    },
     tasks: {
       log: logTask(taskLog),
     },
@@ -195,6 +203,10 @@ describe('One Component + module functionality', function () {
   it('should have initial state', () => {
     expect(lastValue.tagName).toBe('Main')
     expect(lastValue.content).toBe('Fractal is awesome!! 0')
+  })
+
+  it('should call init hook when initialize a module', () => {
+    expect(initialized).toBe(true)
   })
 
   it('Should log an error and notify error callback when module dont have an InterfaceHandler', () => {
@@ -310,6 +322,11 @@ describe('One Component + module functionality', function () {
   it('should dispose a module', () => {
     app.dispose()
     expect(app.ctx.components).toEqual({})
+  })
+
+  it('should call destroy hook when dispose a module', () => {
+    app.dispose()
+    expect(disposed).toEqual(true)
   })
 
 })
