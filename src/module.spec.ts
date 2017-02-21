@@ -89,11 +89,9 @@ describe('Context functions', function () {
     // error and warning handling
     warn: (source, description) => {
       rootCtx.warnLog.push([source, description])
-      console.warn(`source: ${source}, description: ${description}`)
     },
     error: (source, description) => {
       rootCtx.errorLog.push([source, description])
-      console.error(`source: ${source}, description: ${description}`)
     },
     warnLog: [],
     errorLog: [],
@@ -210,10 +208,63 @@ describe('One Component + module functionality', function () {
     expect(lastLog).toEqual(log)
   })
 
+  it('Should merges interfaces in a central way (useful for utils/workerInterfaces)', () => {
+    let valueFn
+    let lastValue
+    function onValue(val) {
+      lastValue = val
+      if (valueFn) {
+        valueFn(val)
+      }
+    }
+    let logTask: TaskHandler = log => mod => (data: { cb: DispatchData }) => {
+      mod.dispatch(data.cb)
+    }
+    let app = run({
+      root,
+      mergeTasks: mod => ({
+        log: logTask(taskLog)(mod),
+      }),
+      mergeInterfaces: mod => ({
+        value: valueHandler(onValue)(mod),
+      }),
+    })
+    expect(app.interfaces['value']).toBeDefined()
+    expect(lastValue.tagName).toBe('Main')
+    expect(lastValue.content).toBe('Fractal is awesome!! 0')
+  })
+
+  it('Should merges tasks in a central way (useful for utils/workerTasks)', done => {
+    let valueFn
+    let lastValue
+    function onValue(val) {
+      lastValue = val
+      if (valueFn) {
+        valueFn(val)
+      }
+    }
+    let app = run({
+      root,
+      mergeTasks: mod => ({
+        log: logTask(taskLog)(mod),
+      }),
+      interfaces: {
+        value: valueHandler(onValue),
+      },
+    })
+
+    valueFn = value => {
+      expect(value.content).toBe('Fractal is awesome!! 1')
+      done()
+    }
+    // extract value and dispatch interface handlers
+    value = lastValue
+    value._dispatch(value.inc)
+  })
+
   it('should have initial state', () => {
-    let value = lastValue
-    expect(value.tagName).toBe('Main')
-    expect(value.content).toBe('Fractal is awesome!! 0')
+    expect(lastValue.tagName).toBe('Main')
+    expect(lastValue.content).toBe('Fractal is awesome!! 0')
   })
 
   // Inputs should dispatch actions and intefaces are recalculated

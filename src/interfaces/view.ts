@@ -42,16 +42,15 @@ export const viewHandler: InterfaceHandler = selectorElm => mod => {
     state,
     handle: (value: VNode) => {
       if (!state) {
-        window.addEventListener('DOMContentLoaded', function() {
-          let container = selector !== '' ? document.querySelector(selector) : selectorElm
-          if (!container) {
-            return mod.error('view', `There are no element matching selector '${selector}'`)
-          }
-          state = container
-          handler(state)
-        })
-      } else {
+        let container = selector !== '' ? document.querySelector(selector) : selectorElm
+        if (!container) {
+          return mod.error('view', `There are no element matching selector '${selector}'`)
+        }
+        state = container
         handler(state)
+        handler(value)
+      } else {
+        handler(value)
       }
     },
     dispose: () => {},
