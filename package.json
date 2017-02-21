@@ -46,6 +46,7 @@
     "tslint": "^4.4.2",
     "typescript": "^2.2.1-insiders.20170209",
     "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.3.0"
+    "webpack-dev-server": "^2.3.0",
+    "worker-loader": "^0.7.1"
   }
 }

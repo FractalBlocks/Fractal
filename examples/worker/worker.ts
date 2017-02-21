@@ -1,11 +1,9 @@
 import { run } from '../../src'
-import { workerInterface } from '../../src/utils/worker'
+import { workerInterfaces } from '../../src/utils/worker'
 
 let app = run({
   root: require('./app').default,
-  interfaces: {
-    view: workerInterface('view'),
-  },
+  mergeInterfaces: workerInterfaces(['view']),
 })
 
 // Hot reload
