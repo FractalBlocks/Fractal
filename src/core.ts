@@ -15,9 +15,9 @@ export interface Component {
   // the changing stuff (AKA variables)
   state (params: { key: string }): any
   // dispatchers for actions and tasks
-  inputs?: Inputs
+  inputs: Inputs
   // unique way to change the state
-  actions?: {
+  actions: {
     [name: string]: Action
   }
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
@@ -98,20 +98,18 @@ export interface Context {
   id: string
   // global component index
   components: ComponentSpaceIndex
-  // error and warning delegation
-  warn: {
-    (source: string, description: string): void
-  }
-  warnLog: any[]
-  error: {
-    (source: string, description: string): void
-  }
-  errorLog: any[]
   taskHandlers: {
     [name: string]: HandlerObject
   }
   interfaceHandlers: {
     [name: string]: HandlerObject
+  }
+  // error and warning delegation
+  warn: {
+    (source: string, description: string): void
+  }
+  error: {
+    (source: string, description: string): void
   }
 }
 

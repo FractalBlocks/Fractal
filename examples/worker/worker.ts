@@ -1,5 +1,5 @@
 import { run } from '../../src'
-import { workerHandler, WorkerAPI } from '../../src/utils/worker'
+import { workerHandler, workerLog } from '../../src/utils/worker'
 
 let app = run({
   root: require('./app').default,
@@ -18,6 +18,8 @@ let app = run({
   interfaces: {
     view: workerHandler('interface', 'view'),
   },
+  warn: workerLog('warn'),
+  error: workerLog('error'),
 })
 
 // Hot reload

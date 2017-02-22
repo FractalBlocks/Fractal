@@ -95,9 +95,7 @@ export function createContext (ctx: Context, name: string): Context {
     interfaceHandlers: ctx.interfaceHandlers,
     taskHandlers: ctx.taskHandlers,
     warn: ctx.warn,
-    warnLog: ctx.warnLog,
     error: ctx.error,
-    errorLog: ctx.errorLog,
   }
 }
 
@@ -138,7 +136,7 @@ export function merge (ctx: Context, name: string, component: Component): Contex
   ctx.components[id] = {
     ctx: childCtx,
     state: component.state({key: name}),
-    inputs: component.inputs ? component.inputs(childCtx) : {},
+    inputs: component.inputs(childCtx),
     components: Object.assign({}, component.components || {}),
     def: component,
   }
@@ -224,7 +222,7 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
       if (executable[0] && typeof executable[0] === 'string') {
         // single task
         if (!ctx.taskHandlers[executable[0]]) {
-          return ctx.error('execute', `there are no task handler for ${executable[0]}`)
+          return ctx.error('execute', `there are no task handler for '${executable[0]}' from component '${id}'`)
         }
         ctx.taskHandlers[executable[0]].handle(executable[1])
       } else {
@@ -241,7 +239,7 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
                 // single task
                 if (!ctx.taskHandlers[executable[i][0]]) {
-                  return ctx.error('execute', `there are no task handler for ${executable[i][0]}`)
+                  return ctx.error('execute', `there are no task handler for '${executable[i][0]}' from component '${id}'`)
                 }
                 ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
               }
@@ -297,19 +295,16 @@ export function run (moduleDefinition: ModuleDef): Module {
         interfaceHandlers: {},
         // error and warning handling
         warn: (source, description) => {
-          ctx.warnLog.push([source, description])
           if (moduleDef.warn) {
             moduleDef.warn(source, description)
           }
         },
-        warnLog: [],
         error: (source, description) => {
-          ctx.errorLog.push([source, description])
+          /* istanbul ignore else */
           if (moduleDef.error) {
             moduleDef.error(source, description)
           }
         },
-        errorLog: [],
       }
     } else {
       // hot swaping mode preserves root context, but restore id to '' because this way merge knows is root context

@@ -78,7 +78,7 @@ let root: Component = {
 
 describe('Context functions', function () {
 
-  let doLog = []
+  let lastLog
 
   let rootCtx: Context = {
     id: 'Main',
@@ -87,13 +87,11 @@ describe('Context functions', function () {
     components: {}, // component index
     // error and warning handling
     warn: (source, description) => {
-      rootCtx.warnLog.push([source, description])
+      lastLog = [source, description]
     },
     error: (source, description) => {
-      rootCtx.errorLog.push([source, description])
+      lastLog = [source, description]
     },
-    warnLog: [],
-    errorLog: [],
   }
 
   let ctx: Context
@@ -105,15 +103,13 @@ describe('Context functions', function () {
   it('Should put an entry in warnLog when warn function is invoked', () => {
     let warn = ['child', 'warn 1']
     rootCtx.warn(warn[0], warn[1])
-    let lastWarn = rootCtx.warnLog[rootCtx.warnLog.length - 1]
-    expect(lastWarn).toEqual(warn)
+    expect(lastLog).toEqual(warn)
   })
 
   it('Should put an entry in errorLog when error function is invoked', () => {
     let error = ['child', 'error 1']
     ctx.error(error[0], error[1])
-    let lastError = rootCtx.errorLog[rootCtx.errorLog.length - 1]
-    expect(lastError).toEqual(error)
+    expect(lastLog).toEqual(error)
   })
 
   it('Should merge a component to context (merge)', () => {
@@ -127,7 +123,7 @@ describe('Context functions', function () {
     expect(ctx.components[`Main$child`]).toBeDefined()
     // Should overwrite
     expect(ctx.components[`Main$child`].state.count).toEqual(0)
-    expect(rootCtx.warnLog[rootCtx.warnLog.length - 1])
+    expect(lastLog)
       .toEqual(['merge', `component 'Main' has overwritten component 'Main$child'`])
   })
 
@@ -144,7 +140,7 @@ describe('Context functions', function () {
 
   it('Should log an error if try to get an interface message from an inexistent component (interfaceOf)', () => {
     interfaceOf(rootCtx, 'wrong', 'value')
-    expect(rootCtx.errorLog[rootCtx.errorLog.length - 1]).toEqual([
+    expect(lastLog).toEqual([
       'interfaceOf',
       `there are no module 'Main$wrong'`,
     ])
@@ -152,7 +148,7 @@ describe('Context functions', function () {
 
   it('Should log an error if try to get an inexistent interface message from a certain component (interfaceOf)', () => {
     interfaceOf(rootCtx, 'child', 'wrong')
-    expect(rootCtx.errorLog[rootCtx.errorLog.length - 1]).toEqual([
+    expect(lastLog).toEqual([
       'interfaceOf',
       `there are no interface 'wrong' in module 'Main$child'`,
     ])
@@ -224,7 +220,6 @@ describe('One Component + module functionality', function () {
       'InterfaceHandlers',
       `'Main' module has no interface called 'value', missing interface handler`,
     ]
-    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual(log)
     expect(lastLog).toEqual(log)
   })
 
@@ -245,21 +240,18 @@ describe('One Component + module functionality', function () {
   it('Should put an entry in errorLog when error function is invoked', () => {
     let error = ['child', 'error 1']
     app.ctx.error(error[0], error[1])
-    let lastError = app.ctx.errorLog[app.ctx.errorLog.length - 1]
-    expect(lastError).toEqual(error)
+    expect(lastLog).toEqual(error)
   })
 
   it('Should delegate warn function', () => {
     let warn = ['child', 'warn 1']
     app.ctx.warn(warn[0], warn[1])
-    let lastWarn = app.ctx.warnLog[app.ctx.warnLog.length - 1]
-    expect(lastWarn).toEqual(warn)
     expect(lastLog).toEqual(warn)
   })
 
   it('should log an error when try to dispatch an event of an inexistent module', () => {
     value._dispatch(['someId', 'someInput'])
-    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+    expect(lastLog).toEqual([
       'dispatch',
       `there are no module with id 'someId'`,
     ])
@@ -267,7 +259,7 @@ describe('One Component + module functionality', function () {
 
   it('should log an error when try to dispatch an inexistent input of a module', () => {
     value._dispatch(['Main', 'someInput'])
-    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+    expect(lastLog).toEqual([
       'dispatch',
       `there are no input with id 'someInput' in module 'Main'`,
     ])
@@ -287,9 +279,9 @@ describe('One Component + module functionality', function () {
   it('should log an error when try to dispatch an task that has no task handler', () => {
     valueFn = undefined
     value._dispatch(value.wrongTask)
-    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+    expect(lastLog).toEqual([
       'execute',
-      'there are no task handler for wrongTask',
+      `there are no task handler for 'wrongTask' from component 'Main'`,
     ])
   })
 
@@ -298,9 +290,9 @@ describe('One Component + module functionality', function () {
   it('should dispatch an error if try to dispatch an executable list with a task with no handler', () => {
     valueFn = undefined
     value._dispatch(value.executableListWrong)
-    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+    expect(lastLog).toEqual([
       'execute',
-      'there are no task handler for wrongTask2',
+      `there are no task handler for 'wrongTask2' from component 'Main'`,
     ])
   })
 
@@ -418,14 +410,16 @@ describe('Component composition', () => {
   })
 
   it('should log an error when unmerge an inexistent component', () => {
+    let lastLog
     app = run({
       root: main,
       interfaces: {
         value: valueHandler(() => 0),
       },
+      error: (source, description) => lastLog = [source, description],
     })
     unmerge(app.ctx, 'wrong')
-    expect(app.ctx.errorLog[app.ctx.errorLog.length - 1]).toEqual([
+    expect(lastLog).toEqual([
       'unmerge',
       `there is no component with name 'wrong' at component 'Main'`,
     ])

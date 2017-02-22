@@ -30,6 +30,13 @@ export const workerHandler = (type: 'interface' | 'task', name: string, workerAP
   }
 }
 
+export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
+  let _self = workerAPI ? workerAPI : self
+  return (source: string, description: string) => {
+    _self.postMessage(['log', type, source, description])
+  }
+}
+
 export interface WorkerModuleDef {
   worker: any
   log?: boolean
@@ -102,6 +109,12 @@ export function runWorker (def: WorkerModuleDef) {
           return taskObjects[data[1]].dispose()
         }
         moduleAPI.error('runWorker', 'wrong interface method')
+        break
+      case 'log':
+        moduleAPI[data[1]](data[2], data[3])
+        break
+      default:
+        moduleAPI.error('runWorker', 'unknown message type recived from worker')
         break
     }
   }

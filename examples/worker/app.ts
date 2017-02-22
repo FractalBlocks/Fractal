@@ -47,8 +47,8 @@ let main: Component = {
   init,
   state: ({key}) => ({}),
   components,
-  // inputs,
-  // actions,
+  inputs: ctx => ({}),
+  actions: {},
   interfaces: {
     view,
   },
