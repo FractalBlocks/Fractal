@@ -47,15 +47,21 @@ export interface WorkerModuleDef {
   interfaces: {
     [name: string]: HandlerInterface
   }
-  warn: {
+  warn?: {
     (source, description): void
   }
-  error: {
+  error?: {
     (source, description): void
   }
 }
 
-export function runWorker (def: WorkerModuleDef) {
+export interface WorkerModule {
+  worker: WorkerAPI
+  taskObjects: { [name: string]: HandlerObject }
+  interfaceObjects: { [name: string]: HandlerObject }
+}
+
+export function runWorker (def: WorkerModuleDef): WorkerModule {
   let worker: WorkerAPI = def.worker
 
   let taskObjects: { [name: string]: HandlerObject } = {}
@@ -93,6 +99,7 @@ export function runWorker (def: WorkerModuleDef) {
     let data = ev.data
     switch (data[0]) {
       case 'interface':
+        /* istanbul ignore else */
         if (data[2] === 'handle') {
           return interfaceObjects[data[1]].handle(data[3])
         }
@@ -111,7 +118,9 @@ export function runWorker (def: WorkerModuleDef) {
         moduleAPI.error('runWorker', 'wrong interface method')
         break
       case 'log':
-        moduleAPI[data[1]](data[2], data[3])
+        if (moduleAPI[data[1]]) {
+          moduleAPI[data[1]](data[2], data[3])
+        }
         break
       default:
         moduleAPI.error('runWorker', 'unknown message type recived from worker')
@@ -119,4 +128,9 @@ export function runWorker (def: WorkerModuleDef) {
     }
   }
 
+  return {
+    worker,
+    taskObjects,
+    interfaceObjects,
+  }
 }

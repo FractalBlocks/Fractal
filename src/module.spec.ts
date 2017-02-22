@@ -233,7 +233,7 @@ describe('One Component + module functionality', function () {
       done()
     }
     // extract value and dispatch interface handlers
-    value = lastValue
+    value = lastValue // this catch the scope variable
     value._dispatch(value.inc)
   })
 
@@ -249,7 +249,7 @@ describe('One Component + module functionality', function () {
     expect(lastLog).toEqual(warn)
   })
 
-  it('should log an error when try to dispatch an event of an inexistent module', () => {
+  it('should log an error when try to dispatch an input of an inexistent module', () => {
     value._dispatch(['someId', 'someInput'])
     expect(lastLog).toEqual([
       'dispatch',
