@@ -8,7 +8,13 @@ import {
   Handler,
   DispatchData,
 } from '../../src'
-import { runWorker, WorkerAPI, workerHandler } from '../../src/utils/worker'
+import {
+  runWorker,
+  WorkerAPI,
+  workerHandler,
+  workerLog,
+  workerListener,
+} from '../../src/utils/worker'
 import { valueHandler, ValueInterface } from '../../src/interfaces/value'
 
 describe('Utilities for running fractal inside workers', () => {
@@ -67,8 +73,6 @@ describe('Utilities for running fractal inside workers', () => {
     postMessage: data => workerAPI.onmessage({ data }),
   }
 
-  let lastLog
-
   let valueFn
   let lastValue
   function onValue (val) {
@@ -85,14 +89,7 @@ describe('Utilities for running fractal inside workers', () => {
     }
   }
 
-  let worker = runWorker({
-    worker: mainAPI,
-    interfaces: {
-      value: valueHandler(onValue),
-    },
-    warn: logCb,
-    error: logCb,
-  })
+  let disposeLogFn
   let taskLog = []
 
   let logTask: Handler = log => mod => ({
@@ -101,25 +98,57 @@ describe('Utilities for running fractal inside workers', () => {
       log.push(data.info)
       mod.dispatch(data.cb)
     },
-    dispose: () => {},
-  })
-  let workerModule = run({
-    root,
-    init: mod => {
-      // allows to dispatch inputs from the main thread
-      workerAPI.onmessage = ev => {
-        let data = ev.data
-        if (data[0] === 'dispatch') {
-          return mod.dispatch(data[1])
-        }
+    dispose: () => {
+      if (disposeLogFn) {
+        disposeLogFn()
       }
     },
+  })
+
+  let disposeValue2Fn
+  let value2Handler: Handler = log => mod => ({
+    state: undefined,
+    handle: data => {
+    },
+    dispose: () => {
+      if (disposeValue2Fn) {
+        disposeValue2Fn()
+      }
+    },
+  })
+
+  let worker = runWorker({
+    worker: mainAPI,
     tasks: {
       log: logTask(taskLog),
     },
     interfaces: {
-      value: workerHandler('interface', 'value', workerAPI),
+      value: valueHandler(onValue),
+      value2: value2Handler(onValue),
     },
+    warn: logCb,
+    error: logCb,
+  })
+
+  let disposeFn
+
+  let workerModule = run({
+    root,
+    init: mod => workerListener(mod, workerAPI),
+    destroy: () => {
+      if (disposeFn) {
+        disposeFn()
+      }
+    },
+    tasks: {
+      log: workerHandler('task', 'log', workerAPI),
+    },
+    interfaces: {
+      value: workerHandler('interface', 'value', workerAPI),
+      value2: workerHandler('interface', 'value2', workerAPI),
+    },
+    warn: workerLog('warn', workerAPI),
+    error: workerLog('error', workerAPI),
   })
 
   it('should run fractal over a worker API', () => {
@@ -154,5 +183,96 @@ describe('Utilities for running fractal inside workers', () => {
     }
     lastValue._dispatch(lastValue.task)
   })
+
+  it('should log an error when try to dispatch an task that has no task handler', done => {
+    valueFn = undefined
+    logFn = log => {
+      expect(log).toEqual([
+        'execute',
+        `there are no task handler for 'wrongTask' from component 'Main'`,
+      ])
+      done()
+    }
+    lastValue._dispatch(lastValue.wrongTask)
+  })
+
+  it('should merge a component via moduleAPI, UNIMPLEMENTED', done => {
+    logFn = log => {
+      expect(log).toEqual([
+        'workerListener',
+        `unimplemented method`,
+      ])
+      done()
+    }
+    worker.moduleAPI.merge('newComponent', root)
+    // when implemented:
+    // expect(workerModule.ctx.components['Main$newComponent']).toBeDefined()
+  })
+
+  it('should merge a component index via moduleAPI, UNIMPLEMENTED', done => {
+    logFn = log => {
+      expect(log).toEqual([
+        'workerListener',
+        `unimplemented method`,
+      ])
+      done()
+    }
+    worker.moduleAPI.mergeAll({
+      newComponent: root,
+    })
+  })
+
+  it('should unmerge a component via moduleAPI, UNIMPLEMENTED', done => {
+    logFn = log => {
+      expect(log).toEqual([
+        'workerListener',
+        `unimplemented method`,
+      ])
+      done()
+    }
+    worker.moduleAPI.unmerge('newComponent')
+  })
+
+  it('should unmerge a component index via moduleAPI, UNIMPLEMENTED', done => {
+    logFn = log => {
+      expect(log).toEqual([
+        'workerListener',
+        `unimplemented method`,
+      ])
+      done()
+    }
+    worker.moduleAPI.unmergeAll(['newComponent'])
+  })
+
+  // dispose module
+
+  it('should call dispose in task handlers via worker', done => {
+    disposeLogFn = () => {
+      done()
+    }
+    workerModule.taskHandlers['log'].dispose()
+  })
+
+  it('should call dispose in handlers via worker', done => {
+    disposeValue2Fn = () => {
+      done()
+    }
+    workerModule.interfaceHandlers['value2'].dispose()
+  })
+
+  it('should call destroy hook when dispose a module and dispose it', done => {
+    disposeFn = () => {
+      done()
+    }
+    worker.moduleAPI.dispose()
+  })
+
+  // it('should call destroy hook when dispose a module and dispose it', done => {
+  //   disposeFn = () => {
+  //     done()
+  //   }
+  //   worker.dispose()
+  //   expect(workerModule.ctx).toEqual(undefined)
+  // })
 
 })

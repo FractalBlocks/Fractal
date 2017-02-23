@@ -5,12 +5,8 @@ import { ModuleAPI } from '../module'
 declare var self: WorkerAPI
 
 export interface WorkerAPI {
-  postMessage: {
-    (value: any): void
-  }
-  onmessage?: {
-    (ev: WorkerEvent): void
-  }
+  postMessage (value: any): void
+  onmessage? (ev: WorkerEvent): void
 }
 
 export interface WorkerEvent {
@@ -18,6 +14,7 @@ export interface WorkerEvent {
 }
 
 export const workerHandler = (type: 'interface' | 'task', name: string, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
+  /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
   return {
     state: undefined,
@@ -31,9 +28,52 @@ export const workerHandler = (type: 'interface' | 'task', name: string, workerAP
 }
 
 export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
+  /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
   return (source: string, description: string) => {
     _self.postMessage(['log', type, source, description])
+  }
+}
+
+export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
+  /* istanbul ignore next */
+  let _self = workerAPI ? workerAPI : self
+  // allows to dispatch inputs from the main thread
+  _self.onmessage = ev => {
+    let data = ev.data
+    switch (data[0]) {
+      case 'dispatch':
+        mod.dispatch(data[1])
+        /* istanbul ignore next */
+        break
+      case 'dispose':
+        mod.dispose()
+        /* istanbul ignore next */
+        break
+      case 'merge':
+        // not implemented yet, should deserialize a component with a safe eval
+        mod.error('workerListener', `unimplemented method`)
+        /* istanbul ignore next */
+        break
+      case 'mergeAll':
+        // not implemented yet, should deserialize a list of components with a safe eval
+        mod.error('workerListener', `unimplemented method`)
+        /* istanbul ignore next */
+        break
+      case 'unmerge':
+        // not implemented yet, should deserialize a component with a safe eval
+        mod.error('workerListener', `unimplemented method`)
+        /* istanbul ignore next */
+        break
+      case 'unmergeAll':
+        // not implemented yet, should deserialize a list of components with a safe eval
+        mod.error('workerListener', `unimplemented method`)
+        /* istanbul ignore next */
+        break
+      /* istanbul ignore next */
+      default:
+        mod.error('workerListener', `unknown message type recived from worker: ${data.join(', ')}`)
+    }
   }
 }
 
@@ -57,6 +97,7 @@ export interface WorkerModuleDef {
 
 export interface WorkerModule {
   worker: WorkerAPI
+  moduleAPI: ModuleAPI
   taskObjects: { [name: string]: HandlerObject }
   interfaceObjects: { [name: string]: HandlerObject }
 }
@@ -67,10 +108,17 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   let taskObjects: { [name: string]: HandlerObject } = {}
   let interfaceObjects: { [name: string]: HandlerObject } = {}
 
+  /* istanbul ignore next */
+  let reattach = comp => {
+    def.error('reattach', 'unimplemented method')
+  }
+
   // API for modules
   let moduleAPI: ModuleAPI = {
     // dispatch function type used for handlers
     dispatch: (dispatchData: DispatchData) => worker.postMessage(['dispatch', dispatchData]),
+    dispose,
+    reattach,
     // merge a component to the component index
     merge: (name: string, component: Component) => worker.postMessage(['merge', name, component]),
     // merge many components to the component index
@@ -83,12 +131,13 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     warn: def.warn,
     error: def.error,
   }
-
+  /* istanbul ignore else */
   if (def.tasks) {
     for (let i = 0, names = Object.keys(def.tasks), len = names.length ; i < len; i++) {
       taskObjects[names[i]] = def.tasks[names[i]](moduleAPI)
     }
   }
+  /* istanbul ignore else */
   if (def.interfaces) {
     for (let i = 0, names = Object.keys(def.interfaces), len = names.length ; i < len; i++) {
       interfaceObjects[names[i]] = def.interfaces[names[i]](moduleAPI)
@@ -101,35 +150,52 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
       case 'interface':
         /* istanbul ignore else */
         if (data[2] === 'handle') {
-          return interfaceObjects[data[1]].handle(data[3])
+          interfaceObjects[data[1]].handle(data[3])
+          /* istanbul ignore next */
+          break
         }
+        /* istanbul ignore else */
         if (data[2] === 'dispose') {
-          return interfaceObjects[data[1]].dispose()
+          interfaceObjects[data[1]].dispose()
+          /* istanbul ignore next */
+          break
         }
-        moduleAPI.error('runWorker', 'wrong interface method')
-        break
       case 'task':
+        /* istanbul ignore else */
         if (data[2] === 'handle') {
-          return taskObjects[data[1]].handle(data[3])
+          taskObjects[data[1]].handle(data[3])
+          /* istanbul ignore next */
+          break
         }
+        /* istanbul ignore else */
         if (data[2] === 'dispose') {
-          return taskObjects[data[1]].dispose()
+          taskObjects[data[1]].dispose()
+          /* istanbul ignore next */
+          break
         }
-        moduleAPI.error('runWorker', 'wrong interface method')
-        break
       case 'log':
+        /* istanbul ignore else */
         if (moduleAPI[data[1]]) {
           moduleAPI[data[1]](data[2], data[3])
+          /* istanbul ignore next */
+          break
         }
-        break
+      /* istanbul ignore next */
       default:
-        moduleAPI.error('runWorker', 'unknown message type recived from worker')
-        break
+        moduleAPI.error('runWorker', `unknown message type recived from worker: ${data.join(', ')}`)
     }
+  }
+
+  function dispose () {
+    moduleAPI = undefined
+    taskObjects = undefined
+    interfaceObjects = undefined
+    worker.postMessage(['dispose'])
   }
 
   return {
     worker,
+    moduleAPI,
     taskObjects,
     interfaceObjects,
   }

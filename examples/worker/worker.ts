@@ -1,17 +1,9 @@
 import { run } from '../../src'
-import { workerHandler, workerLog } from '../../src/utils/worker'
+import { workerHandler, workerLog, workerListener } from '../../src/utils/worker'
 
 let app = run({
   root: require('./app').default,
-  init: mod => {
-    // allows to dispatch inputs from the main thread
-    self.onmessage = ev => {
-      let data = ev.data
-      if (data[0] === 'dispatch') {
-        return mod.dispatch(data[1])
-      }
-    }
-  },
+  init: workerListener,
   tasks: {
     style: workerHandler('task', 'style'),
   },

@@ -28,25 +28,15 @@ export interface ModuleDef {
     [name: string]: HandlerInterface
   }
   // lifecycle hooks for modules
-  init?: {
-    (mod: ModuleAPI): void
-  }
-  destroy?: {
-    (mod: ModuleAPI): void
-  }
+  init? (mod: ModuleAPI): void
+  destroy? (mod: ModuleAPI): void
   // callbacks (side effects) for log messages
-  warn?: {
-    (source: string, description: string): void
-  }
-  error?: {
-    (source: string, description: string): void
-  }
+  warn? (source: string, description: string): void
+  error? (source: string, description: string): void
 }
 
 export interface Module {
   moduleDef: ModuleDef
-  reattach(root: Component): void
-  dispose(): void
   isDisposed: boolean
   // related to internals
   interfaceHandlers: {
@@ -62,27 +52,15 @@ export interface Module {
 
 // API from module to handlers
 export interface ModuleAPI {
-  dispatch: {
-    (dispatchData: DispatchData): void
-  }
-  merge: {
-    (name: string, component: Component): void
-  }
-  mergeAll: {
-    (components: { [name: string]: Component }): void
-  }
-  unmerge: {
-    (name: string): void
-  }
-  unmergeAll: {
-    (components: string[]): void
-  }
-  warn: {
-    (source, description): void
-  }
-  error: {
-    (source, description): void
-  }
+  dispatch (dispatchData: DispatchData): void
+  dispose (): void
+  reattach (comp: Component): void
+  merge (name: string, component: Component): void
+  mergeAll (components: { [name: string]: Component }): void
+  unmerge (name: string): void
+  unmergeAll (components: string[]): void
+  warn (source, description): void
+  error (source, description): void
 }
 
 // create context for a component
@@ -270,9 +248,6 @@ export function run (moduleDefinition: ModuleDef): Module {
   let moduleAPI: ModuleAPI
   // root context
   let ctx: Context
-  let interfaceHandlers: {
-    [name: string]: HandlerObject
-  }
 
   // attach root component
   function attach (comp?: Component, lastComponents?: ComponentSpaceIndex) {
@@ -315,6 +290,8 @@ export function run (moduleDefinition: ModuleDef): Module {
     moduleAPI = {
       // dispatch function type used for handlers
       dispatch: (dispatchData: DispatchData) => dispatch(ctx, dispatchData),
+      dispose,
+      reattach,
       // merge a component to the component index
       merge: (name: string, component: Component) => merge(ctx, name, component),
       // merge many components to the component index
@@ -329,10 +306,9 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
     // if is not hot swapping
     if (!lastComponents) {
-      interfaceHandlers = {}
       // pass ModuleAPI to every InterfaceFunction
       for (let i = 0, names = Object.keys(moduleDef.interfaces), len = names.length; i < len; i++) {
-        interfaceHandlers[names[i]] = moduleDef.interfaces[names[i]](moduleAPI)
+        ctx.interfaceHandlers[names[i]] = moduleDef.interfaces[names[i]](moduleAPI)
       }
       // pass ModuleAPI to every TaskFunction
       if (moduleDef.tasks) {
@@ -355,11 +331,13 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
 
     for (let name in component.interfaces) {
-      if (interfaceHandlers[name]) {
-        ctx.interfaceHandlers[name] = interfaceHandlers[name]
+      if (ctx.interfaceHandlers[name]) {
         ctx.interfaceHandlers[name].handle(component.interfaces[name](ctx, ctx.components[rootName].state))
       } else {
-        return ctx.error('InterfaceHandlers', `'${rootName}' module has no interface called '${name}', missing interface handler`)
+        return ctx.error(
+          'InterfaceHandlers',
+          `'${rootName}' module has no interface called '${name}', missing interface handler`
+        )
       }
     }
 
@@ -371,26 +349,29 @@ export function run (moduleDefinition: ModuleDef): Module {
 
   attach(undefined)
 
+  function dispose () {
+    if (moduleDef.destroy) {
+      moduleDef.destroy(moduleAPI)
+    }
+    // dispose all streams
+    unmerge(ctx)
+    for (let i = 0, names = Object.keys(ctx.interfaceHandlers), len = names.length; i < len; i++) {
+      ctx.interfaceHandlers[names[i]].dispose()
+    }
+    ctx = undefined
+    this.isDisposed = true
+  }
+
+  function reattach (comp: Component) {
+    let lastComponents = ctx.components
+    ctx.components = {}
+    // TODO: use a deepmerge algoritm
+    attach(comp, lastComponents)
+  }
+
   return {
     moduleDef,
     // reattach root component, used for hot swapping
-    reattach (comp: Component) {
-      let lastComponents = ctx.components
-      ctx.components = {}
-      // TODO: use a deepmerge algoritm
-      attach(comp, lastComponents)
-    },
-    dispose () {
-      if (moduleDef.destroy) {
-        moduleDef.destroy(moduleAPI)
-      }
-      // dispose all streams
-      unmerge(ctx)
-      for (let i = 0, names = Object.keys(interfaceHandlers), len = names.length; i < len; i++) {
-        interfaceHandlers[names[i]].dispose()
-      }
-      this.isDisposed = true
-    },
     isDisposed: false,
     // related to internals
     interfaceHandlers: ctx.interfaceHandlers,

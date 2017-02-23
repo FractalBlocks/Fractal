@@ -316,12 +316,11 @@ describe('One Component + module functionality', function () {
   // dispose module
 
   it('should dispose a module', () => {
-    app.dispose()
+    app.moduleAPI.dispose()
     expect(app.ctx.components).toEqual({})
   })
 
   it('should call destroy hook when dispose a module', () => {
-    app.dispose()
     expect(disposed).toEqual(true)
   })
 
@@ -555,7 +554,7 @@ describe('Lifecycle hooks', () => {
   })
 
   it('Should call destroy in all component tree when dispose the module', () => {
-    app.dispose()
+    app.moduleAPI.dispose()
     expect(disposeLog).toEqual(['child1', 'child2', 'child3', 'Main'])
   })
 
@@ -638,7 +637,7 @@ describe('Hot swapping', () => {
         value: valueHandler(onValue),
       },
     })
-    app.reattach(mainV2)
+    app.moduleAPI.reattach(mainV2)
     value = lastValue
     expect(value.content).toBe('Fractal is awesome V2!! 0 :D')
     expect(value.childValue1.content).toBe('Fractal is awesome!! 0')
