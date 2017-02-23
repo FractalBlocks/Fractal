@@ -14,6 +14,6 @@ let app = run({
 if (module.hot) {
   module.hot.accept('./app', () => {
     let m = require('./app').default
-    app.reattach(m)
+    app.moduleAPI.reattach(m)
   })
 }

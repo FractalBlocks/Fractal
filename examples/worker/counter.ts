@@ -17,7 +17,7 @@ let actions = {
     return state
   },
   Inc: () => state => {
-    state.count += 10
+    state.count ++
     return state
   },
 }
