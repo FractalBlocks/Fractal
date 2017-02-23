@@ -267,12 +267,4 @@ describe('Utilities for running fractal inside workers', () => {
     worker.moduleAPI.dispose()
   })
 
-  // it('should call destroy hook when dispose a module and dispose it', done => {
-  //   disposeFn = () => {
-  //     done()
-  //   }
-  //   worker.dispose()
-  //   expect(workerModule.ctx).toEqual(undefined)
-  // })
-
 })
