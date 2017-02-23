@@ -630,7 +630,7 @@ describe('Hot swapping', () => {
 
   let value
 
-  it('Should call init in all component tree when initialize the module', () => {
+  it('Should reattach root component', () => {
     app = run({
       root: mainV1,
       interfaces: {
