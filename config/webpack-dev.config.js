@@ -168,6 +168,7 @@ module.exports = function (options) {
       }),
       new HtmlWebpackPlugin({
         template: 'examples/index.ejs',
+        inject: 'body',
       }),
        /**
        * Plugin LoaderOptionsPlugin (experimental)
