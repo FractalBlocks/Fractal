@@ -189,7 +189,7 @@ describe('Utilities for running fractal inside workers', () => {
     logFn = log => {
       expect(log).toEqual([
         'execute',
-        `there are no task handler for 'wrongTask' from component 'Main'`,
+        `there are no task handler for 'wrongTask' in component 'Main' from space 'Main'`,
       ])
       done()
     }

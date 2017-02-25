@@ -87,11 +87,11 @@ export function interfaceOf (ctx: Context, name: string, interfaceName: string):
   let id = `${ctx.id}$${name}`
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
-    ctx.error('interfaceOf', `there are no module '${id}'`)
+    ctx.error('interfaceOf', `there are no component space '${id}'`)
     return {}
   }
   if (!componentSpace.def.interfaces[interfaceName]) {
-    ctx.error('interfaceOf', `there are no interface '${interfaceName}' in module '${id}'`)
+    ctx.error('interfaceOf', `there are no interface '${interfaceName}' in component '${componentSpace.def.name}' from space '${id}'`)
     return {}
   }
   return componentSpace.def.interfaces[interfaceName](componentSpace.ctx, componentSpace.state)
@@ -102,7 +102,7 @@ export function merge (ctx: Context, name: string, component: Component): Contex
   // namespaced name if is a child
   let id = ctx.id === '' ? name : ctx.id + '$' + name
   if (ctx.components[id]) {
-    ctx.warn('merge', `component '${ctx.id}' has overwritten component '${id}'`)
+    ctx.warn('merge', `component '${ctx.id}' has overwritten component space '${id}'`)
   }
 
   if (ctx.components[ctx.id] && !ctx.components[ctx.id].components[name]) {
@@ -177,13 +177,13 @@ export function ev (ctx: Context, inputName: string, param?: any): InputData {
 export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
   let componentSpace = ctx.components[dispatchData[0]]
   if (!componentSpace) {
-    return ctx.error('dispatch', `there are no module with id '${dispatchData[0]}'`)
+    return ctx.error('dispatch', `there are no component space '${dispatchData[0]}'`)
   }
   let input = componentSpace.inputs[dispatchData[1]]
   if (input) {
     execute(ctx, dispatchData[0], input(dispatchData[2]))
   } else {
-    ctx.error('dispatch', `there are no input with id '${dispatchData[1]}' in module '${dispatchData[0]}'`)
+    ctx.error('dispatch', `there are no input named '${dispatchData[1]}' in component '${componentSpace.def.name}' from space '${dispatchData[0]}'`)
   }
 }
 
@@ -200,7 +200,7 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
       if (executable[0] && typeof executable[0] === 'string') {
         // single task
         if (!ctx.taskHandlers[executable[0]]) {
-          return ctx.error('execute', `there are no task handler for '${executable[0]}' from component '${id}'`)
+          return ctx.error('execute', `there are no task handler for '${executable[0]}' in component '${componentSpace.def.name}' from space '${id}'`)
         }
         ctx.taskHandlers[executable[0]].handle(executable[1])
       } else {
@@ -217,7 +217,7 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
                 // single task
                 if (!ctx.taskHandlers[executable[i][0]]) {
-                  return ctx.error('execute', `there are no task handler for '${executable[i][0]}' from component '${id}'`)
+                  return ctx.error('execute', `there are no task handler for '${executable[i][0]}' in component '${componentSpace.def.name}' from space '${id}'`)
                 }
                 ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
               }

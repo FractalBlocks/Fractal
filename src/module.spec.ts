@@ -124,7 +124,7 @@ describe('Context functions', function () {
     // Should overwrite
     expect(ctx.components[`Main$child`].state.count).toEqual(0)
     expect(lastLog)
-      .toEqual(['merge', `component 'Main' has overwritten component 'Main$child'`])
+      .toEqual(['merge', `component 'Main' has overwritten component space 'Main$child'`])
   })
 
   let state
@@ -142,7 +142,7 @@ describe('Context functions', function () {
     interfaceOf(rootCtx, 'wrong', 'value')
     expect(lastLog).toEqual([
       'interfaceOf',
-      `there are no module 'Main$wrong'`,
+      `there are no component space 'Main$wrong'`,
     ])
   })
 
@@ -150,7 +150,7 @@ describe('Context functions', function () {
     interfaceOf(rootCtx, 'child', 'wrong')
     expect(lastLog).toEqual([
       'interfaceOf',
-      `there are no interface 'wrong' in module 'Main$child'`,
+      `there are no interface 'wrong' in component 'Main' from space 'Main$child'`,
     ])
   })
 
@@ -253,7 +253,7 @@ describe('One Component + module functionality', function () {
     value._dispatch(['someId', 'someInput'])
     expect(lastLog).toEqual([
       'dispatch',
-      `there are no module with id 'someId'`,
+      `there are no component space 'someId'`,
     ])
   })
 
@@ -261,7 +261,7 @@ describe('One Component + module functionality', function () {
     value._dispatch(['Main', 'someInput'])
     expect(lastLog).toEqual([
       'dispatch',
-      `there are no input with id 'someInput' in module 'Main'`,
+      `there are no input named 'someInput' in component 'Main' from space 'Main'`,
     ])
   })
 
@@ -281,7 +281,7 @@ describe('One Component + module functionality', function () {
     value._dispatch(value.wrongTask)
     expect(lastLog).toEqual([
       'execute',
-      `there are no task handler for 'wrongTask' from component 'Main'`,
+      `there are no task handler for 'wrongTask' in component 'Main' from space 'Main'`,
     ])
   })
 
@@ -292,7 +292,7 @@ describe('One Component + module functionality', function () {
     value._dispatch(value.executableListWrong)
     expect(lastLog).toEqual([
       'execute',
-      `there are no task handler for 'wrongTask2' from component 'Main'`,
+      `there are no task handler for 'wrongTask2' in component 'Main' from space 'Main'`,
     ])
   })
 
