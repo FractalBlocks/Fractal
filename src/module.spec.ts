@@ -60,6 +60,8 @@ let childValue: ValueInterface =
     content: 'Fractal is awesome!! ' + s.count,
     inc: ev(ctx, 'inc'),
     task: ev(ctx, 'task'),
+    set: ev(ctx, 'set', 10),
+    setFn: ev(ctx, 'set', value => value - 1),
     wrongTask: ev(ctx, 'wrongTask'),
     executableListWrong: ev(ctx, 'executableListWrong'),
     executableListTask: ev(ctx, 'executableListTask'),
@@ -95,33 +97,47 @@ describe('Context functions', function () {
   }
 
   let ctx: Context
-  it('Should create a child context (createContext)', () => {
+  it('should create a child context (createContext)', () => {
     ctx = createContext(rootCtx, 'child')
     expect(ctx).toBeDefined()
   })
 
-  it('Should put an entry in warnLog when warn function is invoked', () => {
+  it('should put an entry in warnLog when warn function is invoked', () => {
     let warn = ['child', 'warn 1']
     rootCtx.warn(warn[0], warn[1])
     expect(lastLog).toEqual(warn)
   })
 
-  it('Should put an entry in errorLog when error function is invoked', () => {
+  it('should put an entry in errorLog when error function is invoked', () => {
     let error = ['child', 'error 1']
     ctx.error(error[0], error[1])
     expect(lastLog).toEqual(error)
   })
 
-  it('Should merge a component to context (merge)', () => {
+  describe('ev function helper for sintetizing InputData', () => {
+
+    it('should return an InputData', () => {
+      let data = ev(ctx, 'inputName', 0)
+      expect(data).toEqual(['Main$child', 'inputName', 0, false])
+    })
+
+    it('should serialize param if is a function', () => {
+      let data = ev(ctx, 'inputName', ev => ev.target.value)
+      expect(data).toEqual(['Main$child', 'inputName', (ev => ev.target.value).toString(), true])
+    })
+
+  })
+
+  it('should merge a component to context (merge)', () => {
     merge(rootCtx, 'child', root)
     expect(ctx.components[`Main$child`]).toBeDefined()
   })
 
-  it('Should overwrite a component if has the same name and log a warning', () => {
+  it('should overwrite a component if has the same name and log a warning', () => {
     ctx.components[`Main$child`].state.count = 17
     merge(rootCtx, 'child', root)
     expect(ctx.components[`Main$child`]).toBeDefined()
-    // Should overwrite
+    // should overwrite
     expect(ctx.components[`Main$child`].state.count).toEqual(0)
     expect(lastLog)
       .toEqual(['merge', `component 'Main' has overwritten component space 'Main$child'`])
@@ -129,16 +145,16 @@ describe('Context functions', function () {
 
   let state
 
-  it('Should get the state from a certain component (stateOf)', () => {
+  it('should get the state from a certain component (stateOf)', () => {
     state = stateOf(rootCtx, 'child')
     expect(state.count).toEqual(0)
   })
 
-  it('Should get an interface message from a certain component (interfaceOf)', () => {
+  it('should get an interface message from a certain component (interfaceOf)', () => {
     expect(interfaceOf(rootCtx, 'child', 'value')).toEqual(childValue(createContext(rootCtx, 'child'), state))
   })
 
-  it('Should log an error if try to get an interface message from an inexistent component (interfaceOf)', () => {
+  it('should log an error if try to get an interface message from an inexistent component (interfaceOf)', () => {
     interfaceOf(rootCtx, 'wrong', 'value')
     expect(lastLog).toEqual([
       'interfaceOf',
@@ -146,7 +162,7 @@ describe('Context functions', function () {
     ])
   })
 
-  it('Should log an error if try to get an inexistent interface message from a certain component (interfaceOf)', () => {
+  it('should log an error if try to get an inexistent interface message from a certain component (interfaceOf)', () => {
     interfaceOf(rootCtx, 'child', 'wrong')
     expect(lastLog).toEqual([
       'interfaceOf',
@@ -209,7 +225,7 @@ describe('One Component + module functionality', function () {
     expect(initialized).toBe(true)
   })
 
-  it('Should log an error and notify error callback when module dont have an InterfaceHandler', () => {
+  it('should log an error and notify error callback when module dont have an InterfaceHandler', () => {
     let app = run({
       root,
       interfaces: {},
@@ -227,7 +243,7 @@ describe('One Component + module functionality', function () {
 
   let value
 
-  it('should react to an event (dispatch function)', done => {
+  it('should react to an input (dispatch function)', done => {
     valueFn = value => {
       expect(value.content).toBe('Fractal is awesome!! 1')
       done()
@@ -237,13 +253,36 @@ describe('One Component + module functionality', function () {
     value._dispatch(value.inc)
   })
 
-  it('Should put an entry in errorLog when error function is invoked', () => {
+  it('should dispatch an input with a value as argument', done => {
+    valueFn = value => {
+      expect(value.content).toBe('Fractal is awesome!! 10')
+      done()
+    }
+    // extract value and dispatch interface handlers
+    value = lastValue // this catch the scope variable
+    value._dispatch(value.set)
+  })
+
+  it('should dispatch an input with a function as argument', done => {
+    valueFn = value => {
+      expect(value.content).toBe('Fractal is awesome!! 24')
+      done()
+    }
+    // extract value and dispatch interface handlers
+    value = lastValue // this catch the scope variable
+    let iData = value.setFn
+    let fn
+    eval('fn = ' + iData[2])
+    value._dispatch([iData[0], iData[1], fn(25)])
+  })
+
+  it('should put an entry in errorLog when error function is invoked', () => {
     let error = ['child', 'error 1']
     app.ctx.error(error[0], error[1])
     expect(lastLog).toEqual(error)
   })
 
-  it('Should delegate warn function', () => {
+  it('should delegate warn function', () => {
     let warn = ['child', 'warn 1']
     app.ctx.warn(warn[0], warn[1])
     expect(lastLog).toEqual(warn)
@@ -268,6 +307,7 @@ describe('One Component + module functionality', function () {
   // Events should dispatch tasks to its handlers and those can dispatch events
 
   it('should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
+    app.ctx.components['Main'].state['count'] = 1
     valueFn = value => {
       expect(value.content).toBe('Fractal is awesome!! 2')
       expect(taskLog[taskLog.length - 1]).toEqual('info')
@@ -380,7 +420,7 @@ describe('Component composition', () => {
     }
   }
 
-  it('Should merge child components', () => {
+  it('should merge child components', () => {
     app = run({
       root: main,
       interfaces: {
@@ -540,7 +580,7 @@ describe('Lifecycle hooks', () => {
 
   let value
 
-  it('Should call init in all component tree when initialize the module', () => {
+  it('should call init in all component tree when initialize the module', () => {
     app = run({
       root: main,
       interfaces: {
@@ -553,7 +593,7 @@ describe('Lifecycle hooks', () => {
     expect(value.childValue3.content).toBe('Fractal is awesome!! 1')
   })
 
-  it('Should call destroy in all component tree when dispose the module', () => {
+  it('should call destroy in all component tree when dispose the module', () => {
     app.moduleAPI.dispose()
     expect(disposeLog).toEqual(['child1', 'child2', 'child3', 'Main'])
   })
@@ -630,7 +670,7 @@ describe('Hot swapping', () => {
 
   let value
 
-  it('Should reattach root component', () => {
+  it('should reattach root component', () => {
     app = run({
       root: mainV1,
       interfaces: {

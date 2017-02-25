@@ -53,7 +53,8 @@ export interface Action {
 export interface InputData extends Array<any> {
   0: string // component index identifier
   1: string // input name
-  2?: any // a dispatcher function / value is optional
+  2?: any // a param function / value is optional
+  3?: boolean // param is function?
 }
 
 // dispatcher data comes from an interface / task handler as a result of processing EventData (from a event) - Comunications stuff
@@ -61,6 +62,7 @@ export interface DispatchData extends Array<any> {
   0: string // component index identifier
   1: string // input name
   2?: any // data from an interface / task handler ( result of function or value )
+  3?: boolean // param is function?
 }
 
 /* function that can be serialized securely, is pure and should not have contextual dependencies,

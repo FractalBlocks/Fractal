@@ -170,7 +170,8 @@ export function unmergeAll (ctx: Context, components: string[]) {
 
 // create an InputData array
 export function ev (ctx: Context, inputName: string, param?: any): InputData {
-   return [ctx.id, inputName, param]
+  let isFn = typeof param === 'function'
+  return [ctx.id, inputName, isFn ? param.toString() : param, isFn]
 }
 
 // dispatch an input based on DispatchData to the respective component
