@@ -11,23 +11,6 @@ let components = {
 
 let state = ({key}) => ({
   key,
-  count: 0,
-})
-
-let actions = {
-  Set: (count: number) => state => {
-    state.count = count
-    return state
-  },
-  Inc: () => state => {
-    state.count ++
-    return state
-  },
-}
-
-let inputs = (ctx: Context) => ({
-  set: (n: number) => actions.Set(n),
-  inc: () => actions.Inc(),
 })
 
 let view: ViewInterface = (ctx, s) =>
@@ -63,8 +46,8 @@ let mDef: Component = {
   name,
   state,
   components,
-  inputs,
-  actions,
+  inputs: ctx => ({}),
+  actions: {},
   interfaces: {
     view,
   },
