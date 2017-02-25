@@ -48,7 +48,7 @@ let styleObj: StyleGroup = {
     margin: '10px',
     borderRadius: '50%',
     color: 'white',
-    backgroundColor: 'blue',
+    backgroundColor: '#4343EC',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

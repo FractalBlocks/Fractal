@@ -64,7 +64,7 @@ let styleObj: StyleGroup = {
     borderRadius: '50%',
     color: 'white',
     fontSize: '20px',
-    backgroundColor: '#3232F2',
+    backgroundColor: '#4343EC',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -73,7 +73,7 @@ let styleObj: StyleGroup = {
     padding: '4px',
     color: 'white',
     fontSize: '18px',
-    backgroundColor: '#EA1818',
+    backgroundColor: '#E53B3B',
   },
 }
 
