@@ -27,15 +27,10 @@ export const viewHandler: Handler = selectorElm => mod => {
     styleModule,
   ])
 
-  function wraperPatch (o, n) {
-    let newContainer = patchFn(o, n)
-    lastContainer = newContainer
-    return newContainer
-  }
-
   function handler (vnode: VNode) {
     let vnode_mapped = h('div' + selector, { key: selector }, [vnode])
-    state = wraperPatch(state, vnode_mapped)
+    state = patchFn(state, vnode_mapped)
+    lastContainer = state
   }
 
   return {

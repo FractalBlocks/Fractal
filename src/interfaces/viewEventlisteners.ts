@@ -28,7 +28,11 @@ export const eventListenersModule = (dispatch): Module => {
 
   function createListener() {
     return function handler(event: Event) {
-      handleEvent(event, (handler as any).vnode)
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+            handleEvent(event, (handler as any).vnode)
+        }, 0)
+      })
     }
   }
 
