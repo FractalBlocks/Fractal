@@ -58,7 +58,7 @@ export interface InputData extends Array<any> {
   0: string // component index identifier
   1: string // input name
   2?: any // a param function string / value is optional
-  3?: boolean // param is a value?
+  3?: any // if defined param is a value is used as extra parameter
 }
 
 // event data comes from an interface / task handler as a result of processing InputData - Comunications stuff
@@ -66,6 +66,7 @@ export interface EventData extends Array<any> {
   0: string // component index identifier
   1: string // input name
   2?: any // data from an interface / task handler ( result of function or value )
+  3?: any // extra parameter from InputData (contextual)
 }
 
 /* function string makes easy to serialize InputData, if '*' the data fetched are the whole event object, if 'other' extract 'other' property from event object

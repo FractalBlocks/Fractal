@@ -169,25 +169,29 @@ export function unmergeAll (ctx: Context, components: string[]) {
 }
 
 // create an InputData array
-export function ev (ctx: Context, inputName: string, param?: any, isFn?: boolean): InputData {
-  return [ctx.id, inputName, param, !!isFn]
+export function ev (ctx: Context, inputName: string, param?: any, extra?: any): InputData {
+  if (param !== undefined) {
+    return [ctx.id, inputName, param, extra]
+  } else {
+    return [ctx.id, inputName]
+  }
 }
 
 export function computeEvent(event: any, iData): EventData {
   let data
-  if (iData[3]) {
-    data = iData[2]
+  if (iData[2] === '*') {
+    data = JSON.parse(JSON.stringify(event))
+  } else if (event && iData[2] !== undefined) {
+    data = event[iData[2]]
   } else {
-    if (iData[2] === '*') {
-      data = JSON.parse(JSON.stringify(event))
-    } else {
-      data = event[iData[2]]
-    }
+    return [iData[0], iData[1]] // dispatch an input with no arguments
   }
   return [
     iData[0], // component id
     iData[1], // component event
     data, // data
+    iData[3], // extra argument
+    iData[3] !== undefined, // is extra?
   ]
 }
 
@@ -200,7 +204,12 @@ export const dispatch = (ctx: Context, eventData: EventData) => {
   }
   let input = componentSpace.inputs[eventData[1]]
   if (input) {
-    execute(ctx, eventData[0], input(eventData[2]))
+    let data = eventData[4] && eventData[2] // is both?
+      ? [eventData[2], eventData[3]] // is both event data + extra
+      : eventData[3]
+      ? eventData[3] // is only extra
+      : eventData[2] // is only event data
+    execute(ctx, eventData[0], input(data))
   } else {
     ctx.error('dispatch', `there are no input named '${eventData[1]}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
   }

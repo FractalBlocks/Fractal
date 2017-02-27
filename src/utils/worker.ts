@@ -48,6 +48,7 @@ export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
         break
       case 'dispose':
         mod.dispose()
+        _self.postMessage(['dispose'])
         /* istanbul ignore next */
         break
       case 'merge':
@@ -180,6 +181,11 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
           /* istanbul ignore next */
           break
         }
+      case 'dispose':
+        moduleAPI = undefined
+        taskObjects = undefined
+        interfaceObjects = undefined
+        break
       /* istanbul ignore next */
       default:
         moduleAPI.error('runWorker', `unknown message type recived from worker: ${data.join(', ')}`)
@@ -187,9 +193,6 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   }
 
   function dispose () {
-    moduleAPI = undefined
-    taskObjects = undefined
-    interfaceObjects = undefined
     worker.postMessage(['dispose'])
   }
 
