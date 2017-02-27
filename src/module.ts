@@ -199,7 +199,11 @@ export function computeEvent(event: any, iData): EventData {
     iData[1], // component event
     data, // data
     iData[3], // extra argument
-    iData[3] !== undefined, // is extra?
+    iData[2] && iData[3] !== undefined
+      ? 'pair'
+      : iData[2]
+      ? 'fn'
+      : 'extra',
   ]
 }
 
@@ -212,9 +216,9 @@ export const dispatch = (ctx: Context, eventData: EventData) => {
   }
   let input = componentSpace.inputs[eventData[1]]
   if (input) {
-    let data = eventData[4] && eventData[2] // is both?
+    let data = eventData[4] === 'pair' // is both?
       ? [eventData[2], eventData[3]] // is both event data + extra
-      : eventData[3]
+      : eventData[4] === 'extra'
       ? eventData[3] // is only extra
       : eventData[2] // is only event data
     execute(ctx, eventData[0], input(data))

@@ -43,6 +43,7 @@ let inputs = (ctx: Context) => ({
   set: (n: number) => actions.Set(n),
   setExtra: ([value, extra]) => actions.Set(value + extra),
   inc: () => actions.Inc(),
+  action: ([value, name]) => actions[name](value), // generic action input
   task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
   wrongTask: (): Task => ['wrongTask', {}],
   executableListWrong: (): Executable[] => [
@@ -67,6 +68,7 @@ let childValue: ValueInterface =
     setFnValue: ev(ctx, 'set', 'value'),
     setFnPath: ev(ctx, 'set', ['target', 'value']),
     setFnExtra: ev(ctx, 'setExtra', 'value', 5),
+    setFnGeneric: ev(ctx, 'action', 'value', 'Set'),
     wrongTask: ev(ctx, 'wrongTask'),
     executableListWrong: ev(ctx, 'executableListWrong'),
     executableListTask: ev(ctx, 'executableListTask'),
@@ -317,6 +319,17 @@ describe('One Component + module functionality', function () {
     value = lastValue // this catch the scope variable
     let data
     value._dispatch(computeEvent({ value: 35 }, value.setFnExtra))
+  })
+
+  it('should dispatch an input with a function string "value" as argument and an extra argument and value are an empty string', done => {
+    valueFn = value => {
+      expect(value.content).toBe('Fractal is awesome!! ')
+      done()
+    }
+    // extract value and dispatch interface handlers
+    value = lastValue // this catch the scope variable
+    let data
+    value._dispatch(computeEvent({ value: '' }, value.setFnGeneric))
   })
 
   it('should put an entry in errorLog when error function is invoked', () => {

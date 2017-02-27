@@ -67,6 +67,7 @@ export interface EventData extends Array<any> {
   1: string // input name
   2?: any // data from an interface / task handler ( result of function or value )
   3?: any // extra parameter from InputData (contextual)
+  4?: 'pair' | 'fn' | 'extra'
 }
 
 /* function string makes easy to serialize InputData, if '*' the data fetched are the whole event object, if 'other' extract 'other' property from event object
