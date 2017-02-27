@@ -43,7 +43,7 @@ let inputs = (ctx: Context) => ({
   set: (n: number) => actions.Set(n),
   setExtra: ([value, extra]) => actions.Set(value + extra),
   inc: () => actions.Inc(),
-  action: ([value, name]) => actions[name](value), // generic action input
+  action: ([name, value]) => actions[name](value), // generic action input
   task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
   wrongTask: (): Task => ['wrongTask', {}],
   executableListWrong: (): Executable[] => [
@@ -63,12 +63,13 @@ let childValue: ValueInterface =
     content: 'Fractal is awesome!! ' + s.count,
     inc: ev(ctx, 'inc'),
     task: ev(ctx, 'task'),
-    set: ev(ctx, 'set', '', 10),
-    setFnAll: ev(ctx, 'set', '*'),
-    setFnValue: ev(ctx, 'set', 'value'),
-    setFnPath: ev(ctx, 'set', ['target', 'value']),
-    setFnExtra: ev(ctx, 'setExtra', 'value', 5),
-    setFnGeneric: ev(ctx, 'action', 'value', 'Set'),
+    set: ev(ctx, 'set', 10),
+    setFnAll: ev(ctx, 'set', '', '*'),
+    setFnValue: ev(ctx, 'set', '', 'value'),
+    setFnPath: ev(ctx, 'set', '', ['target', 'value']),
+    setFnExtra: ev(ctx, 'setExtra', 5, 'value'),
+    setFnGeneric: ev(ctx, 'action', 'Set', 'value'),
+    setFnGenericValue: ev(ctx, 'action', ['Set', 123]),
     wrongTask: ev(ctx, 'wrongTask'),
     executableListWrong: ev(ctx, 'executableListWrong'),
     executableListTask: ev(ctx, 'executableListTask'),

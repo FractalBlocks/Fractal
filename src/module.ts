@@ -169,9 +169,9 @@ export function unmergeAll (ctx: Context, components: string[]) {
 }
 
 // create an InputData array
-export function ev (ctx: Context, inputName: string, param?: any, extra?: any): InputData {
+export function ev (ctx: Context, inputName: string, param?: any, context?: any): InputData {
   if (param !== undefined) {
-    return [ctx.id, inputName, param, extra]
+    return [ctx.id, inputName, param, context]
   } else {
     return [ctx.id, inputName]
   }
@@ -179,31 +179,33 @@ export function ev (ctx: Context, inputName: string, param?: any, extra?: any): 
 
 export function computeEvent(event: any, iData): EventData {
   let data
-  if (iData[2] === '*') {
+
+  if (iData[3] === '*') {
     data = JSON.parse(JSON.stringify(event))
-  } else if (event && iData[2] !== undefined) {
-    if (iData[2] instanceof Array) {
-      let path = iData[2]
+  } else if (event && iData[3] !== undefined) {
+    if (iData[3] instanceof Array) {
+      let path = iData[3]
       data = event
       for (let i = 0, len = path.length; i < len; i++) {
         data = data[path[i]]
       }
     } else {
-      data = event[iData[2]]
+      data = event[iData[3]]
     }
-  } else {
+  }
+  if (iData[2] === undefined && iData[3] === undefined) {
     return [iData[0], iData[1]] // dispatch an input with no arguments
   }
   return [
     iData[0], // component id
     iData[1], // component event
+    iData[2], // context argument
     data, // data
-    iData[3], // extra argument
-    iData[2] && iData[3] !== undefined
+    iData[2] !== '' && iData[3] !== undefined
       ? 'pair'
       : iData[2]
-      ? 'fn'
-      : 'extra',
+      ? 'context'
+      : 'fn',
   ]
 }
 
@@ -217,10 +219,10 @@ export const dispatch = (ctx: Context, eventData: EventData) => {
   let input = componentSpace.inputs[eventData[1]]
   if (input) {
     let data = eventData[4] === 'pair' // is both?
-      ? [eventData[2], eventData[3]] // is both event data + extra
-      : eventData[4] === 'extra'
-      ? eventData[3] // is only extra
-      : eventData[2] // is only event data
+      ? [eventData[2], eventData[3]] // is both event data + context
+      : eventData[4] === 'context'
+      ? eventData[2] // is only context
+      : eventData[3] // is only event data
     execute(ctx, eventData[0], input(data))
   } else {
     ctx.error('dispatch', `there are no input named '${eventData[1]}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)

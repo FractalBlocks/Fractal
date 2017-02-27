@@ -50,24 +50,24 @@ export interface Action {
 }
 
 // is the data of an event, refers to some event of a component - Comunications stuff
-/* NOTE: functions strings can be:
+/* NOTE: function strings can be:
   - '*': which means, serialize all the event object
   - 'other': which means, serialize the 'other' attribute of the event object
 */
 export interface InputData extends Array<any> {
   0: string // component index identifier
   1: string // input name
-  2?: any // a param function string / value is optional
-  3?: any // if defined param is a value is used as extra parameter
+  2?: any // if defined param is a value is used as context parameter
+  3?: any // a param function string / value is optional
 }
 
 // event data comes from an interface / task handler as a result of processing InputData - Comunications stuff
 export interface EventData extends Array<any> {
   0: string // component index identifier
   1: string // input name
-  2?: any // data from an interface / task handler ( result of function or value )
-  3?: any // extra parameter from InputData (contextual)
-  4?: 'pair' | 'fn' | 'extra'
+  2?: any // context parameter from InputData (contextual)
+  3?: any // data from an interface / task handler ( result of function or value )
+  4?: 'pair' | 'fn' | 'context'
 }
 
 /* function string makes easy to serialize InputData, if '*' the data fetched are the whole event object, if 'other' extract 'other' property from event object
