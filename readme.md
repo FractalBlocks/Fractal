@@ -30,36 +30,29 @@ Or in nodejs, browserify, webpack like environments:
 npm i --save fractal-framework
 ```
 
-See [Tutorial](https://github.com/fractalPlatform/Fractal/blob/master/docs/tutorials/tutorial.md) for getting started with Fractal.
-
 ### Run the examples
 
 There are many useful examples at examples folder. Be sure that you have installed [Node.js](https://nodejs.org/en/), please [download Fractal source](https://github.com/fractalPlatform/Fractal/archive/master.zip) and extract them.
 
 The examples you can run are:
 
-- playground
-- counterAndList
-- chat
-- mailboxNoRouter
-- tasks
+- simple
+- compose
+- mori: Fractal using mori.js for persistent data structures (PDS)
+- worker
+- testForm
 
 Open a command window into `Fractal` folder and run:
 
 ```bash
 npm i
-npm run general NAME_OF_EXAMPLE
+npm run dev ./examples/NAME_OF_EXAMPLE
 ```
-
-Some examples needs a backend (e.g. Chat or mailboxNoRouter), run it with:
+for example:
 
 ```bash
-cd examples/NAME_OF_EXAMPLE
-npm i
-node server
+npm run dev ./examples/compose
 ```
-
-See the [README of the example](https://github.com/fractalPlatform/Fractal/tree/master/examples) you want to run for a detailed description.
 
 ## Building
 
