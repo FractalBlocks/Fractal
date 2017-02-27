@@ -30,7 +30,7 @@ Or in nodejs, browserify, webpack like environments:
 npm i --save fractal-framework
 ```
 
-### Run the examples
+## Run the examples
 
 There are many useful examples at examples folder. Be sure that you have installed [Node.js](https://nodejs.org/en/), please [download Fractal source](https://github.com/fractalPlatform/Fractal/archive/master.zip) and extract them.
 
@@ -54,11 +54,21 @@ for example:
 npm run dev ./examples/compose
 ```
 
-## Building
+## Run tests
 
-For a production version run: `npm run compile`, and see the result in the `dist/` folder.
+Our rule is to have 100% of coverage, right now all core features are covered
 
-## Tips
+```bash
+// once
+npm test
+// dev server
+npm run test:watch
+```
 
-- Assets are static, these are copied to the dist folder when you compile the app.
-- Resources are dynamic these are inserted when your require (e.g. require('../resources/myresource.png') ) them, this are serialized and inserted into code.
+## Design
+
+Curious about how it works? see [Design Documentation](https://github.com/fractalPlatform/Fractal/blob/master/DESIGN.md) before reading source code :)
+
+## Development
+
+See our [Development Documentation](https://github.com/fractalPlatform/Fractal/blob/master/DEVELOPMENT.md)
