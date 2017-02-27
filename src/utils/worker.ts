@@ -47,8 +47,8 @@ export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
         /* istanbul ignore next */
         break
       case 'dispose':
-        mod.dispose()
         _self.postMessage(['dispose'])
+        mod.dispose()
         /* istanbul ignore next */
         break
       case 'merge':
@@ -94,6 +94,7 @@ export interface WorkerModuleDef {
   error?: {
     (source, description): void
   }
+  destroy? (mod: ModuleAPI): void
 }
 
 export interface WorkerModule {
@@ -182,8 +183,14 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
           break
         }
       case 'dispose':
+        if (def.destroy) {
+          def.destroy(moduleAPI)
+        }
+        /* istanbul ignore next */
         moduleAPI = undefined
+        /* istanbul ignore next */
         taskObjects = undefined
+        /* istanbul ignore next */
         interfaceObjects = undefined
         break
       /* istanbul ignore next */

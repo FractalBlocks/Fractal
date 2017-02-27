@@ -267,4 +267,46 @@ describe('Utilities for running fractal inside workers', () => {
     worker.moduleAPI.dispose()
   })
 
+  it('should call destroy hook when dispose a module and dispose it', done => {
+
+    let worker = runWorker({
+      worker: mainAPI,
+      tasks: {
+        log: logTask(taskLog),
+      },
+      interfaces: {
+        value: valueHandler(onValue),
+        value2: value2Handler(onValue),
+      },
+      warn: logCb,
+      error: logCb,
+      destroy: () => {
+        done()
+      },
+    })
+
+    let disposeFn
+
+    let workerModule = run({
+      root,
+      init: mod => workerListener(mod, workerAPI),
+      destroy: () => {
+        if (disposeFn) {
+          disposeFn()
+        }
+      },
+      tasks: {
+        log: workerHandler('task', 'log', workerAPI),
+      },
+      interfaces: {
+        value: workerHandler('interface', 'value', workerAPI),
+        value2: workerHandler('interface', 'value2', workerAPI),
+      },
+      warn: workerLog('warn', workerAPI),
+      error: workerLog('error', workerAPI),
+    })
+
+    worker.moduleAPI.dispose()
+  })
+
 })

@@ -182,7 +182,15 @@ export function computeEvent(event: any, iData): EventData {
   if (iData[2] === '*') {
     data = JSON.parse(JSON.stringify(event))
   } else if (event && iData[2] !== undefined) {
-    data = event[iData[2]]
+    if (iData[2] instanceof Array) {
+      let path = iData[2]
+      data = event
+      for (let i = 0, len = path.length; i < len; i++) {
+        data = data[path[i]]
+      }
+    } else {
+      data = event[iData[2]]
+    }
   } else {
     return [iData[0], iData[1]] // dispatch an input with no arguments
   }

@@ -65,6 +65,7 @@ let childValue: ValueInterface =
     set: ev(ctx, 'set', '', 10),
     setFnAll: ev(ctx, 'set', '*'),
     setFnValue: ev(ctx, 'set', 'value'),
+    setFnPath: ev(ctx, 'set', ['target', 'value']),
     setFnExtra: ev(ctx, 'setExtra', 'value', 5),
     wrongTask: ev(ctx, 'wrongTask'),
     executableListWrong: ev(ctx, 'executableListWrong'),
@@ -294,6 +295,17 @@ describe('One Component + module functionality', function () {
     value = lastValue // this catch the scope variable
     let data
     value._dispatch(computeEvent({ value: 35 }, value.setFnValue))
+  })
+
+  it('should dispatch an input with a function path string target.value as argument', done => {
+    valueFn = value => {
+      expect(value.content).toBe('Fractal is awesome!! 37')
+      done()
+    }
+    // extract value and dispatch interface handlers
+    value = lastValue // this catch the scope variable
+    let data
+    value._dispatch(computeEvent({ target: { value: 37 } }, value.setFnPath))
   })
 
   it('should dispatch an input with a function string "value" as argument and an extra argument', done => {
