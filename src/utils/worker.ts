@@ -1,5 +1,5 @@
 import { Handler, HandlerInterface, HandlerObject } from '../handler'
-import { Component, DispatchData } from '../core'
+import { Component, EventData } from '../core'
 import { ModuleAPI } from '../module'
 
 declare var self: WorkerAPI
@@ -116,7 +116,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   // API for modules
   let moduleAPI: ModuleAPI = {
     // dispatch function type used for handlers
-    dispatch: (dispatchData: DispatchData) => worker.postMessage(['dispatch', dispatchData]),
+    dispatch: (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
     dispose,
     reattach,
     // merge a component to the component index

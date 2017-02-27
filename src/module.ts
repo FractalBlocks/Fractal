@@ -7,7 +7,7 @@ import {
   ComponentSpaceIndex,
   Executable,
   InputData,
-  DispatchData,
+  EventData,
   Interface,
 } from './core'
 import {
@@ -52,7 +52,7 @@ export interface Module {
 
 // API from module to handlers
 export interface ModuleAPI {
-  dispatch (dispatchData: DispatchData): void
+  dispatch (eventData: EventData): void
   dispose (): void
   reattach (comp: Component): void
   merge (name: string, component: Component): void
@@ -169,22 +169,40 @@ export function unmergeAll (ctx: Context, components: string[]) {
 }
 
 // create an InputData array
-export function ev (ctx: Context, inputName: string, param?: any): InputData {
-  let isFn = typeof param === 'function'
-  return [ctx.id, inputName, isFn ? param.toString() : param, isFn]
+export function ev (ctx: Context, inputName: string, param?: any, isFn?: boolean): InputData {
+  return [ctx.id, inputName, param, !!isFn]
 }
 
-// dispatch an input based on DispatchData to the respective component
-export const dispatch = (ctx: Context, dispatchData: DispatchData) => {
-  let componentSpace = ctx.components[dispatchData[0]]
-  if (!componentSpace) {
-    return ctx.error('dispatch', `there are no component space '${dispatchData[0]}'`)
-  }
-  let input = componentSpace.inputs[dispatchData[1]]
-  if (input) {
-    execute(ctx, dispatchData[0], input(dispatchData[2]))
+export function computeEvent(event: any, iData): EventData {
+  let data
+  if (iData[3]) {
+    data = iData[2]
   } else {
-    ctx.error('dispatch', `there are no input named '${dispatchData[1]}' in component '${componentSpace.def.name}' from space '${dispatchData[0]}'`)
+    if (iData[2] === '*') {
+      data = JSON.parse(JSON.stringify(event))
+    } else {
+      data = event[iData[2]]
+    }
+  }
+  return [
+    iData[0], // component id
+    iData[1], // component event
+    data, // data
+  ]
+}
+
+
+// dispatch an input based on eventData to the respective component
+export const dispatch = (ctx: Context, eventData: EventData) => {
+  let componentSpace = ctx.components[eventData[0]]
+  if (!componentSpace) {
+    return ctx.error('dispatch', `there are no component space '${eventData[0]}'`)
+  }
+  let input = componentSpace.inputs[eventData[1]]
+  if (input) {
+    execute(ctx, eventData[0], input(eventData[2]))
+  } else {
+    ctx.error('dispatch', `there are no input named '${eventData[1]}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
   }
 }
 
@@ -290,7 +308,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     // API for modules
     moduleAPI = {
       // dispatch function type used for handlers
-      dispatch: (dispatchData: DispatchData) => dispatch(ctx, dispatchData),
+      dispatch: (eventData: EventData) => dispatch(ctx, eventData),
       dispose,
       reattach,
       // merge a component to the component index

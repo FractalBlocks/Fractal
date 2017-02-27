@@ -12,7 +12,8 @@ import {
   Update,
   Task,
   Handler,
-  DispatchData,
+  computeEvent,
+  EventData,
   dispatch,
   unmerge,
 } from './index'
@@ -60,8 +61,9 @@ let childValue: ValueInterface =
     content: 'Fractal is awesome!! ' + s.count,
     inc: ev(ctx, 'inc'),
     task: ev(ctx, 'task'),
-    set: ev(ctx, 'set', 10),
-    setFn: ev(ctx, 'set', value => value - 1),
+    set: ev(ctx, 'set', 10, true),
+    setFnAll: ev(ctx, 'set', '*'),
+    setFnValue: ev(ctx, 'set', 'value'),
     wrongTask: ev(ctx, 'wrongTask'),
     executableListWrong: ev(ctx, 'executableListWrong'),
     executableListTask: ev(ctx, 'executableListTask'),
@@ -116,14 +118,14 @@ describe('Context functions', function () {
 
   describe('ev function helper for sintetizing InputData', () => {
 
-    it('should return an InputData', () => {
+    it('should accept * for returning all the event object', () => {
       let data = ev(ctx, 'inputName', 0)
       expect(data).toEqual(['Main$child', 'inputName', 0, false])
     })
 
-    it('should serialize param if is a function', () => {
-      let data = ev(ctx, 'inputName', ev => ev.target.value)
-      expect(data).toEqual(['Main$child', 'inputName', (ev => ev.target.value).toString(), true])
+    it('should accept a property name for returning a part of the event object', () => {
+      let data = ev(ctx, 'inputName', 'value', true)
+      expect(data).toEqual(['Main$child', 'inputName', 'value', true])
     })
 
   })
@@ -187,7 +189,7 @@ describe('One Component + module functionality', function () {
 
   let logTask: Handler = log => mod => ({
     state: undefined,
-    handle: (data: {info: any, cb: DispatchData}) => {
+    handle: (data: {info: any, cb: EventData}) => {
       log.push(data.info)
       mod.dispatch(data.cb)
     },
@@ -260,20 +262,31 @@ describe('One Component + module functionality', function () {
     }
     // extract value and dispatch interface handlers
     value = lastValue // this catch the scope variable
-    value._dispatch(value.set)
+    value._dispatch(computeEvent(undefined, value.set))
   })
 
-  it('should dispatch an input with a function as argument', done => {
+  // function strings for InputData
+
+  it('should dispatch an input with a function string * as argument', done => {
     valueFn = value => {
       expect(value.content).toBe('Fractal is awesome!! 24')
       done()
     }
     // extract value and dispatch interface handlers
     value = lastValue // this catch the scope variable
-    let iData = value.setFn
-    let fn
-    eval('fn = ' + iData[2])
-    value._dispatch([iData[0], iData[1], fn(25)])
+    let data
+    value._dispatch(computeEvent(24, value.setFnAll))
+  })
+
+  it('should dispatch an input with a function string "value" as argument', done => {
+    valueFn = value => {
+      expect(value.content).toBe('Fractal is awesome!! 35')
+      done()
+    }
+    // extract value and dispatch interface handlers
+    value = lastValue // this catch the scope variable
+    let data
+    value._dispatch(computeEvent({ value: 35 }, value.setFnValue))
   })
 
   it('should put an entry in errorLog when error function is invoked', () => {

@@ -1,16 +1,13 @@
 import { VNode, VNodeData } from 'snabbdom/vnode'
 import { Module } from 'snabbdom/modules/module'
+import { computeEvent, InputData } from '../index'
 
 export const eventListenersModule = (dispatch): Module => {
 
-  function invokeHandler(handler: any, event?: Event): void {
+  function invokeHandler(handler: InputData, event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       // call function handler
-      dispatch([
-        handler[0], // component id
-        handler[1], // component event
-        typeof handler[2] === 'function' ? handler[2](event) : handler[2], // data
-      ])
+      dispatch(computeEvent(event, handler))
     } else {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {

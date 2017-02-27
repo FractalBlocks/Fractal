@@ -1,4 +1,3 @@
-export { deepmerge } from './deepmerge'
 import { style as typeStyle, types, getStyles as _getStyles } from 'typestyle'
 
 export const getStyles = _getStyles
@@ -51,4 +50,19 @@ export function cs() {
     obj[arguments[i]] = arguments[i + 1]
   }
   return obj
+}
+
+export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup {
+  let mergedGroup: StyleGroup = { base: {} }
+  for(let i = 0, keys = Object.keys(group1), len = keys.length; i < len; i++) {
+    mergedGroup[keys[i]] = group1[keys[i]]
+  }
+  for(let i = 0, keys = Object.keys(group2), len = keys.length; i < len; i++) {
+    if (mergedGroup[keys[i]] && typeof mergedGroup[keys[i]] === 'object') {
+      mergedGroup[keys[i]] = Object.assign(mergedGroup[keys[i]], group2[keys[i]])
+    } else {
+      mergedGroup[keys[i]] = group2[keys[i]]
+    }
+  }
+  return mergedGroup
 }

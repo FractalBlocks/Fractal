@@ -50,32 +50,35 @@ export interface Action {
 }
 
 // is the data of an event, refers to some event of a component - Comunications stuff
+/* NOTE: functions strings can be:
+  - '*': which means, serialize all the event object
+  - 'other': which means, serialize the 'other' attribute of the event object
+*/
 export interface InputData extends Array<any> {
   0: string // component index identifier
   1: string // input name
-  2?: any // a param function / value is optional
-  3?: boolean // param is function?
+  2?: any // a param function string / value is optional
+  3?: boolean // param is a value?
 }
 
-// dispatcher data comes from an interface / task handler as a result of processing EventData (from a event) - Comunications stuff
-export interface DispatchData extends Array<any> {
+// event data comes from an interface / task handler as a result of processing InputData - Comunications stuff
+export interface EventData extends Array<any> {
   0: string // component index identifier
   1: string // input name
   2?: any // data from an interface / task handler ( result of function or value )
-  3?: boolean // param is function?
 }
 
-/* function that can be serialized securely, is pure and should not have contextual dependencies,
+/* function string makes easy to serialize InputData, if '*' the data fetched are the whole event object, if 'other' extract 'other' property from event object
    all this stuff allow to serialize communication between root component and handlers, this means you can execute a root component in a worker (even remotely in a host computer)
    and handlers still dispatch inputs, a solution for serializing event callbacks.
-   this function is executed by interface / task handlers and his result is passed as a value to the dispatched component event of DispatchData
+   this function is executed by interface / task handlers and his result is passed as a value to the dispatched component input passing as argument EventData
  Event Flow:
   - InputData (from component interface / task) comes with some data depending on the context
   - If needed, some handy / fancy CHANNEL serialize and transmit it
-  - External things occurs and the function (InputData[2]) are excecuted passing it the event data (if exists, if not the value is taken) giving DispatchData as a result
-  - If EventData has transferred via CHANNEL, the DispatchData is returned via this CHANNEL
-  - the interface / task handler pass DispatchData to dispatch function
-  - dispatch function fires the input in the respective component
+  - External things occurs, if InputData[3] is true the function string (InputData[2]) are excecuted, if not the value is taken, giving EventData as event data
+  - If EventData has transferred via CHANNEL, the EventData is returned via this CHANNEL
+  - the interface / task handler pass EventData to dispatch function
+  - dispatch function fires the input in the respective component passing the event data
 
  The objective of this flow is allow handlers to be excecuted in workers or even remotely o.O
  */

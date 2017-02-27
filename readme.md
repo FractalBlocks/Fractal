@@ -7,7 +7,7 @@ Build your ideas as simple as possible. Fractal is an intuitive framework for bu
 
 ## Why?
 
-- It is minimal, core logic are less than 300 lines of code and you can see how it works
+- It is minimal, core logic are less than 400 lines of code and you can see how it works
 - Easy integrable and emmbedable by design
 - A clear and flexible architecture that scales
 - Its clear and concise, all you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects

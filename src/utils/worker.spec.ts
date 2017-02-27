@@ -6,7 +6,7 @@ import {
   ev,
   run,
   Handler,
-  DispatchData,
+  EventData,
 } from '../../src'
 import {
   runWorker,
@@ -94,7 +94,7 @@ describe('Utilities for running fractal inside workers', () => {
 
   let logTask: Handler = log => mod => ({
     state: undefined,
-    handle: (data: {info: any, cb: DispatchData}) => {
+    handle: (data: {info: any, cb: EventData}) => {
       log.push(data.info)
       mod.dispatch(data.cb)
     },
