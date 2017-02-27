@@ -14,11 +14,25 @@ We follow the Fractal Standards for Software Quality (TODO: put the link) that d
 
 There are no dependencies for Fractal core, this has a design choice.
 
+## Third party dependencies support
+
+We support use of:
+
+- Snabbdom for vdom: used in examples and view interface handlers
+- Typestyle for safe styles: used in examples
+
 ## Roadmap
 
 There are TODOs for short term:
 
-- Start implementation of fractal-ui (work in progess...)
+- Example of RTC in Fractal
+- Split patch and diff in Snabbdom
+- Porting all the drivers and task handlers from fractal.js to handlers in Fractal
+- Deprecating fractal.js
+- Larger examples
+- Tutorials and videos
+- Porting FractalBlocks to Fractal
+- Proff of concept: Fractal-Java
 
 There are TODOs for medium term:
 
