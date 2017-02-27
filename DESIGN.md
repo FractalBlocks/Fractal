@@ -35,15 +35,14 @@ FractalBlocks UI follows the same topics
 - component: is a small or big part of your app, and is designed for composition.
 - module: a module runs one component (AKA root component), connecting it to external world. A component can be composed of more components in a tree
 - interface: is the part of a component that is responsible of communications (external world, AKA side effects)
-- interface handler: is a part of an module that handle interfaces of root component. Performs a certain type of side effects.
 - state: is the part of a component related to their data
-- action: is a part of a component that is the unique way to update the state
+- action: is a part of a component and is the unique way to update its state
 - task: is an information related to a specific side effect, tasks are dispatched by components via inputs (see later)
-- task handler: is a part of an module that handle tasks, performing side effects of certain type
+- handler: is a part of an module that handle interfaces of root component or tasks. Performs certain type of side effects. Can be a task handler or an interface handler
 - input: is a part of a component that is a dispatcher for actions and tasks
-- component lifecycle
+- lifecycle: it is a set of hooks for the execution of something. Modules and components has init and destroy hooks
 - Fractal arquitecture: is the whole way in that data and functionality are handled
 
-## Ideas
+## Rules
 
 - IMPORTANT: styles showld be separated and are a function of palette and other globals (maximum customization and weight)
