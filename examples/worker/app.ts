@@ -27,7 +27,7 @@ h('div', {
   interfaceOf(ctx, 'counter', 'view'),
 ])
 
-let style: any = styleGroup({
+let style: any = {
   base: {
     width: '160px',
     display: 'flex',
@@ -39,8 +39,7 @@ let style: any = styleGroup({
   childCount: {
     padding: '10px',
   },
-}, name)
-
+}
 
 let main: Component = {
   name,

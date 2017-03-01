@@ -1,5 +1,5 @@
 import { Context, Component, stateOf, interfaceOf } from '../../src'
-import { styleGroup, StyleGroup } from '../../src/utils/style'
+import { StyleGroup } from '../../src/utils/style'
 import { ViewInterface } from '../../src/interfaces/view'
 import h from 'snabbdom/h'
 
@@ -27,7 +27,7 @@ h('div', {
   interfaceOf(ctx, 'counter', 'view'),
 ])
 
-let style: any = styleGroup({
+let style: StyleGroup = {
   base: {
     width: '160px',
     display: 'flex',
@@ -39,8 +39,7 @@ let style: any = styleGroup({
   childCount: {
     padding: '10px',
   },
-}, name)
-
+}
 
 let mDef: Component = {
   name,

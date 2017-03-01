@@ -24,7 +24,7 @@
   "dependencies": {
     "mori": "^0.3.2",
     "snabbdom": "^0.6.1",
-    "typestyle": "^0.23.0"
+    "typestyle": "^1.2.0"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.0.3",

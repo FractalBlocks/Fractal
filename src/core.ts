@@ -12,6 +12,10 @@ export interface Component {
   components?: {
     [name: string]: Component
   }
+  // general purpose spaces, used for styles
+  spaces?: {
+    [name: string]: Space,
+  },
   // the changing stuff (AKA variables)
   state (params: { key: string }): any
   // dispatchers for actions and tasks
@@ -25,13 +29,11 @@ export interface Component {
     [name: string]: Interface
   }
   // lifecycle hooks: init, destroy
-  init?: {
-    (ctx: Context): void
-  }
-  destroy?: {
-    (ctx: Context): void
-  }
+  init? (ctx: Context): void
+  destroy? (ctx: Context): void
 }
+
+export type Space = any
 
 export interface Inputs {
   (ctx: Context): InputIndex
@@ -103,8 +105,16 @@ export interface Task extends Array<any> {
 export interface Context {
   // Namespace for component
   id: string
+  // name for that component in the index
+  name: string
+  spaces: {
+    [name: string]: Space,
+  },
   // global component index
   components: ComponentSpaceIndex
+  spaceHandlers: {
+    [name: string]: HandlerObject
+  }
   taskHandlers: {
     [name: string]: HandlerObject
   }

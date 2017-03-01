@@ -17,16 +17,17 @@ import {
   HandlerFunction,
 } from './handler'
 
+export interface HandlerInterfaceIndex {
+  [name: string]: HandlerInterface
+}
+
 export interface ModuleDef {
   root: Component
   log?: boolean
   logAll?: boolean
-  tasks?: {
-    [name: string]: HandlerInterface
-  }
-  interfaces: {
-    [name: string]: HandlerInterface
-  }
+  spaces?: HandlerInterfaceIndex
+  tasks?: HandlerInterfaceIndex
+  interfaces: HandlerInterfaceIndex
   // lifecycle hooks for modules
   init? (mod: ModuleAPI): void
   destroy? (mod: ModuleAPI): void
@@ -35,16 +36,18 @@ export interface ModuleDef {
   error? (source: string, description: string): void
 }
 
+export interface HandlerObjectIndex {
+  [name: string]: HandlerObject
+}
+
 export interface Module {
   moduleDef: ModuleDef
   isDisposed: boolean
   // related to internals
-  interfaceHandlers: {
-    [name: string]: HandlerObject
-  }
-  taskHandlers: {
-    [name: string]: HandlerObject
-  }
+  spaceHandlers: HandlerObjectIndex
+  interfaceHandlers: HandlerObjectIndex
+  taskHandlers: HandlerObjectIndex
+  // API to module
   moduleAPI: ModuleAPI
   // Root component context
   ctx: Context
@@ -63,13 +66,18 @@ export interface ModuleAPI {
   error (source, description): void
 }
 
+export const handlerTypes = ['interface', 'task', 'space']
+
 // create context for a component
 export function createContext (ctx: Context, name: string): Context {
   let id = ctx.id === '' ? name : `${ctx.id}$${name}`
   return {
     id, // the component id
+    name,
+    spaces: {},
     // delegation
     components: ctx.components,
+    spaceHandlers: ctx.spaceHandlers,
     interfaceHandlers: ctx.interfaceHandlers,
     taskHandlers: ctx.taskHandlers,
     warn: ctx.warn,
@@ -122,6 +130,20 @@ export function merge (ctx: Context, name: string, component: Component): Contex
   if (component.components) {
     mergeAll(childCtx, component.components)
   }
+
+  if (component.spaces) {
+    // handle spaces. Spaces are handled automatically only when comoponent are initialized
+    let space: HandlerObject
+    for (let i = 0, names = Object.keys(component.spaces), len = names.length; i < len; i++) {
+      space = ctx.spaceHandlers[names[i]]
+      if (space) {
+        space.handle(component.spaces[names[i]])
+      } else {
+        ctx.error('merge', `module has no space handler for '${names[i]}' of component '${component.name}' from space '${childCtx.id}'`)
+      }
+    }
+  }
+
   // lifecycle hook: init
   if (component.init) {
     component.init(childCtx)
@@ -177,19 +199,23 @@ export function ev (ctx: Context, inputName: string, param?: any, context?: any)
   }
 }
 
-export function computeEvent(event: any, iData): EventData {
+export function computeEvent(event: any, iData: InputData): EventData {
   let data
 
   if (iData[3] === '*') {
+    // serialize the whole object
     data = JSON.parse(JSON.stringify(event))
   } else if (event && iData[3] !== undefined) {
+    // have function string
     if (iData[3] instanceof Array) {
+      // function string is a path, e.g. ['target', 'value']
       let path = iData[3]
       data = event
       for (let i = 0, len = path.length; i < len; i++) {
         data = data[path[i]]
       }
     } else {
+      // function string is only a getter, e.g. 'target'
       data = event[iData[3]]
     }
   }
@@ -208,7 +234,6 @@ export function computeEvent(event: any, iData): EventData {
       : 'fn',
   ]
 }
-
 
 // dispatch an input based on eventData to the respective component
 export const dispatch = (ctx: Context, eventData: EventData) => {
@@ -276,8 +301,13 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
 // permorms interface recalculation
 export function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.id]
-  for (let name in  ctx.interfaceHandlers) {
-    ctx.interfaceHandlers[name].handle(space.def.interfaces[name](ctx, space.state))
+  for (let i = 0, names = Object.keys(space.def.interfaces), len = names.length; i < len; i++) {
+    if (ctx.interfaceHandlers[names[i]]) {
+      ctx.interfaceHandlers[names[i]].handle(space.def.interfaces[names[i]](ctx, space.state))
+    } else {
+      // This only can happen when this method is called for a context that is not the root
+      ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${names[i]}' for component '${space.def.name}' from space '${ctx.id}'`)
+    }
   }
 }
 
@@ -306,8 +336,11 @@ export function run (moduleDefinition: ModuleDef): Module {
       // root context
       ctx = {
         id: '',
+        name: rootName,
+        spaces: {},
         // component index
         components: {},
+        spaceHandlers: {},
         taskHandlers: {},
         interfaceHandlers: {},
         // error and warning handling
@@ -348,14 +381,14 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
     // if is not hot swapping
     if (!lastComponents) {
-      // pass ModuleAPI to every InterfaceFunction
-      for (let i = 0, names = Object.keys(moduleDef.interfaces), len = names.length; i < len; i++) {
-        ctx.interfaceHandlers[names[i]] = moduleDef.interfaces[names[i]](moduleAPI)
-      }
-      // pass ModuleAPI to every TaskFunction
-      if (moduleDef.tasks) {
-        for (let i = 0, names = Object.keys(moduleDef.tasks), len = names.length; i < len; i++) {
-          ctx.taskHandlers[names[i]] = moduleDef.tasks[names[i]](moduleAPI)
+      // pass ModuleAPI to every Interface, Task and Space HandlerFunction
+      let handlers: HandlerInterfaceIndex
+      for (let c = 0, len = handlerTypes.length; c < len; c++) {
+        handlers = moduleDef[handlerTypes[c] + 's']
+        if (handlers) {
+          for (let i = 0, names = Object.keys(handlers), len = names.length; i < len; i++) {
+            ctx[handlerTypes[c] + 'Handlers'][names[i]] = handlers[names[i]](moduleAPI)
+          }
         }
       }
     }
@@ -372,13 +405,14 @@ export function run (moduleDefinition: ModuleDef): Module {
       }
     }
 
-    for (let name in component.interfaces) {
-      if (ctx.interfaceHandlers[name]) {
-        ctx.interfaceHandlers[name].handle(component.interfaces[name](ctx, ctx.components[rootName].state))
+    // pass initial value to each Interface Handler
+    for (let i = 0, names = Object.keys(component.interfaces), len = names.length; i < len; i++) {
+      if (ctx.interfaceHandlers[names[i]]) {
+        ctx.interfaceHandlers[names[i]].handle(component.interfaces[names[i]](ctx, ctx.components[rootName].state))
       } else {
         return ctx.error(
           'InterfaceHandlers',
-          `'${rootName}' module has no interface called '${name}', missing interface handler`
+          `'${rootName}' component has no interface called '${names[i]}', missing interface handler`
         )
       }
     }
@@ -395,11 +429,15 @@ export function run (moduleDefinition: ModuleDef): Module {
     if (moduleDef.destroy) {
       moduleDef.destroy(moduleAPI)
     }
-    // dispose all streams
-    unmerge(ctx)
-    for (let i = 0, names = Object.keys(ctx.interfaceHandlers), len = names.length; i < len; i++) {
-      ctx.interfaceHandlers[names[i]].dispose()
+    // dispose all handlers
+    let handlers: HandlerObjectIndex
+    for (let c = 0, len = handlerTypes.length; c < len; c++) {
+      handlers  = ctx[`${handlerTypes[c]}Handlers`]
+      for (let i = 0, names = Object.keys(handlers), len = names.length; i < len; i++) {
+        handlers[names[i]].dispose()
+      }
     }
+    unmerge(ctx)
     ctx = undefined
     this.isDisposed = true
   }
@@ -416,6 +454,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     // reattach root component, used for hot swapping
     isDisposed: false,
     // related to internals
+    spaceHandlers: ctx.spaceHandlers,
     interfaceHandlers: ctx.interfaceHandlers,
     taskHandlers: ctx.taskHandlers,
     // root context

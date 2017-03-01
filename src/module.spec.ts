@@ -16,6 +16,8 @@ import {
   EventData,
   dispatch,
   unmerge,
+  HandlerInterface,
+  notifyInterfaceHandlers,
 } from './index'
 import { valueHandler, ValueInterface } from './interfaces/value'
 
@@ -86,12 +88,21 @@ let root: Component = {
   },
 }
 
+let emptyHandler: HandlerInterface = mod => ({
+  state: undefined,
+  handle: () => {},
+  dispose: () => {},
+})
+
 describe('Context functions', function () {
 
   let lastLog
 
   let rootCtx: Context = {
     id: 'Main',
+    name: 'Main',
+    spaces: {},
+    spaceHandlers: {},
     taskHandlers: {},
     interfaceHandlers: {},
     components: {}, // component index
@@ -239,17 +250,34 @@ describe('One Component + module functionality', function () {
   })
 
   it('should log an error and notify error callback when module dont have an InterfaceHandler', () => {
+    let lastLog
     let app = run({
       root,
       interfaces: {},
       warn: (source, description) => lastLog = [source, description],
       error: (source, description) => lastLog = [source, description],
     })
-    let log = [
+    expect(lastLog).toEqual([
       'InterfaceHandlers',
-      `'Main' module has no interface called 'value', missing interface handler`,
-    ]
-    expect(lastLog).toEqual(log)
+      `'Main' component has no interface called 'value', missing interface handler`,
+    ])
+  })
+
+  it('should log an error when call notifyInterfaceHandlers and one handler is missing', () => {
+    let lastLog
+    let app = run({
+      root,
+      interfaces: {},
+      warn: (source, description) => lastLog = [source, description],
+      error: (source, description) => lastLog = [source, description],
+    })
+    app.moduleAPI.merge('child', root)
+    let space = app.ctx.components['Main$child']
+    notifyInterfaceHandlers(space.ctx)
+    expect(lastLog).toEqual([
+      'notifyInterfaceHandlers',
+      `module does not have interface handler named 'value' for component 'Main' from space 'Main$child'`,
+    ])
   })
 
   // Inputs should dispatch actions and intefaces are recalculated
@@ -431,6 +459,9 @@ describe('Component composition', () => {
 
   let child: Component = {
     name: 'Child',
+    spaces: {
+      value: 'ChildValueSpace',
+    },
     state,
     inputs,
     actions,
@@ -457,6 +488,9 @@ describe('Component composition', () => {
 
   let main: Component = {
     name: 'Main',
+    spaces: {
+      value: 'MainValueSpace',
+    },
     state,
     components,
     inputs,
@@ -476,10 +510,27 @@ describe('Component composition', () => {
       valueFn(val)
     }
   }
+  let spaceFn
+  let lastSpace
+  let spaceLog = []
+  let spaceHandler: Handler = () => mod => ({
+    state: undefined,
+    handle: space => {
+      lastSpace = space
+      spaceLog.push(space)
+      if (spaceFn) {
+        spaceFn(space)
+      }
+    },
+    dispose: () => 0,
+  })
 
   it('should merge child components', () => {
     app = run({
       root: main,
+      spaces: {
+        value: spaceHandler(),
+      },
       interfaces: {
         value: valueHandler(onValue),
       }
@@ -487,6 +538,28 @@ describe('Component composition', () => {
     expect(app.ctx.components['Main$child1']).toBeDefined()
     expect(app.ctx.components['Main$child2']).toBeDefined()
     expect(app.ctx.components['Main$child3']).toBeDefined()
+  })
+
+  it('should merge spaces', () => {
+    expect(spaceLog).toEqual(['ChildValueSpace', 'ChildValueSpace', 'ChildValueSpace', 'MainValueSpace'])
+  })
+
+  it('should log an error when module does not have space handler for a certain space from a component', () => {
+    let log
+    let app = run({
+      root: main,
+      spaces: {
+        wrong: spaceHandler(),
+      },
+      interfaces: {
+        value: emptyHandler,
+      },
+      error: (source, description) => log = [source, description],
+    })
+    expect(log).toEqual([
+      'merge',
+      `module has no space handler for 'value' of component 'Main' from space 'Main'`
+    ])
   })
 
   it('a child should react to events', done => {
@@ -509,6 +582,9 @@ describe('Component composition', () => {
     let lastLog
     app = run({
       root: main,
+      spaces: {
+        value: emptyHandler,
+      },
       interfaces: {
         value: valueHandler(() => 0),
       },
@@ -526,6 +602,9 @@ describe('Component composition', () => {
   it('module API merge should merge a component', () => {
     app = run({
       root: main,
+      spaces: {
+        value: emptyHandler,
+      },
       interfaces: {
         value: valueHandler(() => 0),
       },

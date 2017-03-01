@@ -1,13 +1,13 @@
 import { runWorker, WorkerAPI } from '../../src/utils/worker'
 import { viewHandler } from '../../src/interfaces/view'
 import { warn, error } from '../../src/utils/log'
-import { styleTask } from '../../src/tasks/style'
+// import { styleTask } from '../../src/tasks/style' // TODO: integrate Style Space Handler
 
 // all communicatios are transfered via postMessage
 let moduleWorker = runWorker({
   worker: new (<any> require('worker-loader!./worker')),
   tasks: {
-    style: styleTask('app-styles'),
+    // style: styleTask('app-styles'),
   },
   interfaces: {
     view: viewHandler('#app'),

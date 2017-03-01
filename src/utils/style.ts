@@ -1,4 +1,5 @@
-import { style as typeStyle, types, getStyles as _getStyles } from 'typestyle'
+import { types, getStyles as _getStyles } from 'typestyle'
+import { TypeStyle } from 'typestyle/lib/internal/typestyle'
 
 export const getStyles = _getStyles
 
@@ -16,10 +17,10 @@ export interface ComponentGroups {
   [className: string]: StyleGroup
 }
 
-export function styleGroup (stylesObj: StyleGroup, moduleName: string): StyleClasses {
+export function styleGroup (instance: TypeStyle, stylesObj: StyleGroup, moduleName: string): StyleClasses {
   let classes = {}
   for (let key in stylesObj) {
-    classes[key] = typeStyle(stylesObj[key], { $debugName: `${moduleName}_${key}__` })
+    classes[key] = instance.style(stylesObj[key], { $debugName: `${moduleName}_${key}__` })
   }
   return <StyleClasses> classes
 }
@@ -66,3 +67,18 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
   }
   return mergedGroup
 }
+
+export const placeholderColor = (color: string) => ({
+  '&::-webkit-input-placeholder': { /* Chrome/Opera/Safari */
+    color: color,
+  },
+  '&::-moz-placeholder': { /* Firefox 19+ */
+    color: color,
+  },
+  '&:-ms-input-placeholder': { /* IE 10+ */
+    color: color,
+  },
+  '&:-moz-placeholder': { /* Firefox 18- */
+    color: color,
+  },
+})

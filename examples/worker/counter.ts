@@ -48,7 +48,7 @@ h('div', {
 ])
 
 
-let styleObj: StyleGroup = {
+let style: StyleGroup = {
   base: {
     width: '120px',
     display: 'flex',
@@ -76,9 +76,6 @@ let styleObj: StyleGroup = {
     backgroundColor: '#E53B3B',
   },
 }
-
-let style: any = styleGroup(styleObj, name)
-
 
 let counter: Component = {
   name,

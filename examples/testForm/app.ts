@@ -28,10 +28,10 @@ h('div', {
   interfaceOf(ctx, 'user', 'view'),
 ])
 
-let style: any = styleGroup({
+let style: any = {
   base: {
   },
-}, name)
+}
 
 
 let mDef: Component = {

@@ -1,7 +1,7 @@
 import { ModuleAPI } from './module'
 
 export interface Handler {
-  (any): HandlerInterface
+  (param?: any): HandlerInterface
 }
 
 // interface function passed via ModuleDef
@@ -21,6 +21,4 @@ export interface HandlerFunction {
   (value: HandlerMsg): void
 }
 
-export interface HandlerMsg {
-  [interfaceName: string]: any
-}
+export type HandlerMsg = any
