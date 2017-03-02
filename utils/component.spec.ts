@@ -1,4 +1,5 @@
-import { action } from './component'
+import { Component } from '../src'
+import { action, props } from './component'
 
 describe('Component helpers', () => {
 
@@ -15,6 +16,28 @@ describe('Component helpers', () => {
 
     it('should accept an action-value pair as first argument of an array and a value in the second', () => {
       expect(actionFn([['a1', 10]])).toEqual(10)
+    })
+
+  })
+
+  describe('Props method for making a new component merging the state', () => {
+
+    let comp: Component = {
+      name: 'MyComp',
+      state: {
+        count: 0,
+        data: 10,
+      },
+      inputs: ctx => ({}),
+      actions: {},
+      interfaces: {},
+    }
+
+    it('should make a new component', () => {
+      let newComp = props(comp, { count: 4 })
+      expect(newComp).toBeDefined()
+      expect(newComp.state['data']).toEqual(10)
+      expect(newComp.state['count']).toEqual(4)
     })
 
   })

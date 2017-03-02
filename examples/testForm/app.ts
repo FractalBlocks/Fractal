@@ -1,4 +1,5 @@
-import { Context, Component, stateOf, interfaceOf } from '../../src'
+import { Context, Component, stateOf, interfaceOf, clone } from '../../src'
+import { props } from '../../utils/component'
 import { styleGroup, StyleGroup } from '../../utils/style'
 import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
@@ -6,12 +7,6 @@ import h from 'snabbdom/h'
 import textField from './textField'
 
 let name = 'Main'
-
-function props (component: Component, state): Component {
-  let clone = Object.assign({}, component)
-  clone.state = Object.assign(clone.state, state)
-  return clone
-}
 
 let components = {
   user: props(textField, { placeholder: 'User' }),

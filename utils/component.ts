@@ -1,7 +1,8 @@
-import { Action, Update } from '../src'
+import { Action, Update, clone, Component } from '../src'
 
 // set of helpers for building components
 
+// generic action
 export const action = (actions: { [name: string]: Action }): Update => ([arg1, arg2]) => {
   let name
   let value
@@ -13,4 +14,11 @@ export const action = (actions: { [name: string]: Action }): Update => ([arg1, a
     value = arg2
   }
   return actions[name](value) // generic action dispatcher
+}
+
+// make a new component from another merging her state
+export function props (component: Component, state): Component {
+  let comp = clone(component)
+  comp.state = Object.assign(comp.state, state)
+  return comp
 }
