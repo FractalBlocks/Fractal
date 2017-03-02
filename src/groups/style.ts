@@ -16,7 +16,7 @@ export const styleTask: Handler = (containerName: string) => mod => {
     state,
     handle: ([id, styleObj]) => {
       let style = styleGroup(instance, styleObj, name)
-      mod.set(id, 'style', style)
+      mod.setGroup(id, 'style', style)
     },
     dispose: () => {
       state = {}
