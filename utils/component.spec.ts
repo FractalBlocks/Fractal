@@ -20,7 +20,7 @@ describe('Component helpers', () => {
 
   })
 
-  describe('Props method for making a new component merging the state', () => {
+  describe('Props function for making a new component by merging the state', () => {
 
     let comp: Component = {
       name: 'MyComp',
