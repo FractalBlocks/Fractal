@@ -12,9 +12,9 @@ export interface Component {
   components?: {
     [name: string]: Component
   }
-  // general purpose spaces, used for styles
-  spaces?: {
-    [name: string]: Space,
+  // general purpose groups, used for styles
+  groups?: {
+    [name: string]: Group,
   },
   // the changing stuff (AKA variables)
   state (params: { key: string }): any
@@ -33,7 +33,7 @@ export interface Component {
   destroy? (ctx: Context): void
 }
 
-export type Space = any
+export type Group = any
 
 export interface Inputs {
   (ctx: Context): InputIndex
@@ -107,12 +107,13 @@ export interface Context {
   id: string
   // name for that component in the index
   name: string
-  spaces: {
-    [name: string]: Space,
+  // groups of the component (related to a component space)
+  groups: {
+    [name: string]: Group,
   },
   // global component index
   components: ComponentSpaceIndex
-  spaceHandlers: {
+  groupHandlers: {
     [name: string]: HandlerObject
   }
   taskHandlers: {

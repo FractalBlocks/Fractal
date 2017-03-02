@@ -101,8 +101,8 @@ describe('Context functions', function () {
   let rootCtx: Context = {
     id: 'Main',
     name: 'Main',
-    spaces: {},
-    spaceHandlers: {},
+    groups: {},
+    groupHandlers: {},
     taskHandlers: {},
     interfaceHandlers: {},
     components: {}, // component index
@@ -459,8 +459,8 @@ describe('Component composition', () => {
 
   let child: Component = {
     name: 'Child',
-    spaces: {
-      value: 'ChildValueSpace',
+    groups: {
+      value: 'ChildValueGroup',
     },
     state,
     inputs,
@@ -488,8 +488,8 @@ describe('Component composition', () => {
 
   let main: Component = {
     name: 'Main',
-    spaces: {
-      value: 'MainValueSpace',
+    groups: {
+      value: 'MainValueGroup',
     },
     state,
     components,
@@ -510,17 +510,14 @@ describe('Component composition', () => {
       valueFn(val)
     }
   }
-  let spaceFn
-  let lastSpace
-  let spaceLog = []
-  let spaceHandler: Handler = () => mod => ({
+  let lastGroup
+  let groupLog = []
+  let groupHandler: Handler = () => mod => ({
     state: undefined,
-    handle: space => {
-      lastSpace = space
-      spaceLog.push(space)
-      if (spaceFn) {
-        spaceFn(space)
-      }
+    handle: ([id, group]) => {
+      lastGroup = group
+      groupLog.push(group)
+      mod.setGroup(id, 'value', group + 'F1')
     },
     dispose: () => 0,
   })
@@ -528,8 +525,8 @@ describe('Component composition', () => {
   it('should merge child components', () => {
     app = run({
       root: main,
-      spaces: {
-        value: spaceHandler(),
+      groups: {
+        value: groupHandler(),
       },
       interfaces: {
         value: valueHandler(onValue),
@@ -540,16 +537,23 @@ describe('Component composition', () => {
     expect(app.ctx.components['Main$child3']).toBeDefined()
   })
 
-  it('should merge spaces', () => {
-    expect(spaceLog).toEqual(['ChildValueSpace', 'ChildValueSpace', 'ChildValueSpace', 'MainValueSpace'])
+  it('should handle groups', () => {
+    expect(groupLog).toEqual(['ChildValueGroup', 'ChildValueGroup', 'ChildValueGroup', 'MainValueGroup'])
   })
 
-  it('should log an error when module does not have space handler for a certain space from a component', () => {
+  it('should merge groups', () => {
+    expect(app.ctx.components['Main'].ctx.groups['value']).toEqual('MainValueGroupF1')
+    expect(app.ctx.components['Main$child1'].ctx.groups['value']).toEqual('ChildValueGroupF1')
+    expect(app.ctx.components['Main$child2'].ctx.groups['value']).toEqual('ChildValueGroupF1')
+    expect(app.ctx.components['Main$child3'].ctx.groups['value']).toEqual('ChildValueGroupF1')
+  })
+
+  it('should log an error when module does not have group handler for a certain group from a component', () => {
     let log
     let app = run({
       root: main,
-      spaces: {
-        wrong: spaceHandler(),
+      groups: {
+        wrong: groupHandler(),
       },
       interfaces: {
         value: emptyHandler,
@@ -558,7 +562,7 @@ describe('Component composition', () => {
     })
     expect(log).toEqual([
       'merge',
-      `module has no space handler for 'value' of component 'Main' from space 'Main'`
+      `module has no group handler for 'value' of component 'Main' from space 'Main'`
     ])
   })
 
@@ -582,7 +586,7 @@ describe('Component composition', () => {
     let lastLog
     app = run({
       root: main,
-      spaces: {
+      groups: {
         value: emptyHandler,
       },
       interfaces: {
@@ -602,7 +606,7 @@ describe('Component composition', () => {
   it('module API merge should merge a component', () => {
     app = run({
       root: main,
-      spaces: {
+      groups: {
         value: emptyHandler,
       },
       interfaces: {

@@ -25,7 +25,7 @@ export interface ModuleDef {
   root: Component
   log?: boolean
   logAll?: boolean
-  spaces?: HandlerInterfaceIndex
+  groups?: HandlerInterfaceIndex
   tasks?: HandlerInterfaceIndex
   interfaces: HandlerInterfaceIndex
   // lifecycle hooks for modules
@@ -44,7 +44,7 @@ export interface Module {
   moduleDef: ModuleDef
   isDisposed: boolean
   // related to internals
-  spaceHandlers: HandlerObjectIndex
+  groupHandlers: HandlerObjectIndex
   interfaceHandlers: HandlerObjectIndex
   taskHandlers: HandlerObjectIndex
   // API to module
@@ -62,11 +62,12 @@ export interface ModuleAPI {
   mergeAll (components: { [name: string]: Component }): void
   unmerge (name: string): void
   unmergeAll (components: string[]): void
+  setGroup (id: string, name: string, space: any): void
   warn (source, description): void
   error (source, description): void
 }
 
-export const handlerTypes = ['interface', 'task', 'space']
+export const handlerTypes = ['interface', 'task', 'group']
 
 // create context for a component
 export function createContext (ctx: Context, name: string): Context {
@@ -74,10 +75,10 @@ export function createContext (ctx: Context, name: string): Context {
   return {
     id, // the component id
     name,
-    spaces: {},
+    groups: {},
     // delegation
     components: ctx.components,
-    spaceHandlers: ctx.spaceHandlers,
+    groupHandlers: ctx.groupHandlers,
     interfaceHandlers: ctx.interfaceHandlers,
     taskHandlers: ctx.taskHandlers,
     warn: ctx.warn,
@@ -131,15 +132,15 @@ export function merge (ctx: Context, name: string, component: Component): Contex
     mergeAll(childCtx, component.components)
   }
 
-  if (component.spaces) {
-    // handle spaces. Spaces are handled automatically only when comoponent are initialized
+  if (component.groups) {
+    // Groups are handled automatically only when comoponent are initialized
     let space: HandlerObject
-    for (let i = 0, names = Object.keys(component.spaces), len = names.length; i < len; i++) {
-      space = ctx.spaceHandlers[names[i]]
+    for (let i = 0, names = Object.keys(component.groups), len = names.length; i < len; i++) {
+      space = ctx.groupHandlers[names[i]]
       if (space) {
-        space.handle(component.spaces[names[i]])
+        space.handle([childCtx.id, component.groups[names[i]]])
       } else {
-        ctx.error('merge', `module has no space handler for '${names[i]}' of component '${component.name}' from space '${childCtx.id}'`)
+        ctx.error('merge', `module has no group handler for '${names[i]}' of component '${component.name}' from space '${childCtx.id}'`)
       }
     }
   }
@@ -337,10 +338,10 @@ export function run (moduleDefinition: ModuleDef): Module {
       ctx = {
         id: '',
         name: rootName,
-        spaces: {},
+        groups: {},
         // component index
         components: {},
-        spaceHandlers: {},
+        groupHandlers: {},
         taskHandlers: {},
         interfaceHandlers: {},
         // error and warning handling
@@ -368,13 +369,17 @@ export function run (moduleDefinition: ModuleDef): Module {
       dispose,
       reattach,
       // merge a component to the component index
-      merge: (name: string, component: Component) => merge(ctx, name, component),
+      merge: (name, component) => merge(ctx, name, component),
       // merge many components to the component index
-      mergeAll: (components: { [name: string]: Component }) => mergeAll(ctx, components),
+      mergeAll: components => mergeAll(ctx, components),
       // unmerge a component to the component index
-      unmerge: (name: string) => unmerge(ctx, name),
+      unmerge: name => unmerge(ctx, name),
       // unmerge many components to the component index
-      unmergeAll: (components: string[]) => unmergeAll(ctx, components),
+      unmergeAll: components => unmergeAll(ctx, components),
+      // set a space of a certain component
+      setGroup: (id, name, space) => {
+        ctx.components[id].ctx.groups[name] = space
+      },
       // delegated methods
       warn: ctx.warn,
       error: ctx.error,
@@ -454,7 +459,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     // reattach root component, used for hot swapping
     isDisposed: false,
     // related to internals
-    spaceHandlers: ctx.spaceHandlers,
+    groupHandlers: ctx.groupHandlers,
     interfaceHandlers: ctx.interfaceHandlers,
     taskHandlers: ctx.taskHandlers,
     // root context
