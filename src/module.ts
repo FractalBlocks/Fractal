@@ -57,7 +57,7 @@ export interface Module {
 export interface ModuleAPI {
   dispatch (eventData: EventData): void
   dispose (): void
-  reattach (comp: Component): void
+  reattach (comp: Component, middleFn?: MiddleFn): void
   merge (name: string, component: Component): void
   mergeAll (components: { [name: string]: Component }): void
   unmerge (name: string): void
@@ -65,6 +65,10 @@ export interface ModuleAPI {
   setGroup (id: string, name: string, space: any): void
   warn (source, description): void
   error (source, description): void
+}
+
+export interface MiddleFn {
+  (ctx: Context, lastComponents: ComponentSpaceIndex): void
 }
 
 export const handlerTypes = ['interface', 'task', 'group']
@@ -324,7 +328,7 @@ export function run (moduleDefinition: ModuleDef): Module {
   let ctx: Context
 
   // attach root component
-  function attach (comp?: Component, lastComponents?: ComponentSpaceIndex) {
+  function attach (comp?: Component, lastComponents?: ComponentSpaceIndex, middleFn?: MiddleFn) {
     moduleDef = {
       log: false,
       logAll: false,
@@ -400,15 +404,9 @@ export function run (moduleDefinition: ModuleDef): Module {
     }
     // merges main component and ctx.id now contains it name
     ctx = merge(ctx, component.name, component)
-    // preserves state on hot swapping - TODO: make a deepmerge
-    if (lastComponents) {
-      for (let i = 0, ids = Object.keys(lastComponents), len = ids.length; i < len; i++) {
-        // if the component still existing
-        /* istanbul ignore else */
-        if (ctx.components[ids[i]]) {
-          ctx.components[ids[i]].state = lastComponents[ids[i]].state
-        }
-      }
+    // middle function for hot-swapping
+    if (middleFn) {
+      middleFn(ctx, lastComponents)
     }
 
     // pass initial value to each Interface Handler
@@ -448,11 +446,10 @@ export function run (moduleDefinition: ModuleDef): Module {
     this.isDisposed = true
   }
 
-  function reattach (comp: Component) {
+  function reattach (comp: Component, middleFn?: MiddleFn) {
     let lastComponents = ctx.components
     ctx.components = {}
-    // TODO: use a deepmerge algoritm
-    attach(comp, lastComponents)
+    attach(comp, lastComponents, middleFn)
   }
 
   return {

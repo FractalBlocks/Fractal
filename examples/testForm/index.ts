@@ -1,5 +1,6 @@
 import { run } from '../../src'
 import { warn, error } from '../../utils/log'
+import { mergeStates } from '../../utils/reattach'
 import { viewHandler } from '../../interfaces/view'
 import { styleHandler } from '../../groups/style'
 
@@ -19,6 +20,6 @@ let app = run({
 if (module.hot) {
   module.hot.accept('./app', () => {
     let m = require('./app').default
-    app.moduleAPI.reattach(m)
+    app.moduleAPI.reattach(m, mergeStates)
   })
 }

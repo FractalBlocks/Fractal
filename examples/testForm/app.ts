@@ -10,7 +10,7 @@ let name = 'Main'
 
 let components = {
   user: props(textField, { placeholder: 'User' }),
-  pass: props(textField, { value: 'asdasd' }),
+  pass: props(textField, { value: 'Value' }),
 }
 
 let state = {}

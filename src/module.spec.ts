@@ -20,6 +20,7 @@ import {
   notifyInterfaceHandlers,
   clone,
 } from './index'
+import { mergeStates } from '../utils/reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
 
 // Component definition to perform tests
@@ -752,7 +753,7 @@ describe('Lifecycle hooks', () => {
 })
 
 describe('Hot swapping', () => {
-   let child: Component = {
+  let child: Component = {
     name: 'Child',
     state,
     inputs,
@@ -766,10 +767,20 @@ describe('Hot swapping', () => {
     child2: child,
     child3: child,
   }
+  let actions2 = {
+    Inc: () => s => {
+      s.count++
+      return s
+    },
+  }
+  let inputs2 = (ctx: Context) => ({
+    inc: () => actions2.Inc(),
+  })
   let mainValueV1: ValueInterface =
     (ctx, s) => ({
-      tagName: s.key,
-      content: 'Fractal is awesome!! ' + s,
+      tagName: ctx.name,
+      content: 'Fractal is awesome!! ' + s.count,
+      content2: 'Fractal is awesome!! ' + s.count2,
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),
@@ -778,10 +789,13 @@ describe('Hot swapping', () => {
 
   let mainV1: Component = {
     name: 'Main',
-    state,
+    state: {
+      count: 0,
+      count2: 12,
+    },
     components,
-    inputs,
-    actions,
+    actions: actions2,
+    inputs: inputs2,
     interfaces: {
       value: mainValueV1,
     },
@@ -789,8 +803,9 @@ describe('Hot swapping', () => {
 
   let mainValueV2: ValueInterface =
     (ctx, s) => ({
-      tagName: s.key,
-      content: 'Fractal is awesome V2!! ' + s + ' :D',
+      tagName: ctx.name,
+      content: 'Fractal is awesome V2!! ' + s.count + ' :D',
+      content2: 'Fractal is awesome V2!! ' + s.count2 + ' :D',
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),
@@ -799,10 +814,13 @@ describe('Hot swapping', () => {
 
   let mainV2: Component = {
     name: 'Main',
-    state,
+    state: {
+      count: 0,
+      count2: 125,
+    },
     components,
-    inputs,
-    actions,
+    actions: actions2,
+    inputs: inputs2,
     interfaces: {
       value: mainValueV2,
     },
@@ -835,9 +853,29 @@ describe('Hot swapping', () => {
     expect(value.childValue2.content).toBe('Fractal is awesome!! 0')
     expect(value.childValue3.content).toBe('Fractal is awesome!! 0')
   })
+
+  it('should reattach root component merging the states using ', () => {
+    app = run({
+      root: mainV1,
+      interfaces: {
+        value: valueHandler(onValue),
+      },
+    })
+    value = lastValue
+    value._dispatch(value.inc)
+    value = lastValue
+    expect(value.content).toBe('Fractal is awesome!! 1')
+    expect(value.content2).toBe('Fractal is awesome!! 12')
+    app.moduleAPI.reattach(mainV2, mergeStates)
+    value = lastValue
+    expect(value.content).toBe('Fractal is awesome V2!! 1 :D')
+    expect(value.content2).toBe('Fractal is awesome V2!! 125 :D')
+  })
+
 })
 
 describe('Clone function helper', () => {
+
   let obj2 = {
     a: 9,
     b: [],
@@ -848,6 +886,7 @@ describe('Clone function helper', () => {
     },
   }
   let obj3 = clone(obj)
+
   it('should deep clone an object', () => {
     obj3.c.obj2.a = 3
     expect(obj3.c.obj2.a === obj2.a).toBeFalsy()
