@@ -17,7 +17,11 @@
   ],
   "include": [
     "src/**/*.spec.ts",
-    "examples/**/*.ts"
+    "examples/**/*.ts",
+    "groups/**/*.ts",
+    "interfaces/**/*.ts",
+    "tasks/**/*.ts",
+    "utils/**/*.ts"
   ],
   "exclude": [
     "node_modules"

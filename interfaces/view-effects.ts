@@ -1,5 +1,4 @@
-import { Handler } from '../handler'
-import { Context } from '../core'
+import { Handler, Context } from '../src'
 import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
 import attributesModule from 'snabbdom/modules/attributes'

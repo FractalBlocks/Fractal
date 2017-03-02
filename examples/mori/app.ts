@@ -1,9 +1,9 @@
 import { Context, Component, ev } from '../../src'
-import { styleGroup, StyleGroup } from '../../src/utils/style'
+import { styleGroup, StyleGroup } from '../../utils/style'
 import { hashMap, HashMap } from 'mori'
-import { evolve, get } from '../../src/utils/mori'
+import { evolve, get } from '../../utils/mori'
 
-import { ViewInterface } from '../../src/interfaces/view'
+import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'Main'
@@ -23,21 +23,22 @@ let inputs = (ctx: Context) => ({
   inc: () => actions.Inc(),
 })
 
-let view: ViewInterface = (ctx, s) =>
+let view: ViewInterface = (ctx, s) => {
+  let style = ctx.groups['style']
+  return h('div', {
+    key: get(s, 'key'),
+    class: { [style.base]: true },
+  }, [
+    h('div', {
+      class: { [style.count]: true },
+      on: {
+        click: ev(ctx, 'inc'),
+      },
+    }, `${get(s, 'count')}`),
+  ])
+}
 
-h('div', {
-  key: get(s, 'key'),
-  class: { [style.base]: true },
-}, [
-  h('div', {
-    class: { [style.count]: true },
-    on: {
-      click: ev(ctx, 'inc'),
-    },
-  }, `${get(s, 'count')}`),
-])
-
-let styleObj: StyleGroup = {
+let style: StyleGroup = {
   base: {
     padding: '10px',
     backgroundColor: 'grey',
@@ -54,9 +55,6 @@ let styleObj: StyleGroup = {
     alignItems: 'center',
   },
 }
-
-let style: any = styleGroup(styleObj, name)
-
 
 let mDef: Component = {
   name,

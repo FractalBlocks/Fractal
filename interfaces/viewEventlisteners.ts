@@ -1,6 +1,6 @@
 import { VNode, VNodeData } from 'snabbdom/vnode'
 import { Module } from 'snabbdom/modules/module'
-import { computeEvent, InputData } from '../index'
+import { computeEvent, InputData } from '../src'
 
 export const eventListenersModule = (dispatch): Module => {
 

@@ -1,6 +1,6 @@
 import { Context, Component, stateOf, interfaceOf, execute } from '../../src'
-import { styleGroup, StyleGroup, getStyles } from '../../src/utils/style'
-import { ViewInterface } from '../../src/interfaces/view'
+import { styleGroup, StyleGroup, getStyles } from '../../utils/style'
+import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'Main'

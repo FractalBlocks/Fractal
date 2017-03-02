@@ -7,15 +7,15 @@ import {
   run,
   Handler,
   EventData,
-} from '../../src'
+} from '../src'
 import {
   runWorker,
   WorkerAPI,
   workerHandler,
   workerLog,
   workerListener,
-} from '../../src/utils/worker'
-import { valueHandler, ValueInterface } from '../../src/interfaces/value'
+} from './worker'
+import { valueHandler, ValueInterface } from '../interfaces/value'
 
 describe('Utilities for running fractal inside workers', () => {
 

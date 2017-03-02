@@ -19,7 +19,7 @@ import {
   HandlerInterface,
   notifyInterfaceHandlers,
 } from './index'
-import { valueHandler, ValueInterface } from './interfaces/value'
+import { valueHandler, ValueInterface } from '../interfaces/value'
 
 // Component definition to perform tests
 

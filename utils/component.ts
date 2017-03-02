@@ -1,4 +1,4 @@
-import { Action, Update } from '../core'
+import { Action, Update } from '../src'
 
 // set of helpers for building components
 

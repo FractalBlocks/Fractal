@@ -1,9 +1,13 @@
 import { run } from '../../src'
-import { warn, error } from '../../src/utils/log'
-import { viewHandler } from '../../src/interfaces/view'
+import { warn, error } from '../../utils/log'
+import { viewHandler } from '../../interfaces/view'
+import { styleHandler } from '../../groups/style'
 
 let app = run({
   root: require('./app').default,
+  groups: {
+    style: styleHandler('app-style'),
+  },
   interfaces: {
     view: viewHandler('#app'),
   },

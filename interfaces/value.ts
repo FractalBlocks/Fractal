@@ -1,8 +1,8 @@
-import { Context, Handler, HandlerMsg, EventData } from '../index'
+import { Context, Handler, HandlerMsg, EventData } from '../src'
 
 // this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
 
-export interface ValueResponse extends HandlerMsg {
+export interface ValueResponse {
   _dispatch: {
     (eventData: EventData): void
   }

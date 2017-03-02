@@ -1,6 +1,6 @@
 import { Context, Component, stateOf, interfaceOf } from '../../src'
-import { StyleGroup } from '../../src/utils/style'
-import { ViewInterface } from '../../src/interfaces/view'
+import { StyleGroup } from '../../utils/style'
+import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'Main'
@@ -13,19 +13,20 @@ let state = ({key}) => ({
   key,
 })
 
-let view: ViewInterface = (ctx, s) =>
-
-h('div', {
-  key: name,
-  class: { [style.base]: true },
-}, [
-  h('div', {
-    class: { [style.childCount]: true },
+let view: ViewInterface = (ctx, s) => {
+  let style = ctx.groups['style']
+  return h('div', {
+    key: name,
+    class: { [style.base]: true },
   }, [
-    stateOf(ctx, 'counter').count,
-  ]),
-  interfaceOf(ctx, 'counter', 'view'),
-])
+    h('div', {
+      class: { [style.childCount]: true },
+    }, [
+      stateOf(ctx, 'counter').count,
+    ]),
+    interfaceOf(ctx, 'counter', 'view'),
+  ])
+}
 
 let style: StyleGroup = {
   base: {

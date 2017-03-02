@@ -57,8 +57,10 @@ module.exports = function (options) {
       /**
        * Make sure root is src
        */
-      modules: [ path.resolve(__dirname, 'src'), 'node_modules' ]
-
+      modules: [
+        path.resolve(__dirname, 'src'),
+        'node_modules',
+      ]
     },
 
     /**

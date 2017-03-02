@@ -1,6 +1,11 @@
-import { Handler, HandlerInterface, HandlerObject } from '../handler'
-import { Component, EventData } from '../core'
-import { ModuleAPI } from '../module'
+import {
+  Handler,
+  HandlerInterface,
+  HandlerObject,
+  Component,
+  EventData,
+  ModuleAPI,
+} from '../src'
 
 declare var self: WorkerAPI
 
@@ -44,6 +49,10 @@ export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
     switch (data[0]) {
       case 'dispatch':
         mod.dispatch(data[1])
+        /* istanbul ignore next */
+        break
+      case 'setGroup':
+        mod.setGroup(data[1], data[2], data[3])
         /* istanbul ignore next */
         break
       case 'dispose':
@@ -130,6 +139,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     // unmerge many components to the component index
     unmergeAll: (components: string[]) => worker.postMessage(['unmergeAll', components]),
     // delegated methods
+    setGroup: (id, name, group) => worker.postMessage(['setGroup', name, group]),
     warn: def.warn,
     error: def.error,
   }

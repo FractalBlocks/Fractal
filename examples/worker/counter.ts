@@ -1,7 +1,7 @@
 import { Context, Component, ev } from '../../src'
-import { styleGroup, StyleGroup } from '../../src/utils/style'
+import { styleGroup, StyleGroup } from '../../utils/style'
 
-import { ViewInterface } from '../../src/interfaces/view'
+import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'Counter'
@@ -27,26 +27,26 @@ let inputs = (ctx: Context) => ({
   inc: () => actions.Inc(),
 })
 
-let view: ViewInterface = (ctx, s) =>
-
-h('div', {
-  key: name,
-  class: { [style.base]: true },
-}, [
-  h('div', {
-    class: { [style.count]: true },
-    on: {
-      click: ev(ctx, 'inc'),
-    },
-  }, `${s.count}`),
-  h('div', {
-    class: { [style.reset]: true },
-    on: {
-      click: ev(ctx, 'set', 0),
-    },
-  }, 'reset'),
-])
-
+let view: ViewInterface = (ctx, s) => {
+  let style = ctx.groups['style']
+  return h('div', {
+    key: name,
+    class: { [style.base]: true },
+  }, [
+    h('div', {
+      class: { [style.count]: true },
+      on: {
+        click: ev(ctx, 'inc'),
+      },
+    }, `${s.count}`),
+    h('div', {
+      class: { [style.reset]: true },
+      on: {
+        click: ev(ctx, 'set', 0),
+      },
+    }, 'reset'),
+  ])
+}
 
 let style: StyleGroup = {
   base: {

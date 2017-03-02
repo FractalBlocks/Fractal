@@ -1,5 +1,5 @@
 import { run } from '../../src'
-import { viewHandler } from '../../src/interfaces/view'
+import { viewHandler } from '../../interfaces/view'
 
 
 let app = run({

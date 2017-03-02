@@ -8,10 +8,18 @@ require('core-js/es7/reflect')
 // Typescript emit helpers polyfill
 require('ts-helpers')
 
-var testContext = require.context('../src', true, /\.spec\.ts/)
+var core = require.context('../src', true, /\.spec\.ts/)
+var utils = require.context('../utils', true, /\.spec\.ts/)
+var interfaces = require.context('../interfaces', true, /\.spec\.ts/)
+var groups = require.context('../groups', true, /\.spec\.ts/)
+var tasks = require.context('../tasks', true, /\.spec\.ts/)
 
 function requireAll(requireContext) {
   return requireContext.keys().map(requireContext)
 }
 
-var modules = requireAll(testContext)
+var modules = requireAll(core)
+  .concat(requireAll(utils))
+  .concat(requireAll(interfaces))
+  .concat(requireAll(groups))
+  .concat(requireAll(tasks))
