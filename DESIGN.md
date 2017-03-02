@@ -1,11 +1,5 @@
 # Fractal is now in Typescript
 
-## TODOS:
-
-- Module should have an error and warning handler for log reporting middleware (DX)
-- Integrate standard linter + trailing commas with tslint
-- Make Fractal works with awesome fuse-box
-
 ## Philosophy
 
 We will focus on next topics:
@@ -44,6 +38,10 @@ FractalBlocks UI follows the same topics
 - lifecycle: it is a set of hooks for the execution of something. Modules and components has init and destroy hooks
 - Fractal arquitecture: is the whole way in that data and functionality are handled
 
+Development:
+
+- hot swapping: hability of swapping state between updates during development
+
 Internals:
 
 - component space: is the space of a component merged and running in a module
@@ -51,3 +49,9 @@ Internals:
 ## Rules
 
 - IMPORTANT: styles showld be separated and are a function of palette and other globals (maximum customization and weight)
+
+## TODOS:
+
+- Module should have an error and warning handler for log reporting middleware (DX)
+- Integrate standard linter + trailing commas with tslint
+- Make Fractal works with awesome fuse-box
