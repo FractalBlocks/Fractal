@@ -851,5 +851,6 @@ describe('Clone function helper', () => {
   it('should deep clone an object', () => {
     obj3.c.obj2.a = 3
     expect(obj3.c.obj2.a === obj2.a).toBeFalsy()
+    expect(obj3.c.obj2.b === obj2.b).toBeFalsy()
   })
 })
