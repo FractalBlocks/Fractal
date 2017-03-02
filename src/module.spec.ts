@@ -25,20 +25,11 @@ import { valueHandler, ValueInterface } from '../interfaces/value'
 
 let name = 'Main'
 
-let state = ({key}) => ({
-  key,
-  count: 0,
-})
+let state = 0
 
 let actions = {
-  Set: (count: number) => s => {
-    s.count = count
-    return s
-  },
-  Inc: () => s => {
-    s.count ++
-    return s
-  },
+  Set: (count: number) => () => count,
+  Inc: () => s => s + 1,
 }
 
 let inputs = (ctx: Context) => ({
@@ -61,8 +52,8 @@ let inputs = (ctx: Context) => ({
 
 let childValue: ValueInterface =
   (ctx, s) => ({
-    tagName: s.key,
-    content: 'Fractal is awesome!! ' + s.count,
+    tagName: ctx.id,
+    content: 'Fractal is awesome!! ' + s,
     inc: ev(ctx, 'inc'),
     task: ev(ctx, 'task'),
     set: ev(ctx, 'set', 10),
@@ -158,11 +149,11 @@ describe('Context functions', function () {
   })
 
   it('should overwrite a component if has the same name and log a warning', () => {
-    ctx.components[`Main$child`].state.count = 17
+    ctx.components[`Main$child`].state = 17
     merge(rootCtx, 'child', root)
     expect(ctx.components[`Main$child`]).toBeDefined()
     // should overwrite
-    expect(ctx.components[`Main$child`].state.count).toEqual(0)
+    expect(ctx.components[`Main$child`].state).toEqual(0)
     expect(lastLog)
       .toEqual(['merge', `component 'Main' has overwritten component space 'Main$child'`])
   })
@@ -171,7 +162,7 @@ describe('Context functions', function () {
 
   it('should get the state from a certain component (stateOf)', () => {
     state = stateOf(rootCtx, 'child')
-    expect(state.count).toEqual(0)
+    expect(state).toEqual(0)
   })
 
   it('should get an interface message from a certain component (interfaceOf)', () => {
@@ -247,6 +238,25 @@ describe('One Component + module functionality', function () {
 
   it('should call init hook when initialize a module', () => {
     expect(initialized).toBe(true)
+  })
+
+  it('should clone the state when merge a component if is an object', () => {
+    let root: Component = {
+      name,
+      state: {},
+      inputs,
+      actions,
+      interfaces: {
+        value: childValue,
+      },
+    }
+    let app = run({
+      root,
+      interfaces: {
+        value: emptyHandler,
+      },
+    })
+    expect(app.ctx.components['Main'].state === root.state).toBeFalsy()
   })
 
   it('should log an error and notify error callback when module dont have an InterfaceHandler', () => {
@@ -392,7 +402,7 @@ describe('One Component + module functionality', function () {
   // Events should dispatch tasks to its handlers and those can dispatch events
 
   it('should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
-    app.ctx.components['Main'].state['count'] = 1
+    app.ctx.components['Main'].state = 1
     valueFn = value => {
       expect(value.content).toBe('Fractal is awesome!! 2')
       expect(taskLog[taskLog.length - 1]).toEqual('info')
@@ -479,7 +489,7 @@ describe('Component composition', () => {
   let mainValue: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
-      content: 'Fractal is awesome!! ' + s.count,
+      content: 'Fractal is awesome!! ' + s,
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),
@@ -687,7 +697,7 @@ describe('Lifecycle hooks', () => {
   let mainValue: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
-      content: 'Fractal is awesome!! ' + s.count,
+      content: 'Fractal is awesome!! ' + s,
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),
@@ -758,7 +768,7 @@ describe('Hot swapping', () => {
   let mainValueV1: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
-      content: 'Fractal is awesome!! ' + s.count,
+      content: 'Fractal is awesome!! ' + s,
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),
@@ -779,7 +789,7 @@ describe('Hot swapping', () => {
   let mainValueV2: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
-      content: 'Fractal is awesome V2!! ' + s.count + ' :D',
+      content: 'Fractal is awesome V2!! ' + s + ' :D',
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),

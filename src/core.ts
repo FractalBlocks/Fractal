@@ -17,7 +17,7 @@ export interface Component {
     [name: string]: Group,
   },
   // the changing stuff (AKA variables)
-  state (params: { key: string }): any
+  state: any
   // dispatchers for actions and tasks
   inputs: Inputs
   // unique way to change the state

@@ -3,10 +3,13 @@ import { styleGroup, StyleGroup } from '../../utils/style'
 import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
+import textField from './textField'
+
 let name = 'Main'
 
 let components = {
-  user: require('./textField').default,
+  user: textField,
+  pass: textField,
 }
 
 let state = ({key}) => ({
@@ -26,6 +29,7 @@ let view: ViewInterface = (ctx, s) => {
     class: { [style.base]: true },
   }, [
     interfaceOf(ctx, 'user', 'view'),
+    interfaceOf(ctx, 'pass', 'view'),
   ])
 }
 

@@ -7,12 +7,10 @@ import h from 'snabbdom/h'
 
 let name = 'TextField'
 
-let state = ({key}) => ({
-  key,
-  count: 0,
+let state = {
   focus: false,
-  placeholder: 'Text...',
-})
+  placeholder: '',
+}
 
 let actions = {
   SetValue: (value: string) => state => {
@@ -32,7 +30,7 @@ let inputs = (ctx: Context) => ({
 let view: ViewInterface = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
-    key: name,
+    key: ctx.name,
     class: { [style.base]: true },
   }, [
     h('input', {

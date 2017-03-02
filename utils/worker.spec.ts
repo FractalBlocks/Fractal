@@ -21,20 +21,11 @@ describe('Utilities for running fractal inside workers', () => {
 
   let name = 'Main'
 
-  let state = ({key}) => ({
-    key,
-    count: 0,
-  })
+  let state = 0
 
   let actions = {
-    Set: (count: number) => s => {
-      s.count = count
-      return s
-    },
-    Inc: () => s => {
-      s.count ++
-      return s
-    },
+    Set: (count: number) => () => count,
+    Inc: () => s => s + 1,
   }
 
   let inputs = (ctx: Context) => ({
@@ -46,8 +37,8 @@ describe('Utilities for running fractal inside workers', () => {
 
   let childValue: ValueInterface =
     (ctx, s) => ({
-      tagName: s.key,
-      content: 'Fractal is awesome!! ' + s.count,
+      tagName: ctx.id,
+      content: 'Fractal is awesome!! ' + s,
       inc: ev(ctx, 'inc'),
       task: ev(ctx, 'task'),
       wrongTask: ev(ctx, 'wrongTask'),

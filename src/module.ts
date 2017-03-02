@@ -122,7 +122,8 @@ export function merge (ctx: Context, name: string, component: Component): Contex
 
   ctx.components[id] = {
     ctx: childCtx,
-    state: component.state({key: name}),
+    // if state is an object, it is cloned
+    state: typeof component.state === 'object' ? Object.assign({}, component.state): component.state,
     inputs: component.inputs(childCtx),
     components: Object.assign({}, component.components || {}),
     def: component,
