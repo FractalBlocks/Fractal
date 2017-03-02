@@ -18,7 +18,7 @@ Build your ideas as simple as possible. Fractal is an intuitive framework for bu
 - High code quality, we love that and help you to achive in a nice way <3
 - Lazy loading of components
 
-See the detailed [architecture here](https://github.com/fractalPlatform/Fractal/blob/master/docs/ARCHITECTURE.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
+See the [design document](https://github.com/fractalPlatform/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
 
 ## Getting started
 
