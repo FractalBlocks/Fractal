@@ -10,12 +10,10 @@ let name = 'Main'
 
 let components = {
   user: props(textField, { placeholder: 'User' }),
-  pass: textField,
+  pass: props(textField, { value: 'asdasd' }),
 }
 
-let state = ({key}) => ({
-  key,
-})
+let state = {}
 
 let actions = {
 }
@@ -37,6 +35,7 @@ let view: ViewInterface = (ctx, s) => {
 
 let style: any = {
   base: {
+    width: '400px',
   },
 }
 

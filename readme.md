@@ -14,8 +14,8 @@ Build your ideas as simple as possible. Fractal is an intuitive framework for bu
 - Gives you powerful patterns and composing tools that helps to build small and large apps
 - Your code are flexible, composable and reausable. Modularization as a foundation
 - The state is isolated, this mean is serializable and you can hot-swap code updating the UI without reload the navigator
-- You can serialize the whole side effects, this means you can run fractal in a webworker, in a server via websockets or even in a remote browser via WebRTC :')
-- High code quality, we love that and help you to achive in a nice way <3
+- You can serialize the whole side effects, this means you can run fractal in a [webworker](https://github.com/fractalPlatform/Fractal/blob/master/examples/worker/index.ts), in a server via websockets or even in a remote browser via WebRTC :')
+- High code quality, we love that!! and help you to achive it in your proyect <3
 - Lazy loading of components
 
 See the [design document](https://github.com/fractalPlatform/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)

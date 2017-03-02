@@ -1,5 +1,11 @@
 # Changes
 
+# v0.0.5
+
+- Stable version relased
+- Improved docs
+- Worker support
+
 # v0.0.4-rc3
 
 - Modules are renamed Components to be similar to Angular 2 (DX)

@@ -10,6 +10,7 @@ let name = 'TextField'
 let state = {
   focus: false,
   placeholder: '',
+  value: '',
 }
 
 let actions = {
@@ -35,9 +36,8 @@ let view: ViewInterface = (ctx, s) => {
   }, [
     h('input', {
       class: { [style.input]: true },
-      attrs: {
-        placeholder: s.placeholder,
-      },
+      attrs: { placeholder: s.placeholder },
+      props: { value: s.value },
       on: {
         keydown: ev(ctx, 'action', 'SetValue', ['target', 'value']),
         focus: ev(ctx, 'action', ['SetFocus', true]),
