@@ -18,6 +18,7 @@ import {
   unmerge,
   HandlerInterface,
   notifyInterfaceHandlers,
+  clone,
 } from './index'
 import { valueHandler, ValueInterface } from '../interfaces/value'
 
@@ -833,5 +834,22 @@ describe('Hot swapping', () => {
     expect(value.childValue1.content).toBe('Fractal is awesome!! 0')
     expect(value.childValue2.content).toBe('Fractal is awesome!! 0')
     expect(value.childValue3.content).toBe('Fractal is awesome!! 0')
+  })
+})
+
+describe('Clone function helper', () => {
+  let obj2 = {
+    a: 9,
+    b: [],
+  }
+  let obj = {
+    c: {
+      obj2,
+    },
+  }
+  let obj3 = clone(obj)
+  it('should deep clone an object', () => {
+    obj3.c.obj2.a = 3
+    expect(obj3.c.obj2.a === obj2.a).toBeFalsy()
   })
 })

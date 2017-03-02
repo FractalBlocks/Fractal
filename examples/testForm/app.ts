@@ -7,8 +7,14 @@ import textField from './textField'
 
 let name = 'Main'
 
+function props (component: Component, state): Component {
+  let clone = Object.assign({}, component)
+  clone.state = Object.assign(clone.state, state)
+  return clone
+}
+
 let components = {
-  user: textField,
+  user: props(textField, { placeholder: 'User' }),
   pass: textField,
 }
 
