@@ -1,9 +1,6 @@
 [![codecov](https://codecov.io/gh/fractalPlatform/Fractal/branch/master/graph/badge.svg)](https://codecov.io/gh/fractalPlatform/Fractal)
 [![Build Status](https://travis-ci.org/fractalPlatform/Fractal.svg?branch=master)](https://travis-ci.org/fractalPlatform/Fractal)
-<p>
-  <img src="https://github.com/fractalPlatform/Fractal/blob/master/assets/Fractal.png" width="180px" style="float: left;">
-  <h1>Fractal</h1>
-</p>
+# <img src="https://github.com/fractalPlatform/Fractal/blob/master/assets/Fractal.png" width="180px" style="float: left;">
 Build your ideas as simple as possible. Fractal is an intuitive framework for building applications and interactive content.
 
 ## Why?
