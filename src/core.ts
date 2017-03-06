@@ -17,7 +17,7 @@ export interface Component {
     [name: string]: Group,
   },
   // the changing stuff (AKA variables)
-  state: any
+  state?: any
   // dispatchers for actions and tasks
   inputs: Inputs
   // unique way to change the state
@@ -59,7 +59,7 @@ export interface Action {
 export interface InputData extends Array<any> {
   0: string // component index identifier
   1: string // input name
-  2?: any // if defined param is a value is used as context parameter
+  2?: any // context parameter
   3?: any // a param function string / value is optional
 }
 
@@ -98,7 +98,7 @@ export interface Interface {
 // a task executes some kind of side effect (output) - Comunications stuff
 export interface Task extends Array<any> {
   0: string // task name
-  1?: any // task data
+  1?: HandlerMsg // task data
 }
 
 // describes an excecution context

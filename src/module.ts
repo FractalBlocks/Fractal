@@ -197,9 +197,9 @@ export function unmergeAll (ctx: Context, components: string[]) {
 }
 
 // create an InputData array
-export function ev (ctx: Context, inputName: string, param?: any, context?: any): InputData {
-  if (param !== undefined) {
-    return [ctx.id, inputName, param, context]
+export function ev (ctx: Context, inputName: string, context?: any, param?: any): InputData {
+  if (context !== undefined) {
+    return [ctx.id, inputName, context, param]
   } else {
     return [ctx.id, inputName]
   }
@@ -261,6 +261,7 @@ export const dispatch = (ctx: Context, eventData: EventData) => {
 }
 
 export function execute (ctx: Context, id: string, executable: Executable | Executable[]) {
+  // TODO: proof of concept, auto dispatching parent inputs if matches '$name'
   let componentSpace = ctx.components[id]
 
   if (typeof executable === 'function') {

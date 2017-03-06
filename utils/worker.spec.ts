@@ -7,6 +7,7 @@ import {
   run,
   Handler,
   EventData,
+  HandlerInterface,
 } from '../src'
 import {
   runWorker,
@@ -46,6 +47,9 @@ describe('Utilities for running fractal inside workers', () => {
 
   let root: Component = {
     name,
+    groups: {
+      value: 'MainGroup',
+    },
     state,
     inputs,
     actions,
@@ -53,6 +57,13 @@ describe('Utilities for running fractal inside workers', () => {
       value: childValue,
     },
   }
+
+  // empty handler helper
+  let emptyHandler: HandlerInterface = mod => ({
+    state: undefined,
+    handle: () => {},
+    dispose: () => {},
+  })
 
   // emulate worker thread API to main
   let workerAPI: WorkerAPI = {
@@ -63,6 +74,18 @@ describe('Utilities for running fractal inside workers', () => {
   let mainAPI: WorkerAPI = {
     postMessage: data => workerAPI.onmessage({ data }),
   }
+
+  let groupFn
+  let groupHandler: Handler = () => mod => ({
+    state: undefined,
+    handle: ([id, group]) => {
+      if (groupFn) {
+        mod.setGroup(id, 'value', group)
+        groupFn(group)
+      }
+    },
+    dispose: () => 0,
+  })
 
   let valueFn
   let lastValue
@@ -110,6 +133,9 @@ describe('Utilities for running fractal inside workers', () => {
 
   let worker = runWorker({
     worker: mainAPI,
+    groups: {
+      value: groupHandler(),
+    },
     tasks: {
       log: logTask(taskLog),
     },
@@ -122,24 +148,36 @@ describe('Utilities for running fractal inside workers', () => {
   })
 
   let disposeFn
+  let workerModule
+  it('should merge the space', done => {
+    let groupFn = group => {
+      expect(group).toBe('MainGroup')
+      done()
+    }
+    workerModule = run({
+      root,
+      init: mod => {
+        workerListener(mod, workerAPI)
 
-  let workerModule = run({
-    root,
-    init: mod => workerListener(mod, workerAPI),
-    destroy: () => {
-      if (disposeFn) {
-        disposeFn()
-      }
-    },
-    tasks: {
-      log: workerHandler('task', 'log', workerAPI),
-    },
-    interfaces: {
-      value: workerHandler('interface', 'value', workerAPI),
-      value2: workerHandler('interface', 'value2', workerAPI),
-    },
-    warn: workerLog('warn', workerAPI),
-    error: workerLog('error', workerAPI),
+      },
+      destroy: () => {
+        if (disposeFn) {
+          disposeFn()
+        }
+      },
+      groups: {
+        value: workerHandler('group', 'value', workerAPI),
+      },
+      tasks: {
+        log: workerHandler('task', 'log', workerAPI),
+      },
+      interfaces: {
+        value: workerHandler('interface', 'value', workerAPI),
+        value2: workerHandler('interface', 'value2', workerAPI),
+      },
+      warn: workerLog('warn', workerAPI),
+      error: workerLog('error', workerAPI),
+    })
   })
 
   it('should run fractal over a worker API', () => {
@@ -285,6 +323,9 @@ describe('Utilities for running fractal inside workers', () => {
         if (disposeFn) {
           disposeFn()
         }
+      },
+      groups: {
+        value: emptyHandler,
       },
       tasks: {
         log: workerHandler('task', 'log', workerAPI),

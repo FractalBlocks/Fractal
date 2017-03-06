@@ -1,6 +1,6 @@
 import {
   Handler,
-  HandlerInterface,
+  HandlerInterfaceIndex,
   HandlerObject,
   Component,
   EventData,
@@ -18,7 +18,7 @@ export interface WorkerEvent {
   data: any
 }
 
-export const workerHandler = (type: 'interface' | 'task', name: string, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
+export const workerHandler = (type: 'interface' | 'task' | 'group', name: string, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
   /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
   return {
@@ -40,6 +40,7 @@ export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
   }
 }
 
+// receives messages from runWorker
 export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
   /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
@@ -91,12 +92,9 @@ export interface WorkerModuleDef {
   worker: any
   log?: boolean
   logAll?: boolean
-  tasks?: {
-    [name: string]: HandlerInterface
-  }
-  interfaces: {
-    [name: string]: HandlerInterface
-  }
+  groups?: HandlerInterfaceIndex
+  tasks?: HandlerInterfaceIndex
+  interfaces: HandlerInterfaceIndex
   warn?: {
     (source, description): void
   }
@@ -109,6 +107,7 @@ export interface WorkerModuleDef {
 export interface WorkerModule {
   worker: WorkerAPI
   moduleAPI: ModuleAPI
+  groupObjects: { [name: string]: HandlerObject }
   taskObjects: { [name: string]: HandlerObject }
   interfaceObjects: { [name: string]: HandlerObject }
 }
@@ -116,6 +115,7 @@ export interface WorkerModule {
 export function runWorker (def: WorkerModuleDef): WorkerModule {
   let worker: WorkerAPI = def.worker
 
+  let groupObjects: { [name: string]: HandlerObject } = {}
   let taskObjects: { [name: string]: HandlerObject } = {}
   let interfaceObjects: { [name: string]: HandlerObject } = {}
 
@@ -142,6 +142,12 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     setGroup: (id, name, group) => worker.postMessage(['setGroup', name, group]),
     warn: def.warn,
     error: def.error,
+  }
+  /* istanbul ignore else */
+  if (def.groups) {
+    for (let i = 0, names = Object.keys(def.groups), len = names.length ; i < len; i++) {
+      taskObjects[names[i]] = def.groups[names[i]](moduleAPI)
+    }
   }
   /* istanbul ignore else */
   if (def.tasks) {
@@ -185,6 +191,19 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
           /* istanbul ignore next */
           break
         }
+      case 'group':
+        /* istanbul ignore else */
+        if (data[2] === 'handle') {
+          groupObjects[data[1]].handle(data[3])
+          /* istanbul ignore next */
+          break
+        }
+        /* istanbul ignore else */
+        if (data[2] === 'dispose') {
+          groupObjects[data[1]].dispose()
+          /* istanbul ignore next */
+          break
+        }
       case 'log':
         /* istanbul ignore else */
         if (moduleAPI[data[1]]) {
@@ -216,6 +235,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   return {
     worker,
     moduleAPI,
+    groupObjects,
     taskObjects,
     interfaceObjects,
   }

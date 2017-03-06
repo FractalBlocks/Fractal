@@ -140,7 +140,13 @@ module.exports = function (options) {
           enforce: 'post',
           test: /\.(js|ts)$/,
           loader: 'istanbul-instrumenter-loader',
-          include: helpers.root('src'),
+          include: [
+            helpers.root('src'),
+            helpers.root('interfaces'),
+            helpers.root('tasks'),
+            helpers.root('groups'),
+            helpers.root('utils')
+          ],
           exclude: [
             /\.(e2e|spec)\.ts$/,
             /node_modules/
