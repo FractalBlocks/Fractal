@@ -139,14 +139,14 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     // unmerge many components to the component index
     unmergeAll: (components: string[]) => worker.postMessage(['unmergeAll', components]),
     // delegated methods
-    setGroup: (id, name, group) => worker.postMessage(['setGroup', name, group]),
+    setGroup: (id, name, group) => worker.postMessage(['setGroup', id, name, group]),
     warn: def.warn,
     error: def.error,
   }
   /* istanbul ignore else */
   if (def.groups) {
     for (let i = 0, names = Object.keys(def.groups), len = names.length ; i < len; i++) {
-      taskObjects[names[i]] = def.groups[names[i]](moduleAPI)
+      groupObjects[names[i]] = def.groups[names[i]](moduleAPI)
     }
   }
   /* istanbul ignore else */
@@ -214,13 +214,8 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
       case 'dispose':
         if (def.destroy) {
           def.destroy(moduleAPI)
+          /* istanbul ignore next */
         }
-        /* istanbul ignore next */
-        moduleAPI = undefined
-        /* istanbul ignore next */
-        taskObjects = undefined
-        /* istanbul ignore next */
-        interfaceObjects = undefined
         break
       /* istanbul ignore next */
       default:

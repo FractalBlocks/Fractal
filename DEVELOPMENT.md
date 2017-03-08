@@ -25,8 +25,9 @@ We support use of:
 
 There are TODOs for short term:
 
+- Integrate standard linter + trailing commas with tslint
 - Example of a testForm
-- Improve test suite
+- Improve test suite for isolated tests
 - Example of RTC in Fractal
 - Split patch and diff in Snabbdom
 - Porting all the drivers and task handlers from fractal.js to handlers in Fractal

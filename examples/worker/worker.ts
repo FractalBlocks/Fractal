@@ -3,7 +3,7 @@ import { workerHandler, workerLog, workerListener } from '../../utils/worker'
 
 let app = run({
   root: require('./app').default,
-  init: workerListener,
+  beforeInit: workerListener,
   tasks: {
     style: workerHandler('task', 'style'),
   },

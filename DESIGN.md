@@ -49,8 +49,3 @@ Internals:
 ## Rules
 
 - IMPORTANT: styles showld be separated and are a function of palette and other globals (maximum customization and weight)
-
-## TODOS:
-
-- Module should have an error and warning handler for log reporting middleware (DX)
-- Integrate standard linter + trailing commas with tslint

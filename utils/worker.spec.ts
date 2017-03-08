@@ -148,17 +148,39 @@ describe('Utilities for running fractal inside workers', () => {
   })
 
   let disposeFn
-  let workerModule
+  let workerModule = run({
+    root,
+    beforeInit: mod => {
+      workerListener(mod, workerAPI)
+    },
+    destroy: () => {
+      if (disposeFn) {
+        disposeFn()
+      }
+    },
+    groups: {
+      value: workerHandler('group', 'value', workerAPI),
+    },
+    tasks: {
+      log: workerHandler('task', 'log', workerAPI),
+    },
+    interfaces: {
+      value: workerHandler('interface', 'value', workerAPI),
+      value2: workerHandler('interface', 'value2', workerAPI),
+    },
+    warn: workerLog('warn', workerAPI),
+    error: workerLog('error', workerAPI),
+  })
+
   it('should merge the space', done => {
-    let groupFn = group => {
+    groupFn = group => {
       expect(group).toBe('MainGroup')
       done()
     }
-    workerModule = run({
+    let workerModule = run({
       root,
-      init: mod => {
+      beforeInit: mod => {
         workerListener(mod, workerAPI)
-
       },
       destroy: () => {
         if (disposeFn) {
@@ -180,9 +202,12 @@ describe('Utilities for running fractal inside workers', () => {
     })
   })
 
-  it('should run fractal over a worker API', () => {
-    expect(lastValue.tagName).toBe('Main')
-    expect(lastValue.content).toBe('Fractal is awesome!! 0')
+  it('should run fractal over a worker API', done => {
+    valueFn = value => {
+      expect(value.tagName).toBe('Main')
+      expect(value.content).toBe('Fractal is awesome!! 0')
+      done()
+    }
   })
 
   it('should react to inputs', done => {
@@ -196,10 +221,11 @@ describe('Utilities for running fractal inside workers', () => {
 
   // it('should dispatch tasks', () => {})
 
-  it('Should put an entry in errorLog when error function is invoked', () => {
+  it('Should put an entry in errorLog when error function is invoked', done => {
     let error = ['child', 'error 1']
     logFn = log => {
       expect(log).toEqual(error)
+      done()
     }
     workerModule.ctx.error(error[0], error[1])
   })

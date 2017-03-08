@@ -29,6 +29,7 @@ export interface ModuleDef {
   tasks?: HandlerInterfaceIndex
   interfaces: HandlerInterfaceIndex
   // lifecycle hooks for modules
+  beforeInit? (mod: ModuleAPI): void
   init? (mod: ModuleAPI): void
   destroy? (mod: ModuleAPI): void
   // callbacks (side effects) for log messages
@@ -132,6 +133,7 @@ export function merge (ctx: Context, name: string, component: Component): Contex
     components: clone(component.components || {}),
     def: component,
   }
+
   // composition
   if (component.components) {
     mergeAll(childCtx, component.components)
@@ -261,7 +263,6 @@ export const dispatch = (ctx: Context, eventData: EventData) => {
 }
 
 export function execute (ctx: Context, id: string, executable: Executable | Executable[]) {
-  // TODO: proof of concept, auto dispatching parent inputs if matches '$name'
   let componentSpace = ctx.components[id]
 
   if (typeof executable === 'function') {
@@ -303,6 +304,9 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
     }
     // the else branch never occurs because of Typecript check
   }
+
+  // TODO: proof of concept, auto dispatching parent inputs if matches '$name'
+
 }
 
 // permorms interface recalculation
@@ -390,6 +394,12 @@ export function run (moduleDefinition: ModuleDef): Module {
       warn: ctx.warn,
       error: ctx.error,
     }
+
+    // module lifecycle hook: init
+    if (moduleDef.beforeInit) {
+      moduleDef.beforeInit(moduleAPI)
+    }
+
     // if is not hot swapping
     if (!lastComponents) {
       // pass ModuleAPI to every Interface, Task and Space HandlerFunction
@@ -422,6 +432,7 @@ export function run (moduleDefinition: ModuleDef): Module {
       }
     }
 
+    // module lifecycle hook: init
     if (moduleDef.init) {
       moduleDef.init(moduleAPI)
     }

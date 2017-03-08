@@ -212,11 +212,15 @@ describe('One Component + module functionality', function () {
   })
 
   let lastLog
+  let beforeInitCalled = false
   let initialized = false
   let disposed = false
 
   let app = run({
     root,
+    beforeInit: () => {
+      beforeInitCalled = true
+    },
     init: () => {
       initialized = true
     },
@@ -236,6 +240,10 @@ describe('One Component + module functionality', function () {
   it('should have initial state', () => {
     expect(lastValue.tagName).toBe('Main')
     expect(lastValue.content).toBe('Fractal is awesome!! 0')
+  })
+
+  it('should call beforeInit hook after initialize a module', () => {
+    expect(beforeInitCalled).toBe(true)
   })
 
   it('should call init hook when initialize a module', () => {
@@ -680,9 +688,14 @@ describe('Lifecycle hooks', () => {
     disposeLog.push(parts[parts.length - 1])
   }
 
+  let beforeInitCalled = false
+
   let child: Component = {
     name: 'Child',
     state,
+    beforeInit: ctx => {
+      beforeInitCalled = true
+    },
     init,
     destroy,
     inputs,
