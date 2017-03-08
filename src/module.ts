@@ -245,11 +245,13 @@ export function computeEvent(event: any, iData: InputData): EventData {
 
 // dispatch an input based on eventData to the respective component
 export const dispatch = (ctx: Context, eventData: EventData) => {
-  let componentSpace = ctx.components[eventData[0]]
+  let id = eventData[0]
+  let componentSpace = ctx.components[id]
   if (!componentSpace) {
-    return ctx.error('dispatch', `there are no component space '${eventData[0]}'`)
+    return ctx.error('dispatch', `there are no component space '${id}'`)
   }
-  let input = componentSpace.inputs[eventData[1]]
+  let inputName = eventData[1]
+  let input = componentSpace.inputs[inputName]
   if (input) {
     let data = eventData[4] === 'pair' // is both?
       ? [eventData[2], eventData[3]] // is both event data + context
@@ -258,10 +260,25 @@ export const dispatch = (ctx: Context, eventData: EventData) => {
       : eventData[3] // is only event data
     /* istanbul ignore else */
     if (<any> input !== 'nothing') {
-      execute(ctx, eventData[0], <any> input(data))
+      execute(ctx, id, <any> input(data))
+    }
+    // notifies parent if name starts with $
+    if (inputName[0] === '$') {
+      let idParts = id.split('$')
+      // is not root?
+      /* istanbul ignore else */
+      if (idParts.length > 1) {
+        let parentId = idParts.slice(0, -1).join('$')
+        let childInputName = inputName.slice(1, inputName.length)
+        let parentInput = ctx.components[parentId].inputs[`$${componentSpace.ctx.name}_${childInputName}`]
+        /* istanbul ignore else */
+        if (parentInput) {
+          execute(ctx, parentId, <any> parentInput(data))
+        }
+      }
     }
   } else {
-    ctx.error('dispatch', `there are no input named '${eventData[1]}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
+    ctx.error('dispatch', `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
   }
 }
 
@@ -307,9 +324,6 @@ export function execute (ctx: Context, id: string, executable: Executable | Exec
     }
     // the else branch never occurs because of Typecript check
   }
-
-  // TODO: proof of concept, auto dispatching parent inputs if matches '$name'
-
 }
 
 // permorms interface recalculation

@@ -19,6 +19,7 @@ import {
   HandlerInterface,
   notifyInterfaceHandlers,
   clone,
+  Inputs,
 } from './index'
 import { mergeStates } from '../utils/reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
@@ -34,9 +35,11 @@ let actions = {
   Inc: () => s => s + 1,
 }
 
-let inputs = (ctx: Context) => ({
+let inputs: Inputs = ctx => ({
   set: (n: number) => actions.Set(n),
   setExtra: ([value, extra]) => actions.Set(value + extra),
+  $toParent: () => 'nothing',
+  $child1_toParent: () => actions.Set(17), // child input detection
   inc: () => actions.Inc(),
   action: ([name, value]) => actions[name](value), // generic action input
   task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
@@ -65,6 +68,7 @@ let childValue: ValueInterface =
     setFnExtra: ev(ctx, 'setExtra', 5, 'value'),
     setFnGeneric: ev(ctx, 'action', 'Set', 'value'),
     setFnGenericValue: ev(ctx, 'action', ['Set', 123]),
+    toParent: ev(ctx, '$toParent'),
     wrongTask: ev(ctx, 'wrongTask'),
     executableListWrong: ev(ctx, 'executableListWrong'),
     executableListTask: ev(ctx, 'executableListTask'),
@@ -595,6 +599,15 @@ describe('Component composition', () => {
       done()
     }
     value._dispatch(value.childValue1.inc)
+  })
+
+  it('parent should react to child events when have an input called $childName_childInputName', done => {
+    let value = lastValue
+    valueFn = value => {
+      expect(value.content).toBe('Fractal is awesome!! 17')
+      done()
+    }
+    value._dispatch(value.childValue1.toParent)
   })
 
   it('should unmerge a component tree', () => {
