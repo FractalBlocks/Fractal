@@ -693,9 +693,6 @@ describe('Lifecycle hooks', () => {
   let child: Component = {
     name: 'Child',
     state,
-    beforeInit: ctx => {
-      beforeInitCalled = true
-    },
     init,
     destroy,
     inputs,

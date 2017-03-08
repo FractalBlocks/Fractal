@@ -48,7 +48,7 @@ describe('Utilities for running fractal inside workers', () => {
   let root: Component = {
     name,
     groups: {
-      value: 'MainGroup',
+      group: 'MainGroup',
     },
     state,
     inputs,
@@ -76,15 +76,20 @@ describe('Utilities for running fractal inside workers', () => {
   }
 
   let groupFn
+  let disposeGroupFn
   let groupHandler: Handler = () => mod => ({
     state: undefined,
     handle: ([id, group]) => {
       if (groupFn) {
-        mod.setGroup(id, 'value', group)
+        mod.setGroup(id, 'group', group)
         groupFn(group)
       }
     },
-    dispose: () => 0,
+    dispose: () => {
+      if (disposeGroupFn) {
+        disposeGroupFn()
+      }
+    },
   })
 
   let valueFn
@@ -134,7 +139,7 @@ describe('Utilities for running fractal inside workers', () => {
   let worker = runWorker({
     worker: mainAPI,
     groups: {
-      value: groupHandler(),
+      group: groupHandler(),
     },
     tasks: {
       log: logTask(taskLog),
@@ -159,7 +164,7 @@ describe('Utilities for running fractal inside workers', () => {
       }
     },
     groups: {
-      value: workerHandler('group', 'value', workerAPI),
+      group: workerHandler('group', 'group', workerAPI),
     },
     tasks: {
       log: workerHandler('task', 'log', workerAPI),
@@ -188,7 +193,7 @@ describe('Utilities for running fractal inside workers', () => {
         }
       },
       groups: {
-        value: workerHandler('group', 'value', workerAPI),
+        group: workerHandler('group', 'group', workerAPI),
       },
       tasks: {
         log: workerHandler('task', 'log', workerAPI),
@@ -301,6 +306,13 @@ describe('Utilities for running fractal inside workers', () => {
 
   // dispose module
 
+  it('should call dispose in group handlers via worker', done => {
+    disposeGroupFn = () => {
+      done()
+    }
+    workerModule.groupHandlers['group'].dispose()
+  })
+
   it('should call dispose in task handlers via worker', done => {
     disposeLogFn = () => {
       done()
@@ -326,6 +338,9 @@ describe('Utilities for running fractal inside workers', () => {
 
     let worker = runWorker({
       worker: mainAPI,
+      groups: {
+        group: emptyHandler,
+      },
       tasks: {
         log: logTask(taskLog),
       },
@@ -344,14 +359,14 @@ describe('Utilities for running fractal inside workers', () => {
 
     let workerModule = run({
       root,
-      init: mod => workerListener(mod, workerAPI),
+      beforeInit: mod => workerListener(mod, workerAPI),
       destroy: () => {
         if (disposeFn) {
           disposeFn()
         }
       },
       groups: {
-        value: emptyHandler,
+        group: workerHandler('group', 'group', workerAPI),
       },
       tasks: {
         log: workerHandler('task', 'log', workerAPI),

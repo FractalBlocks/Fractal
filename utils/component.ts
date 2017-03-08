@@ -26,7 +26,8 @@ export function vw (ctx: Context, componentName: string): HandlerMsg {
 // make a new component from another merging her state
 export function props (component: Component, state): Component {
   let comp: Component = clone(component)
-  if (comp.state !== null && typeof comp.state === 'object') {
+  if (comp.state !== null && typeof comp.state === 'object'
+   && state !== null && typeof state === 'object') {
     comp.state = Object.assign(comp.state, state)
   } else {
     comp.state = state
