@@ -44,7 +44,7 @@ export interface InputIndex {
 }
 
 export interface Input {
-  (data: any): Update | Task | Executable[]
+  (data: any): Update | Task | Executable[] | 'nothing'
 }
 
 export interface Action {

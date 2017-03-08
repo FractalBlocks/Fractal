@@ -256,7 +256,10 @@ export const dispatch = (ctx: Context, eventData: EventData) => {
       : eventData[4] === 'context'
       ? eventData[2] // is only context
       : eventData[3] // is only event data
-    execute(ctx, eventData[0], input(data))
+    /* istanbul ignore else */
+    if (<any> input !== 'nothing') {
+      execute(ctx, eventData[0], <any> input(data))
+    }
   } else {
     ctx.error('dispatch', `there are no input named '${eventData[1]}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
   }

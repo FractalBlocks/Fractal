@@ -1,5 +1,5 @@
 import { Context, Component, ev, execute } from '../../src'
-import { action, parent } from '../../utils/component'
+import { action } from '../../utils/component'
 import { styleGroup, StyleGroup, placeholderColor } from '../../utils/style'
 
 import { ViewInterface } from '../../interfaces/view'
@@ -12,7 +12,7 @@ let view: ViewInterface = (ctx, s) => {
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
-    on: { click: ev(parent(ctx), ctx.name + '_click') },
+    on: { click: ev(ctx, 'click') },
   }, [
     <any> 'Run!!'
   ])
@@ -34,7 +34,9 @@ let mDef: Component = {
   groups: {
     style,
   },
-  inputs: ctx => ({}),
+  inputs: ctx => ({
+    click: () => 'nothing',
+  }),
   actions: {},
   interfaces: {
     view,
