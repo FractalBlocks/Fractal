@@ -1,5 +1,5 @@
 import { Component, run, interfaceOf } from '../src'
-import { action, props, vw, parent } from './component'
+import { action, props, vw } from './component'
 
 describe('Component helpers', () => {
 
@@ -85,20 +85,6 @@ describe('Component helpers', () => {
       let interfaceObj = vw(module.ctx.components['MyComp'].ctx, 'child')
       expect(interfaceObj).toEqual(interfaceOf(module.ctx.components['MyComp'].ctx, 'child', 'view'))
     })
-
-    describe('parent function', () => {
-
-      it ('should be obtain the parent of a context', () => {
-        let parentCtx = parent(module.ctx.components['MyComp$child'].ctx)
-        expect(parentCtx).toEqual(module.ctx)
-      })
-
-      it ('should return the same context if is the root context', () => {
-        expect(parent(module.ctx)).toEqual(module.ctx)
-      })
-
-    })
-
 
   })
 

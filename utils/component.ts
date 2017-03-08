@@ -34,15 +34,3 @@ export function props (component: Component, state): Component {
   }
   return comp
 }
-
-// obtain the parent context of a context
-export function parent (ctx: Context): Context {
-  let id
-  let parts = ctx.id.split('$')
-  if (parts.length === 1) {
-    id = ctx.id
-  } else {
-    id = parts.slice(parts.length - 2, 1).join('$')
-  }
-  return ctx.components[id].ctx
-}
