@@ -1,6 +1,6 @@
 import { Context, Component, stateOf, interfaceOf, clone } from '../../src'
-import { props, vw } from '../../utils/component'
-import { styleGroup, StyleGroup } from '../../utils/style'
+import { pipe, props, vw, setGroup } from '../../utils/component'
+import { styleGroup, StyleGroup, mergeStyles } from '../../utils/style'
 import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
@@ -24,8 +24,18 @@ let answers = [
   '4',
 ]
 
+let inputStyle = mergeStyles(TextField.groups['style'], {
+  base: {
+    width: 'calc(100% - 30px)',
+    margin: '15px',
+  },
+})
+
 let questionCmp = <any> questions.map(
-  q => props(TextField, { placeholder: q })
+  q => pipe(
+    props({ placeholder: q }),
+    setGroup('style', inputStyle),
+  )(clone(TextField))
 )
 
 let components = {
@@ -45,7 +55,7 @@ let actions = {
 }
 
 let inputs = (ctx: Context) => ({
-  button_click: () => actions.SetActive(),
+  $button_click: () => actions.SetActive(),
 })
 
 let view: ViewInterface = (ctx, s) => {
@@ -55,22 +65,31 @@ let view: ViewInterface = (ctx, s) => {
     class: { [style.base]: true },
   }, [
     h('div', {
-      class: { [style.questions]: true },
-    }, Object.keys(questionCmp).map(
-        i => vw(ctx, i)
+      class: { [style.form]: true },
+    }, [
+      h('div', {
+        class: { [style.questions]: true },
+      }, Object.keys(questionCmp).map(
+          i => vw(ctx, i)
+        ),
       ),
-    ),
-    h('p', s.active ? 'yep' : 'nope'),
-    vw(ctx, 'button'),
+      h('p', s.active ? 'yep' : 'nope'),
+      vw(ctx, 'button'),
+    ]),
   ])
 }
 
-let style: any = {
+let style: StyleGroup = {
   base: {
+    display: 'flex',
+    justifyContent: 'center',
+
+  },
+  form: {
     width: '400px',
   },
-  questions: {},
-
+  questions: {
+  },
 }
 
 let mDef: Component = {

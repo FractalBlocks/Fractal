@@ -1,4 +1,13 @@
-import { Action, Update, clone, Component, Context, HandlerMsg, interfaceOf } from '../src'
+import {
+  Action,
+  Update,
+  clone,
+  Component,
+  Context,
+  HandlerMsg,
+  interfaceOf,
+  Group,
+} from '../src'
 
 // set of helpers for building components
 
@@ -23,14 +32,33 @@ export function vw (ctx: Context, componentName: string): HandlerMsg {
 
 // -- Functions for manipulating components
 
-// make a new component from another merging her state
-export function props (component: Component, state): Component {
-  let comp: Component = clone(component)
-  if (comp.state !== null && typeof comp.state === 'object'
-   && state !== null && typeof state === 'object') {
-    comp.state = Object.assign(comp.state, state)
-  } else {
-    comp.state = state
+// pipe allows to pipe functions (left composing)
+export function pipe (...args) {
+  return function (value) {
+    let result = value
+    for (let i = 0, len = args.length; i < len; i++) {
+      result = args[i](result)
+    }
+    return result
   }
-  return comp
+}
+
+// make a new component from another merging her state
+export function props (state) {
+  return function (comp: Component): Component {
+    if (comp.state !== null && typeof comp.state === 'object'
+    && state !== null && typeof state === 'object') {
+      comp.state = Object.assign(comp.state, state)
+    } else {
+      comp.state = state
+    }
+    return comp
+  }
+}
+
+export function setGroup (name: string, group: Group) {
+  return function (comp: Component): Component {
+    comp.groups[name] = group
+    return comp
+  }
 }

@@ -70,15 +70,21 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
 
 export const placeholderColor = (color: string) => ({
   '&::-webkit-input-placeholder': { /* Chrome/Opera/Safari */
+    $unique: true,
     color: color,
   },
   '&::-moz-placeholder': { /* Firefox 19+ */
+    $unique: true,
     color: color,
   },
   '&:-ms-input-placeholder': { /* IE 10+ */
-    color: color,
-  },
-  '&:-moz-placeholder': { /* Firefox 18- */
+    $unique: true,
     color: color,
   },
 })
+
+export const absoluteCenter = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}

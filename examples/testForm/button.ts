@@ -12,7 +12,7 @@ let view: ViewInterface = (ctx, s) => {
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
-    on: { click: ev(ctx, 'click') },
+    on: { click: ev(ctx, '$click') },
   }, [
     <any> 'Run!!'
   ])
@@ -26,6 +26,13 @@ const style: StyleGroup = {
     backgroundColor: '#1E4691',
     borderRadius: '2px',
     textAlign: 'center',
+    cursor: 'pointer',
+    userSelect: 'none',
+    $nest: {
+      '&:hover': {
+        backgroundColor: '#2853A4',
+      },
+    },
   },
 }
 
@@ -35,7 +42,7 @@ let mDef: Component = {
     style,
   },
   inputs: ctx => ({
-    click: () => 'nothing',
+    $click: () => 'nothing',
   }),
   actions: {},
   interfaces: {
