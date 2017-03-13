@@ -61,7 +61,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     let components = createCompIndex(newState, state)
     let lastComponents = createCompIndex(modifiedState, state)
     let result = mergeStates(components, lastComponents)
-    expect(result.Main.state).toEqual(3)
+    expect(result.Main.state).toEqual(2)
   })
 
 })
