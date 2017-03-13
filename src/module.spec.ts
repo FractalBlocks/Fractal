@@ -776,6 +776,7 @@ describe('Lifecycle hooks', () => {
 })
 
 describe('Hot swapping', () => {
+
   let child: Component = {
     name: 'Child',
     state,
@@ -915,4 +916,5 @@ describe('Clone function helper', () => {
     expect(obj3.c.obj2.a === obj2.a).toBeFalsy()
     expect(obj3.c.obj2.b === obj2.b).toBeFalsy()
   })
+
 })

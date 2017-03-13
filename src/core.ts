@@ -21,7 +21,7 @@ export interface Component {
   // dispatchers for actions and tasks
   inputs: Inputs
   // unique way to change the state
-  actions: {
+  actions?: {
     [name: string]: Action
   }
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
@@ -103,9 +103,9 @@ export interface Task extends Array<any> {
 
 // describes an excecution context
 export interface Context {
-  // Namespace for component
-  id: string
   // name for that component in the index
+  id: string
+  // sintax sugar: the name is the last part of the id (e.g. the id is Main$child the name is child)
   name: string
   // groups of the component (related to a component space)
   groups: {

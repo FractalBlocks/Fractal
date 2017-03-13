@@ -40,7 +40,8 @@ let questionCmp = <any> questions.map(
 
 let components = {
   ...questionCmp,
-  button: Button,
+  testBtn: Button,
+  clearBtn: Button,
 }
 
 let state = {
@@ -55,7 +56,7 @@ let actions = {
 }
 
 let inputs = (ctx: Context) => ({
-  $button_click: () => actions.SetActive(),
+  $testBtn_click: () => actions.SetActive(),
 })
 
 let view: ViewInterface = (ctx, s) => {
@@ -74,7 +75,9 @@ let view: ViewInterface = (ctx, s) => {
         ),
       ),
       h('p', s.active ? 'yep' : 'nope'),
-      vw(ctx, 'button'),
+      vw(ctx, 'testBtn'),
+      vw(ctx, 'clearBtn'),
+      h('div', '$$d'),
     ]),
   ])
 }

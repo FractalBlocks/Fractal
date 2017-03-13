@@ -69,7 +69,7 @@ export interface ModuleAPI {
 }
 
 export interface MiddleFn {
-  (ctx: Context, lastComponents: ComponentSpaceIndex): void
+  (ctx: ComponentSpaceIndex, lastComponents: ComponentSpaceIndex): ComponentSpaceIndex
 }
 
 export const handlerTypes = ['interface', 'task', 'group']
@@ -434,7 +434,7 @@ export function run (moduleDefinition: ModuleDef): Module {
     ctx = merge(ctx, component.name, component)
     // middle function for hot-swapping
     if (middleFn) {
-      middleFn(ctx, lastComponents)
+      ctx.components = middleFn(ctx.components, lastComponents)
     }
 
     // pass initial value to each Interface Handler
