@@ -1,4 +1,4 @@
-import { Context, Component, stateOf, interfaceOf, clone } from '../../src'
+import { Context, Component, stateOf, interfaceOf, clone, execute } from '../../src'
 import { pipe, props, vw, setGroup } from '../../utils/component'
 import { styleGroup, StyleGroup, mergeStyles } from '../../utils/style'
 import { ViewInterface } from '../../interfaces/view'
@@ -38,10 +38,31 @@ let questionCmp = <any> questions.map(
   )(clone(TextField))
 )
 
+let clearBtnStyle = mergeStyles(Button.groups['style'], {
+  base: {
+    marginTop: '5px',
+    color: '#5E6060',
+    backgroundColor: 'none',
+    $nest: {
+      '&:hover': {
+        color: '#1E4691',
+        backgroundColor: 'none',
+      },
+    },
+  },
+})
+
+let testBtn = props('Test')(clone(Button))
+
+let clearBtn = pipe(
+  props('Clear'),
+  setGroup('style', clearBtnStyle)
+)(clone(Button))
+
 let components = {
   ...questionCmp,
-  testBtn: Button,
-  clearBtn: Button,
+  testBtn,
+  clearBtn,
 }
 
 let state = {
@@ -53,10 +74,20 @@ let actions = {
     s.active = true
     return s
   },
+  Clear: () => s => {
+    s.active = false
+    return s
+  }
 }
 
 let inputs = (ctx: Context) => ({
   $testBtn_click: () => actions.SetActive(),
+  $clearBtn_click: () => {
+    Object.keys(questions).forEach(
+      i => execute(ctx, ctx.id + '$' + i, TextField.actions.SetValue(''))
+    )
+    return actions.Clear()
+  },
 })
 
 let view: ViewInterface = (ctx, s) => {
@@ -77,7 +108,6 @@ let view: ViewInterface = (ctx, s) => {
       h('p', s.active ? 'yep' : 'nope'),
       vw(ctx, 'testBtn'),
       vw(ctx, 'clearBtn'),
-      h('div', '$$d'),
     ]),
   ])
 }
@@ -86,7 +116,7 @@ let style: StyleGroup = {
   base: {
     display: 'flex',
     justifyContent: 'center',
-
+    fontFamily: 'sans-serif',
   },
   form: {
     width: '400px',

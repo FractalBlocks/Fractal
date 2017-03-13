@@ -14,7 +14,7 @@ let view: ViewInterface = (ctx, s) => {
     class: { [style.base]: true },
     on: { click: ev(ctx, '$click') },
   }, [
-    <any> 'Run!!'
+    <any> s
   ])
 }
 
@@ -38,11 +38,12 @@ const style: StyleGroup = {
 
 let mDef: Component = {
   name,
+  state: '',
   groups: {
     style,
   },
   inputs: ctx => ({
-    $click: () => 'nothing',
+    $click: () => {},
   }),
   actions: {},
   interfaces: {

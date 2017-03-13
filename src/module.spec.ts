@@ -38,7 +38,7 @@ let actions = {
 let inputs: Inputs = ctx => ({
   set: (n: number) => actions.Set(n),
   setExtra: ([value, extra]) => actions.Set(value + extra),
-  $toParent: () => 'nothing',
+  $toParent: () => {},
   $child1_toParent: () => actions.Set(17), // child input detection
   inc: () => actions.Inc(),
   action: ([name, value]) => actions[name](value), // generic action input
