@@ -1,5 +1,5 @@
 import { Context, Component, ev } from '../../src'
-import { styleGroup, StyleGroup } from '../../utils/style'
+import { StyleGroup } from '../../utils/style'
 
 import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'

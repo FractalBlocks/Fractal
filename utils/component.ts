@@ -1,7 +1,6 @@
 import {
   Action,
   Update,
-  clone,
   Component,
   Context,
   HandlerMsg,

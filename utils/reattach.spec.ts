@@ -1,4 +1,4 @@
-import { Context, Component, ComponentSpaceIndex } from '../src'
+import { Context, ComponentSpaceIndex } from '../src'
 import { mergeStates } from './reattach'
 
 describe('mergeStates function should merge the states of the lastComponents and the context', () => {

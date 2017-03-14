@@ -1,6 +1,6 @@
 import { Context, Component, ev } from '../../src'
-import { styleGroup, StyleGroup } from '../../utils/style'
-import { hashMap, HashMap } from 'mori'
+import { StyleGroup } from '../../utils/style'
+import { hashMap } from 'mori'
 import { evolve, get } from '../../utils/mori'
 
 import { ViewInterface } from '../../interfaces/view'

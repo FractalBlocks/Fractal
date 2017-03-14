@@ -1,5 +1,4 @@
 import {
-  Handler,
   HandlerInterfaceIndex,
   HandlerObject,
   Component,

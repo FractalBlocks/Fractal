@@ -1,5 +1,5 @@
-import { Context, Component, stateOf, interfaceOf, execute } from '../../src'
-import { styleGroup, StyleGroup, getStyles } from '../../utils/style'
+import { Component, stateOf, interfaceOf } from '../../src'
+import { StyleGroup } from '../../utils/style'
 import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
@@ -9,25 +9,22 @@ let components = {
   counter: require('./counter').default,
 }
 
-let init = ctx => {
-  execute(ctx, ctx.id, ['style', getStyles()])
+let view: ViewInterface = (ctx, s) => {
+  let style = ctx.groups.style
+  return h('div', {
+    key: name,
+    class: { [style.base]: true },
+  }, [
+    h('div', {
+      class: { [style.childCount]: true },
+    }, [
+      stateOf(ctx, 'counter').count,
+    ]),
+    interfaceOf(ctx, 'counter', 'view'),
+  ])
 }
 
-let view: ViewInterface = (ctx, s) =>
-
-h('div', {
-  key: name,
-  class: { [style.base]: true },
-}, [
-  h('div', {
-    class: { [style.childCount]: true },
-  }, [
-    stateOf(ctx, 'counter').count,
-  ]),
-  interfaceOf(ctx, 'counter', 'view'),
-])
-
-let style: any = {
+let style: StyleGroup = {
   base: {
     width: '160px',
     display: 'flex',
@@ -43,8 +40,10 @@ let style: any = {
 
 let main: Component = {
   name,
-  init,
-  state: ({key}) => ({}),
+  groups: {
+    style,
+  },
+  state: {},
   components,
   inputs: ctx => ({}),
   actions: {},

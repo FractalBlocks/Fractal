@@ -1,4 +1,4 @@
-import { Context, Component, stateOf, interfaceOf } from '../../src'
+import { Component, stateOf, interfaceOf } from '../../src'
 import { StyleGroup } from '../../utils/style'
 import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
@@ -44,6 +44,9 @@ let style: StyleGroup = {
 
 let mDef: Component = {
   name,
+  groups: {
+    style,
+  },
   state,
   components,
   inputs: ctx => ({}),

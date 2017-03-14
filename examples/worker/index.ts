@@ -1,9 +1,9 @@
-import { runWorker, WorkerAPI } from '../../utils/worker'
+import { runWorker } from '../../utils/worker'
 import { viewHandler } from '../../interfaces/view'
 import { warn, error } from '../../utils/log'
 
 // all communicatios are transfered via postMessage
-let moduleWorker = runWorker({
+runWorker({
   worker: new (<any> require('worker-loader!./worker')),
   interfaces: {
     view: viewHandler('#app'),

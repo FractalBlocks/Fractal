@@ -1,7 +1,6 @@
 import {
   Context,
   Component,
-  execute,
   Task,
   ev,
   run,
@@ -182,7 +181,7 @@ describe('Utilities for running fractal inside workers', () => {
       expect(group).toBe('MainGroup')
       done()
     }
-    let workerModule = run({
+    run({
       root,
       beforeInit: mod => {
         workerListener(mod, workerAPI)
@@ -357,7 +356,7 @@ describe('Utilities for running fractal inside workers', () => {
 
     let disposeFn
 
-    let workerModule = run({
+    run({
       root,
       beforeInit: mod => workerListener(mod, workerAPI),
       destroy: () => {

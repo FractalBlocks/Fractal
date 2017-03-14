@@ -1,6 +1,6 @@
-import { Context, Component, stateOf, interfaceOf, clone, execute } from '../../src'
+import { Context, Component, stateOf, clone, execute } from '../../src'
 import { pipe, props, vw, setGroup } from '../../utils/component'
-import { styleGroup, StyleGroup, mergeStyles } from '../../utils/style'
+import { StyleGroup, mergeStyles } from '../../utils/style'
 import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'
 

@@ -1,4 +1,4 @@
-import { Context, ComponentSpaceIndex } from '../src'
+import { ComponentSpaceIndex } from '../src'
 import deepEqual = require('deep-equal')
 
 /* this function take an initial state, modified state and new state

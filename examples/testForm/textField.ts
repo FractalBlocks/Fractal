@@ -1,6 +1,6 @@
-import { Context, Component, ev, execute } from '../../src'
+import { Context, Component, ev } from '../../src'
 import { action } from '../../utils/component'
-import { styleGroup, StyleGroup, placeholderColor } from '../../utils/style'
+import { StyleGroup, placeholderColor } from '../../utils/style'
 
 import { ViewInterface } from '../../interfaces/view'
 import h from 'snabbdom/h'

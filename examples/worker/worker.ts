@@ -14,7 +14,7 @@ let app = run({
   error: workerLog('error'),
 })
 
-// Hot reload
+// Hot reload - doesnt work in a worker for now
 if (module.hot) {
   module.hot.accept('./app', () => {
     let m = require('./app').default

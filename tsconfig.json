@@ -4,8 +4,11 @@
     "outDir": "lib",
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["dom", "es5", "scripthost"],
-    "sourceMap": true
+    "sourceMap": true,
+    "declaration": true,
+    "removeComments": false,
+    "noUnusedLocals": true,
+    "lib": ["dom", "es5", "scripthost"]
   },
   "formatCodeOptions": {
     "indentSize": 2,

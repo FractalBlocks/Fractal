@@ -9,7 +9,6 @@ import {
   ev,
   Executable,
   createContext,
-  Update,
   Task,
   Handler,
   computeEvent,
@@ -277,7 +276,7 @@ describe('One Component + module functionality', function () {
 
   it('should log an error and notify error callback when module dont have an InterfaceHandler', () => {
     let lastLog
-    let app = run({
+    run({
       root,
       interfaces: {},
       warn: (source, description) => lastLog = [source, description],
@@ -339,7 +338,6 @@ describe('One Component + module functionality', function () {
     }
     // extract value and dispatch interface handlers
     value = lastValue // this catch the scope variable
-    let data
     value._dispatch(computeEvent(24, value.setFnAll))
   })
 
@@ -350,7 +348,6 @@ describe('One Component + module functionality', function () {
     }
     // extract value and dispatch interface handlers
     value = lastValue // this catch the scope variable
-    let data
     value._dispatch(computeEvent({ value: 35 }, value.setFnValue))
   })
 
@@ -361,7 +358,6 @@ describe('One Component + module functionality', function () {
     }
     // extract value and dispatch interface handlers
     value = lastValue // this catch the scope variable
-    let data
     value._dispatch(computeEvent({ target: { value: 37 } }, value.setFnPath))
   })
 
@@ -372,7 +368,6 @@ describe('One Component + module functionality', function () {
     }
     // extract value and dispatch interface handlers
     value = lastValue // this catch the scope variable
-    let data
     value._dispatch(computeEvent({ value: 35 }, value.setFnExtra))
   })
 
@@ -383,7 +378,6 @@ describe('One Component + module functionality', function () {
     }
     // extract value and dispatch interface handlers
     value = lastValue // this catch the scope variable
-    let data
     value._dispatch(computeEvent({ value: '' }, value.setFnGeneric))
   })
 
@@ -576,7 +570,7 @@ describe('Component composition', () => {
 
   it('should log an error when module does not have group handler for a certain group from a component', () => {
     let log
-    let app = run({
+    run({
       root: main,
       groups: {
         wrong: groupHandler(),
@@ -702,8 +696,6 @@ describe('Lifecycle hooks', () => {
     let parts = ctx.id.split('$')
     disposeLog.push(parts[parts.length - 1])
   }
-
-  let beforeInitCalled = false
 
   let child: Component = {
     name: 'Child',

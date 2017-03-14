@@ -1,6 +1,5 @@
-import { HandlerMsg, HandlerFunction } from './handler'
+import { HandlerMsg } from './handler'
 import { HandlerObject } from './handler'
-import { ModuleAPI } from './module'
 
 export interface Component {
   // component name, used for debugging

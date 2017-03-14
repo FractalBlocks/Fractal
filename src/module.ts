@@ -1,20 +1,15 @@
 import {
   Component,
-  Action,
   Update,
   Context,
-  ComponentSpace,
   ComponentSpaceIndex,
   Executable,
   InputData,
   EventData,
-  Interface,
 } from './core'
 import {
   HandlerInterface,
-  HandlerMsg,
   HandlerObject,
-  HandlerFunction,
 } from './handler'
 
 export interface HandlerInterfaceIndex {
