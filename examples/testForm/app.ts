@@ -9,11 +9,10 @@ import Button from './button'
 
 let name = 'Main'
 
-
 let questions = [
   '1 + 1?',
   'the secret of life?',
-  'what is the best tool for doing Web Dev?',
+  'what is the best tool for Web Dev?',
   '2 * 2?',
 ]
 
@@ -65,40 +64,46 @@ let components = {
   clearBtn,
 }
 
-let state = {
-  correct: undefined,
+interface Model {
+  correct: true | false | 'unknown'
+}
+
+let state: Model = {
+  correct: 'unknown',
 }
 
 let actions = {
-  Test: userAnswers => s => {
-    s.correct = true
-    for (let i = 0, len = answers.length; i < len; i++) {
-      if (userAnswers[i] !== answers[i]) {
-        s.correct = false
-      }
-    }
+  SetCorrect: isCorrect => s => {
+    s.correct = isCorrect
     return s
   },
   Clear: () => s => {
-    s.correct = undefined
+    s.correct = 'unknown'
     return s
   }
 }
 
 let inputs = (ctx: Context) => ({
   $testBtn_click: () => {
-    let userAnswers = Object.keys(questions).map(q => stateOf(ctx, q).value)
-    return actions.Test(userAnswers)
+    let result = Object.keys(questions).map((q, idx) => {
+      let isCorrect = stateOf(ctx, q).value === answers[idx]
+      execute(ctx, ctx.id + '$' + q, TextField.actions.SetError(!isCorrect))
+      return isCorrect
+    }).reduce((a, r) => a && r, true)
+    return actions.SetCorrect(result)
   },
   $clearBtn_click: () => {
     Object.keys(questions).forEach(
-      i => execute(ctx, ctx.id + '$' + i, TextField.actions.SetValue(''))
+      i => execute(ctx, ctx.id + '$' + i, [
+        TextField.actions.SetValue(''),
+        TextField.actions.SetError(false),
+      ])
     )
     return actions.Clear()
   },
 })
 
-let view: ViewInterface = (ctx, s) => {
+let view: ViewInterface = (ctx, s: Model) => {
   let style = ctx.groups['style']
   return h('div', {
     key: name,
@@ -113,8 +118,14 @@ let view: ViewInterface = (ctx, s) => {
           i => vw(ctx, i)
         ),
       ),
-      h('p',
-        s.correct === undefined
+      h('p', {
+        class: {
+          [style.testText]: true,
+          [style.testCorrect]: s.correct === true,
+          [style.testFailed]: s.correct === false,
+        }
+      },
+        s.correct === 'unknown'
         ? ''
         : s.correct
         ? 'Correct'
@@ -135,7 +146,18 @@ let style: StyleGroup = {
   form: {
     width: '400px',
   },
-  questions: {
+  questions: {},
+  testText: {
+    color: 'white',
+    padding: '5px',
+    borderRadius: '4px',
+    display: 'inline-block',
+  },
+  testCorrect: {
+    backgroundColor: '#22911E',
+  },
+  testFailed: {
+    backgroundColor: '#de3339',
   },
 }
 

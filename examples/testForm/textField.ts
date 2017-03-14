@@ -9,18 +9,23 @@ let name = 'TextField'
 
 let state = {
   focus: false,
+  error: false,
   placeholder: '',
   value: '',
 }
 
 let actions = {
-  SetValue: (value: string) => state => {
-    state.value = value
-    return state
+  SetError: (error: boolean) => s => {
+    s.error = error
+    return s
   },
-  SetFocus: (value: string) => state => {
-    state.focus = value
-    return state
+  SetValue: (value: string) => s => {
+    s.value = value
+    return s
+  },
+  SetFocus: (value: string) => s => {
+    s.focus = value
+    return s
   },
 }
 
@@ -44,10 +49,18 @@ let view: ViewInterface = (ctx, s) => {
         blur: ev(ctx, 'action', ['SetFocus', false]),
       },
     }, `${s.count}`),
-    h('div', { class: { [style.underlineContainer]: true } }, [
+    h('div', {
+      class: {
+        [style.underlineContainer]: true,
+        [style.underlineContainerNormal]: !s.error,
+        [style.underlineContainerError]: s.error,
+      },
+    }, [
       h('div', {
         class: {
           [style.underline]: true,
+          [style.underlineNormal]: s.focus && !s.error,
+          [style.underlineError]: s.focus && s.error,
           [style.underlineActive]: s.focus,
         },
       }),
@@ -73,13 +86,23 @@ const style: StyleGroup = {
     height: '1px',
     display: 'flex',
     justifyContent: 'center',
+  },
+  underlineContainerNormal: {
     borderBottom: '1px solid #AEB8B9',
+  },
+  underlineContainerError: {
+    borderBottom: '1px solid #d81f24',
   },
   underline: {
     width: '0px',
     height: '2px',
-    backgroundColor: '#3f51b5',
     transition: 'width 0.3s',
+  },
+  underlineNormal: {
+    backgroundColor: '#3f51b5',
+  },
+  underlineError: {
+    backgroundColor: '#d81f24',
   },
   underlineActive: {
     width: '100%',
