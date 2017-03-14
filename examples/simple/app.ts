@@ -41,7 +41,7 @@ let view: ViewInterface = (ctx, s) => {
     h('div', {
       class: { [style.reset]: true },
       on: {
-        click: () => ev(ctx, 'set', () => 0),
+        click: ev(ctx, 'set', 0),
       },
     }, 'reset'),
   ])
@@ -75,7 +75,6 @@ let style: StyleGroup = {
     backgroundColor: '#EA1818',
   },
 }
-
 
 let mDef: Component = {
   name,

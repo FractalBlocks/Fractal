@@ -235,9 +235,9 @@ export function computeEvent(event: any, iData: InputData): EventData {
     iData[1], // component event
     iData[2], // context argument
     data, // data
-    iData[2] !== '' && iData[3] !== undefined
+    iData[2] !== undefined && iData[3] !== undefined
       ? 'pair'
-      : iData[2]
+      : (iData[2] !== undefined)
       ? 'context'
       : 'fn',
   ]

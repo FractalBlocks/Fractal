@@ -8,8 +8,7 @@ import h from 'snabbdom/h'
 
 let name = 'Main'
 
-let state = ({key}) => hashMap<string, string>(
-  'key', key,
+let state = hashMap<string, string>(
   'count', 0,
 )
 
@@ -35,29 +34,48 @@ let view: ViewInterface = (ctx, s) => {
         click: ev(ctx, 'inc'),
       },
     }, `${get(s, 'count')}`),
+    h('div', {
+      class: { [style.reset]: true },
+      on: {
+        click: ev(ctx, 'set', 0),
+      },
+    }, 'reset'),
   ])
 }
 
 let style: StyleGroup = {
   base: {
+    width: '120px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: '10px',
-    backgroundColor: 'grey',
+    backgroundColor: '#C1C6CC',
   },
   count: {
     width: '30px',
     height: '30px',
-    margin: '10px',
+    marginRight: '10px',
     borderRadius: '50%',
     color: 'white',
-    backgroundColor: '#4343EC',
+    fontSize: '20px',
+    backgroundColor: '#3232F2',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  reset: {
+    padding: '4px',
+    color: 'white',
+    fontSize: '18px',
+    backgroundColor: '#EA1818',
+  },
 }
-
 let mDef: Component = {
   name,
+  groups: {
+    style,
+  },
   state,
   inputs,
   actions,

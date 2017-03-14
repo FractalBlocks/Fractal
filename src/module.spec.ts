@@ -55,6 +55,8 @@ let inputs: Inputs = ctx => ({
   ],
 })
 
+let _ = undefined // gap for undefined
+
 let childValue: ValueInterface =
   (ctx, s) => ({
     tagName: ctx.id,
@@ -62,9 +64,9 @@ let childValue: ValueInterface =
     inc: ev(ctx, 'inc'),
     task: ev(ctx, 'task'),
     set: ev(ctx, 'set', 10),
-    setFnAll: ev(ctx, 'set', '', '*'),
-    setFnValue: ev(ctx, 'set', '', 'value'),
-    setFnPath: ev(ctx, 'set', '', ['target', 'value']),
+    setFnAll: ev(ctx, 'set', _, '*'),
+    setFnValue: ev(ctx, 'set', _, 'value'),
+    setFnPath: ev(ctx, 'set', _, ['target', 'value']),
     setFnExtra: ev(ctx, 'setExtra', 5, 'value'),
     setFnGeneric: ev(ctx, 'action', 'Set', 'value'),
     setFnGenericValue: ev(ctx, 'action', ['Set', 123]),

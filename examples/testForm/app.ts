@@ -66,22 +66,30 @@ let components = {
 }
 
 let state = {
-  active: false,
+  correct: undefined,
 }
 
 let actions = {
-  SetActive: () => s => {
-    s.active = true
+  Test: userAnswers => s => {
+    s.correct = true
+    for (let i = 0, len = answers.length; i < len; i++) {
+      if (userAnswers[i] !== answers[i]) {
+        s.correct = false
+      }
+    }
     return s
   },
   Clear: () => s => {
-    s.active = false
+    s.correct = undefined
     return s
   }
 }
 
 let inputs = (ctx: Context) => ({
-  $testBtn_click: () => actions.SetActive(),
+  $testBtn_click: () => {
+    let userAnswers = Object.keys(questions).map(q => stateOf(ctx, q).value)
+    return actions.Test(userAnswers)
+  },
   $clearBtn_click: () => {
     Object.keys(questions).forEach(
       i => execute(ctx, ctx.id + '$' + i, TextField.actions.SetValue(''))
@@ -105,7 +113,13 @@ let view: ViewInterface = (ctx, s) => {
           i => vw(ctx, i)
         ),
       ),
-      h('p', s.active ? 'yep' : 'nope'),
+      h('p',
+        s.correct === undefined
+        ? ''
+        : s.correct
+        ? 'Correct'
+        : 'There are mistakes!'
+      ),
       vw(ctx, 'testBtn'),
       vw(ctx, 'clearBtn'),
     ]),
