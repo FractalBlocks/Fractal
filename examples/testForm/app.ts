@@ -126,7 +126,7 @@ let view: ViewInterface = (ctx, s: Model) => {
         }
       },
         s.correct === 'unknown'
-        ? ''
+        ? 'Editing'
         : s.correct
         ? 'Correct'
         : 'There are mistakes!'
@@ -152,6 +152,7 @@ let style: StyleGroup = {
     padding: '5px',
     borderRadius: '4px',
     display: 'inline-block',
+    backgroundColor: '#5E6060',
   },
   testCorrect: {
     backgroundColor: '#22911E',
