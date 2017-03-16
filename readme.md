@@ -1,9 +1,9 @@
 [![codecov](https://codecov.io/gh/fractalPlatform/Fractal/branch/master/graph/badge.svg)](https://codecov.io/gh/fractalPlatform/Fractal)
 [![Build Status](https://travis-ci.org/fractalPlatform/Fractal.svg?branch=master)](https://travis-ci.org/fractalPlatform/Fractal)
 # <img src="https://github.com/fractalPlatform/Fractal/blob/master/assets/FractalLogo.png">
-Build your ideas as simple as possible. Fractal is an intuitive framework for building applications and interactive content.
+Build your ideas with elegance and simplicity. We believe into more than frameworks, we believe that minimalist and well crafted software will change the world.
 
-## Why?
+## How do that Fractal?
 
 - It is minimal, core logic are less than 400 lines of code and you can see how it works
 - Easy integrable and emmbedable by design
@@ -20,7 +20,7 @@ See the [design document](https://github.com/fractalPlatform/Fractal/blob/master
 
 ## Getting started
 
-The recomended way is using webpack, please download the [Fractal-quickstart](https://github.com/fractalPlatform/Fractal-quickstart) repo (Comming soon...).
+The recomended way is using webpack, please download the [Fractal-quickstart](https://github.com/fractalPlatform/Fractal-quickstart) repo, this gives you all things ready.
 
 Or in nodejs, browserify, webpack like environments:
 

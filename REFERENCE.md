@@ -8,9 +8,9 @@
 
 ## Code structure
 
-Overview of files
+Overview of files, the src/ folder
 
-- src/: All Core Features of Fractal
+- core/: All Core Features of Fractal
 - -- index.ts: Enty point to all core functions and interfaces
 - -- core.ts: Set of core interfaces, e.g. components, updates ...
 - -- handler.ts: Set of interfaces for handlers
@@ -20,6 +20,5 @@ Overview of files
 - -- view.ts: Render a Snabbdom view
 - groups/
 - tasks/
-- config/
 
 TODO: complete docs
