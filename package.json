@@ -22,7 +22,7 @@
     "url": "https://github.com/fractalPlatform/Fractal.git"
   },
   "license": "MIT",
-  "dependencies": {
+  "peerDependencies": {
     "deep-equal": "^1.0.1",
     "mori": "^0.3.2",
     "snabbdom": "^0.6.1",
