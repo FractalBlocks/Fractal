@@ -2,6 +2,7 @@
 bundle/
 core/
 groups/
+tasks/
 interfaces/
 examples/
 utils/
