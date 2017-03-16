@@ -1,6 +1,10 @@
 # Project specific stuff
 bundle/
-lib/
+core/
+groups/
+interfaces/
+examples/
+utils/
 coverage/
 reports/
 webpack-stats.json

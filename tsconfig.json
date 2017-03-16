@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "outDir": "lib",
+    "outDir": "./",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
@@ -15,16 +15,15 @@
     "tabSize": 2
   },
   "files": [
-    "src/index.ts",
+    "src/core/index.ts",
     "typings/index.d.ts"
   ],
   "include": [
-    "src/**/*.spec.ts",
-    "examples/**/*.ts",
-    "groups/**/*.ts",
-    "interfaces/**/*.ts",
-    "tasks/**/*.ts",
-    "utils/**/*.ts"
+    "src/examples/**/*.ts",
+    "src/groups/**/*.ts",
+    "src/interfaces/**/*.ts",
+    "src/tasks/**/*.ts",
+    "src/utils/**/*.ts"
   ],
   "exclude": [
     "node_modules"
