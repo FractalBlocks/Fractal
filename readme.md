@@ -1,9 +1,9 @@
 [![codecov](https://codecov.io/gh/fractalPlatform/Fractal/branch/master/graph/badge.svg)](https://codecov.io/gh/fractalPlatform/Fractal)
 [![Build Status](https://travis-ci.org/fractalPlatform/Fractal.svg?branch=master)](https://travis-ci.org/fractalPlatform/Fractal)
 # <img src="https://github.com/fractalPlatform/Fractal/blob/master/assets/FractalLogo.png">
-Build your ideas with elegance and simplicity. We believe into more than frameworks, we believe that minimalist and well crafted software will change the world.
+We believe into more than frameworks, we believe that minimalist and well crafted software will change the world. Lets build your ideas with elegance and simplicity with Fractal.
 
-## How do that Fractal?
+## How do Fractal it?
 
 - It is minimal, core logic are less than 400 lines of code and you can see how it works
 - Easy integrable and emmbedable by design
@@ -25,7 +25,7 @@ The recomended way is using webpack, please download the [Fractal-quickstart](ht
 Or in nodejs, browserify, webpack like environments:
 
 ```bash
-npm i --save fractal-framework
+npm i --save fractal-core
 ```
 
 ## Run the examples
@@ -37,7 +37,7 @@ The examples you can run are:
 - simple
 - compose
 - mori: Fractal using mori.js for persistent data structures (PDS)
-- worker
+- worker: Fractal running in a worker! :D
 - testForm
 
 Open a command window into `Fractal` folder and run:
