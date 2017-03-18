@@ -61,3 +61,17 @@ export function setGroup (name: string, group: Group) {
     return comp
   }
 }
+
+export interface KeyValuePair extends Array<any> {
+  0: string
+  1: any
+}
+
+export function mapToObj (arr: any[], fn: { (idx, value?): [string, KeyValuePair] } ): any {
+  let result = {}, aux
+  for (let i = 0, len = arr.length; i < len; i++) {
+    aux = fn(i, arr[i])
+    result[aux[0]] = aux[1]
+  }
+  return result
+}

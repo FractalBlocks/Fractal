@@ -6,6 +6,10 @@ We use BDD for building Fractal. This documents describe all about how Factal wo
 
 See the reference (TODO: put a link to structure reference).
 
+## Versioning
+
+We follow semver.
+
 ## Code conventions
 
 We follow the Fractal Standards for Software Quality (TODO: put the link) that describes conventions for coding

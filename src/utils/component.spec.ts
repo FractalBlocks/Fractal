@@ -1,5 +1,5 @@
 import { Component, run, interfaceOf, clone } from '../core'
-import { action, props, vw, pipe, setGroup } from './component'
+import { action, props, vw, pipe, setGroup, mapToObj } from './component'
 
 describe('Component helpers', () => {
 
@@ -94,7 +94,7 @@ describe('Component helpers', () => {
 
   })
 
-  describe('Syntax sugar for components', () => {
+  describe('vw function sugar for components', () => {
     let child: Component = {
       name: 'Child',
       state: {
@@ -130,6 +130,18 @@ describe('Component helpers', () => {
     it ('should be the same to use vw and interfaceOf functions', () => {
       let interfaceObj = vw(module.ctx.components['MyComp'].ctx, 'child')
       expect(interfaceObj).toEqual(interfaceOf(module.ctx.components['MyComp'].ctx, 'child', 'view'))
+    })
+
+  })
+
+  describe('mapToObj helper', () => {
+
+    it('should map an array to an object', () => {
+      expect(mapToObj([1, 2, 3], (idx, value) => ['a' + idx, `a${value}elm`])).toEqual({
+        a0: 'a1elm',
+        a1: 'a2elm',
+        a2: 'a3elm',
+      })
     })
 
   })
