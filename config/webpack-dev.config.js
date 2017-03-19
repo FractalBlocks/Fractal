@@ -167,7 +167,7 @@ module.exports = function (options) {
         }
       }),
       new HtmlWebpackPlugin({
-        template: 'examples/index.ejs',
+        template: 'src/examples/index.ejs',
         inject: 'body',
       }),
        /**
