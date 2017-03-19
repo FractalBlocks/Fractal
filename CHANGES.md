@@ -1,5 +1,9 @@
 # Changes
 
+# v0.2.1
+
+- Fix debugNames and add a debug option to style group handler
+
 # v0.2.0
 
 - Fix bug when call dispatch from a child component

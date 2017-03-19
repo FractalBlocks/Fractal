@@ -7,7 +7,7 @@ import { mergeStates } from '../../utils/reattach' // DEV ONLY
 let app = run({
   root: require('./app').default,
   groups: {
-    style: styleHandler('app-style'),
+    style: styleHandler('app-style', true),
   },
   interfaces: {
     view: viewHandler('#app'),

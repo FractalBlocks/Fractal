@@ -1,7 +1,7 @@
 import { ModuleAPI } from './module'
 
 export interface Handler {
-  (param?: any): HandlerInterface
+  (...params): HandlerInterface
 }
 
 // interface function passed via ModuleDef

@@ -20,7 +20,11 @@ export interface ComponentGroups {
 export function styleGroup (instance: TypeStyle, stylesObj: StyleGroup, moduleName: string): StyleClasses {
   let classes = {}
   for (let key in stylesObj) {
-    classes[key] = instance.style(stylesObj[key], { $debugName: `${moduleName}_${key}__` })
+    if (moduleName !== undefined) {
+      classes[key] = instance.style(stylesObj[key], { $debugName: `_${moduleName}_${key}__` })
+    } else {
+      classes[key] = instance.style(stylesObj[key])
+    }
   }
   return <StyleClasses> classes
 }
