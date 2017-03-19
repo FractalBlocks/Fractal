@@ -2,10 +2,10 @@
 
 # v0.2.0
 
+- Fix bug when call dispatch from a child component
 - Add onDispatch event to module definition
 - Add onDispatch function to log helpers
 - Use onDispatch in testForm example
-- Fix bug when call dispatch from a child component
 
 # v0.1.0
 
