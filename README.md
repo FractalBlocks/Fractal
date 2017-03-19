@@ -44,7 +44,7 @@ Open a command window into `Fractal` folder and run:
 
 ```bash
 npm i
-npm run dev ./examples/NAME_OF_EXAMPLE
+npm run dev ./src/examples/NAME_OF_EXAMPLE
 ```
 for example:
 
