@@ -1,7 +1,7 @@
 import { run } from '../../core'
 import { viewHandler } from '../../interfaces/view'
 import { styleHandler } from '../../groups/style'
-import { warn, error } from '../../utils/log' // DEV ONLY
+import { onDispatch, warn, error } from '../../utils/log' // DEV ONLY
 import { mergeStates } from '../../utils/reattach' // DEV ONLY
 
 let app = run({
@@ -13,7 +13,8 @@ let app = run({
     view: viewHandler('#app'),
   },
   // DEV ONLY (you can handle it manually)
-  warn,
+  onDispatch,
+  warn, // warn and error can be used for bug reporting
   error,
 })
 

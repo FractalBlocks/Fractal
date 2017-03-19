@@ -41,6 +41,9 @@ let inputs: Inputs = ctx => ({
   $child1_toParent: () => actions.Set(17), // child input detection
   inc: () => actions.Inc(),
   action: ([name, value]) => actions[name](value), // generic action input
+  dispatch: () => {
+    dispatch(ctx, ev(ctx, 'inc'))
+  },
   task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
   wrongTask: (): Task => ['wrongTask', {}],
   executableListWrong: (): Executable[] => [
@@ -71,6 +74,7 @@ let childValue: ValueInterface =
     setFnGenericValue: ev(ctx, 'action', ['Set', 123]),
     toParent: ev(ctx, '$toParent'),
     wrongTask: ev(ctx, 'wrongTask'),
+    dispatch: ev(ctx, 'dispatch'),
     executableListWrong: ev(ctx, 'executableListWrong'),
     executableListTask: ev(ctx, 'executableListTask'),
     executableListAction: ev(ctx, 'executableListAction'),
@@ -387,6 +391,32 @@ describe('One Component + module functionality', function () {
     expect(lastLog).toEqual(error)
   })
 
+  it('should execute onDispatch when dispatch an input', done => {
+    let valueFn
+    let lastValue
+    function onValue(val) {
+      lastValue = val
+      if (valueFn) {
+        valueFn(val)
+      }
+    }
+
+    let app = run({
+      root,
+      interfaces: {
+        value: valueHandler(onValue),
+      },
+      onDispatch: (ctx, ev) => {
+        expect(ctx === app.ctx)
+        expect(ev).toEqual(['Main', 'set', 10, undefined, 'context'])
+        done()
+      },
+    })
+
+    lastValue._dispatch(computeEvent({}, value.set))
+
+  })
+
   it('should delegate warn function', () => {
     let warn = ['child', 'warn 1']
     app.ctx.warn(warn[0], warn[1])
@@ -595,6 +625,15 @@ describe('Component composition', () => {
       done()
     }
     value._dispatch(value.childValue1.inc)
+  })
+
+  it('a child should dispatch his own inputs', done => {
+    let value = lastValue
+    valueFn = value => {
+      expect(value.childValue1.content).toBe('Fractal is awesome!! 2')
+      done()
+    }
+    value._dispatch(value.childValue1.dispatch)
   })
 
   it('parent should react to child events when have an input called $childName_childInputName', done => {

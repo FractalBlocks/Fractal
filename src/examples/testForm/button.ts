@@ -1,4 +1,4 @@
-import { Component, ev } from '../../core'
+import { Component, ev, dispatch } from '../../core'
 import { StyleGroup } from '../../utils/style'
 
 import { ViewInterface } from '../../interfaces/view'
@@ -11,7 +11,11 @@ let view: ViewInterface = (ctx, s) => {
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
-    on: { click: ev(ctx, '$click') },
+    attrs: { tabindex: 0 },
+    on: {
+      click: ev(ctx, '$click'),
+      keypress: ev(ctx, 'keypress', undefined, ['which']),
+    },
   }, [
     <any> s
   ])
@@ -43,6 +47,11 @@ let mDef: Component = {
   },
   inputs: ctx => ({
     $click: () => {},
+    keypress: which => {
+      if (which === 13) {
+        dispatch(ctx, [ctx.id, '$click'])
+      }
+    },
   }),
   actions: {},
   interfaces: {

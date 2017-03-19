@@ -30,7 +30,6 @@ We support use of:
 There are TODOs for short term:
 
 - Improve test suite with isolated tests
-- Logs for state changes (middleware)
 - Router
 - Timetravel debugging
 - Integrate standard linter + trailing commas with tslint

@@ -27,6 +27,8 @@ export interface ModuleDef {
   beforeInit? (mod: ModuleAPI): void
   init? (mod: ModuleAPI): void
   destroy? (mod: ModuleAPI): void
+  // Middleware for inputs
+  onDispatch? (ctx: Context, eventData: EventData): void
   // callbacks (side effects) for log messages
   warn? (source: string, description: string): void
   error? (source: string, description: string): void
@@ -63,6 +65,7 @@ export interface ModuleAPI {
   error (source, description): void
 }
 
+// MiddleFn is used for merge the states on hot-swaping (reattach)
 export interface MiddleFn {
   (ctx: ComponentSpaceIndex, lastComponents: ComponentSpaceIndex): ComponentSpaceIndex
 }
@@ -239,8 +242,11 @@ export function computeEvent(event: any, iData: InputData): EventData {
 }
 
 // dispatch an input based on eventData to the respective component
-export const dispatch = (ctx: Context, eventData: EventData) => {
+// ctx should be the root context
+export const dispatch = (ctxIn: Context, eventData: EventData) => {
   let id = eventData[0]
+  // root component
+  let ctx = ctxIn.components[ctxIn.id.split('$')[0]].ctx
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
     return ctx.error('dispatch', `there are no component space '${id}'`)
@@ -335,22 +341,16 @@ export function notifyInterfaceHandlers (ctx: Context) {
 }
 
 // function for running a root component
-export function run (moduleDefinition: ModuleDef): Module {
+export function run (moduleDef: ModuleDef): Module {
   // internal module state
   // root component
   let component: Component
-  let moduleDef: ModuleDef
   let moduleAPI: ModuleAPI
   // root context
   let ctx: Context
 
   // attach root component
   function attach (comp?: Component, lastComponents?: ComponentSpaceIndex, middleFn?: MiddleFn) {
-    moduleDef = {
-      log: false,
-      logAll: false,
-      ...moduleDefinition,
-    }
     // root component, take account of hot swapping
     component = comp ? comp : moduleDef.root
     let rootName = component.name
@@ -387,7 +387,11 @@ export function run (moduleDefinition: ModuleDef): Module {
     // API for modules
     moduleAPI = {
       // dispatch function type used for handlers
-      dispatch: (eventData: EventData) => dispatch(ctx, eventData),
+      dispatch: moduleDef.onDispatch
+        ? (eventData: EventData) => {
+          dispatch(ctx, eventData)
+          moduleDef.onDispatch(ctx, eventData)
+        } : (eventData: EventData) => dispatch(ctx, eventData),
       dispose,
       reattach,
       // merge a component to the component index
