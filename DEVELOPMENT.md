@@ -29,8 +29,8 @@ We support use of:
 
 There are TODOs for short term:
 
-- Improve test suite with isolated tests
 - Router
+- Improve test suite with isolated tests
 - Timetravel debugging
 - Integrate standard linter + trailing commas with tslint
 - Example of RTC in Fractal
