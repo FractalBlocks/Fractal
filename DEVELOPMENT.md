@@ -30,6 +30,7 @@ We support use of:
 There are TODOs for short term:
 
 - Router
+- Remove Handler type from handler definitions, it should be internal, REASON: DX
 - Improve test suite with isolated tests
 - Timetravel debugging
 - Integrate standard linter + trailing commas with tslint
