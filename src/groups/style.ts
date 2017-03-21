@@ -5,6 +5,10 @@ import { styleGroup } from '../utils/style'
 
 export const styleHandler = (containerName: string, debug = false) => mod => {
   let container = document.createElement('style')
+  // named container
+  if (containerName !== '' && containerName !== undefined) {
+    container.id = containerName
+  }
   document.head.appendChild(container)
   let instance: TypeStyle = createTypeStyle(container)
   let state: any = {

@@ -1,5 +1,10 @@
 # Changes
 
+# v0.2.2
+
+- Fix type of style group handler
+- Fix unused containerName option in style group handler
+
 # v0.2.1
 
 - Fix debugNames and add a debug option to style group handler
