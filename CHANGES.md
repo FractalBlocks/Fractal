@@ -1,5 +1,9 @@
 # Changes
 
+# v0.2.3
+
+- Make style group handler containerName parameter optional
+
 # v0.2.2
 
 - Fix type of style group handler
