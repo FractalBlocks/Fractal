@@ -31,6 +31,8 @@ There are TODOs for short term:
 
 - Router
 - Remove Handler type from handler definitions, it should be internal, REASON: DX
+- Use tape instead of Karma + Jasmine
+- Make an e2e test for Fractal
 - Improve test suite with isolated tests
 - Timetravel debugging
 - Integrate standard linter + trailing commas with tslint
