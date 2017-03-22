@@ -18,7 +18,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 /**
  * Webpack Constants
  */
-const ENV = process.env.ENV = process.env.NODE_ENV = 'test'
+const ENV = process.env.ENV = process.env.NODE_ENV = 'develoment'
 
 /* TODOs:
   - Option for run a single test
