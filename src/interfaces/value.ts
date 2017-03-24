@@ -1,4 +1,4 @@
-import { Context, Handler, HandlerMsg, EventData } from '../core'
+import { Context, ModuleAPI, HandlerMsg, EventData } from '../core'
 
 // this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
 
@@ -12,7 +12,7 @@ export interface ValueInterface {
   (ctx: Context, s): HandlerMsg
 }
 
-export const valueHandler: Handler = (cb: (evRes: ValueResponse) => void) => mod => {
+export const valueHandler = (cb: (evRes: ValueResponse) => void) => (mod: ModuleAPI) => {
   return {
     state: undefined,
     handle(driverMsg) {

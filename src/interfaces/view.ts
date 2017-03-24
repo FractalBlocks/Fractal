@@ -1,4 +1,4 @@
-import { Handler, Context } from '../core'
+import { Context, ModuleAPI } from '../core'
 import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
 import attributesModule from 'snabbdom/modules/attributes'
@@ -12,7 +12,7 @@ export interface View {
   (ctx: Context, s): VNode
 }
 
-export const viewHandler: Handler = selectorElm => mod => {
+export const viewHandler = selectorElm => (mod: ModuleAPI) => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let lastContainer
   let state

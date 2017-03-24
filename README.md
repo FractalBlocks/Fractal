@@ -8,12 +8,12 @@ We believe into more than frameworks, we believe that minimalist and well crafte
 - It is minimal, core logic are less than 400 lines of code and you can see how it works
 - Easy integrable and emmbedable by design
 - A clear and flexible architecture that scales
+- High code quality, we love that!! and helps you to achive it in your proyect :heart:
 - Its clear and concise, all you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
 - Gives you powerful patterns and composing tools that helps to build small and large apps
 - Your code are flexible, composable and reausable. Modularization as a foundation
 - The state is isolated, this mean is serializable and you can hot-swap code updating the UI without reload the navigator
 - You can serialize the whole side effects, this means you can run fractal in a [webworker](https://github.com/fractalPlatform/Fractal/blob/master/examples/worker/index.ts), in a server via websockets or even in a remote browser via WebRTC :')
-- High code quality, we love that!! and help you to achive it in your proyect <3
 - Lazy loading of components
 
 See the [design document](https://github.com/fractalPlatform/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)

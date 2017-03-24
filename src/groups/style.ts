@@ -1,9 +1,10 @@
+import { ModuleAPI } from '../core'
 import { createTypeStyle } from 'typestyle'
 import { TypeStyle } from 'typestyle/lib/internal/typestyle'
 import { styleGroup } from '../utils/style'
 // insert styles in a DOM container at head
 
-export const styleHandler = (containerName?: string, debug = false) => mod => {
+export const styleHandler = (containerName?: string, debug = false) => (mod: ModuleAPI) => {
   let container = document.createElement('style')
   // named container
   if (containerName !== '' && containerName !== undefined) {

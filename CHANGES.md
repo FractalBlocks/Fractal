@@ -1,5 +1,9 @@
 # Changes
 
+# Next
+
+- Remove Handler type from handler definitions, it should be internal, REASON: DX
+
 # v0.2.5
 
 - Change ViewInterface for View in view interface

@@ -1,5 +1,6 @@
 import { ModuleAPI } from './module'
 
+// Not used at all only for code documentation
 export interface Handler {
   (...params): HandlerInterface
 }

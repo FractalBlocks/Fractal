@@ -30,12 +30,10 @@ We support use of:
 There are TODOs for short term:
 
 - Router
-- Remove Handler type from handler definitions, it should be internal, REASON: DX
-- Use tape instead of Karma + Jasmine
-- Make an e2e test for Fractal
-- Improve test suite with isolated tests
 - Timetravel debugging
+- Example of lazy loading
 - Integrate standard linter + trailing commas with tslint
+- Improve test suite with isolated tests
 - Example of RTC in Fractal
 - Split patch and diff in Snabbdom
 - Porting all the drivers and task handlers from fractal.js to handlers in Fractal
