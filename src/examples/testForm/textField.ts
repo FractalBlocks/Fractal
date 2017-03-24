@@ -2,7 +2,7 @@ import { Context, Component, ev } from '../../core'
 import { action } from '../../utils/component'
 import { StyleGroup, placeholderColor } from '../../utils/style'
 
-import { ViewInterface } from '../../interfaces/view'
+import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'TextField'
@@ -33,7 +33,7 @@ let inputs = (ctx: Context) => ({
   action: action(actions),
 })
 
-let view: ViewInterface = (ctx, s) => {
+let view: View = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
     key: ctx.name,

@@ -1,5 +1,11 @@
 # Changes
 
+# v0.2.5
+
+- Change ViewInterface for View in view interface
+- Fix ViewInterface in all examples
+- Add keywords to package.json
+
 # v0.2.4
 
 - Add Actions interface to core

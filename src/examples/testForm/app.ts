@@ -8,7 +8,7 @@ import {
 } from '../../core'
 import { pipe, props, vw, setGroup } from '../../utils/component'
 import { StyleGroup, mergeStyles } from '../../utils/style'
-import { ViewInterface } from '../../interfaces/view'
+import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 import TextField from './textField'
@@ -107,7 +107,7 @@ let inputs: Inputs = ctx => ({
   },
 })
 
-let view: ViewInterface = (ctx, s: Model) => {
+let view: View = (ctx, s: Model) => {
   let style = ctx.groups['style']
   return h('div', {
     key: name,

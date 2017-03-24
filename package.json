@@ -1,9 +1,17 @@
 {
   "name": "fractal-core",
-  "version": "v0.2.4",
+  "version": "v0.2.5",
   "description": "A minimalist and well crafted app, content or component is our conviction",
   "main": "core/index.js",
   "typings": "core/index.d.ts",
+  "keywords": [
+    "craft",
+    "functional-programming",
+    "typescript",
+    "architecture",
+    "frontend",
+    "fractal"
+  ],
   "files": [
     "core/",
     "groups/",

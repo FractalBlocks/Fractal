@@ -8,7 +8,7 @@ import styleModule from 'snabbdom/modules/style'
 import h from 'snabbdom/h'
 import { VNode } from 'snabbdom/vnode'
 
-export interface ViewInterface {
+export interface View {
   (ctx: Context, s): VNode
 }
 

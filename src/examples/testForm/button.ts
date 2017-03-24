@@ -1,12 +1,12 @@
 import { Component, ev, dispatch } from '../../core'
 import { StyleGroup } from '../../utils/style'
 
-import { ViewInterface } from '../../interfaces/view'
+import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'Button'
 
-let view: ViewInterface = (ctx, s) => {
+let view: View = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
     key: ctx.name,

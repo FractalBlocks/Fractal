@@ -3,7 +3,7 @@ import { StyleGroup } from '../../utils/style'
 import { hashMap } from 'mori'
 import { evolve, get } from '../../utils/mori'
 
-import { ViewInterface } from '../../interfaces/view'
+import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'Main'
@@ -22,7 +22,7 @@ let inputs = (ctx: Context) => ({
   inc: () => actions.Inc(),
 })
 
-let view: ViewInterface = (ctx, s) => {
+let view: View = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
     key: get(s, 'key'),
