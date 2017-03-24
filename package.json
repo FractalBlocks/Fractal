@@ -1,6 +1,6 @@
 {
   "name": "fractal-core",
-  "version": "v0.2.3",
+  "version": "v0.2.4",
   "description": "A minimalist and well crafted app, content or component is our conviction",
   "main": "core/index.js",
   "typings": "core/index.d.ts",
@@ -50,7 +50,7 @@
     "source-map-loader": "^0.1.6",
     "ts-helpers": "^1.1.2",
     "tslint": "^4.4.2",
-    "typescript": "^2.2.1-insiders.20170209",
+    "typescript": "^2.3.0-dev.20170323",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0",
     "worker-loader": "^0.7.1"

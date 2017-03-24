@@ -1,4 +1,11 @@
-import { Context, Component, stateOf, clone, execute } from '../../core'
+import {
+  Component,
+  stateOf,
+  clone,
+  execute,
+  Actions,
+  Inputs,
+} from '../../core'
 import { pipe, props, vw, setGroup } from '../../utils/component'
 import { StyleGroup, mergeStyles } from '../../utils/style'
 import { ViewInterface } from '../../interfaces/view'
@@ -72,18 +79,15 @@ let state: Model = {
   correct: 'unknown',
 }
 
-let actions = {
+let actions: Actions = {
   SetCorrect: isCorrect => s => {
     s.correct = isCorrect
     return s
   },
-  Clear: () => s => {
-    s.correct = 'unknown'
-    return s
-  }
+  Clear: () => s => ''
 }
 
-let inputs = (ctx: Context) => ({
+let inputs: Inputs = ctx => ({
   $testBtn_click: () => {
     let result = Object.keys(questions).map((q, idx) => {
       let isCorrect = stateOf(ctx, q).value === answers[idx]

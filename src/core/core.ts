@@ -8,9 +8,7 @@ export interface Component {
   log?: boolean
   logAll?: boolean
   // composition
-  components?: {
-    [name: string]: Component
-  }
+  components?: Components
   // general purpose groups, used for styles
   groups?: {
     [name: string]: Group,
@@ -18,11 +16,9 @@ export interface Component {
   // the changing stuff (AKA variables)
   state?: any
   // dispatchers for actions and tasks
-  inputs: Inputs
+  inputs?: Inputs
   // unique way to change the state
-  actions?: {
-    [name: string]: Action
-  }
+  actions?: Actions
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
   interfaces: {
     [name: string]: Interface
@@ -30,6 +26,10 @@ export interface Component {
   // lifecycle hooks: init, destroy
   init? (ctx: Context): void
   destroy? (ctx: Context): void
+}
+
+export interface Components {
+  [name: string]: Component
 }
 
 export type Group = any
@@ -43,11 +43,15 @@ export interface InputIndex {
 }
 
 export interface Input {
-  (data: any): Update | Task | Executable[] | void
+  (data?: any): Update | Task | Executable[] | void
 }
 
 export interface Action {
-  (data: any): Update
+  (data?: any): Update
+}
+
+export interface Actions {
+  [name: string]: Action
 }
 
 // is the data of an event, refers to some event of a component - Comunications stuff

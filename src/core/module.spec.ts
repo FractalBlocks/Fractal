@@ -278,6 +278,23 @@ describe('One Component + module functionality', function () {
     expect(app.ctx.components['Main'].state === root.state).toBeFalsy()
   })
 
+  it('should work a component with no inputs', () => {
+    let root: Component = {
+      name,
+      state: {},
+      interfaces: {
+        value: childValue,
+      },
+    }
+    let app = run({
+      root,
+      interfaces: {
+        value: emptyHandler,
+      },
+    })
+    expect(app).toBeDefined()
+  })
+
   it('should log an error and notify error callback when module dont have an InterfaceHandler', () => {
     let lastLog
     run({

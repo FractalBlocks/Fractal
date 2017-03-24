@@ -1,5 +1,14 @@
 # Changes
 
+# v0.2.4
+
+- Add Actions interface to core
+- Add Components interface to core
+- Make component inputs optional
+- Make data parameter optional in Input and Action interfaces
+- Add missing types to testForm example
+- Update typescript version
+
 # v0.2.3
 
 - Make style group handler containerName parameter optional
