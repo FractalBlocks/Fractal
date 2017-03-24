@@ -2,7 +2,7 @@
 
 # Next
 
-- Remove Handler type from handler definitions, it should be internal, REASON: DX
+- Remove Handler type from handler definitions, it should be internal, REASON: improve DX
 
 # v0.2.5
 
