@@ -4,7 +4,7 @@
 # <img src="https://github.com/fractalPlatform/Fractal/blob/master/assets/FractalLogo.png">
 We believe into more than frameworks, we believe that minimalist and well crafted software will change the world. Lets build your ideas with elegance and simplicity with Fractal.
 
-## How works?
+## How it works?
 
 - It is minimal, core logic are less than 400 lines of code and you can see how it works
 - Easy integrable and emmbedable by design
