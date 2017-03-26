@@ -212,16 +212,16 @@ export function computeEvent(event: any, iData: InputData): EventData {
     // serialize the whole object
     data = JSON.parse(JSON.stringify(event))
   } else if (event && iData[3] !== undefined) {
-    // have function string
+    // have fetch parameter
     if (iData[3] instanceof Array) {
-      // function string is a path, e.g. ['target', 'value']
+      // fetch parameter is a path, e.g. ['target', 'value']
       let path = iData[3]
       data = event
       for (let i = 0, len = path.length; i < len; i++) {
         data = data[path[i]]
       }
     } else {
-      // function string is only a getter, e.g. 'target'
+      // fetch parameter is only a getter, e.g. 'target'
       data = event[iData[3]]
     }
   }

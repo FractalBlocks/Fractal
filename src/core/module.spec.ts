@@ -62,7 +62,7 @@ let _ = undefined // gap for undefined
 let childValue: ValueInterface =
   (ctx, s) => ({
     tagName: ctx.id,
-    content: 'Fractal is awesome!! ' + s,
+    content: s,
     inc: ev(ctx, 'inc'),
     task: ev(ctx, 'task'),
     set: ev(ctx, 'set', 10),
@@ -71,7 +71,8 @@ let childValue: ValueInterface =
     setFnPath: ev(ctx, 'set', _, ['target', 'value']),
     setFnExtra: ev(ctx, 'setExtra', 5, 'value'),
     setFnGeneric: ev(ctx, 'action', 'Set', 'value'),
-    setFnGenericValue: ev(ctx, 'action', ['Set', 123]),
+    setFnKeys: ev(ctx, 'set', _, [['a', 'b']]),
+    setFnPathKeys: ev(ctx, 'set', _, ['target', ['a', 'b', 'c']]),
     toParent: ev(ctx, '$toParent'),
     wrongTask: ev(ctx, 'wrongTask'),
     dispatch: ev(ctx, 'dispatch'),
@@ -248,7 +249,7 @@ describe('One Component + module functionality', function () {
 
   it('should have initial state', () => {
     expect(lastValue.tagName).toBe('Main')
-    expect(lastValue.content).toBe('Fractal is awesome!! 0')
+    expect(lastValue.content).toBe(0)
   })
 
   it('should call beforeInit hook after initialize a module', () => {
@@ -332,7 +333,7 @@ describe('One Component + module functionality', function () {
 
   it('should react to an input (dispatch function)', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 1')
+      expect(value.content).toBe(1)
       done()
     }
     // extract value and dispatch interface handlers
@@ -342,7 +343,7 @@ describe('One Component + module functionality', function () {
 
   it('should dispatch an input with an extra as argument', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 10')
+      expect(value.content).toBe(10)
       done()
     }
     // extract value and dispatch interface handlers
@@ -350,11 +351,11 @@ describe('One Component + module functionality', function () {
     value._dispatch(computeEvent({}, value.set))
   })
 
-  // function strings for InputData
+  // fetch parameters for InputData
 
-  it('should dispatch an input with a function string * as argument', done => {
+  it('should dispatch an input with a fetch parameter * as argument', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 24')
+      expect(value.content).toBe(24)
       done()
     }
     // extract value and dispatch interface handlers
@@ -362,9 +363,9 @@ describe('One Component + module functionality', function () {
     value._dispatch(computeEvent(24, value.setFnAll))
   })
 
-  it('should dispatch an input with a function string "value" as argument', done => {
+  it('should dispatch an input with a fetch parameter "value" as argument', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 35')
+      expect(value.content).toBe(35)
       done()
     }
     // extract value and dispatch interface handlers
@@ -374,7 +375,7 @@ describe('One Component + module functionality', function () {
 
   it('should dispatch an input with a function path string target.value as argument', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 37')
+      expect(value.content).toBe(37)
       done()
     }
     // extract value and dispatch interface handlers
@@ -382,9 +383,9 @@ describe('One Component + module functionality', function () {
     value._dispatch(computeEvent({ target: { value: 37 } }, value.setFnPath))
   })
 
-  it('should dispatch an input with a function string "value" as argument and an extra argument', done => {
+  it('should dispatch an input with a fetch parameter "value" as argument and an extra argument', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 40')
+      expect(value.content).toBe(40)
       done()
     }
     // extract value and dispatch interface handlers
@@ -392,15 +393,25 @@ describe('One Component + module functionality', function () {
     value._dispatch(computeEvent({ value: 35 }, value.setFnExtra))
   })
 
-  it('should dispatch an input with a function string "value" as argument and an extra argument and value are an empty string', done => {
+  it('should dispatch an input with a fetch parameter "value" as argument and an extra argument and value are an empty string', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! ')
+      expect(value.content).toBe('')
       done()
     }
     // extract value and dispatch interface handlers
     value = lastValue // this catch the scope variable
     value._dispatch(computeEvent({ value: '' }, value.setFnGeneric))
   })
+
+  // it('should return the keys of the event info when dispatch an input with keys in the fetch parameter', done => {
+  //   valueFn = value => {
+  //     expect(value.content).toBe(40)
+  //     done()
+  //   }
+  //   // extract value and dispatch interface handlers
+  //   value = lastValue // this catch the scope variable
+  //   value._dispatch(computeEvent({ value: 35, a: 10, b: 'Fractal' }, value.setFnKeys))
+  // })
 
   it('should put an entry in errorLog when error function is invoked', () => {
     let error = ['child', 'error 1']
@@ -461,7 +472,7 @@ describe('One Component + module functionality', function () {
   it('should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
     app.ctx.components['Main'].state = 1
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 2')
+      expect(value.content).toBe(2)
       expect(taskLog[taskLog.length - 1]).toEqual('info')
       done()
     }
@@ -490,7 +501,7 @@ describe('One Component + module functionality', function () {
 
   it('should dispatch an executable list that contains a task', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 3')
+      expect(value.content).toBe(3)
       expect(taskLog[taskLog.length - 1]).toEqual('info2')
       done()
     }
@@ -499,7 +510,7 @@ describe('One Component + module functionality', function () {
 
   it('should dispatch an executable list that contains an action', done => {
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 4')
+      expect(value.content).toBe(4)
       done()
     }
     value._dispatch(value.executableListAction)
@@ -546,7 +557,7 @@ describe('Component composition', () => {
   let mainValue: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
-      content: 'Fractal is awesome!! ' + s,
+      content: s,
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),
@@ -636,9 +647,9 @@ describe('Component composition', () => {
   it('a child should react to events', done => {
     let value = lastValue
     valueFn = value => {
-      expect(value.childValue1.content).toBe('Fractal is awesome!! 1')
-      expect(value.childValue2.content).toBe('Fractal is awesome!! 0')
-      expect(value.childValue3.content).toBe('Fractal is awesome!! 0')
+      expect(value.childValue1.content).toBe(1)
+      expect(value.childValue2.content).toBe(0)
+      expect(value.childValue3.content).toBe(0)
       done()
     }
     value._dispatch(value.childValue1.inc)
@@ -647,7 +658,7 @@ describe('Component composition', () => {
   it('a child should dispatch his own inputs', done => {
     let value = lastValue
     valueFn = value => {
-      expect(value.childValue1.content).toBe('Fractal is awesome!! 2')
+      expect(value.childValue1.content).toBe(2)
       done()
     }
     value._dispatch(value.childValue1.dispatch)
@@ -656,7 +667,7 @@ describe('Component composition', () => {
   it('parent should react to child events when have an input called $childName_childInputName', done => {
     let value = lastValue
     valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 17')
+      expect(value.content).toBe(17)
       done()
     }
     value._dispatch(value.childValue1.toParent)
@@ -772,7 +783,7 @@ describe('Lifecycle hooks', () => {
   let mainValue: ValueInterface =
     (ctx, s) => ({
       tagName: s.key,
-      content: 'Fractal is awesome!! ' + s,
+      content: s,
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),
@@ -813,9 +824,9 @@ describe('Lifecycle hooks', () => {
       },
     })
     value = lastValue
-    expect(value.childValue1.content).toBe('Fractal is awesome!! 1')
-    expect(value.childValue2.content).toBe('Fractal is awesome!! 1')
-    expect(value.childValue3.content).toBe('Fractal is awesome!! 1')
+    expect(value.childValue1.content).toBe(1)
+    expect(value.childValue2.content).toBe(1)
+    expect(value.childValue3.content).toBe(1)
   })
 
   it('should call destroy in all component tree when dispose the module', () => {
@@ -853,8 +864,8 @@ describe('Hot swapping', () => {
   let mainValueV1: ValueInterface =
     (ctx, s) => ({
       tagName: ctx.name,
-      content: 'Fractal is awesome!! ' + s.count,
-      content2: 'Fractal is awesome!! ' + s.count2,
+      content: s.count,
+      content2: s.count2,
       inc: ev(ctx, 'inc'),
       childValue1: interfaceOf(ctx, 'child1', 'value'),
       childValue2: interfaceOf(ctx, 'child2', 'value'),
@@ -923,9 +934,9 @@ describe('Hot swapping', () => {
     app.moduleAPI.reattach(mainV2)
     value = lastValue
     expect(value.content).toBe('Fractal is awesome V2!! 0 :D')
-    expect(value.childValue1.content).toBe('Fractal is awesome!! 0')
-    expect(value.childValue2.content).toBe('Fractal is awesome!! 0')
-    expect(value.childValue3.content).toBe('Fractal is awesome!! 0')
+    expect(value.childValue1.content).toBe(0)
+    expect(value.childValue2.content).toBe(0)
+    expect(value.childValue3.content).toBe(0)
   })
 
   it('should reattach root component merging the states using ', () => {
@@ -938,8 +949,8 @@ describe('Hot swapping', () => {
     value = lastValue
     value._dispatch(value.inc)
     value = lastValue
-    expect(value.content).toBe('Fractal is awesome!! 1')
-    expect(value.content2).toBe('Fractal is awesome!! 12')
+    expect(value.content).toBe(1)
+    expect(value.content2).toBe(12)
     app.moduleAPI.reattach(mainV2, mergeStates)
     value = lastValue
     expect(value.content).toBe('Fractal is awesome V2!! 1 :D')
