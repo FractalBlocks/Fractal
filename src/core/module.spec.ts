@@ -72,7 +72,7 @@ let childValue: ValueInterface =
     setFnExtra: ev(ctx, 'setExtra', 5, 'value'),
     setFnGeneric: ev(ctx, 'action', 'Set', 'value'),
     setFnKeys: ev(ctx, 'set', _, [['a', 'b']]),
-    setFnPathKeys: ev(ctx, 'set', _, ['target', ['a', 'b', 'c']]),
+    setFnPathKeys: ev(ctx, 'set', _, ['p1', 'p2', ['a', 'b', 'c']]),
     toParent: ev(ctx, '$toParent'),
     wrongTask: ev(ctx, 'wrongTask'),
     dispatch: ev(ctx, 'dispatch'),
@@ -403,15 +403,35 @@ describe('One Component + module functionality', function () {
     value._dispatch(computeEvent({ value: '' }, value.setFnGeneric))
   })
 
-  // it('should return the keys of the event info when dispatch an input with keys in the fetch parameter', done => {
-  //   valueFn = value => {
-  //     expect(value.content).toBe(40)
-  //     done()
-  //   }
-  //   // extract value and dispatch interface handlers
-  //   value = lastValue // this catch the scope variable
-  //   value._dispatch(computeEvent({ value: 35, a: 10, b: 'Fractal' }, value.setFnKeys))
-  // })
+  it('should return the keys of the event info when dispatch an input with keys in the fetch parameter', done => {
+    valueFn = value => {
+      expect(value.content).toEqual({ a: 10, b: 'Fractal' })
+      done()
+    }
+    value = lastValue // this catch the scope variable
+    value._dispatch(computeEvent({ value: 35, a: 10, b: 'Fractal' }, value.setFnKeys))
+  })
+
+  it('should return the keys of the path of event info when dispatch an input with path and keys in the fetch parameter', done => {
+    valueFn = value => {
+      expect(value.content).toEqual({ a: 10, b: 'Fractal', c: 17 })
+      done()
+    }
+    value = lastValue // this catch the scope variable
+    value._dispatch(computeEvent({
+      a: 0,
+      p1: {
+        z: 1,
+        p2: {
+          value: 35,
+          a: 10,
+          b: 'Fractal',
+          c: 17,
+          z: 'WWW',
+        },
+      },
+    }, value.setFnPathKeys))
+  })
 
   it('should put an entry in errorLog when error function is invoked', () => {
     let error = ['child', 'error 1']

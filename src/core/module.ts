@@ -216,9 +216,20 @@ export function computeEvent(event: any, iData: InputData): EventData {
     if (iData[3] instanceof Array) {
       // fetch parameter is a path, e.g. ['target', 'value']
       let path = iData[3]
-      data = event
+      let actual = event
       for (let i = 0, len = path.length; i < len; i++) {
-        data = data[path[i]]
+        if (path[i] instanceof Array) {
+          data = {}
+          let keys = path[i]
+          for (let i = 0, len = keys.length; i < len; i++) {
+            data[keys[i]] = actual[keys[i]]
+          }
+        } else {
+          actual = actual[path[i]]
+        }
+      }
+      if (!data) {
+        data = actual
       }
     } else {
       // fetch parameter is only a getter, e.g. 'target'

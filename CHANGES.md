@@ -1,7 +1,9 @@
 # Changes
 
-# Next
+# v0.3.0
 
+- Add support for multiple key-value fetching in computeEvent
+- Add support for multiple key-value fetching in computeEvent at the end of a path
 - Remove Handler type from handler definitions, it should be internal, REASON: improve DX
 
 # v0.2.5
