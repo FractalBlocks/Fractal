@@ -2,7 +2,7 @@
 
 # v0.3.1
 
-- Add obfuscator helper
+- Add obfuscator helper to style utils
 
 # v0.3.0
 
