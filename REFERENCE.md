@@ -19,6 +19,14 @@ Overview of files, the src/ folder
 - -- event.ts: Executes a callback
 - -- view.ts: Render a Snabbdom view
 - groups/
+- -- style.ts: Style group for attaching styles to components using TypeStyle
 - tasks/
+- utils/
+- -- component.ts: Helpers for composition and building components
+- -- style.ts: Helpers for styling using TypeStyle
+- -- worker.ts: Helper for running Fractal inside workers
+- -- mori.ts: Helpers for mori PDS
+- -- log.ts(DEV): Helpers for logging during development
+- -- reattach.ts(DEV): Helpers for hot-swaping during development
 
 TODO: complete docs
