@@ -13,6 +13,6 @@ runWorker({
      is implemented this way for showing how you can communicate over any workerAPI
      you can run worket.ts in the server via websockets or even remotely in a client via webRTC!!
   */
-  // DEV
+  // DEV ONLY (you can handle it manually)
   ...logFns,
 })
