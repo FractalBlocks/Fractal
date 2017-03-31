@@ -1,5 +1,5 @@
-import { Context, Component, ev } from '../../core'
-import { action } from '../../utils/component'
+import { Context, Component } from '../../core'
+import { action, act } from '../../utils/component'
 import { StyleGroup, placeholderColor } from '../../utils/style'
 
 import { View } from '../../interfaces/view'
@@ -13,6 +13,10 @@ let state = {
   placeholder: '',
   value: '',
 }
+
+let inputs = (ctx: Context) => ({
+  action: action(actions),
+})
 
 let actions = {
   SetError: (error: boolean) => s => {
@@ -29,10 +33,6 @@ let actions = {
   },
 }
 
-let inputs = (ctx: Context) => ({
-  action: action(actions),
-})
-
 let view: View = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
@@ -44,9 +44,9 @@ let view: View = (ctx, s) => {
       attrs: { placeholder: s.placeholder },
       props: { value: s.value },
       on: {
-        keydown: ev(ctx, 'action', 'SetValue', ['target', 'value']),
-        focus: ev(ctx, 'action', ['SetFocus', true]),
-        blur: ev(ctx, 'action', ['SetFocus', false]),
+        keydown: act(ctx, 'SetValue', ['target', 'value']),
+        focus: act(ctx, ['SetFocus', true]),
+        blur: act(ctx, ['SetFocus', false]),
       },
     }, `${s.count}`),
     h('div', {

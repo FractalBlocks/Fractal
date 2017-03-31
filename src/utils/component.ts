@@ -6,6 +6,7 @@ import {
   HandlerMsg,
   interfaceOf,
   Group,
+  ev,
 } from '../core'
 
 // set of helpers for building components
@@ -22,6 +23,11 @@ export const action = (actions: { [name: string]: Action }): Update => ([arg1, a
     value = arg2
   }
   return actions[name](value) // generic action dispatcher
+}
+
+// generic action dispatcher
+export const act = (ctx: Context, context?: any, param?: any) => {
+  ev(ctx, context, param)
 }
 
 // extract view interface, sintax sugar
