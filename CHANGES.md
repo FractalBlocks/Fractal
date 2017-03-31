@@ -1,5 +1,9 @@
 # Changes
 
+# v0.3.1
+
+- Add obfuscator helper
+
 # v0.3.0
 
 - Add support for multiple key-value fetching in computeEvent
