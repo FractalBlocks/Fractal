@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.4.0
+
+- Add act generic action dispatcher to component utils
+
 # v0.3.2
 
 - Fix types of ofuscator, absoluteCenter and placeholderColor helpers
