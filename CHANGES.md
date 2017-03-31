@@ -1,5 +1,9 @@
 # Changes
 
+# v0.3.2
+
+- Fix types of ofuscator, absoluteCenter and placeholderColor helpers
+
 # v0.3.1
 
 - Add obfuscator helper to style utils

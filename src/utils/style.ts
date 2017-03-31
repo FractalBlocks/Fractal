@@ -72,28 +72,30 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
   return mergedGroup
 }
 
-export const placeholderColor = (color: string) => ({
-  '&::-webkit-input-placeholder': { /* Chrome/Opera/Safari */
-    $unique: true,
-    color: color,
-  },
-  '&::-moz-placeholder': { /* Firefox 19+ */
-    $unique: true,
-    color: color,
-  },
-  '&:-ms-input-placeholder': { /* IE 10+ */
-    $unique: true,
-    color: color,
+export const placeholderColor = (color: string): types.NestedCSSProperties => ({
+  $nest: {
+    '&::-webkit-input-placeholder': { /* Chrome/Opera/Safari */
+      $unique: true,
+      color: color,
+    },
+    '&::-moz-placeholder': { /* Firefox 19+ */
+      $unique: true,
+      color: color,
+    },
+    '&:-ms-input-placeholder': { /* IE 10+ */
+      $unique: true,
+      color: color,
+    },
   },
 })
 
-export const absoluteCenter = {
+export const absoluteCenter: types.NestedCSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
 }
 
-export const obfuscator = {
+export const obfuscator: types.NestedCSSProperties = {
   position: 'absolute',
   top: '0px',
   left: '0px',
