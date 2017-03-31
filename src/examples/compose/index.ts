@@ -1,6 +1,6 @@
 import { run } from '../../core'
 import { viewHandler } from '../../interfaces/view'
-import { warn, error } from '../../utils/log' // DEV ONLY
+import { logFns } from '../../utils/log' // DEV ONLY
 import { mergeStates } from '../../utils/reattach' // DEV ONLY
 
 let app = run({
@@ -8,8 +8,8 @@ let app = run({
   interfaces: {
     view: viewHandler('#app'),
   },
-  warn,
-  error,
+  // DEV ONLY (you can handle it manually)
+  ...logFns,
 })
 
 // Hot reload - DEV ONLY

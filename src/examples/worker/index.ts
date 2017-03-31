@@ -1,6 +1,6 @@
 import { runWorker } from '../../utils/worker'
 import { viewHandler } from '../../interfaces/view'
-import { warn, error } from '../../utils/log'
+import { logFns } from '../../utils/log'
 
 // all communicatios are transfered via postMessage
 runWorker({
@@ -13,6 +13,6 @@ runWorker({
      is implemented this way for showing how you can communicate over any workerAPI
      you can run worket.ts in the server via websockets or even remotely in a client via webRTC!!
   */
-  warn,
-  error,
+  // DEV
+  ...logFns,
 })
