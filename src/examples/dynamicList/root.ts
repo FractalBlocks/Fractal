@@ -8,8 +8,7 @@ const name = 'Root'
 
 const state = {
   text: '',
-  safeCount: 0,
-  list: {},
+  list: [],
 }
 
 const inputs: Inputs = ctx => ({
@@ -28,8 +27,7 @@ const actions: Actions = {
     return s
   },
   New: text => s => {
-    s.list[s.safeCount] = text
-    s.safeCount++
+    s.list.push(text)
     return s
   },
   Remove: idx => s => {
@@ -56,12 +54,12 @@ const view: View = (ctx, s) => {
       },
     }),
     h('ul', {class: { [style.list]: true }},
-      Object.keys(s.list).map(
-        idx => h('li', {
+      s.list.map(
+        (item, idx) => h('li', {
           key: idx,
           class: { [style.item]: true },
         }, [
-          <any> s.list[idx],
+          <any> item,
           h('span', {
             class: { [style.remove]: true },
             on: {
