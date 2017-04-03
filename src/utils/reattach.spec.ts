@@ -54,6 +54,16 @@ describe('mergeStates function should merge the states of the lastComponents and
     expect(result.Main.state).toEqual(3)
   })
 
+  it('should replace values if initial state changed and states are objects', () => {
+    let state = {}
+    let modifiedState = { a: 1 }
+    let newState = {}
+    let components = createCompIndex(newState, state)
+    let lastComponents = createCompIndex(modifiedState, state)
+    let result = mergeStates(components, lastComponents)
+    expect(result.Main.state).toEqual({ a: 1 })
+  })
+
   it('should leave values if initial state is unchanged', () => {
     let state = 0
     let modifiedState = 2
@@ -74,6 +84,34 @@ describe('mergeStates function should merge the states of the lastComponents and
     let lastComponents = createCompIndex(modifiedState, state)
     let result = mergeStates(components, lastComponents)
     expect(result.New.state).toEqual(123)
+  })
+
+  it('should merge values if initial state changed, states are complex objects', () => {
+    let state = {
+      list: {},
+      count: 0,
+    }
+    let modifiedState = {
+      list: {
+        1: 'a',
+        2: 'b',
+      },
+      count: 2,
+    }
+    let newState = {
+      list: {},
+      count: 0,
+    }
+    let components = createCompIndex(newState, state)
+    let lastComponents = createCompIndex(modifiedState, state)
+    let result = mergeStates(components, lastComponents)
+    expect(result.Main.state).toEqual({
+      list: {
+        1: 'a',
+        2: 'b',
+      },
+      count: 2,
+    })
   })
 
 })

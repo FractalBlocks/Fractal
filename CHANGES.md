@@ -6,6 +6,10 @@
 
 # v0.5.0
 
+- Fix bug in reattach funtionality
+
+# v0.5.0
+
 - Multiple event data fetching with an array of arrays
 - Covered act helper in utils/components
 - A gap is defined with undefined (optional)

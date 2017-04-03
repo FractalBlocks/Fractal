@@ -25,9 +25,9 @@ export function mergeStates (
       if (lastComp) {
         // if the new component state is an object
         if (typeof newComp.state === 'object') {
-          for (let j = 0, keys = Object.keys(newComp.state), len = keys.length; j < len; j++) {
+          for (let j = 0, keys = Object.keys(lastComp.state), len = keys.length; j < len; j++) {
             // compare old definition and new state deeply, if equal let the modified old state
-            if (deepEqual(newComp.state[keys[j]], lastComp.def.state[keys[i]])) {
+            if (deepEqual(newComp.state[keys[j]], lastComp.def.state[keys[j]])) {
               comps[ids[i]].state[keys[j]] = lastComp.state[keys[j]]
             }
           }
