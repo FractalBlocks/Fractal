@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Add adapters to Component type
 - Use complexList inside manyLists example and add adapter to complexList
 - Document adapters like a way for nesting complex lists (dynamic component trees)
 - Improve the complexList (AKA add more behavior)
