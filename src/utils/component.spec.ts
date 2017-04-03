@@ -1,5 +1,5 @@
 import { Component, run, interfaceOf, clone, ev } from '../core'
-import { action, props, vw, pipe, setGroup, mapToObj, act } from './component'
+import { action, props, vw, pipe, setGroup, mapToObj, act, stateOf, spaceOf } from './component'
 
 describe('Component helpers', () => {
 
@@ -149,6 +149,36 @@ describe('Component helpers', () => {
         a1: 'a2elm',
         a2: 'a3elm',
       })
+    })
+
+  })
+
+  describe('stateOf helper', () => {
+    let ctx = {
+      id: 'id1',
+      components: {
+        id1: {
+          state: {},
+        },
+      },
+    }
+    it('should return the component state from her context', () => {
+      expect(stateOf(<any> ctx)).toBe(ctx.components[ctx.id].state)
+    })
+
+  })
+
+  describe('spaceOf helper', () => {
+    let ctx = {
+      id: 'id1',
+      components: {
+        id1: {
+          state: {},
+        },
+      },
+    }
+    it('should return the component state from her context', () => {
+      expect(spaceOf(<any> ctx)).toBe(ctx.components[ctx.id])
     })
 
   })

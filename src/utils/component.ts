@@ -82,3 +82,11 @@ export function mapToObj (arr: any[], fn: { (idx, value?): KeyValuePair } ): any
   }
   return result
 }
+
+export function stateOf (ctx: Context): any {
+  return ctx.components[ctx.id].state
+}
+
+export function spaceOf (ctx: Context): any {
+  return ctx.components[ctx.id]
+}

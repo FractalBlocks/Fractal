@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.6.1
+
+- Add self component helper
+
 # v0.6.0
 
 - Add global notifier for parent components, use case dynamic lists of components
