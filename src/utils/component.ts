@@ -3,6 +3,7 @@ import {
   Update,
   Component,
   Context,
+  InputData,
   HandlerMsg,
   interfaceOf,
   Group,
@@ -26,8 +27,8 @@ export const action = (actions: { [name: string]: Action }): Update => ([arg1, a
 }
 
 // generic action dispatcher
-export const act = (ctx: Context, context?: any, param?: any) => {
-  ev(ctx, context, param)
+export const act = (ctx: Context, context?: any, param?: any): InputData => {
+  return ev(ctx, 'action', context, param)
 }
 
 // extract view interface, sintax sugar

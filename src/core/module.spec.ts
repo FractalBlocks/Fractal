@@ -73,6 +73,7 @@ let childValue: ValueInterface =
     setFnGeneric: ev(ctx, 'action', 'Set', 'value'),
     setFnKeys: ev(ctx, 'set', _, [['a', 'b']]),
     setFnPathKeys: ev(ctx, 'set', _, ['p1', 'p2', ['a', 'b', 'c']]),
+    setFnPaths: ev(ctx, 'set', _, [['p1', 'z'], ['a'], ['p1', 'p2', ['a', 'b', 'c']]]),
     toParent: ev(ctx, '$toParent'),
     wrongTask: ev(ctx, 'wrongTask'),
     dispatch: ev(ctx, 'dispatch'),
@@ -431,6 +432,31 @@ describe('One Component + module functionality', function () {
         },
       },
     }, value.setFnPathKeys))
+  })
+
+  it('should return multiple paths if there are an array of arrays in the fetch parameter', done => {
+    valueFn = value => {
+      expect(value.content).toEqual([
+        1,
+        0,
+        { a: 10, b: 'Fractal', c: 17 },
+      ])
+      done()
+    }
+    value = lastValue // this catch the scope variable
+    value._dispatch(computeEvent({
+      a: 0,
+      p1: {
+        z: 1,
+        p2: {
+          value: 35,
+          a: 10,
+          b: 'Fractal',
+          c: 17,
+          z: 'WWW',
+        },
+      },
+    }, value.setFnPaths))
   })
 
   it('should put an entry in errorLog when error function is invoked', () => {

@@ -1,5 +1,5 @@
-import { Component, run, interfaceOf, clone } from '../core'
-import { action, props, vw, pipe, setGroup, mapToObj } from './component'
+import { Component, run, interfaceOf, clone, ev } from '../core'
+import { action, props, vw, pipe, setGroup, mapToObj, act } from './component'
 
 describe('Component helpers', () => {
 
@@ -18,6 +18,13 @@ describe('Component helpers', () => {
       expect(actionFn([['a1', 10]])).toEqual(10)
     })
 
+  })
+
+  describe('act function sugar for generic inputs', () => {
+    let ctx = {}
+    it('should return the same as ev without the input name', () => {
+      expect(act(<any> ctx, 's', 'value')).toEqual(ev(<any> ctx, 'action', 's', 'value'))
+    })
   })
 
   describe('pipe function for piping functions', () => {

@@ -12,10 +12,6 @@ import {
   HandlerObject,
 } from './handler'
 
-export interface HandlerInterfaceIndex {
-  [name: string]: HandlerInterface
-}
-
 export interface ModuleDef {
   root: Component
   log?: boolean
@@ -32,6 +28,13 @@ export interface ModuleDef {
   // callbacks (side effects) for log messages
   warn? (source: string, description: string): void
   error? (source: string, description: string): void
+}
+
+// a gap is defined with undefined (optional)
+export const _ = undefined
+
+export interface HandlerInterfaceIndex {
+  [name: string]: HandlerInterface
 }
 
 export interface HandlerObjectIndex {
@@ -205,31 +208,45 @@ export function ev (ctx: Context, inputName: string, context?: any, param?: any)
   }
 }
 
+function computePath (path: any[], event) {
+  let data
+  let actual = event
+  for (let i = 0, len = path.length; i < len; i++) {
+    if (path[i] instanceof Array) {
+      data = {}
+      let keys = path[i]
+      for (let i = 0, len = keys.length; i < len; i++) {
+        data[keys[i]] = actual[keys[i]]
+      }
+    } else {
+      actual = actual[path[i]]
+    }
+  }
+  if (!data) {
+    data = actual
+  }
+  return data
+}
+
 export function computeEvent(event: any, iData: InputData): EventData {
   let data
 
   if (iData[3] === '*') {
-    // serialize the whole object
+    // serialize the whole object (note that DOM events are not serializable, use paths instead)
     data = JSON.parse(JSON.stringify(event))
   } else if (event && iData[3] !== undefined) {
     // have fetch parameter
     if (iData[3] instanceof Array) {
       // fetch parameter is a path, e.g. ['target', 'value']
-      let path = iData[3]
-      let actual = event
-      for (let i = 0, len = path.length; i < len; i++) {
-        if (path[i] instanceof Array) {
-          data = {}
-          let keys = path[i]
-          for (let i = 0, len = keys.length; i < len; i++) {
-            data[keys[i]] = actual[keys[i]]
-          }
-        } else {
-          actual = actual[path[i]]
+      let param = iData[3]
+      if (param[1] && param[1] instanceof Array) {
+        data = []
+        for (let i = 0, len = param.length; i < len; i++) {
+          data[i] = computePath(param[i], event)
         }
-      }
-      if (!data) {
-        data = actual
+      } else {
+        // only one path
+        data = computePath(param, event)
       }
     } else {
       // fetch parameter is only a getter, e.g. 'target'

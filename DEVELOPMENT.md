@@ -29,9 +29,12 @@ We support use of:
 
 There are TODOs for short term:
 
+- Allow use `Actions<typeof state>` for typesafe actions
+- Document `Actions<typeof state>`
+- Refactor examples to make use of typesafe actions
 - Router
-- Timetravel debugging
 - Example of lazy loading
+- Timetravel debugging
 - Integrate standard linter + trailing commas with tslint
 - Improve test suite with isolated tests
 - Example of RTC in Fractal

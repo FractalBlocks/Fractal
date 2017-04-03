@@ -1,8 +1,14 @@
 # Changes
 
-# next
+# Next
 
 - ...
+
+# v0.5.0
+
+- Multiple event data fetching with an array of arrays
+- Covered act helper in utils/components
+- A gap is defined with undefined (optional)
 
 # v0.4.0
 
