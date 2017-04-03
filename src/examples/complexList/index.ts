@@ -1,0 +1,26 @@
+import { run } from '../../core'
+import { viewHandler } from '../../interfaces/view'
+import { styleHandler } from '../../groups/style'
+import { logFns } from '../../utils/log' // DEV ONLY
+import { mergeStates } from '../../utils/reattach' // DEV ONLY
+
+import root from './root'
+
+const app = run({
+  root,
+  groups: {
+    style: styleHandler('app-style'),
+  },
+  interfaces: {
+    view: viewHandler('#app'),
+  },
+  ...logFns,
+})
+
+// Hot reload - DEV ONLY
+if (module.hot) {
+  module.hot.accept('./root', () => {
+    let m = require('./root').default
+    app.moduleAPI.reattach(m, mergeStates)
+  })
+}

@@ -39,6 +39,8 @@ let inputs: Inputs = ctx => ({
   setExtra: ([value, extra]) => actions.Set(value + extra),
   $toParent: () => {},
   $child1_toParent: () => actions.Set(17), // child input detection
+  $$toParentGlobal: () => {},
+  $$_toParentGlobal: () => actions.Set(21), // child input detection
   inc: () => actions.Inc(),
   action: ([name, value]) => actions[name](value), // generic action input
   dispatch: () => {
@@ -75,6 +77,7 @@ let childValue: ValueInterface =
     setFnPathKeys: ev(ctx, 'set', _, ['p1', 'p2', ['a', 'b', 'c']]),
     setFnPaths: ev(ctx, 'set', _, [['p1', 'z'], ['a'], ['p1', 'p2', ['a', 'b', 'c']]]),
     toParent: ev(ctx, '$toParent'),
+    toParentGlobal: ev(ctx, '$$toParentGlobal'),
     wrongTask: ev(ctx, 'wrongTask'),
     dispatch: ev(ctx, 'dispatch'),
     executableListWrong: ev(ctx, 'executableListWrong'),
@@ -708,6 +711,15 @@ describe('Component composition', () => {
       done()
     }
     value._dispatch(value.childValue1.dispatch)
+  })
+
+  it('parent should react to child events when have an global input called $$_childInputName', done => {
+    let value = lastValue
+    valueFn = value => {
+      expect(value.content).toBe(21)
+      done()
+    }
+    value._dispatch(value.childValue1.toParentGlobal)
   })
 
   it('parent should react to child events when have an input called $childName_childInputName', done => {

@@ -1,4 +1,4 @@
-import { Component, ev, dispatch } from '../../core'
+import { Component, ev, dispatch, _ } from '../../core'
 import { StyleGroup } from '../../utils/style'
 
 import { View } from '../../interfaces/view'
@@ -8,13 +8,14 @@ let name = 'Button'
 
 let view: View = (ctx, s) => {
   let style = ctx.groups['style']
+
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
     attrs: { tabindex: 0 },
     on: {
       click: ev(ctx, '$click'),
-      keypress: ev(ctx, 'keypress', undefined, ['which']),
+      keypress: ev(ctx, 'keypress', _, 'which'),
     },
   }, [
     <any> s

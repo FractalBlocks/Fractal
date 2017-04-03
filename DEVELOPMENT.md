@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Improve the complexList (AKA add more behavior)
 - Allow use `Actions<typeof state>` for typesafe actions
 - Document `Actions<typeof state>`
 - Refactor examples to make use of typesafe actions

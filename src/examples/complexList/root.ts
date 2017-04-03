@@ -1,8 +1,10 @@
-import { Component, Actions, Inputs, ev, _ } from '../../core'
-import { action, act } from '../../utils/component'
+import { Component, Actions, Inputs, ev, merge, unmerge, clone } from '../../core'
+import { action, vw, props } from '../../utils/component'
 import { StyleGroup } from '../../utils/style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
+
+import Item from './item'
 
 const name = 'Root'
 
@@ -13,12 +15,21 @@ const state = {
 
 const inputs: Inputs = ctx => ({
   action: action(actions),
-  inputKeyup: ([keyCode, text]) =>
-    keyCode === 13 && text !== ''
-    ? [
-      actions.SetText(''),
-      actions.New(text),
-    ] : actions.SetText(text),
+  inputKeyup: ([idx, [keyCode, text]]) => {
+    if (keyCode === 13 && text !== '') {
+      merge(ctx, idx, props({ text })(clone(Item)))
+      return [
+        actions.SetText(''),
+        actions.New(),
+      ]
+    } else {
+      return actions.SetText(text)
+    }
+  },
+  $$_remove: idx => {
+    unmerge(ctx, idx)
+    return actions.Remove(idx)
+  },
 })
 
 const actions: Actions = {
@@ -26,8 +37,8 @@ const actions: Actions = {
     s.text = text
     return s
   },
-  New: text => s => {
-    s.list.push(text)
+  New: () => s => {
+    s.list.push(s.list.length)
     return s
   },
   Remove: idx => s => {
@@ -47,7 +58,7 @@ const view: View = (ctx, s) => {
       class: { [style.input]: true },
       props: { value: s.text },
       on: {
-        keyup: ev(ctx, 'inputKeyup', _, [
+        keyup: ev(ctx, 'inputKeyup', s.list.length, [
           ['keyCode'],
           ['target', 'value'],
         ]),
@@ -55,18 +66,7 @@ const view: View = (ctx, s) => {
     }),
     h('ul', {class: { [style.list]: true }},
       s.list.map(
-        (item, idx) => h('li', {
-          key: idx,
-          class: { [style.item]: true },
-        }, [
-          <any> item,
-          h('span', {
-            class: { [style.remove]: true },
-            on: {
-              click: act(ctx, ['Remove', idx]),
-            },
-          }, 'remove'),
-        ]),
+        idx => vw(ctx, idx),
       )
     ),
   ])
@@ -97,26 +97,6 @@ const style: StyleGroup = {
   },
   list: {
     width: '400px',
-  },
-  item: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '10px 10px 10px 20px',
-    borderBottom: '1px solid #C1B8B8',
-  },
-  remove: {
-    fontSize: '20px',
-    padding: '3px',
-    borderRadius: '4px',
-    color: 'white',
-    backgroundColor: '#DB4343',
-    cursor: 'pointer',
-    userSelect: 'none',
-    $nest: {
-      '&:hover': {
-        backgroundColor: '#DE3030',
-      },
-    },
   },
 }
 

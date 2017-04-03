@@ -170,12 +170,12 @@ export function mergeAll (ctx: Context, components: { [name: string]: Component 
 
 // remove a component to the component index, if name is not defined dispose the root
 export function unmerge (ctx: Context, name?:  string): void {
-  let id = name ? ctx.id + '$' + name : ctx.id
+  let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
     return ctx.error('unmerge', `there is no component with name '${name}' at component '${ctx.id}'`)
   }
-  if (name) {
+  if (name !== undefined) {
     delete ctx.components[ctx.id].components[name]
   }
   // decomposition
@@ -298,11 +298,22 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
       /* istanbul ignore else */
       if (idParts.length > 1) {
         let parentId = idParts.slice(0, -1).join('$')
-        let childInputName = inputName.slice(1, inputName.length)
-        let parentInput = ctx.components[parentId].inputs[`$${componentSpace.ctx.name}_${childInputName}`]
-        /* istanbul ignore else */
-        if (parentInput) {
-          execute(ctx, parentId, <any> parentInput(data))
+        if (inputName[1] === '$') {
+          // global notifier ($$some), genrally used for lists of components
+          let childInputName = inputName.slice(2, inputName.length)
+          let parentInput = ctx.components[parentId].inputs[`$$_${childInputName}`]
+          /* istanbul ignore else */
+          if (parentInput) {
+            execute(ctx, parentId, <any> parentInput(componentSpace.ctx.name))
+          }
+        } else {
+          // individual parent notifier
+          let childInputName = inputName.slice(1, inputName.length)
+          let parentInput = ctx.components[parentId].inputs[`$${componentSpace.ctx.name}_${childInputName}`]
+          /* istanbul ignore else */
+          if (parentInput) {
+              execute(ctx, parentId, <any> parentInput(data))
+          }
         }
       }
     }

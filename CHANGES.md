@@ -4,7 +4,13 @@
 
 - ...
 
-# v0.5.0
+# v0.6.0
+
+- Add global notifier for parent components, use case dynamic lists of components
+- Fix log utils for displaying when a component is removed
+- Fix bug related to unmerge when name is zero
+
+# v0.5.1
 
 - Fix bug in reattach funtionality
 
