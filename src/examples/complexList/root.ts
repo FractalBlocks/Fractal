@@ -56,6 +56,7 @@ const view: View = (ctx, s) => {
   }, [
     h('input', {
       class: { [style.input]: true },
+      attrs: { placeholder: 'Type and hit enter' },
       props: { value: s.text },
       on: {
         keyup: ev(ctx, 'inputKeyup', s.list.length, [
@@ -102,6 +103,9 @@ const style: StyleGroup = {
 
 const comp: Component = {
   name,
+  defs: {
+    [Item.name]: Item,
+  },
   groups: {
     style,
   },

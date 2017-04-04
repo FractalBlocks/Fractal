@@ -4,6 +4,12 @@
 
 - ...
 
+# v0.6.4
+
+- Fix bug in hot-swaping
+- Add isStatic parameter to merge and mergeAll
+- Add defs to component type for dynamic components
+
 # v0.6.3
 
 - Fix bug with context

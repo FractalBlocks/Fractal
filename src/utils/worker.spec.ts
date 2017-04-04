@@ -206,12 +206,9 @@ describe('Utilities for running fractal inside workers', () => {
     })
   })
 
-  it('should run fractal over a worker API', done => {
-    valueFn = value => {
-      expect(value.tagName).toBe('Main')
-      expect(value.content).toBe('Fractal is awesome!! 0')
-      done()
-    }
+  it('should run fractal over a worker API', () => {
+    expect(lastValue.tagName).toBe('Main')
+    expect(lastValue.content).toBe('Fractal is awesome!! 0')
   })
 
   it('should react to inputs', done => {

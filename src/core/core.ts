@@ -9,6 +9,8 @@ export interface Component {
   logAll?: boolean
   // composition
   components?: Components
+  // child component definitions, used for referencing dynamic components in hot-swaping
+  defs?: Components
   // general purpose groups, used for styles
   groups?: {
     [name: string]: Group,

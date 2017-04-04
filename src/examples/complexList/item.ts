@@ -3,7 +3,7 @@ import { StyleGroup } from '../../utils/style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-const name = 'Root'
+const name = 'Item'
 
 const state = {
   text: '',
@@ -70,3 +70,5 @@ const comp: Component = {
 }
 
 export default comp
+
+// last ----> new

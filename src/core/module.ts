@@ -138,20 +138,12 @@ export function merge (ctx: Context, name: string, component: Component, isStati
 
   // composition
   if (component.components) {
-    mergeAll(childCtx, component.components)
+    mergeAll(childCtx, component.components, isStatic)
   }
 
   if (component.groups) {
     // Groups are handled automatically only when comoponent are initialized
-    let space: HandlerObject
-    for (let i = 0, names = Object.keys(component.groups), len = names.length; i < len; i++) {
-      space = ctx.groupHandlers[names[i]]
-      if (space) {
-        space.handle([childCtx.id, component.groups[names[i]]])
-      } else {
-        ctx.error('merge', `module has no group handler for '${names[i]}' of component '${component.name}' from space '${childCtx.id}'`)
-      }
-    }
+    handleGroups(childCtx, component)
   }
 
   // lifecycle hook: init
@@ -162,10 +154,22 @@ export function merge (ctx: Context, name: string, component: Component, isStati
   return childCtx
 }
 
+function handleGroups (ctx: Context, component: Component) {
+  let space: HandlerObject
+  for (let i = 0, names = Object.keys(component.groups), len = names.length; i < len; i++) {
+    space = ctx.groupHandlers[names[i]]
+    if (space) {
+      space.handle([ctx.id, component.groups[names[i]]])
+    } else {
+      ctx.error('merge', `module has no group handler for '${names[i]}' of component '${component.name}' from space '${ctx.id}'`)
+    }
+  }
+}
+
 // add many components to the component index
-export function mergeAll (ctx: Context, components: { [name: string]: Component }) {
+export function mergeAll (ctx: Context, components: { [name: string]: Component }, isStatic = false) {
   for (let i = 0, names = Object.keys(components), len = names.length; i < len; i++) {
-    merge(ctx, names[i], components[names[i]])
+    merge(ctx, names[i], components[names[i]], isStatic)
   }
 }
 
@@ -470,13 +474,14 @@ export function run (moduleDef: ModuleDef): Module {
       }
     }
     // merges main component and ctx.id now contains it name
-    ctx = merge(ctx, component.name, component)
+    ctx = merge(ctx, component.name, component, true)
     // middle function for hot-swapping
     if (middleFn) {
       ctx.components = middleFn(ctx.components, lastComponents)
-      // replace component in contexts of spaces
       for (let i = 0, ids = Object.keys(ctx.components), len = ids.length; i < len; i++) {
-        ctx.components[ids[i]].ctx.components = ctx.components
+        if (!ctx.components[ids[i]].isStatic) {
+          handleGroups(ctx.components[ids[i]].ctx, ctx.components[ids[i]].def)
+        }
       }
     }
 

@@ -15,7 +15,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     error: () => 0,
   }
 
-  function createCompIndex (state, defState, name = 'Main', isStatic = true): ComponentSpaceIndex {
+  function createCompIndex (state, defState, name = 'Main', defs = {}, isStatic = true): ComponentSpaceIndex {
     return {
       [name]: {
         ctx,
@@ -26,6 +26,7 @@ describe('mergeStates function should merge the states of the lastComponents and
         // component index for dynamic handling (new and dispose)
         def: {
           name,
+          defs,
           state: defState,
           inputs: ctx => ({}),
           actions: {},
@@ -134,7 +135,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     let components = createCompIndex(newState, state)
     let lastComponents = {
       ...createCompIndex(modifiedState, state),
-      ...createCompIndex(state, state, 'Other', false), // dynamic component
+      ...createCompIndex(state, state, 'Main$other', {}, false), // dynamic component
     }
     let result = mergeStates(components, lastComponents)
     // normal behavior
@@ -146,7 +147,7 @@ describe('mergeStates function should merge the states of the lastComponents and
       count: 2,
     })
     // expect to have last components
-    expect(result.Other.state).toEqual({
+    expect(result['Main$other'].state).toEqual({
       list: {},
       count: 0,
     })
