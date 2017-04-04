@@ -66,10 +66,18 @@ export function mergeStates (
         /* istanbul ignore else */
         if (idParts.length > 1) {
           let parentId = idParts.slice(0, -1).join('$')
-          if (components[parentId].def.defs && components[parentId].def.defs[comps[ids[i]].def.name]) {
-            comps[ids[i]].def = components[parentId].def.defs[comps[ids[i]].def.name]
+          if (components[parentId]) {
+            if (components[parentId].def.defs && components[parentId].def.defs[comps[ids[i]].def.name]) {
+              comps[ids[i]].def = components[parentId].def.defs[comps[ids[i]].def.name]
+            } else {
+              ctx.error('mergeStates', `there are no dynamic component definition of ${comps[ids[i]].def.name} (defs) in ${parentId}`)
+            }
           } else {
-            ctx.error('mergeStates', `there are no dynamic component definition of ${comps[ids[i]].def.name} (defs) in ${parentId}`)
+            if (comps[parentId].def.defs && comps[parentId].def.defs[comps[ids[i]].def.name]) {
+              comps[ids[i]].def = comps[parentId].def.defs[comps[ids[i]].def.name]
+            } else {
+              ctx.error('mergeStates', `there are no dynamic component definition of ${comps[ids[i]].def.name} (defs) in ${parentId}`)
+            }
           }
         }
       }

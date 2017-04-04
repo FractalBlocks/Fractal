@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.6.7
+
+- Fix edge case with child components with synamic parents
+
 # v0.6.6
 
 - Fix error with reattach when parent component don't have defs
