@@ -176,6 +176,95 @@ describe('Utilities for running fractal inside workers', () => {
     error: workerLog('error', workerAPI),
   })
 
+  function setup (valueFn, logFn?) {
+    // emulate worker thread API to main
+    let workerAPI: WorkerAPI = {
+      postMessage: data => mainAPI.onmessage({ data }),
+    }
+    // emulate main thread API to worker
+    let mainAPI: WorkerAPI = {
+      postMessage: data => workerAPI.onmessage({ data }),
+    }
+    let groupFn
+    let disposeGroupFn
+    let groupHandler: Handler = () => mod => ({
+      state: undefined,
+      handle: ([id, group]) => {
+        if (groupFn) {
+          mod.setGroup(id, 'group', group)
+          groupFn(group)
+        }
+      },
+      dispose: () => {
+        if (disposeGroupFn) {
+          disposeGroupFn()
+        }
+      },
+    })
+
+    let disposeLogFn
+    let taskLog = []
+
+    let logTask: Handler = log => mod => ({
+      state: undefined,
+      handle: (data: {info: any, cb: EventData}) => {
+        log.push(data.info)
+        mod.dispatch(data.cb)
+      },
+      dispose: () => {
+        if (disposeLogFn) {
+          disposeLogFn()
+        }
+      },
+    })
+
+    let worker = runWorker({
+      worker: mainAPI,
+      groups: {
+        group: groupHandler(),
+      },
+      tasks: {
+        log: logTask(taskLog),
+      },
+      interfaces: {
+        value: valueHandler(v => valueFn(v, taskLog)),
+        // value2: value2Handler(onValue),
+      },
+      warn: logFn,
+      error: logFn,
+    })
+
+    let disposeFn
+    let workerModule = run({
+      root,
+      beforeInit: mod => {
+        workerListener(mod, workerAPI)
+      },
+      destroy: () => {
+        if (disposeFn) {
+          disposeFn()
+        }
+      },
+      groups: {
+        group: workerHandler('group', 'group', workerAPI),
+      },
+      tasks: {
+        log: workerHandler('task', 'log', workerAPI),
+      },
+      interfaces: {
+        value: workerHandler('interface', 'value', workerAPI),
+        value2: workerHandler('interface', 'value2', workerAPI),
+      },
+      warn: workerLog('warn', workerAPI),
+      error: workerLog('error', workerAPI),
+    })
+
+    return {
+      worker,
+      workerModule,
+    }
+  }
+
   it('should merge the space', done => {
     groupFn = group => {
       expect(group).toBe('MainGroup')
@@ -212,12 +301,16 @@ describe('Utilities for running fractal inside workers', () => {
   })
 
   it('should react to inputs', done => {
-    valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 1')
-      done()
-    }
-    // extract value and dispatch interface handlers
-    lastValue._dispatch(lastValue.inc)
+    let count = 0
+    setup(value => {
+      if (count === 1) {
+        expect(value.content).toBe('Fractal is awesome!! 1')
+        done()
+      } else {
+        count++
+        value._dispatch(value.inc)
+      }
+    })
   })
 
   // it('should dispatch tasks', () => {})
@@ -232,24 +325,29 @@ describe('Utilities for running fractal inside workers', () => {
   })
 
   it('should dispatch an executable (action / task) asyncronusly from an event when it return a Task with EventData', done => {
-    valueFn = value => {
-      expect(value.content).toBe('Fractal is awesome!! 2')
-      expect(taskLog[taskLog.length - 1]).toEqual('info')
-      done()
-    }
-    lastValue._dispatch(lastValue.task)
+    let count = 0
+    setup((value, taskLog) => {
+      if (count === 1) {
+        expect(value.content).toBe('Fractal is awesome!! 1')
+        expect(taskLog[taskLog.length - 1]).toEqual('info')
+        done()
+      } else {
+        count++
+        value._dispatch(value.task)
+      }
+    })
   })
 
   it('should log an error when try to dispatch an task that has no task handler', done => {
-    valueFn = undefined
-    logFn = log => {
-      expect(log).toEqual([
+    setup(value => {
+      value._dispatch(value.wrongTask)
+    }, (source, description) => {
+      expect([source, description]).toEqual([
         'execute',
         `there are no task handler for 'wrongTask' in component 'Main' from space 'Main'`,
       ])
       done()
-    }
-    lastValue._dispatch(lastValue.wrongTask)
+    })
   })
 
   it('should merge a component via moduleAPI, UNIMPLEMENTED', done => {

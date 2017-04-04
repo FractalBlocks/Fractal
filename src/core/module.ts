@@ -70,7 +70,11 @@ export interface ModuleAPI {
 
 // MiddleFn is used for merge the states on hot-swaping (reattach)
 export interface MiddleFn {
-  (ctx: ComponentSpaceIndex, lastComponents: ComponentSpaceIndex): ComponentSpaceIndex
+  (
+    ctx: Context,
+    components: ComponentSpaceIndex,
+    lastComponents: ComponentSpaceIndex
+  ): ComponentSpaceIndex
 }
 
 export const handlerTypes = ['interface', 'task', 'group']
@@ -473,11 +477,15 @@ export function run (moduleDef: ModuleDef): Module {
         }
       }
     }
+
     // merges main component and ctx.id now contains it name
     ctx = merge(ctx, component.name, component, true)
+
+    // contextualized dispatch
+
     // middle function for hot-swapping
     if (middleFn) {
-      ctx.components = middleFn(ctx.components, lastComponents)
+      ctx.components = middleFn(ctx, ctx.components, lastComponents)
       for (let i = 0, ids = Object.keys(ctx.components), len = ids.length; i < len; i++) {
         if (!ctx.components[ids[i]].isStatic) {
           handleGroups(ctx.components[ids[i]].ctx, ctx.components[ids[i]].def)

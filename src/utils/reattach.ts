@@ -1,10 +1,11 @@
-import { ComponentSpaceIndex } from '../core'
+import { ComponentSpaceIndex, Context } from '../core'
 import deepEqual = require('deep-equal')
 
 /* this function take an initial state, modified state and new state
   make a plan diff of initial and new. next apply changes to modified
 */
 export function mergeStates (
+  ctx: Context,
   components: ComponentSpaceIndex, // new components
   lastComponents: ComponentSpaceIndex // old components
 ): ComponentSpaceIndex {
@@ -65,7 +66,11 @@ export function mergeStates (
         /* istanbul ignore else */
         if (idParts.length > 1) {
           let parentId = idParts.slice(0, -1).join('$')
-          comps[ids[i]].def = components[parentId].def.defs[comps[ids[i]].def.name]
+          if (components[parentId].def.defs[comps[ids[i]].def.name]) {
+            comps[ids[i]].def = components[parentId].def.defs[comps[ids[i]].def.name]
+          } else {
+            ctx.error('mergeStates', `there are no dynamic component definition of ${comps[ids[i]].def.name} (defs) in ${parentId}`)
+          }
         }
       }
     }

@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.6.5
+
+- Add error when component defs of a parent does not have definition of a dynamic component
+
 # v0.6.4
 
 - Fix bug in hot-swaping

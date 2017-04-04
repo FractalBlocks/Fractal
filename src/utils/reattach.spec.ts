@@ -42,7 +42,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     let newState = { a: 10, b: 0 }
     let components = createCompIndex(newState, state)
     let lastComponents = createCompIndex(modifiedState, state)
-    let result = mergeStates(components, lastComponents)
+    let result = mergeStates(<any> {}, components, lastComponents)
     expect(result.Main.state).toEqual({ a: 10, b: 3 })
   })
 
@@ -52,7 +52,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     let newState = 3
     let components = createCompIndex(newState, state)
     let lastComponents = createCompIndex(modifiedState, state)
-    let result = mergeStates(components, lastComponents)
+    let result = mergeStates(<any> {}, components, lastComponents)
     expect(result.Main.state).toEqual(3)
   })
 
@@ -62,7 +62,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     let newState = {}
     let components = createCompIndex(newState, state)
     let lastComponents = createCompIndex(modifiedState, state)
-    let result = mergeStates(components, lastComponents)
+    let result = mergeStates(<any> {}, components, lastComponents)
     expect(result.Main.state).toEqual({ a: 1 })
   })
 
@@ -72,7 +72,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     let newState = 0
     let components = createCompIndex(newState, state)
     let lastComponents = createCompIndex(modifiedState, state)
-    let result = mergeStates(components, lastComponents)
+    let result = mergeStates(<any> {}, components, lastComponents)
     expect(result.Main.state).toEqual(2)
   })
 
@@ -84,7 +84,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     let componentsAux = createCompIndex(123, 123)
     components.New = componentsAux.Main
     let lastComponents = createCompIndex(modifiedState, state)
-    let result = mergeStates(components, lastComponents)
+    let result = mergeStates(<any> {}, components, lastComponents)
     expect(result.New.state).toEqual(123)
   })
 
@@ -106,7 +106,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     }
     let components = createCompIndex(newState, state)
     let lastComponents = createCompIndex(modifiedState, state)
-    let result = mergeStates(components, lastComponents)
+    let result = mergeStates(<any> {}, components, lastComponents)
     expect(result.Main.state).toEqual({
       list: {
         1: 'a',
@@ -132,12 +132,13 @@ describe('mergeStates function should merge the states of the lastComponents and
       list: {},
       count: 0,
     }
-    let components = createCompIndex(newState, state)
+    let dynamic = createCompIndex(state, state, 'Main$other', {}, false)
+    let components = createCompIndex(newState, state, 'Main', { 'Main$other': dynamic['Main$other'].def })
     let lastComponents = {
-      ...createCompIndex(modifiedState, state),
-      ...createCompIndex(state, state, 'Main$other', {}, false), // dynamic component
+      ...createCompIndex(modifiedState, state, 'Main'),
+      ...dynamic, // dynamic component
     }
-    let result = mergeStates(components, lastComponents)
+    let result = mergeStates(<any> {}, components, lastComponents)
     // normal behavior
     expect(result.Main.state).toEqual({
       list: {
@@ -151,6 +152,36 @@ describe('mergeStates function should merge the states of the lastComponents and
       list: {},
       count: 0,
     })
+  })
+
+  it('should dispatch an error when component defs of a parent does not have definition of a dynamic component', done => {
+    let state = {
+      list: {},
+      count: 0,
+    }
+    let modifiedState = {
+      list: {
+        1: 'a',
+        2: 'b',
+      },
+      count: 2,
+    }
+    let newState = {
+      list: {},
+      count: 0,
+    }
+    let dynamic = createCompIndex(state, state, 'Main$other', {}, false)
+    let components = createCompIndex(newState, state, 'Main', {})
+    let lastComponents = {
+      ...createCompIndex(modifiedState, state, 'Main'),
+      ...dynamic, // dynamic component
+    }
+    let error = (source, description) => {
+      expect(source).toEqual('mergeStates')
+      expect(description).toEqual('there are no dynamic component definition of Main$other (defs) in Main')
+      done()
+    }
+    mergeStates(<any> { error }, components, lastComponents)
   })
 
 })
