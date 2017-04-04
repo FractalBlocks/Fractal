@@ -474,6 +474,10 @@ export function run (moduleDef: ModuleDef): Module {
     // middle function for hot-swapping
     if (middleFn) {
       ctx.components = middleFn(ctx.components, lastComponents)
+      // replace component in contexts of spaces
+      for (let i = 0, ids = Object.keys(ctx.components), len = ids.length; i < len; i++) {
+        ctx.components[ids[i]].ctx.components = ctx.components
+      }
     }
 
     // pass initial value to each Interface Handler

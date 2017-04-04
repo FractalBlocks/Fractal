@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.6.3
+
+- Fix bug with context
+
 # v0.6.2
 
 - Add isStatic META property
