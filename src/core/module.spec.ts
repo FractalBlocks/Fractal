@@ -164,6 +164,11 @@ describe('Context functions', function () {
     expect(ctx.components[`Main$child`]).toBeDefined()
   })
 
+  it('should merge a component to context (merge) and mark it as dynamic', () => {
+    merge(rootCtx, 'childDynamic', root, false)
+    expect(ctx.components[`Main$childDynamic`]).toBeDefined()
+  })
+
   it('should overwrite a component if has the same name and log a warning', () => {
     ctx.components[`Main$child`].state = 17
     merge(rootCtx, 'child', root)

@@ -113,7 +113,7 @@ export function interfaceOf (ctx: Context, name: string, interfaceName: string):
 }
 
 // add a component to the component index
-export function merge (ctx: Context, name: string, component: Component): Context {
+export function merge (ctx: Context, name: string, component: Component, isStatic = false): Context {
   // namespaced name if is a child
   let id = ctx.id === '' ? name : ctx.id + '$' + name
   if (ctx.components[id]) {
@@ -128,6 +128,7 @@ export function merge (ctx: Context, name: string, component: Component): Contex
 
   ctx.components[id] = {
     ctx: childCtx,
+    isStatic,
     // if state is an object, it is cloned
     state: typeof component.state === 'object' ? clone(component.state) : component.state,
     inputs: component.inputs ? component.inputs(childCtx) : {},

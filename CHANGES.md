@@ -4,6 +4,11 @@
 
 - ...
 
+# v0.6.2
+
+- Add isStatic META property
+- Fix bug related to hot-swaping when dynamic modules are involved
+
 # v0.6.1
 
 - Add self component helper

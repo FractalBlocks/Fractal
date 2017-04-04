@@ -141,6 +141,8 @@ export interface ComponentSpaceIndex {
 // contextualized space in the component index
 export interface ComponentSpace {
   ctx: Context
+  // META: is statically composed?
+  isStatic: boolean
   state: any
   inputs: InputIndex
   // component index for dynamic handling (new and dispose)

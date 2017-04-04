@@ -11,7 +11,16 @@ export function mergeStates (
 
   let comps: ComponentSpaceIndex = {}
 
-  for (let i = 0, ids = Object.keys(components), len = ids.length; i < len; i++) {
+  let ids = Object.keys(components)
+
+  // add dynamic components to mergeable components
+  for (let i = 0, lastIds = Object.keys(lastComponents), len = lastIds.length; i < len; i++) {
+    if (!lastComponents[lastIds[i]].isStatic) {
+      ids.push(lastIds[i])
+    }
+  }
+
+  for (let i = 0, len = ids.length; i < len; i++) {
     let newComp = components[ids[i]]
     let lastComp = lastComponents[ids[i]]
 
@@ -19,7 +28,6 @@ export function mergeStates (
     comps[ids[i]] = newComp
 
     // if the component still existing
-    /* istanbul ignore else */
     if (newComp) {
       // if not is a new state of a component
       if (lastComp) {
@@ -37,6 +45,12 @@ export function mergeStates (
             comps[ids[i]].state = lastComp.state
           }
         }
+      }
+    } else { // newComp not defined
+      /* istanbul ignore else */
+      if (!lastComp.isStatic) {
+        // add dynamic components
+        comps[ids[i]] = lastComp
       }
     }
   }
