@@ -211,6 +211,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
           break
         }
       case 'dispose':
+        /* istanbul ignore else */
         if (def.destroy) {
           def.destroy(moduleAPI)
           /* istanbul ignore next */

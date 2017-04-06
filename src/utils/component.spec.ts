@@ -1,5 +1,5 @@
 import { Component, run, interfaceOf, clone, ev } from '../core'
-import { action, props, vw, pipe, setGroup, mapToObj, act, stateOf, spaceOf } from './component'
+import { action, props, vw, pipe, setGroup, mapToObj, act, stateOf, spaceOf, sendMsg, toChild } from './component'
 
 describe('Component helpers', () => {
 
@@ -133,14 +133,71 @@ describe('Component helpers', () => {
         i1: () => 112,
       },
     }
-    let module = run({
+    let app = run({
       root: comp,
       interfaces: {},
     })
 
     it ('should be the same to use vw and interfaceOf functions', () => {
-      let interfaceObj = vw(module.ctx.components['MyComp'].ctx, 'child')
-      expect(interfaceObj).toEqual(interfaceOf(module.ctx.components['MyComp'].ctx, 'child', 'view'))
+      let interfaceObj = vw(app.ctx.components['MyComp'].ctx, 'child')
+      expect(interfaceObj).toEqual(interfaceOf(app.ctx.components['MyComp'].ctx, 'child', 'view'))
+    })
+
+  })
+
+  describe('send messages to an input of a component from its parent and from outside the module', () => {
+    let childData
+    let app
+
+    beforeEach(() => {
+      childData = undefined
+      let Child: Component = {
+        name: 'Child',
+        state: {
+          count: 0,
+          data: 10,
+        },
+        inputs: ctx => ({
+          childInput: data => {
+            childData = data
+          },
+        }),
+        actions: {},
+        interfaces: {
+          i1: () => 112,
+        },
+      }
+      let comp: Component = {
+        name: 'MyComp',
+        components: {
+          Child,
+        },
+        state: {
+          count: 0,
+          data: 10,
+        },
+        inputs: ctx => ({}),
+        actions: {},
+        interfaces: {
+          i1: () => 112,
+        },
+      }
+      app = run({
+        root: comp,
+        interfaces: {},
+      })
+    })
+
+    it ('should send a message to a child component from the parent correctly', () => {
+      let data = 129
+      toChild(app.ctx.components['MyComp'].ctx, 'Child', 'childInput', data)
+      expect(childData).toEqual(data)
+    })
+
+    it ('should send a message to a component from outside the module correctly', () => {
+      let data = 129
+      sendMsg(app, 'MyComp$Child', 'childInput', data)
+      expect(childData).toEqual(data)
     })
 
   })

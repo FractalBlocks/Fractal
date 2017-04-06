@@ -8,6 +8,9 @@ import {
   interfaceOf,
   Group,
   ev,
+  execute,
+  Module,
+  Executable,
 } from '../core'
 
 // set of helpers for building components
@@ -38,6 +41,20 @@ export const act = (ctx: Context, context?: any, param?: any): InputData => {
 // extract view interface, sintax sugar
 export function vw (ctx: Context, componentName: string): HandlerMsg {
   return interfaceOf(ctx, componentName, 'view')
+}
+
+// send a message to an input of a component from outside a Module
+export function sendMsg (mod: Module, id, inputName, msg) {
+  let ctx = mod.ctx
+  let inputResult = <Executable | Executable[]> ctx.components[id].inputs[inputName](msg)
+  execute(ctx, id, inputResult)
+}
+
+// send a message to an input of a component from its parent
+export function toChild (ctx: Context, name, inputName, msg) {
+  let childId = ctx.id + '$' + name
+  let inputResult = <Executable | Executable[]> ctx.components[childId].inputs[inputName](msg)
+  execute(ctx, childId, inputResult)
 }
 
 // -- Functions for manipulating components

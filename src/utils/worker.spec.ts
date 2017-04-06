@@ -422,14 +422,6 @@ describe('Utilities for running fractal inside workers', () => {
   })
 
   it('should call destroy hook when dispose a module and dispose it', done => {
-    disposeFn = () => {
-      done()
-    }
-    worker.moduleAPI.dispose()
-  })
-
-  it('should call destroy hook when dispose a module and dispose it', done => {
-
     let worker = runWorker({
       worker: mainAPI,
       groups: {
