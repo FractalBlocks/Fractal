@@ -4,7 +4,6 @@ import {
   Context,
   run,
   merge,
-  stateOf,
   interfaceOf,
   ev,
   Executable,

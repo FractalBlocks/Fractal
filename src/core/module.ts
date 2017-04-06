@@ -96,11 +96,6 @@ export function createContext (ctx: Context, name: string): Context {
   }
 }
 
-// gets the state from a certain component
-export function stateOf (ctx, name) {
-  return ctx.components[`${ctx.id}$${name}`].state
-}
-
 // gets an interface message from a certain component
 export function interfaceOf (ctx: Context, name: string, interfaceName: string): any {
   let id = `${ctx.id}$${name}`

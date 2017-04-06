@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.7.2
+
+- Remove core/stateOf duplicated method
+
 # v0.7.1
 
 - Fix bug with notifyHandlers
