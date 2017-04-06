@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.6.8
+
+- Add fetch value option for generic inputs
+
 # v0.6.7
 
 - Fix edge case with child components with synamic parents

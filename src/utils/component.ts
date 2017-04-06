@@ -19,6 +19,10 @@ export const action = (actions: { [name: string]: Action }): Update => ([arg1, a
   if (arg1 instanceof Array) {
     name = arg1[0]
     value = arg1[1]
+    if (arg2 !== undefined) {
+      // add fetch value
+      value = [value, arg2]
+    }
   } else {
     name = arg1
     value = arg2

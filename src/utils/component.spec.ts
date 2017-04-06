@@ -18,6 +18,10 @@ describe('Component helpers', () => {
       expect(actionFn([['a1', 10]])).toEqual(10)
     })
 
+    it('should accept an action-contextValue pair as first argument and a fetch value in the second', () => {
+      expect(actionFn([['a1', 10], 7])).toEqual([10, 7])
+    })
+
   })
 
   describe('act function sugar for generic inputs', () => {
