@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.7.1
+
+- Fix bug with notifyHandlers
+
 # v0.7.0
 
 - Add sendMsg and toChild function to component helpers for better messaging

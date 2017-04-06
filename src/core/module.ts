@@ -331,7 +331,10 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
   }
 }
 
-export function execute (ctx: Context, id: string, executable: Executable | Executable[]) {
+export function execute (ctxIn: Context, id: string, executable: Executable | Executable[]) {
+  let rootId = ctxIn.id.split('$')[0]
+  // Obtain root context
+  let ctx = ctxIn.components[rootId].ctx
   let componentSpace = ctx.components[id]
 
   if (typeof executable === 'function') {
