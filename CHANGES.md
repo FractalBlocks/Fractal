@@ -4,6 +4,10 @@
 
 - ...
 
+# v0.7.3
+
+- Fix broken stuff after removing core/stateOf
+
 # v0.7.2
 
 - Remove core/stateOf duplicated method

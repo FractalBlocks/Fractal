@@ -178,14 +178,8 @@ describe('Context functions', function () {
       .toEqual(['merge', `component 'Main' has overwritten component space 'Main$child'`])
   })
 
-  let state
-
-  it('should get the state from a certain component (stateOf)', () => {
-    state = stateOf(rootCtx, 'child')
-    expect(state).toEqual(0)
-  })
-
   it('should get an interface message from a certain component (interfaceOf)', () => {
+    let state = rootCtx.components[rootCtx.id + '$child'].state
     expect(interfaceOf(rootCtx, 'child', 'value')).toEqual(childValue(createContext(rootCtx, 'child'), state))
   })
 
