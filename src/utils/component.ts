@@ -104,6 +104,7 @@ export function mapToObj (arr: any[], fn: { (idx, value?): KeyValuePair } ): any
   return result
 }
 
+// TODO: fix broken API, for traversing childs
 export function stateOf (ctx: Context): any {
   return ctx.components[ctx.id].state
 }

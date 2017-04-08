@@ -1,4 +1,5 @@
-import { Component, stateOf, interfaceOf } from '../../core'
+import { Component, interfaceOf } from '../../core'
+// import { stateOf } from '../../utils/component'
 import { StyleGroup } from '../../utils/style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
@@ -22,7 +23,8 @@ let view: View = (ctx, s) => {
     h('div', {
       class: { [style.childCount]: true },
     }, [
-      stateOf(ctx, 'counter').count,
+      // TODO: fix broken API, for traversing childs
+      // stateOf(ctx, 'counter').count,
     ]),
     interfaceOf(ctx, 'counter', 'view'),
   ])
