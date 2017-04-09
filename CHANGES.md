@@ -3,7 +3,10 @@
 # Next
 
 - Asyncronous handling of groups, Fix styles in worker example
-- Improve implementation of child -> parent communication, achive better performance
+
+# v0.7.5
+
+- Improve implementation of child -> parent communication via toParent for better performance and clarity
 
 # v0.7.4
 

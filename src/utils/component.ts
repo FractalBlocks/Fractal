@@ -44,17 +44,38 @@ export function vw (ctx: Context, componentName: string): HandlerMsg {
 }
 
 // send a message to an input of a component from outside a Module
-export function sendMsg (mod: Module, id, inputName, msg) {
+export function sendMsg (mod: Module, id: string, inputName: string, msg) {
   let ctx = mod.ctx
   let inputResult = <Executable | Executable[]> ctx.components[id].inputs[inputName](msg)
   execute(ctx, id, inputResult)
 }
 
 // send a message to an input of a component from its parent
-export function toChild (ctx: Context, name, inputName, msg) {
+export function toChild (ctx: Context, name: string, inputName: string, msg) {
   let childId = ctx.id + '$' + name
   let inputResult = <Executable | Executable[]> ctx.components[childId].inputs[inputName](msg)
   execute(ctx, childId, inputResult)
+}
+
+// send a message to an input of a component from its parent
+export function toParent (ctx: Context, inputName: string, msg, unique = false) {
+  let outMsg
+  let parts = ctx.id.split('$')
+  if (parts.length === 1) {
+    return
+  }
+  let inputParent
+  let name = parts.splice(parts.length - 1, 1)[0]
+  let parentId = parts.join('$')
+  if (unique) {
+    inputParent = `$$${ctx.components[ctx.id].def.name}_${inputName}`
+    outMsg = [name, msg]
+  } else {
+    inputParent = `$${name}_${inputName}`
+    outMsg = msg
+  }
+  let inputResult = <Executable | Executable[]> ctx.components[parentId].inputs[inputParent](outMsg)
+  execute(ctx, parentId, inputResult)
 }
 
 // -- Functions for manipulating components

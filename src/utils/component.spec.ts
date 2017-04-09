@@ -1,5 +1,18 @@
 import { Component, run, interfaceOf, clone, ev } from '../core'
-import { action, props, vw, pipe, setGroup, mapToObj, act, stateOf, spaceOf, sendMsg, toChild } from './component'
+import {
+  action,
+  props,
+  vw,
+  pipe,
+  setGroup,
+  mapToObj,
+  act,
+  stateOf,
+  spaceOf,
+  sendMsg,
+  toChild,
+  toParent,
+} from './component'
 
 describe('Component helpers', () => {
 
@@ -147,10 +160,15 @@ describe('Component helpers', () => {
 
   describe('send messages to an input of a component from its parent and from outside the module', () => {
     let childData
+    let parentData
+    let parentDataUnique
     let app
 
     beforeEach(() => {
       childData = undefined
+      parentData = undefined
+      parentDataUnique = undefined
+
       let Child: Component = {
         name: 'Child',
         state: {
@@ -170,13 +188,20 @@ describe('Component helpers', () => {
       let comp: Component = {
         name: 'MyComp',
         components: {
-          Child,
+          child: Child,
         },
         state: {
           count: 0,
           data: 10,
         },
-        inputs: ctx => ({}),
+        inputs: ctx => ({
+          $child_inputName: data => {
+            parentData = data
+          },
+          $$Child_remove: data => {
+            parentDataUnique = data
+          },
+        }),
         actions: {},
         interfaces: {
           i1: () => 112,
@@ -188,16 +213,34 @@ describe('Component helpers', () => {
       })
     })
 
-    it ('should send a message to a child component from the parent correctly', () => {
-      let data = 129
-      toChild(app.ctx.components['MyComp'].ctx, 'Child', 'childInput', data)
+    it ('should send a message to a component from outside the module correctly', () => {
+      let data = 119
+      sendMsg(app, 'MyComp$child', 'childInput', data)
       expect(childData).toEqual(data)
     })
 
-    it ('should send a message to a component from outside the module correctly', () => {
+    it ('should send a message to a child component from the parent correctly', () => {
       let data = 129
-      sendMsg(app, 'MyComp$Child', 'childInput', data)
+      toChild(app.ctx.components['MyComp'].ctx, 'child', 'childInput', data)
       expect(childData).toEqual(data)
+    })
+
+    it ('should send a message the parent component from a child component', () => {
+      let data = 121
+      toParent(app.ctx.components['MyComp$child'].ctx, 'inputName', data)
+      expect(parentData).toEqual(data)
+    })
+
+    it ('should send a message to the parent component from a child component in a unique way', () => {
+      let data = 127
+      toParent(app.ctx.components['MyComp$child'].ctx, 'remove', data, true)
+      expect(parentDataUnique).toEqual(['child', data])
+    })
+
+    it ('should not send a message to the parent component from a child component if child is root component', () => {
+      let data = 131
+      toParent(app.ctx.components['MyComp'].ctx, 'inputName', data)
+      expect(parentDataUnique).toEqual(undefined)
     })
 
   })
