@@ -1,5 +1,5 @@
 import { Component, interfaceOf } from '../../core'
-// import { stateOf } from '../../utils/component'
+import { stateOf } from '../../utils/component'
 import { StyleGroup } from '../../utils/style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
@@ -10,9 +10,7 @@ let components = {
   counter: require('./counter').default,
 }
 
-let state = ({key}) => ({
-  key,
-})
+let state = {}
 
 let view: View = (ctx, s) => {
   let style = ctx.groups['style']
@@ -23,8 +21,7 @@ let view: View = (ctx, s) => {
     h('div', {
       class: { [style.childCount]: true },
     }, [
-      // TODO: fix broken API, for traversing childs
-      // stateOf(ctx, 'counter').count,
+      stateOf(ctx, 'counter').count,
     ]),
     interfaceOf(ctx, 'counter', 'view'),
   ])

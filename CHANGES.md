@@ -3,11 +3,13 @@
 # Next
 
 - Asyncronous handling of groups, Fix styles in worker example
+- Improve implementation of child -> parent communication, achive better performance
 
 # v0.7.4
 
 - Add stateOf name parameter for fixing API
-- Improve implementation of child -> parent communication, achive better performance
+- Add clickable style helper
+- Improve update examples
 
 # v0.7.3
 

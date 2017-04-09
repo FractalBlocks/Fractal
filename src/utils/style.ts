@@ -95,6 +95,12 @@ export const absoluteCenter: types.NestedCSSProperties = {
   justifyContent: 'center',
 }
 
+export const clickable: types.NestedCSSProperties = {
+  cursor: 'pointer',
+  userSelect: 'none',
+  '-moz-user-select': 'none',
+}
+
 export const obfuscator: types.NestedCSSProperties = {
   position: 'absolute',
   top: '0px',

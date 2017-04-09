@@ -1,12 +1,11 @@
 import {
   Component,
-  stateOf,
   clone,
   execute,
   Actions,
   Inputs,
 } from '../../core'
-import { pipe, props, vw, setGroup } from '../../utils/component'
+import { pipe, props, vw, setGroup, stateOf } from '../../utils/component'
 import { StyleGroup, mergeStyles } from '../../utils/style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'

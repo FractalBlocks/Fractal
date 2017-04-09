@@ -1,15 +1,14 @@
 import { Context, Component, ev } from '../../core'
-import { StyleGroup } from '../../utils/style'
+import { StyleGroup, clickable } from '../../utils/style'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
 let name = 'Counter'
 
-let state = ({key}) => ({
-  key,
+let state = {
   count: 0,
-})
+}
 
 let actions = {
   Set: (count: number) => state => {
@@ -68,12 +67,14 @@ let style: StyleGroup = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    ...clickable,
   },
   reset: {
     padding: '4px',
     color: 'white',
     fontSize: '18px',
     backgroundColor: '#E53B3B',
+    ...clickable,
   },
 }
 

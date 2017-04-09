@@ -4,8 +4,8 @@ import { workerHandler, workerLog, workerListener } from '../../utils/worker'
 let app = run({
   root: require('./app').default,
   beforeInit: workerListener,
-  tasks: {
-    style: workerHandler('task', 'style'),
+  groups: {
+    style: workerHandler('group', 'style'),
   },
   interfaces: {
     view: workerHandler('interface', 'view'),
