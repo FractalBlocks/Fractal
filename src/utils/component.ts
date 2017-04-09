@@ -74,7 +74,14 @@ export function toParent (ctx: Context, inputName: string, msg, unique = false) 
     inputParent = `$${name}_${inputName}`
     outMsg = msg
   }
-  let inputResult = <Executable | Executable[]> ctx.components[parentId].inputs[inputParent](outMsg)
+  let input = ctx.components[parentId].inputs[inputParent]
+  if (!input) {
+    return ctx.error(
+      'toParent',
+      `there are no '${inputParent}' input in parent '${parentId}' as expected by '${ctx.id}'`
+    )
+  }
+  let inputResult = <Executable | Executable[]> input(outMsg)
   execute(ctx, parentId, inputResult)
 }
 

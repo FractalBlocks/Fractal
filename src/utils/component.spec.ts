@@ -162,12 +162,14 @@ describe('Component helpers', () => {
     let childData
     let parentData
     let parentDataUnique
+    let lastError
     let app
 
     beforeEach(() => {
       childData = undefined
       parentData = undefined
       parentDataUnique = undefined
+      lastError = undefined
 
       let Child: Component = {
         name: 'Child',
@@ -210,6 +212,7 @@ describe('Component helpers', () => {
       app = run({
         root: comp,
         interfaces: {},
+        error: (source, description) => lastError = [source, description],
       })
     })
 
@@ -241,6 +244,15 @@ describe('Component helpers', () => {
       let data = 131
       toParent(app.ctx.components['MyComp'].ctx, 'inputName', data)
       expect(parentDataUnique).toEqual(undefined)
+    })
+
+    it ('should log an error if there are no input in parent', () => {
+      let data = 331
+      toParent(app.ctx.components['MyComp$child'].ctx, 'inputNameWrong', data)
+      expect(lastError).toEqual([
+        'toParent',
+        `there are no '$child_inputNameWrong' input in parent 'MyComp' as expected by 'MyComp$child'`
+      ])
     })
 
   })

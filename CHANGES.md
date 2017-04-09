@@ -4,6 +4,10 @@
 
 - Asyncronous handling of groups, Fix styles in worker example
 
+# v0.7.6
+
+- toParent helper log an error when a parent does not handle child messages
+
 # v0.7.5
 
 - Improve implementation of child -> parent communication via toParent for better performance and clarity
