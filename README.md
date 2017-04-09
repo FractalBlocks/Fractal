@@ -46,8 +46,10 @@ The examples you can run are:
 - simple
 - compose
 - mori: Fractal using mori.js for persistent data structures (PDS)
-- worker: Fractal running in a worker! :D
 - testForm
+- dynamicList
+- complexList
+- worker: Fractal running in a worker! :D (refactor in progress, broken until next relase)
 
 Open a command window into `Fractal` folder and run:
 
