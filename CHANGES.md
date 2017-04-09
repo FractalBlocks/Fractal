@@ -2,7 +2,7 @@
 
 # Next
 
-- ...
+- Asyncronous handling of groups, Fix styles in worker example
 
 # v0.7.4
 
