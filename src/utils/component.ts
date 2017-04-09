@@ -105,8 +105,18 @@ export function mapToObj (arr: any[], fn: { (idx, value?): KeyValuePair } ): any
 }
 
 // TODO: fix broken API, for traversing childs
-export function stateOf (ctx: Context): any {
-  return ctx.components[ctx.id].state
+export function stateOf (ctx: Context, name?: string): any {
+  let id = name ? ctx.id + '$' + name : ctx.id
+  let space = ctx.components[id]
+  if (space) {
+    return space.state
+  } else {
+    ctx.error('stateOf',
+      name
+      ? `there are no child '${name}' in space '${ctx.id}'`
+      : `there are no space '${id}'`
+    )
+  }
 }
 
 export function spaceOf (ctx: Context): any {

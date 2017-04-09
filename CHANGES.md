@@ -4,6 +4,11 @@
 
 - ...
 
+# v0.7.4
+
+- Add stateOf name parameter for fixing API
+- Improve implementation of child -> parent communication, achive better performance
+
 # v0.7.3
 
 - Fix broken stuff after removing core/stateOf

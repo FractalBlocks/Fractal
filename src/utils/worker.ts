@@ -56,8 +56,8 @@ export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
         /* istanbul ignore next */
         break
       case 'dispose':
-        _self.postMessage(['dispose'])
         mod.dispose()
+        _self.postMessage(['dispose'])
         /* istanbul ignore next */
         break
       case 'merge':
