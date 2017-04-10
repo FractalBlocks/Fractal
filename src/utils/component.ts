@@ -51,13 +51,21 @@ export function sendMsg (mod: Module, id: string, inputName: string, msg) {
 }
 
 // send a message to an input of a component from its parent
+// TODO: log error when input doesn't exist
 export function toChild (ctx: Context, name: string, inputName: string, msg) {
   let childId = ctx.id + '$' + name
-  let inputResult = <Executable | Executable[]> ctx.components[childId].inputs[inputName](msg)
+  let input = ctx.components[childId].inputs[inputName]
+  if (!input) {
+    return ctx.error(
+      'toChild',
+      `there are no '${inputName}' input in '${childId}' as expected by '${ctx.id}'`
+    )
+  }
+  let inputResult = <Executable | Executable[]> input(msg)
   execute(ctx, childId, inputResult)
 }
 
-// send a message to an input of a component from its parent
+// send a message to an input of a component from its child
 export function toParent (ctx: Context, inputName: string, msg, unique = false) {
   let outMsg
   let parts = ctx.id.split('$')
@@ -83,6 +91,20 @@ export function toParent (ctx: Context, inputName: string, msg, unique = false) 
   }
   let inputResult = <Executable | Executable[]> input(outMsg)
   execute(ctx, parentId, inputResult)
+}
+
+// send a message to an input of a component from its child
+export function toIt (ctx: Context, inputName: string, msg) {
+  let id = ctx.id
+  let input = ctx.components[id].inputs[inputName]
+  if (!input) {
+    return ctx.error(
+      'toIt',
+      `there are no '${inputName}' input in '${id}' as expected by itself`
+    )
+  }
+  let inputResult = <Executable | Executable[]> input(msg)
+  execute(ctx, id, inputResult)
 }
 
 // -- Functions for manipulating components

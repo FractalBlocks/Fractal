@@ -1,6 +1,6 @@
 import { Component, Actions, Inputs, ev, merge, unmerge, clone } from '../../core'
-import { action, vw, props } from '../../utils/component'
-import { StyleGroup } from '../../utils/style'
+import { action, vw, props, toChild, stateOf } from '../../utils/component'
+import { StyleGroup, clickable } from '../../utils/style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
@@ -26,7 +26,19 @@ const inputs: Inputs = ctx => ({
       return actions.SetText(text)
     }
   },
-  $$_remove: idx => {
+  setCheckAll: (checked: boolean) => {
+    let list = stateOf(ctx).list
+    for (let i = 0, len = list.length; i < len; i++) {
+      toChild(ctx, <any> i, 'action', ['SetChecked', checked])
+    }
+  },
+  removeChecked: () => {
+    let list = stateOf(ctx).list
+    for (let i = 0, len = list.length; i < len; i++) {
+      toIt(ctx, <any> i, 'action', ['SetChecked', checked])
+    }
+  },
+  $$Item_remove: ([idx]) => {
     unmerge(ctx, idx)
     return actions.Remove(idx)
   },
@@ -65,6 +77,20 @@ const view: View = (ctx, s) => {
         ]),
       },
     }),
+    h('div', {class: { [style.menuBar]: true }}, [
+      h('div', {
+        class: { [style.menuItem]: true },
+        on: { click: ev(ctx, 'setCheckAll', true) },
+      }, 'check all'),
+      h('div', {
+        class: { [style.menuItem]: true },
+        on: { click: ev(ctx, 'setCheckAll', false) },
+      }, 'uncheck all'),
+      h('div', {
+        class: { [style.menuItem]: true },
+        on: { click: ev(ctx, 'removeChecked') },
+      }, 'remove checked'),
+    ]),
     h('ul', {class: { [style.list]: true }},
       s.list.map(
         idx => vw(ctx, idx),
@@ -93,6 +119,23 @@ const style: StyleGroup = {
     $nest: {
       '&:focus': {
         outline: '2px solid #13A513',
+      },
+    },
+  },
+  menuBar: {
+    padding: '5px',
+    display: 'flex',
+  },
+  menuItem: {
+    margin: '5px',
+    fontSize: '16px',
+    borderRadius: '4px',
+    textDecoration: 'underline',
+    color: '#565656',
+    ...clickable,
+    $nest: {
+      '&:hover': {
+        backgroundColor: '#c3c6c3',
       },
     },
   },

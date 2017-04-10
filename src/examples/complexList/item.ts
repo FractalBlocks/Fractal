@@ -1,4 +1,5 @@
-import { Component, Actions, Inputs, ev } from '../../core'
+import { Component, Actions, Inputs, ev, _ } from '../../core'
+import { toParent, action, act } from '../../utils/component'
 import { StyleGroup } from '../../utils/style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
@@ -6,14 +7,22 @@ import h from 'snabbdom/h'
 const name = 'Item'
 
 const state = {
+  checked: false,
   text: '',
 }
 
 const inputs: Inputs = ctx => ({
-    $$remove: () => {},
+  action: action(actions),
+  $$remove: () => {
+    toParent(ctx, 'remove', _, true)
+  },
 })
 
 const actions: Actions = {
+  SetChecked: checked => s => {
+    s.checked = checked
+    return s
+  },
 }
 
 const view: View = (ctx, s) => {
@@ -23,6 +32,16 @@ const view: View = (ctx, s) => {
     key: ctx.name,
     class: { [style.base]: true },
   }, [
+    h('input', {
+      class: { [style.checkbox]: true },
+      props: {
+        type: 'checkbox',
+        checked: s.checked,
+      },
+      on: {
+        change: act(ctx, 'SetChecked', ['target', 'checked']),
+      },
+    }),
     <any> s.text,
     h('span', {
       class: { [style.remove]: true },
@@ -40,6 +59,7 @@ const style: StyleGroup = {
     padding: '10px 10px 10px 20px',
     borderBottom: '1px solid #C1B8B8',
   },
+  checkbox: {},
   remove: {
     fontSize: '20px',
     padding: '3px',

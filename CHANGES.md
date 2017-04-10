@@ -4,9 +4,14 @@
 
 - Asyncronous handling of groups, Fix styles in worker example
 
+# v0.7.7
+
+- Add toIt helper for sending messages to the same component
+- toChild log an error when child does not have the input
+
 # v0.7.6
 
-- toParent helper log an error when a parent does not handle child messages
+- toParent helper log an error when parent does not handle child messages
 
 # v0.7.5
 
