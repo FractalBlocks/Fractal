@@ -3,6 +3,8 @@
 # Next
 
 - Asyncronous handling of groups, Fix styles in worker example
+- Create Id type that can be Number | String, for avoid using <any> in dynamic components
+- Allow use `Actions<typeof state>` for typesafe actions
 
 # v0.7.7
 

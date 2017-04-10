@@ -1,5 +1,5 @@
 import { Component, Actions, Inputs, ev, merge, unmerge, clone } from '../../core'
-import { action, vw, props, toChild, stateOf } from '../../utils/component'
+import { action, vw, props, toChild, stateOf, toIt } from '../../utils/component'
 import { StyleGroup, clickable } from '../../utils/style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
@@ -10,7 +10,8 @@ const name = 'Root'
 
 const state = {
   text: '',
-  list: [],
+  numItems: 0,
+  items: {},
 }
 
 const inputs: Inputs = ctx => ({
@@ -27,15 +28,17 @@ const inputs: Inputs = ctx => ({
     }
   },
   setCheckAll: (checked: boolean) => {
-    let list = stateOf(ctx).list
-    for (let i = 0, len = list.length; i < len; i++) {
-      toChild(ctx, <any> i, 'action', ['SetChecked', checked])
+    let items = stateOf(ctx).items
+    for (let i = 0, keys = Object.keys(items), len = keys.length; i < len; i++) {
+      toChild(ctx, <any> keys[i], 'action', ['SetChecked', checked])
     }
   },
   removeChecked: () => {
-    let list = stateOf(ctx).list
-    for (let i = 0, len = list.length; i < len; i++) {
-      toIt(ctx, <any> i, 'action', ['SetChecked', checked])
+    let items = stateOf(ctx).items
+    for (let i = 0, keys = Object.keys(items), len = keys.length; i < len; i++) {
+      if (stateOf(ctx, <any>  keys[i]).checked) {
+        toIt(ctx, '$$Item_remove', [keys[i]])
+      }
     }
   },
   $$Item_remove: ([idx]) => {
@@ -50,11 +53,12 @@ const actions: Actions = {
     return s
   },
   New: () => s => {
-    s.list.push(s.list.length)
+    s.items[s.numItems] = s.numItems
+    s.numItems++
     return s
   },
   Remove: idx => s => {
-    delete s.list[idx]
+    delete s.items[idx]
     return s
   },
 }
@@ -71,7 +75,7 @@ const view: View = (ctx, s) => {
       attrs: { placeholder: 'Type and hit enter' },
       props: { value: s.text },
       on: {
-        keyup: ev(ctx, 'inputKeyup', s.list.length, [
+        keyup: ev(ctx, 'inputKeyup', s.numItems, [
           ['keyCode'],
           ['target', 'value'],
         ]),
@@ -92,7 +96,7 @@ const view: View = (ctx, s) => {
       }, 'remove checked'),
     ]),
     h('ul', {class: { [style.list]: true }},
-      s.list.map(
+      Object.keys(s.items).map(
         idx => vw(ctx, idx),
       )
     ),
@@ -128,6 +132,7 @@ const style: StyleGroup = {
   },
   menuItem: {
     margin: '5px',
+    padding: '3px 5px',
     fontSize: '16px',
     borderRadius: '4px',
     textDecoration: 'underline',
