@@ -17,12 +17,12 @@ let actions = {
   Inc: () => evolve('count', x => x + 1),
 }
 
-let inputs = (ctx: Context) => ({
+let inputs = (ctx: Context<any>) => ({
   set: n => actions.Set(n),
   inc: () => actions.Inc(),
 })
 
-let view: View = (ctx, s) => {
+let view: View<any> = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
     key: get(s, 'key'),
@@ -73,7 +73,7 @@ let style: StyleGroup = {
     ...clickable,
   },
 }
-let mDef: Component = {
+let mDef: Component<any> = {
   name,
   groups: {
     style,

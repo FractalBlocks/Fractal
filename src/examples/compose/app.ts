@@ -10,9 +10,11 @@ let components = {
   counter: require('./counter').default,
 }
 
-let state = {}
+export const state = {}
 
-let view: View = (ctx, s) => {
+export type S = typeof state
+
+let view: View<S> = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
     key: name,
@@ -41,7 +43,7 @@ let style: StyleGroup = {
   },
 }
 
-let mDef: Component = {
+let mDef: Component<S> = {
   name,
   groups: {
     style,

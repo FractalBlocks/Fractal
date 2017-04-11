@@ -8,13 +8,15 @@ import Item from './item'
 
 const name = 'Root'
 
-const state = {
+export const state = {
   text: '',
   numItems: 0,
   items: {},
 }
 
-const inputs: Inputs = ctx => ({
+export type S = typeof state
+
+const inputs: Inputs<S> = ctx => ({
   action: action(actions),
   inputKeyup: ([idx, [keyCode, text]]) => {
     if (keyCode === 13 && text !== '') {
@@ -30,13 +32,13 @@ const inputs: Inputs = ctx => ({
   setCheckAll: (checked: boolean) => {
     let items = stateOf(ctx).items
     for (let i = 0, keys = Object.keys(items), len = keys.length; i < len; i++) {
-      toChild(ctx, <any> keys[i], 'action', ['SetChecked', checked])
+      toChild(ctx, keys[i], 'action', ['SetChecked', checked])
     }
   },
   removeChecked: () => {
     let items = stateOf(ctx).items
     for (let i = 0, keys = Object.keys(items), len = keys.length; i < len; i++) {
-      if (stateOf(ctx, <any>  keys[i]).checked) {
+      if (stateOf(ctx,  keys[i]).checked) {
         toIt(ctx, '$$Item_remove', [keys[i]])
       }
     }
@@ -47,7 +49,7 @@ const inputs: Inputs = ctx => ({
   },
 })
 
-const actions: Actions = {
+const actions: Actions<S> = {
   SetText: text => s => {
     s.text = text
     return s
@@ -63,7 +65,7 @@ const actions: Actions = {
   },
 }
 
-const view: View = (ctx, s) => {
+const view: View<S> = (ctx, s) => {
   let style = ctx.groups.style
 
   return h('div', {
@@ -149,7 +151,7 @@ const style: StyleGroup = {
   },
 }
 
-const comp: Component = {
+const comp: Component<S> = {
   name,
   defs: {
     [Item.name]: Item,

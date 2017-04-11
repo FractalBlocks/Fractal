@@ -3,7 +3,7 @@ import { mergeStates } from './reattach'
 
 describe('mergeStates function should merge the states of the lastComponents and the context', () => {
 
-  let ctx: Context = {
+  let ctx: Context<any> = {
     id: '',
     name,
     groups: {},
@@ -15,7 +15,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     error: () => 0,
   }
 
-  function createCompIndex (state, defState, name = 'Main', defs = {}, isStatic = true): ComponentSpaceIndex {
+  function createCompIndex (state, defState, name = 'Main', defs = {}, isStatic = true): ComponentSpaceIndex<any> {
     return {
       [name]: {
         ctx,

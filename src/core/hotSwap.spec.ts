@@ -4,7 +4,7 @@ import { mergeStates } from '../utils/reattach'
 
 describe('Hot swaping functionality', () => {
 
-  function setup (root: Component, interfaceCb, groupCb?, logCb?): Module {
+  function setup (root: Component<any>, interfaceCb, groupCb?, logCb?): Module {
     return run({
       root,
       groups: {
@@ -18,7 +18,7 @@ describe('Hot swaping functionality', () => {
     })
   }
 
-  let SubChild: Component = {
+  let SubChild: Component<any> = {
     name: 'SubChild',
     groups: {
       value: 'subchild',
@@ -28,7 +28,7 @@ describe('Hot swaping functionality', () => {
     },
   }
 
-  let Child: Component = {
+  let Child: Component<any> = {
     name: 'Child',
     defs: {
       SubChild,
@@ -44,7 +44,7 @@ describe('Hot swaping functionality', () => {
     },
   }
 
-  let Comp: Component = {
+  let Comp: Component<any> = {
     name: 'Main',
     defs: {
       Child,
@@ -60,7 +60,7 @@ describe('Hot swaping functionality', () => {
     },
   }
 
-  let SubChildV2: Component = {
+  let SubChildV2: Component<any> = {
     name: 'SubChild',
     groups: {
       value: 'subchildV2',
@@ -70,7 +70,7 @@ describe('Hot swaping functionality', () => {
     },
   }
 
-  let ChildV2: Component = {
+  let ChildV2: Component<any> = {
     name: 'Child',
     defs: {
       SubChild: SubChildV2,
@@ -86,7 +86,7 @@ describe('Hot swaping functionality', () => {
     },
   }
 
-  let CompV2: Component = {
+  let CompV2: Component<any> = {
     name: 'Main',
     defs: {
       Child: ChildV2,
@@ -121,7 +121,7 @@ describe('Hot swaping functionality', () => {
   })
 
   it('should dispatch an error when dynamic component dont references (refs) child components', done => {
-    let Child: Component = {
+    let Child: Component<any> = {
       name: 'Child',
       components: {
         subChild: SubChild,
@@ -133,7 +133,7 @@ describe('Hot swaping functionality', () => {
         value: (ctx, s) => ({ value: '17' }),
       },
     }
-    let Comp: Component = {
+    let Comp: Component<any> = {
       name: 'Main',
       defs: {
         Child,
@@ -158,7 +158,7 @@ describe('Hot swaping functionality', () => {
 
     merge(app.ctx, '0', Child)
 
-    let ChildV2: Component = {
+    let ChildV2: Component<any> = {
       name: 'Child',
       components: {
         subChild: SubChildV2,
@@ -171,7 +171,7 @@ describe('Hot swaping functionality', () => {
       },
     }
 
-    let CompV2: Component = {
+    let CompV2: Component<any> = {
       name: 'Main',
       defs: {
         Child: ChildV2,

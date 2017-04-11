@@ -1,59 +1,61 @@
 import { HandlerMsg } from './handler'
 import { HandlerObject } from './handler'
 
-export interface Component {
+export type Identifier = number | string
+
+export interface Component<S> {
   // component name, used for debugging
-  name: string
+  name: Identifier
   // log all
   log?: boolean
   logAll?: boolean
   // composition
-  components?: Components
+  components?: Components<any>
   // child component definitions, used for referencing dynamic components in hot-swaping
-  defs?: Components
+  defs?: Components<any>
   // general purpose groups, used for styles
   groups?: {
     [name: string]: Group,
   },
   // the changing stuff (AKA variables)
-  state?: any
+  state?: S
   // dispatchers for actions and tasks
-  inputs?: Inputs
+  inputs?: Inputs<S>
   // unique way to change the state
-  actions?: Actions
+  actions?: Actions<S>
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
   interfaces: {
-    [name: string]: Interface
+    [name: string]: Interface<S>
   }
   // lifecycle hooks: init, destroy
-  init? (ctx: Context): void
-  destroy? (ctx: Context): void
+  init? (ctx: Context<S>): void
+  destroy? (ctx: Context<S>): void
 }
 
-export interface Components {
-  [name: string]: Component
+export interface Components<S> {
+  [name: string]: Component<S>
 }
 
 export type Group = any
 
-export interface Inputs {
-  (ctx: Context): InputIndex
+export interface Inputs<S> {
+  (ctx: Context<S>): InputIndex<S>
 }
 
-export interface InputIndex {
-  [name: string]: Input
+export interface InputIndex<S> {
+  [name: string]: Input<S>
 }
 
-export interface Input {
-  (data?: any): Update | Task | Executable[] | void
+export interface Input<S> {
+  (data?: any): Update<S> | Task | Executable<S>[] | void
 }
 
-export interface Action {
-  (data?: any): Update
+export interface Action<S> {
+  (data?: any): Update<S>
 }
 
-export interface Actions {
-  [name: string]: Action
+export interface Actions<S> {
+  [name: string]: Action<S>
 }
 
 // is the data of an event, refers to some event of a component - Comunications stuff
@@ -62,7 +64,7 @@ export interface Actions {
   - 'other': which means, serialize the 'other' attribute of the event object
 */
 export interface InputData extends Array<any> {
-  0: string // component index identifier
+  0: Identifier // component index identifier
   1: string // input name
   2?: any // context parameter
   3?: any // a param function string / value is optional
@@ -70,7 +72,7 @@ export interface InputData extends Array<any> {
 
 // event data comes from an interface / task handler as a result of processing InputData - Comunications stuff
 export interface EventData extends Array<any> {
-  0: string // component index identifier
+  0: Identifier // component index identifier
   1: string // input name
   2?: any // context parameter from InputData (contextual)
   3?: any // data from an interface / task handler ( result of function or value )
@@ -92,12 +94,12 @@ export interface EventData extends Array<any> {
  The objective of this flow is allow handlers to be excecuted in workers or even remotely o.O
  */
 
-export interface Update {
-  (state: any): any
+export interface Update<S> {
+  (state: S): S
 }
 
-export interface Interface {
-  (ctx: Context, state): HandlerMsg
+export interface Interface<S> {
+  (ctx: Context<S>, state: S): HandlerMsg
 }
 
 // a task executes some kind of side effect (output) - Comunications stuff
@@ -107,17 +109,17 @@ export interface Task extends Array<any> {
 }
 
 // describes an excecution context
-export interface Context {
+export interface Context<S> {
   // name for that component in the index
-  id: string
+  id: Identifier
   // sintax sugar: the name is the last part of the id (e.g. the id is Main$child the name is child)
-  name: string
+  name: Identifier
   // groups of the component (related to a component space)
   groups: {
     [name: string]: Group,
   },
   // global component index
-  components: ComponentSpaceIndex
+  components: ComponentSpaceIndex<S>
   groupHandlers: {
     [name: string]: HandlerObject
   }
@@ -136,25 +138,25 @@ export interface Context {
   }
 }
 
-export interface ComponentSpaceIndex {
-  [id: string]: ComponentSpace
+export interface ComponentSpaceIndex<S> {
+  [id: string]: ComponentSpace<S>
 }
 
 // contextualized space in the component index
-export interface ComponentSpace {
-  ctx: Context
+export interface ComponentSpace<S> {
+  ctx: Context<S>
   // META: is statically composed?
   isStatic: boolean
   state: any
-  inputs: InputIndex
+  inputs: InputIndex<S>
   // component index for dynamic handling (new and dispose)
   components: {
     [name: string]: true
   }
-  def: Component
+  def: Component<S>
 }
 
-export type Executable = Update | Task
+export type Executable<S> = Update<S> | Task
 
 export interface CtxInterface {
   state: HandlerMsg

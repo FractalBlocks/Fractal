@@ -3,8 +3,12 @@
 # Next
 
 - Asyncronous handling of groups, Fix styles in worker example
+
+# v1.0.0 :rose:
+
+- Allow use `Actions<typeof state>` for typesafe actions (BREAKING CHANGE)
 - Create Id type that can be Number | String, for avoid using <any> in dynamic components
-- Allow use `Actions<typeof state>` for typesafe actions
+- Update examples
 
 # v0.7.7
 

@@ -6,26 +6,28 @@ import h from 'snabbdom/h'
 
 const name = 'Item'
 
-const state = {
+export const state = {
   checked: false,
   text: '',
 }
 
-const inputs: Inputs = ctx => ({
+export type S = typeof state
+
+const inputs: Inputs<S> = ctx => ({
   action: action(actions),
   $$remove: () => {
     toParent(ctx, 'remove', _, true)
   },
 })
 
-const actions: Actions = {
+const actions: Actions<S> = {
   SetChecked: checked => s => {
     s.checked = checked
     return s
   },
 }
 
-const view: View = (ctx, s) => {
+const view: View<S> = (ctx, s) => {
   let style = ctx.groups.style
 
   return h('li', {
@@ -76,7 +78,7 @@ const style: StyleGroup = {
   },
 }
 
-const comp: Component = {
+const comp: Component<S> = {
   name,
   groups: {
     style,
@@ -90,5 +92,3 @@ const comp: Component = {
 }
 
 export default comp
-
-// last ----> new

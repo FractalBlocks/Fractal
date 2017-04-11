@@ -6,7 +6,11 @@ import h from 'snabbdom/h'
 
 let name = 'Button'
 
-let view: View = (ctx, s) => {
+export const state = ''
+
+export type S = string
+
+let view: View<S> = (ctx, s) => {
   let style = ctx.groups['style']
 
   return h('div', {
@@ -40,9 +44,9 @@ const style: StyleGroup = {
   },
 }
 
-let mDef: Component = {
+let mDef: Component<S> = {
   name,
-  state: '',
+  state,
   groups: {
     style,
   },

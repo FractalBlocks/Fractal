@@ -28,12 +28,14 @@ let name = 'Main'
 
 let state = 0
 
+type S = typeof state
+
 let actions = {
   Set: (count: number) => () => count,
   Inc: () => s => s + 1,
 }
 
-let inputs: Inputs = ctx => ({
+let inputs: Inputs<S> = ctx => ({
   set: (n: number) => actions.Set(n),
   setExtra: ([value, extra]) => actions.Set(value + extra),
   $toParent: () => {},
@@ -47,13 +49,13 @@ let inputs: Inputs = ctx => ({
   },
   task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
   wrongTask: (): Task => ['wrongTask', {}],
-  executableListWrong: (): Executable[] => [
+  executableListWrong: (): Executable<S>[] => [
     ['wrongTask2', {}],
   ],
-  executableListTask: (): Executable[] => [
+  executableListTask: (): Executable<S>[] => [
     ['log', { info: 'info2', cb: ev(ctx, 'inc') }],
   ],
-  executableListAction: (): Executable[] => [
+  executableListAction: (): Executable<S>[] => [
     actions.Inc(),
   ],
 })
@@ -84,7 +86,7 @@ let childValue: ValueInterface =
     executableListAction: ev(ctx, 'executableListAction'),
   })
 
-let root: Component = {
+let root: Component<S> = {
   name,
   state,
   inputs,
@@ -104,7 +106,7 @@ describe('Context functions', function () {
 
   let lastLog
 
-  let rootCtx: Context = {
+  let rootCtx: Context<S> = {
     id: 'Main',
     name: 'Main',
     groups: {},
@@ -121,7 +123,7 @@ describe('Context functions', function () {
     },
   }
 
-  let ctx: Context
+  let ctx: Context<S>
   it('should create a child context (createContext)', () => {
     ctx = createContext(rootCtx, 'child')
     expect(ctx).toBeDefined()
@@ -263,7 +265,7 @@ describe('One Component + module functionality', function () {
   })
 
   it('should clone the state when merge a component if is an object', () => {
-    let root: Component = {
+    let root: Component<any> = {
       name,
       state: {},
       inputs,
@@ -282,7 +284,7 @@ describe('One Component + module functionality', function () {
   })
 
   it('should work a component with no inputs', () => {
-    let root: Component = {
+    let root: Component<any> = {
       name,
       state: {},
       interfaces: {
@@ -582,7 +584,7 @@ describe('Component composition', () => {
 
   // for building new components reutilize the existents
 
-  let child: Component = {
+  let child: Component<any> = {
     name: 'Child',
     groups: {
       value: 'ChildValueGroup',
@@ -611,7 +613,7 @@ describe('Component composition', () => {
       childValue3: interfaceOf(ctx, 'child3', 'value'),
     })
 
-  let main: Component = {
+  let main: Component<any> = {
     name: 'Main',
     groups: {
       value: 'MainValueGroup',
@@ -820,7 +822,7 @@ describe('Lifecycle hooks', () => {
     disposeLog.push(parts[parts.length - 1])
   }
 
-  let child: Component = {
+  let child: Component<any> = {
     name: 'Child',
     state,
     init,
@@ -846,7 +848,7 @@ describe('Lifecycle hooks', () => {
       childValue3: interfaceOf(ctx, 'child3', 'value'),
     })
 
-  let main: Component = {
+  let main: Component<any> = {
     name: 'Main',
     state,
     init,
@@ -894,7 +896,7 @@ describe('Lifecycle hooks', () => {
 
 describe('Hot swapping', () => {
 
-  let child: Component = {
+  let child: Component<any> = {
     name: 'Child',
     state,
     inputs,
@@ -914,7 +916,7 @@ describe('Hot swapping', () => {
       return s
     },
   }
-  let inputs2 = (ctx: Context) => ({
+  let inputs2 = (ctx: Context<any>) => ({
     inc: () => actions2.Inc(),
   })
   let mainValueV1: ValueInterface =
@@ -928,7 +930,7 @@ describe('Hot swapping', () => {
       childValue3: interfaceOf(ctx, 'child3', 'value'),
     })
 
-  let mainV1: Component = {
+  let mainV1: Component<any> = {
     name: 'Main',
     state: {
       count: 0,
@@ -953,7 +955,7 @@ describe('Hot swapping', () => {
       childValue3: interfaceOf(ctx, 'child3', 'value'),
     })
 
-  let mainV2: Component = {
+  let mainV2: Component<any> = {
     name: 'Main',
     state: {
       count: 0,

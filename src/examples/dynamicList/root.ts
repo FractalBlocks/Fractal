@@ -6,12 +6,14 @@ import h from 'snabbdom/h'
 
 const name = 'Root'
 
-const state = {
+export const state = {
   text: '',
   list: [],
 }
 
-const inputs: Inputs = ctx => ({
+export type S = typeof state
+
+const inputs: Inputs<S> = ctx => ({
   action: action(actions),
   inputKeyup: ([keyCode, text]) =>
     keyCode === 13 && text !== ''
@@ -21,7 +23,7 @@ const inputs: Inputs = ctx => ({
     ] : actions.SetText(text),
 })
 
-const actions: Actions = {
+const actions: Actions<S> = {
   SetText: text => s => {
     s.text = text
     return s
@@ -36,7 +38,7 @@ const actions: Actions = {
   },
 }
 
-const view: View = (ctx, s) => {
+const view: View<S> = (ctx, s) => {
   let style = ctx.groups.style
 
   return h('div', {
@@ -120,7 +122,7 @@ const style: StyleGroup = {
   },
 }
 
-const comp: Component = {
+const comp: Component<S> = {
   name,
   groups: {
     style,

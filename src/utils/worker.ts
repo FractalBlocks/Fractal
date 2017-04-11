@@ -130,9 +130,9 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     dispose,
     reattach,
     // merge a component to the component index
-    merge: (name: string, component: Component) => worker.postMessage(['merge', name, component]),
+    merge: (name: string, component: Component<any>) => worker.postMessage(['merge', name, component]),
     // merge many components to the component index
-    mergeAll: (components: { [name: string]: Component }) => worker.postMessage(['mergeAll', components]),
+    mergeAll: (components: { [name: string]: Component<any> }) => worker.postMessage(['mergeAll', components]),
     // unmerge a component to the component index
     unmerge: (name: string) => worker.postMessage(['unmerge', name]),
     // unmerge many components to the component index

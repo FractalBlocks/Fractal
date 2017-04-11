@@ -1,4 +1,4 @@
-import { Context, Component } from '../../core'
+import { Component, Inputs, Actions } from '../../core'
 import { action, act } from '../../utils/component'
 import { StyleGroup, placeholderColor } from '../../utils/style'
 
@@ -7,18 +7,20 @@ import h from 'snabbdom/h'
 
 let name = 'TextField'
 
-let state = {
+export const state = {
   focus: false,
   error: false,
   placeholder: '',
   value: '',
 }
 
-let inputs = (ctx: Context) => ({
+export type S = typeof state
+
+let inputs: Inputs<S> = ctx => ({
   action: action(actions),
 })
 
-let actions = {
+let actions: Actions<S> = {
   SetError: (error: boolean) => s => {
     s.error = error
     return s
@@ -27,13 +29,13 @@ let actions = {
     s.value = value
     return s
   },
-  SetFocus: (value: string) => s => {
+  SetFocus: (value: boolean) => s => {
     s.focus = value
     return s
   },
 }
 
-let view: View = (ctx, s) => {
+let view: View<S> = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
     key: ctx.name,
@@ -48,7 +50,7 @@ let view: View = (ctx, s) => {
         focus: act(ctx, ['SetFocus', true]),
         blur: act(ctx, ['SetFocus', false]),
       },
-    }, `${s.count}`),
+    }),
     h('div', {
       class: {
         [style.underlineContainer]: true,
@@ -109,7 +111,7 @@ const style: StyleGroup = {
   },
 }
 
-let mDef: Component = {
+let mDef: Component<S> = {
   name,
   groups: {
     style,

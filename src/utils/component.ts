@@ -16,7 +16,7 @@ import {
 // set of helpers for building components
 
 // generic action
-export const action = (actions: { [name: string]: Action }): Update => ([arg1, arg2]) => {
+export const action = (actions: { [name: string]: Action<any> }): Update<any> => ([arg1, arg2]) => {
   let name
   let value
   if (arg1 instanceof Array) {
@@ -34,25 +34,25 @@ export const action = (actions: { [name: string]: Action }): Update => ([arg1, a
 }
 
 // generic action dispatcher
-export const act = (ctx: Context, context?: any, param?: any): InputData => {
+export const act = (ctx: Context<any>, context?: any, param?: any): InputData => {
   return ev(ctx, 'action', context, param)
 }
 
 // extract view interface, sintax sugar
-export function vw (ctx: Context, componentName: string): HandlerMsg {
+export function vw (ctx: Context<any>, componentName: string): HandlerMsg {
   return interfaceOf(ctx, componentName, 'view')
 }
 
 // send a message to an input of a component from outside a Module
 export function sendMsg (mod: Module, id: string, inputName: string, msg) {
   let ctx = mod.ctx
-  let inputResult = <Executable | Executable[]> ctx.components[id].inputs[inputName](msg)
+  let inputResult = <Executable<any> | Executable<any>[]> ctx.components[id].inputs[inputName](msg)
   execute(ctx, id, inputResult)
 }
 
 // send a message to an input of a component from its parent
 // TODO: log error when input doesn't exist
-export function toChild (ctx: Context, name: string, inputName: string, msg) {
+export function toChild (ctx: Context<any>, name: string, inputName: string, msg) {
   let childId = ctx.id + '$' + name
   let input = ctx.components[childId].inputs[inputName]
   if (!input) {
@@ -61,14 +61,14 @@ export function toChild (ctx: Context, name: string, inputName: string, msg) {
       `there are no '${inputName}' input in '${childId}' as expected by '${ctx.id}'`
     )
   }
-  let inputResult = <Executable | Executable[]> input(msg)
+  let inputResult = <Executable<any> | Executable<any>[]> input(msg)
   execute(ctx, childId, inputResult)
 }
 
 // send a message to an input of a component from its child
-export function toParent (ctx: Context, inputName: string, msg, unique = false) {
+export function toParent (ctx: Context<any>, inputName: string, msg, unique = false) {
   let outMsg
-  let parts = ctx.id.split('$')
+  let parts = (ctx.id + '').split('$')
   if (parts.length === 1) {
     return
   }
@@ -89,12 +89,12 @@ export function toParent (ctx: Context, inputName: string, msg, unique = false) 
       `there are no '${inputParent}' input in parent '${parentId}' as expected by '${ctx.id}'`
     )
   }
-  let inputResult = <Executable | Executable[]> input(outMsg)
+  let inputResult = <Executable<any> | Executable<any>[]> input(outMsg)
   execute(ctx, parentId, inputResult)
 }
 
 // send a message to an input of a component from its child
-export function toIt (ctx: Context, inputName: string, msg) {
+export function toIt (ctx: Context<any>, inputName: string, msg) {
   let id = ctx.id
   let input = ctx.components[id].inputs[inputName]
   if (!input) {
@@ -103,7 +103,7 @@ export function toIt (ctx: Context, inputName: string, msg) {
       `there are no '${inputName}' input in '${id}' as expected by itself`
     )
   }
-  let inputResult = <Executable | Executable[]> input(msg)
+  let inputResult = <Executable<any> | Executable<any>[]> input(msg)
   execute(ctx, id, inputResult)
 }
 
@@ -122,7 +122,7 @@ export function pipe (...args) {
 
 // make a new component from another merging her state
 export function props (state) {
-  return function (comp: Component): Component {
+  return function (comp: Component<any>): Component<any> {
     if (comp.state !== null && typeof comp.state === 'object'
     && state !== null && typeof state === 'object') {
       comp.state = Object.assign(comp.state, state)
@@ -134,7 +134,7 @@ export function props (state) {
 }
 
 export function setGroup (name: string, group: Group) {
-  return function (comp: Component): Component {
+  return function (comp: Component<any>): Component<any> {
     comp.groups[name] = group
     return comp
   }
@@ -155,7 +155,7 @@ export function mapToObj (arr: any[], fn: { (idx, value?): KeyValuePair } ): any
 }
 
 // TODO: fix broken API, for traversing childs
-export function stateOf (ctx: Context, name?: string): any {
+export function stateOf (ctx: Context<any>, name?: string): any {
   let id = name ? ctx.id + '$' + name : ctx.id
   let space = ctx.components[id]
   if (space) {
@@ -169,6 +169,6 @@ export function stateOf (ctx: Context, name?: string): any {
   }
 }
 
-export function spaceOf (ctx: Context): any {
+export function spaceOf (ctx: Context<any>): any {
   return ctx.components[ctx.id]
 }

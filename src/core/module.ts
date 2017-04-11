@@ -1,4 +1,5 @@
 import {
+  Identifier,
   Component,
   Update,
   Context,
@@ -13,7 +14,7 @@ import {
 } from './handler'
 
 export interface ModuleDef {
-  root: Component
+  root: Component<any>
   log?: boolean
   logAll?: boolean
   groups?: HandlerInterfaceIndex
@@ -24,7 +25,7 @@ export interface ModuleDef {
   init? (mod: ModuleAPI): void
   destroy? (mod: ModuleAPI): void
   // Middleware for inputs
-  onDispatch? (ctx: Context, eventData: EventData): void
+  onDispatch? (ctx: Context<any>, eventData: EventData): void
   // callbacks (side effects) for log messages
   warn? (source: string, description: string): void
   error? (source: string, description: string): void
@@ -51,16 +52,16 @@ export interface Module {
   // API to module
   moduleAPI: ModuleAPI
   // Root component context
-  ctx: Context
+  ctx: Context<any>
 }
 
 // API from module to handlers
 export interface ModuleAPI {
   dispatch (eventData: EventData): void
   dispose (): void
-  reattach (comp: Component, middleFn?: MiddleFn): void
-  merge (name: string, component: Component): void
-  mergeAll (components: { [name: string]: Component }): void
+  reattach (comp: Component<any>, middleFn?: MiddleFn): void
+  merge (name: string, component: Component<any>): void
+  mergeAll (components: { [name: string]: Component<any> }): void
   unmerge (name: string): void
   unmergeAll (components: string[]): void
   setGroup (id: string, name: string, space: any): void
@@ -71,16 +72,16 @@ export interface ModuleAPI {
 // MiddleFn is used for merge the states on hot-swaping (reattach)
 export interface MiddleFn {
   (
-    ctx: Context,
-    components: ComponentSpaceIndex,
-    lastComponents: ComponentSpaceIndex
-  ): ComponentSpaceIndex
+    ctx: Context<any>,
+    components: ComponentSpaceIndex<any>,
+    lastComponents: ComponentSpaceIndex<any>
+  ): ComponentSpaceIndex<any>
 }
 
 export const handlerTypes = ['interface', 'task', 'group']
 
 // create context for a component
-export function createContext (ctx: Context, name: string): Context {
+export function createContext (ctx: Context<any>, name: Identifier): Context<any> {
   let id = ctx.id === '' ? name : `${ctx.id}$${name}`
   return {
     id, // the component id
@@ -97,7 +98,7 @@ export function createContext (ctx: Context, name: string): Context {
 }
 
 // gets an interface message from a certain component
-export function interfaceOf (ctx: Context, name: string, interfaceName: string): any {
+export function interfaceOf (ctx: Context<any>, name: string, interfaceName: string): any {
   let id = `${ctx.id}$${name}`
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
@@ -112,7 +113,7 @@ export function interfaceOf (ctx: Context, name: string, interfaceName: string):
 }
 
 // add a component to the component index
-export function merge (ctx: Context, name: string, component: Component, isStatic = false): Context {
+export function merge (ctx: Context<any>, name: Identifier, component: Component<any>, isStatic = false): Context<any> {
   // namespaced name if is a child
   let id = ctx.id === '' ? name : ctx.id + '$' + name
   if (ctx.components[id]) {
@@ -153,7 +154,7 @@ export function merge (ctx: Context, name: string, component: Component, isStati
   return childCtx
 }
 
-function handleGroups (ctx: Context, component: Component) {
+function handleGroups (ctx: Context<any>, component: Component<any>) {
   let space: HandlerObject
   for (let i = 0, names = Object.keys(component.groups), len = names.length; i < len; i++) {
     space = ctx.groupHandlers[names[i]]
@@ -166,14 +167,14 @@ function handleGroups (ctx: Context, component: Component) {
 }
 
 // add many components to the component index
-export function mergeAll (ctx: Context, components: { [name: string]: Component }, isStatic = false) {
+export function mergeAll (ctx: Context<any>, components: { [name: string]: Component<any> }, isStatic = false) {
   for (let i = 0, names = Object.keys(components), len = names.length; i < len; i++) {
     merge(ctx, names[i], components[names[i]], isStatic)
   }
 }
 
 // remove a component to the component index, if name is not defined dispose the root
-export function unmerge (ctx: Context, name?:  string): void {
+export function unmerge (ctx: Context<any>, name?:  string): void {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
@@ -197,14 +198,14 @@ export function unmerge (ctx: Context, name?:  string): void {
 }
 
 // add many components to the component index
-export function unmergeAll (ctx: Context, components: string[]) {
+export function unmergeAll (ctx: Context<any>, components: string[]) {
   for (let i = 0, len = components.length; i < len; i++) {
     unmerge(ctx, components[i])
   }
 }
 
 // create an InputData array
-export function ev (ctx: Context, inputName: string, context?: any, param?: any): InputData {
+export function ev (ctx: Context<any>, inputName: string, context?: any, param?: any): InputData {
   if (context !== undefined || param !== undefined) {
     return [ctx.id, inputName, context, param]
   } else {
@@ -275,10 +276,10 @@ export function computeEvent(event: any, iData: InputData): EventData {
 
 // dispatch an input based on eventData to the respective component
 // ctx should be the root context
-export const dispatch = (ctxIn: Context, eventData: EventData) => {
-  let id = eventData[0]
+export const dispatch = (ctxIn: Context<any>, eventData: EventData) => {
+  let id = eventData[0] + ''
   // root component
-  let ctx = ctxIn.components[ctxIn.id.split('$')[0]].ctx
+  let ctx = ctxIn.components[(ctxIn.id + '').split('$')[0]].ctx
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
     return ctx.error('dispatch', `there are no component space '${id}'`)
@@ -326,15 +327,15 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
   }
 }
 
-export function execute (ctxIn: Context, id: string, executable: Executable | Executable[]) {
-  let rootId = ctxIn.id.split('$')[0]
+export function execute (ctxIn: Context<any>, id: Identifier, executable: Executable<any> | Executable<any>[]) {
+  let rootId = (ctxIn.id + '').split('$')[0]
   // Obtain root context
   let ctx = ctxIn.components[rootId].ctx
   let componentSpace = ctx.components[id]
 
   if (typeof executable === 'function') {
     // single update
-    componentSpace.state = (<Update> executable)(componentSpace.state)
+    componentSpace.state = (<Update<any>> executable)(componentSpace.state)
     notifyInterfaceHandlers(ctx)
   } else {
     /* istanbul ignore else */
@@ -352,7 +353,7 @@ export function execute (ctxIn: Context, id: string, executable: Executable | Ex
           for (let i = 0, len = executable.length; i < len; i++) {
             if (typeof executable[i] === 'function') {
               // is an update
-              componentSpace.state = (<Update> executable[i])(componentSpace.state)
+              componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
               notifyInterfaceHandlers(ctx)
             } else {
                 /* istanbul ignore else */
@@ -374,7 +375,7 @@ export function execute (ctxIn: Context, id: string, executable: Executable | Ex
 }
 
 // permorms interface recalculation
-export function notifyInterfaceHandlers (ctx: Context) {
+export function notifyInterfaceHandlers (ctx: Context<any>) {
   let space = ctx.components[ctx.id]
   for (let i = 0, names = Object.keys(space.def.interfaces), len = names.length; i < len; i++) {
     if (ctx.interfaceHandlers[names[i]]) {
@@ -390,13 +391,13 @@ export function notifyInterfaceHandlers (ctx: Context) {
 export function run (moduleDef: ModuleDef): Module {
   // internal module state
   // root component
-  let component: Component
+  let component: Component<any>
   let moduleAPI: ModuleAPI
   // root context
-  let ctx: Context
+  let ctx: Context<any>
 
   // attach root component
-  function attach (comp?: Component, lastComponents?: ComponentSpaceIndex, middleFn?: MiddleFn) {
+  function attach (comp?: Component<any>, lastComponents?: ComponentSpaceIndex<any>, middleFn?: MiddleFn) {
     // root component, take account of hot swapping
     component = comp ? comp : moduleDef.root
     let rootName = component.name
@@ -529,7 +530,7 @@ export function run (moduleDef: ModuleDef): Module {
     this.isDisposed = true
   }
 
-  function reattach (comp: Component, middleFn?: MiddleFn) {
+  function reattach (comp: Component<any>, middleFn?: MiddleFn) {
     let lastComponents = ctx.components
     ctx.components = {}
     attach(comp, lastComponents, middleFn)

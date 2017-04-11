@@ -64,7 +64,7 @@ describe('Component helpers', () => {
 
   describe('props function for making a new component by modifying the state', () => {
 
-    let comp: Component = {
+    let comp: Component<any> = {
       name: 'MyComp',
       state: {
         count: 0,
@@ -92,7 +92,7 @@ describe('Component helpers', () => {
 
   describe('setGroup function for setting a component group', () => {
 
-    let comp: Component = {
+    let comp: Component<any> = {
       name: 'MyComp',
       groups: {
         style: {
@@ -120,7 +120,7 @@ describe('Component helpers', () => {
   })
 
   describe('vw function sugar for components', () => {
-    let child: Component = {
+    let child: Component<any> = {
       name: 'Child',
       state: {
         count: 0,
@@ -132,7 +132,7 @@ describe('Component helpers', () => {
         i1: () => 112,
       },
     }
-    let comp: Component = {
+    let comp: Component<any> = {
       name: 'MyComp',
       components: {
         child,
@@ -174,7 +174,7 @@ describe('Component helpers', () => {
       selfData = undefined
       lastError = undefined
 
-      let Child: Component = {
+      let Child: Component<any> = {
         name: 'Child',
         state: {
           count: 0,
@@ -190,7 +190,7 @@ describe('Component helpers', () => {
           i1: () => 112,
         },
       }
-      let comp: Component = {
+      let comp: Component<any> = {
         name: 'MyComp',
         components: {
           child: Child,

@@ -70,23 +70,23 @@ let components = {
   clearBtn,
 }
 
-interface Model {
+export interface S {
   correct: true | false | 'unknown'
 }
 
-let state: Model = {
+let state: S = {
   correct: 'unknown',
 }
 
-let actions: Actions = {
+let actions: Actions<S> = {
   SetCorrect: isCorrect => s => {
     s.correct = isCorrect
     return s
   },
-  Clear: () => s => ''
+  Clear: () => s => s,
 }
 
-let inputs: Inputs = ctx => ({
+let inputs: Inputs<S> = ctx => ({
   $testBtn_click: () => {
     let result = Object.keys(questions).map((q, idx) => {
       let isCorrect = stateOf(ctx, q).value === answers[idx]
@@ -106,7 +106,7 @@ let inputs: Inputs = ctx => ({
   },
 })
 
-let view: View = (ctx, s: Model) => {
+let view: View<S> = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
     key: name,
@@ -165,7 +165,7 @@ let style: StyleGroup = {
   },
 }
 
-let mDef: Component = {
+let mDef: Component<S> = {
   name,
   groups: {
     style,

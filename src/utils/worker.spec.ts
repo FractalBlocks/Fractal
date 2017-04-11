@@ -28,7 +28,7 @@ describe('Utilities for running fractal inside workers', () => {
     Inc: () => s => s + 1,
   }
 
-  let inputs = (ctx: Context) => ({
+  let inputs = (ctx: Context<any>) => ({
     set: (n: number) => actions.Set(n),
     inc: () => actions.Inc(),
     task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
@@ -44,7 +44,7 @@ describe('Utilities for running fractal inside workers', () => {
       wrongTask: ev(ctx, 'wrongTask'),
     })
 
-  let root: Component = {
+  let root: Component<any> = {
     name,
     groups: {
       group: 'MainGroup',

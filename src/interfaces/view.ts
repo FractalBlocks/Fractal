@@ -8,8 +8,8 @@ import styleModule from 'snabbdom/modules/style'
 import h from 'snabbdom/h'
 import { VNode } from 'snabbdom/vnode'
 
-export interface View {
-  (ctx: Context, s): VNode
+export interface View<S> {
+  (ctx: Context<S>, s: S): VNode
 }
 
 export const viewHandler = selectorElm => (mod: ModuleAPI) => {

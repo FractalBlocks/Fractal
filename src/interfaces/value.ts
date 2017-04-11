@@ -9,7 +9,7 @@ export interface ValueResponse {
 }
 
 export interface ValueInterface {
-  (ctx: Context, s): HandlerMsg
+  (ctx: Context<any>, s): HandlerMsg
 }
 
 export const valueHandler = (cb: (evRes: ValueResponse) => void) => (mod: ModuleAPI) => {
