@@ -29,13 +29,14 @@ We support use of:
 
 There are TODOs for short term:
 
+- Router (ASAP)
+- Build an example of Scuttlebott integration (ASAP)
 - Add error index (DX)
 - Use complexList inside manyLists example and add adapter to complexList
 - Document adapters like a way for nesting complex lists (dynamic component trees)
 - Improve the complexList (AKA add more behavior)
 - Document `Actions<typeof state>`
 - Refactor examples to make use of typesafe actions
-- Router
 - Example of lazy loading
 - Timetravel debugging
 - Integrate standard linter + trailing commas with tslint
