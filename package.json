@@ -36,9 +36,10 @@
   "license": "MIT",
   "dependencies": {
     "deep-equal": "^1.0.1",
-    "typestyle": "^1.2.0",
     "mori": "^0.3.2",
-    "snabbdom": "^0.6.1"
+    "sheet-router": "^4.2.3",
+    "snabbdom": "^0.6.1",
+    "typestyle": "^1.2.0"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.0.3",
