@@ -107,19 +107,6 @@ export function toIt (ctx: Context<any>, inputName: string, msg) {
   execute(ctx, id, inputResult)
 }
 
-// -- Functions for manipulating components
-
-// pipe allows to pipe functions (left composing)
-export function pipe (...args) {
-  return function (value) {
-    let result = value
-    for (let i = 0, len = args.length; i < len; i++) {
-      result = args[i](result)
-    }
-    return result
-  }
-}
-
 // make a new component from another merging her state
 export function props (state) {
   return function (comp: Component<any>): Component<any> {
@@ -140,21 +127,6 @@ export function setGroup (name: string, group: Group) {
   }
 }
 
-export interface KeyValuePair extends Array<any> {
-  0: string
-  1: any
-}
-
-export function mapToObj (arr: any[], fn: { (idx, value?): KeyValuePair } ): any {
-  let result = {}, aux
-  for (let i = 0, len = arr.length; i < len; i++) {
-    aux = fn(i, arr[i])
-    result[aux[0]] = aux[1]
-  }
-  return result
-}
-
-// TODO: fix broken API, for traversing childs
 export function stateOf (ctx: Context<any>, name?: string): any {
   let id = name ? ctx.id + '$' + name : ctx.id
   let space = ctx.components[id]

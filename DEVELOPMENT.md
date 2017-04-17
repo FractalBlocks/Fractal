@@ -30,6 +30,8 @@ We support use of:
 There are TODOs for short term:
 
 - Router (ASAP)
+- Add an assoc function for improving code reuse in common assignments
+- Add functional utils to functional (fun) that includes: evolve, not, inc, dec, same (identity) and ifelse all mutant
 - Build an example of Scuttlebott integration (ASAP)
 - Add error index (DX)
 - Use complexList inside manyLists example and add adapter to complexList

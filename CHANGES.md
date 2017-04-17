@@ -4,6 +4,10 @@
 
 - Asyncronous handling of groups, Fix styles in worker example
 
+# v1.0.1
+
+- Add fun utils with pipe and mapToObj and remove them from component utils
+
 # v1.0.0 :rose:
 
 - Allow use `Actions<typeof state>` for typesafe actions (BREAKING CHANGE)

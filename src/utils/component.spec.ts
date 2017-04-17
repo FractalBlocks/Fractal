@@ -3,9 +3,7 @@ import {
   action,
   props,
   vw,
-  pipe,
   setGroup,
-  mapToObj,
   act,
   stateOf,
   spaceOf,
@@ -43,23 +41,6 @@ describe('Component helpers', () => {
     it('should return the same as ev without the input name', () => {
       expect(act(<any> ctx, 's', 'value')).toEqual(ev(<any> ctx, 'action', 's', 'value'))
     })
-  })
-
-  describe('pipe function for piping functions', () => {
-    let fun = pipe(
-      x => x + 1,
-      x => x + 1,
-      x => x - 1,
-      x => x * 2,
-    )
-
-    it('should return the rigth result', () => {
-      expect(fun(0)).toBe(2)
-      expect(fun(1)).toBe(4)
-      expect(fun(2)).toBe(6)
-      expect(fun(3)).toBe(8)
-    })
-
   })
 
   describe('props function for making a new component by modifying the state', () => {
@@ -283,18 +264,6 @@ describe('Component helpers', () => {
         'toIt',
         `there are no 'inputNameWrong' input in 'MyComp' as expected by itself`
       ])
-    })
-
-  })
-
-  describe('mapToObj helper', () => {
-
-    it('should map an array to an object', () => {
-      expect(mapToObj([1, 2, 3], (idx, value) => ['a' + idx, `a${value}elm`])).toEqual({
-        a0: 'a1elm',
-        a1: 'a2elm',
-        a2: 'a3elm',
-      })
     })
 
   })
