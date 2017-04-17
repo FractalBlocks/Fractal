@@ -215,6 +215,11 @@ describe('Component helpers', () => {
       expect(childData).toEqual(data)
     })
 
+    it ('toChild should send an undefined message to a child component from the parent correctly', () => {
+      toChild(app.ctx.components['MyComp'].ctx, 'child', 'childInput')
+      expect(childData).toEqual(undefined)
+    })
+
     it ('toChild should log an error if there are no input in child', () => {
       let data = 331
       toChild(app.ctx.components['MyComp'].ctx, 'child', 'inputNameWrong', data)
@@ -228,6 +233,11 @@ describe('Component helpers', () => {
       let data = 121
       toParent(app.ctx.components['MyComp$child'].ctx, 'inputName', data)
       expect(parentData).toEqual(data)
+    })
+
+    it ('toParent should send an undefined message the parent component from a child component', () => {
+      toParent(app.ctx.components['MyComp$child'].ctx, 'inputName')
+      expect(parentData).toEqual(undefined)
     })
 
     it ('toParent should send a message to the parent component from a child component in a unique way', () => {

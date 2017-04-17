@@ -1,5 +1,5 @@
 import {
-  Action,
+  Actions,
   Update,
   Component,
   Context,
@@ -16,7 +16,7 @@ import {
 // set of helpers for building components
 
 // generic action
-export const action = (actions: { [name: string]: Action<any> }): Update<any> => ([arg1, arg2]) => {
+export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any> => {
   let name
   let value
   if (arg1 instanceof Array) {
@@ -52,7 +52,7 @@ export function sendMsg (mod: Module, id: string, inputName: string, msg) {
 
 // send a message to an input of a component from its parent
 // TODO: log error when input doesn't exist
-export function toChild (ctx: Context, name: string, inputName: string, msg) {
+export function toChild (ctx: Context, name: string, inputName: string, msg = undefined) {
   let childId = ctx.id + '$' + name
   let input = ctx.components[childId].inputs[inputName]
   if (!input) {
@@ -66,7 +66,7 @@ export function toChild (ctx: Context, name: string, inputName: string, msg) {
 }
 
 // send a message to an input of a component from its child
-export function toParent (ctx: Context, inputName: string, msg, unique = false) {
+export function toParent (ctx: Context, outputName: string, msg = undefined, unique = false) {
   let outMsg
   let parts = (ctx.id + '').split('$')
   if (parts.length === 1) {
@@ -76,10 +76,10 @@ export function toParent (ctx: Context, inputName: string, msg, unique = false) 
   let name = parts.splice(parts.length - 1, 1)[0]
   let parentId = parts.join('$')
   if (unique) {
-    inputParent = `$$${ctx.components[ctx.id].def.name}_${inputName}`
+    inputParent = `$$${ctx.components[ctx.id].def.name}_${outputName}`
     outMsg = [name, msg]
   } else {
-    inputParent = `$${name}_${inputName}`
+    inputParent = `$${name}_${outputName}`
     outMsg = msg
   }
   let input = ctx.components[parentId].inputs[inputParent]
