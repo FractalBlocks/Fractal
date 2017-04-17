@@ -279,7 +279,7 @@ export function computeEvent(event: any, iData: InputData): EventData {
 export const dispatch = (ctxIn: Context, eventData: EventData) => {
   let id = eventData[0] + ''
   // root component
-  let ctx = ctxIn.components[(ctxIn.id + '').split('$')[0]].ctx
+  let ctx = ctxIn.components[(id + '').split('$')[0]].ctx
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
     return ctx.error('dispatch', `there are no component space '${id}'`)
@@ -328,7 +328,7 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
 }
 
 export function execute (ctxIn: Context, id: Identifier, executable: Executable<any> | Executable<any>[]) {
-  let rootId = (ctxIn.id + '').split('$')[0]
+  let rootId = (id + '').split('$')[0]
   // Obtain root context
   let ctx = ctxIn.components[rootId].ctx
   let componentSpace = ctx.components[id]
@@ -479,8 +479,6 @@ export function run (moduleDef: ModuleDef): Module {
 
     // merges main component and ctx.id now contains it name
     ctx = merge(ctx, component.name, component, true)
-
-    // contextualized dispatch
 
     // middle function for hot-swapping
     if (middleFn) {

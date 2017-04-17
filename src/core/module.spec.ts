@@ -501,10 +501,10 @@ describe('One Component + module functionality', function () {
   })
 
   it('should log an error when try to dispatch an input of an inexistent module', () => {
-    value._dispatch(['someId', 'someInput'])
+    value._dispatch(['Main$someId', 'someInput'])
     expect(lastLog).toEqual([
       'dispatch',
-      `there are no component space 'someId'`,
+      `there are no component space 'Main$someId'`,
     ])
   })
 

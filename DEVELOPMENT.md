@@ -29,7 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
-- Change examples for the way we import components as router example does
+- Change examples for the way we import components as router example does, note that hot-swaping changes too
 - Router (ASAP)
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
 - Build an example of Scuttlebott integration (ASAP)

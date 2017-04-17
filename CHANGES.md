@@ -4,6 +4,12 @@
 
 - Add functional utils to functional (fun) that includes: assoc, evolve, not, inc, dec, same (identity) and ifelse all mutant and fully currified
 
+## Done
+
+# v1.0.3
+
+- Fix bug in dispatch
+
 # v1.0.2
 
 - Fix some types to be useful
