@@ -106,7 +106,7 @@ describe('Context functions', function () {
 
   let lastLog
 
-  let rootCtx: Context<S> = {
+  let rootCtx: Context = {
     id: 'Main',
     name: 'Main',
     groups: {},
@@ -123,7 +123,7 @@ describe('Context functions', function () {
     },
   }
 
-  let ctx: Context<S>
+  let ctx: Context
   it('should create a child context (createContext)', () => {
     ctx = createContext(rootCtx, 'child')
     expect(ctx).toBeDefined()
@@ -916,7 +916,7 @@ describe('Hot swapping', () => {
       return s
     },
   }
-  let inputs2 = (ctx: Context<any>) => ({
+  let inputs2 = (ctx: Context) => ({
     inc: () => actions2.Inc(),
   })
   let mainValueV1: ValueInterface =

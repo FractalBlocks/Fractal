@@ -10,9 +10,9 @@ export interface Component<S> {
   log?: boolean
   logAll?: boolean
   // composition
-  components?: Components<any>
+  components?: Components
   // child component definitions, used for referencing dynamic components in hot-swaping
-  defs?: Components<any>
+  defs?: Components
   // general purpose groups, used for styles
   groups?: {
     [name: string]: Group,
@@ -28,18 +28,22 @@ export interface Component<S> {
     [name: string]: Interface<S>
   }
   // lifecycle hooks: init, destroy
-  init? (ctx: Context<S>): void
-  destroy? (ctx: Context<S>): void
+  init? : Hook
+  destroy? : Hook
 }
 
-export interface Components<S> {
-  [name: string]: Component<S>
+export interface Components {
+  [name: string]: Component<any>
+}
+
+export interface Hook {
+  (ctx: Context): void
 }
 
 export type Group = any
 
 export interface Inputs<S> {
-  (ctx: Context<S>): InputIndex<S>
+  (ctx: Context): InputIndex<S>
 }
 
 export interface InputIndex<S> {
@@ -99,7 +103,7 @@ export interface Update<S> {
 }
 
 export interface Interface<S> {
-  (ctx: Context<S>, state: S): HandlerMsg
+  (ctx: Context, state: S): HandlerMsg
 }
 
 // a task executes some kind of side effect (output) - Comunications stuff
@@ -109,7 +113,7 @@ export interface Task extends Array<any> {
 }
 
 // describes an excecution context
-export interface Context<S> {
+export interface Context {
   // name for that component in the index
   id: Identifier
   // sintax sugar: the name is the last part of the id (e.g. the id is Main$child the name is child)
@@ -119,7 +123,7 @@ export interface Context<S> {
     [name: string]: Group,
   },
   // global component index
-  components: ComponentSpaceIndex<S>
+  components: ComponentSpaceIndex
   groupHandlers: {
     [name: string]: HandlerObject
   }
@@ -138,22 +142,22 @@ export interface Context<S> {
   }
 }
 
-export interface ComponentSpaceIndex<S> {
-  [id: string]: ComponentSpace<S>
+export interface ComponentSpaceIndex {
+  [id: string]: ComponentSpace
 }
 
 // contextualized space in the component index
-export interface ComponentSpace<S> {
-  ctx: Context<S>
+export interface ComponentSpace {
+  ctx: Context
   // META: is statically composed?
   isStatic: boolean
   state: any
-  inputs: InputIndex<S>
+  inputs: InputIndex<any>
   // component index for dynamic handling (new and dispose)
   components: {
     [name: string]: true
   }
-  def: Component<S>
+  def: Component<any>
 }
 
 export type Executable<S> = Update<S> | Task

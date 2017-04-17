@@ -9,7 +9,7 @@ import h from 'snabbdom/h'
 import { VNode } from 'snabbdom/vnode'
 
 export interface View<S> {
-  (ctx: Context<S>, s: S): VNode
+  (ctx: Context, s: S): VNode
 }
 
 export const viewHandler = selectorElm => (mod: ModuleAPI) => {

@@ -34,12 +34,12 @@ export const action = (actions: { [name: string]: Action<any> }): Update<any> =>
 }
 
 // generic action dispatcher
-export const act = (ctx: Context<any>, context?: any, param?: any): InputData => {
+export const act = (ctx: Context, context?: any, param?: any): InputData => {
   return ev(ctx, 'action', context, param)
 }
 
 // extract view interface, sintax sugar
-export function vw (ctx: Context<any>, componentName: string): HandlerMsg {
+export function vw (ctx: Context, componentName: string): HandlerMsg {
   return interfaceOf(ctx, componentName, 'view')
 }
 
@@ -52,7 +52,7 @@ export function sendMsg (mod: Module, id: string, inputName: string, msg) {
 
 // send a message to an input of a component from its parent
 // TODO: log error when input doesn't exist
-export function toChild (ctx: Context<any>, name: string, inputName: string, msg) {
+export function toChild (ctx: Context, name: string, inputName: string, msg) {
   let childId = ctx.id + '$' + name
   let input = ctx.components[childId].inputs[inputName]
   if (!input) {
@@ -66,7 +66,7 @@ export function toChild (ctx: Context<any>, name: string, inputName: string, msg
 }
 
 // send a message to an input of a component from its child
-export function toParent (ctx: Context<any>, inputName: string, msg, unique = false) {
+export function toParent (ctx: Context, inputName: string, msg, unique = false) {
   let outMsg
   let parts = (ctx.id + '').split('$')
   if (parts.length === 1) {
@@ -94,7 +94,7 @@ export function toParent (ctx: Context<any>, inputName: string, msg, unique = fa
 }
 
 // send a message to an input of a component from its child
-export function toIt (ctx: Context<any>, inputName: string, msg) {
+export function toIt (ctx: Context, inputName: string, msg) {
   let id = ctx.id
   let input = ctx.components[id].inputs[inputName]
   if (!input) {
@@ -127,7 +127,7 @@ export function setGroup (name: string, group: Group) {
   }
 }
 
-export function stateOf (ctx: Context<any>, name?: string): any {
+export function stateOf (ctx: Context, name?: string): any {
   let id = name ? ctx.id + '$' + name : ctx.id
   let space = ctx.components[id]
   if (space) {
@@ -141,6 +141,6 @@ export function stateOf (ctx: Context<any>, name?: string): any {
   }
 }
 
-export function spaceOf (ctx: Context<any>): any {
+export function spaceOf (ctx: Context): any {
   return ctx.components[ctx.id]
 }

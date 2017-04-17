@@ -28,7 +28,7 @@ describe('Utilities for running fractal inside workers', () => {
     Inc: () => s => s + 1,
   }
 
-  let inputs = (ctx: Context<any>) => ({
+  let inputs = (ctx: Context) => ({
     set: (n: number) => actions.Set(n),
     inc: () => actions.Inc(),
     task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],

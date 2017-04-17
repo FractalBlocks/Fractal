@@ -2,11 +2,15 @@
 
 # Next
 
-- Asyncronous handling of groups, Fix styles in worker example
+- Add functional utils to functional (fun) that includes: assoc, evolve, not, inc, dec, same (identity) and ifelse all mutant and fully currified
+
+# v1.0.2
+
+- Fix some types to be useful
 
 # v1.0.1
 
-- Add fun utils with pipe and mapToObj and remove them from component utils
+- Add functional utils (fun) with pipe and mapToObj and remove them from component utils
 
 # v1.0.0 :rose:
 

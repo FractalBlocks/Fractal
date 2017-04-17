@@ -1,4 +1,4 @@
-import { Context, Component, ev } from '../../core'
+import { Component, Inputs, Actions, ev } from '../../core'
 import { StyleGroup, clickable } from '../../utils/style'
 import { hashMap } from 'mori'
 import { evolve, get } from '../../utils/mori'
@@ -12,12 +12,12 @@ let state = hashMap<string, string>(
   'count', 0,
 )
 
-let actions = {
+let actions: Actions<any> = {
   Set: (count: number) => evolve('count', () => count),
   Inc: () => evolve('count', x => x + 1),
 }
 
-let inputs = (ctx: Context<any>) => ({
+let inputs: Inputs<any> = ctx => ({
   set: n => actions.Set(n),
   inc: () => actions.Inc(),
 })

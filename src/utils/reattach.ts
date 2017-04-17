@@ -5,12 +5,12 @@ import deepEqual = require('deep-equal')
   make a plan diff of initial and new. next apply changes to modified
 */
 export function mergeStates (
-  ctx: Context<any>,
-  components: ComponentSpaceIndex<any>, // new components
-  lastComponents: ComponentSpaceIndex<any> // old components
-): ComponentSpaceIndex<any> {
+  ctx: Context,
+  components: ComponentSpaceIndex, // new components
+  lastComponents: ComponentSpaceIndex // old components
+): ComponentSpaceIndex {
 
-  let comps: ComponentSpaceIndex<any> = {}
+  let comps: ComponentSpaceIndex = {}
 
   let ids = Object.keys(components)
 
