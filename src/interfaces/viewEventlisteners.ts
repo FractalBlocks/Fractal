@@ -8,6 +8,8 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       // call function handler
       mod.dispatch(computeEvent(event, handler))
+      event.preventDefault()
+      event.stopPropagation()
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {

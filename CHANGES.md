@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.0.5
+
+- Add event stoping in view event handlers
+
 # v1.0.4
 
 - Add ignored view event listeners
