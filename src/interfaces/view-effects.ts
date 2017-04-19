@@ -22,7 +22,7 @@ export const viewHandler: Handler = selectorElm => mod => {
     classModule,
     attributesModule,
     propsModule,
-    eventlistenersModule(mod.dispatch),
+    eventlistenersModule(mod),
     styleModule,
   ])
 

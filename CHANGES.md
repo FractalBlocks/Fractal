@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.0.4
+
+- Add ignored view event listeners
+
 # v1.0.3
 
 - Fix bug in dispatch
