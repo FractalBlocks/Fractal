@@ -1,18 +1,24 @@
 import { VNode, VNodeData } from 'snabbdom/vnode'
 import { Module } from 'snabbdom/modules/module'
-import { computeEvent, InputData } from '../core'
+import { computeEvent, InputData, ModuleAPI } from '../core'
 
-export const eventListenersModule = (dispatch): Module => {
+export const eventListenersModule = (mod: ModuleAPI): Module => {
 
   function invokeHandler(handler: InputData, event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       // call function handler
-      dispatch(computeEvent(event, handler))
-    } else {
+      mod.dispatch(computeEvent(event, handler))
+    } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
         invokeHandler(handler[i])
       }
+    } else if (handler === '' && handler === undefined) {
+      // this handlers are ingored
+      // TODO: document ignored view event handlers
+      return
+    } else {
+      mod.error('ViewInterface-eventListenersModule', 'event handler of type ' + typeof handler + 'are not allowed, data: ' + JSON.stringify(handler))
     }
   }
 
