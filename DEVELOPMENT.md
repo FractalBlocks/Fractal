@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Merge utils in root folder, so you can use it by import `fractal-core/style`
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
 - Router (ASAP)
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
