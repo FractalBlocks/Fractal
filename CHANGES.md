@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.0.6
+
+- Add ignore and pass options to view event handlers
+
 # v1.0.5
 
 - Add event stoping in view event handlers

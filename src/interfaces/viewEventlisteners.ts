@@ -15,9 +15,13 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
       for (var i = 0; i < handler.length; i++) {
         invokeHandler(handler[i])
       }
+    } else if (handler === 'ignore') {
+      // TODO: document ignored and passed view event handlers
+      // this handler is ignored
+      event.preventDefault()
+      event.stopPropagation()
     } else if (handler === '' && handler === undefined) {
-      // this handlers are ingored
-      // TODO: document ignored view event handlers
+      // this handler is passed
       return
     } else {
       mod.error('ViewInterface-eventListenersModule', 'event handler of type ' + typeof handler + 'are not allowed, data: ' + JSON.stringify(handler))
