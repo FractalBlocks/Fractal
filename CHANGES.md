@@ -2,6 +2,7 @@
 
 # Next
 
+- Speed up core replacing for-Objec.keys loop by for-in
 - Add functional utils to functional (fun) that includes: assoc, evolve, not, inc, dec, same (identity) and ifelse all mutant and fully currified
 
 ## Done
