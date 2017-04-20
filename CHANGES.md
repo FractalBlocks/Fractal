@@ -7,6 +7,10 @@
 
 ## Done
 
+# v1.0.7
+
+- Make msg parameter of sendMsg and toIt optional in utils/component
+
 # v1.0.6
 
 - Add ignore and pass options to view event handlers

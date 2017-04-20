@@ -44,7 +44,7 @@ export function vw (ctx: Context, componentName: string): HandlerMsg {
 }
 
 // send a message to an input of a component from outside a Module
-export function sendMsg (mod: Module, id: string, inputName: string, msg) {
+export function sendMsg (mod: Module, id: string, inputName: string, msg?) {
   let ctx = mod.ctx
   let inputResult = <Executable<any> | Executable<any>[]> ctx.components[id].inputs[inputName](msg)
   execute(ctx, id, inputResult)
@@ -94,7 +94,7 @@ export function toParent (ctx: Context, outputName: string, msg = undefined, uni
 }
 
 // send a message to an input of a component from its child
-export function toIt (ctx: Context, inputName: string, msg) {
+export function toIt (ctx: Context, inputName: string, msg?) {
   let id = ctx.id
   let input = ctx.components[id].inputs[inputName]
   if (!input) {
