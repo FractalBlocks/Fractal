@@ -7,6 +7,10 @@
 
 ## Done
 
+# v1.0.8
+
+- Parent can observe any child input
+
 # v1.0.7
 
 - Make msg parameter of sendMsg and toIt optional in utils/component

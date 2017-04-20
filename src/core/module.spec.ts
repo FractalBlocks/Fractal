@@ -38,9 +38,9 @@ let actions = {
 let inputs: Inputs<S> = ctx => ({
   set: (n: number) => actions.Set(n),
   setExtra: ([value, extra]) => actions.Set(value + extra),
-  $toParent: () => {},
+  toParent: () => {},
   $child1_toParent: () => actions.Set(17), // child input detection
-  $$toParentGlobal: () => {},
+  $toParentGlobal: () => {},
   $$_toParentGlobal: () => actions.Set(21), // child input detection
   inc: () => actions.Inc(),
   action: ([name, value]) => actions[name](value), // generic action input
@@ -77,8 +77,8 @@ let childValue: ValueInterface =
     setFnKeys: ev(ctx, 'set', _, [['a', 'b']]),
     setFnPathKeys: ev(ctx, 'set', _, ['p1', 'p2', ['a', 'b', 'c']]),
     setFnPaths: ev(ctx, 'set', _, [['p1', 'z'], ['a'], ['p1', 'p2', ['a', 'b', 'c']]]),
-    toParent: ev(ctx, '$toParent'),
-    toParentGlobal: ev(ctx, '$$toParentGlobal'),
+    toParent: ev(ctx, 'toParent'),
+    toParentGlobal: ev(ctx, '$toParentGlobal'),
     wrongTask: ev(ctx, 'wrongTask'),
     dispatch: ev(ctx, 'dispatch'),
     executableListWrong: ev(ctx, 'executableListWrong'),
