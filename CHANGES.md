@@ -2,6 +2,7 @@
 
 # Next
 
+- Add type HandlerFn<Type, S> and refactor View type in View interface
 - Speed up core replacing for-Objec.keys loop by for-in
 - Add functional utils to functional (fun) that includes: assoc, evolve, not, inc, dec, same (identity) and ifelse all mutant and fully currified
 
