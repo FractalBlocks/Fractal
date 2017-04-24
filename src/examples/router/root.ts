@@ -1,4 +1,4 @@
-import { Actions, Inputs, Components, Hook, ev, _ } from '../../core'
+import { Actions, Inputs, Interfaces, Components, Hook, ev, _ } from '../../core'
 import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
 import { vw, toChild, action } from '../../component'
@@ -81,7 +81,7 @@ const routes: Routes<S> = (ctx, s) => ({
   '/:id': ev(ctx, '$EmailList_select', _, ['params', 'id']),
 })
 
-export const interfaces = { view, routes }
+export const interfaces: Interfaces = { view, routes }
 
 const style: StyleGroup = {
   base: {

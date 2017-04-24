@@ -23,9 +23,7 @@ export interface Component<S> {
   // unique way to change the state
   actions?: Actions<S>
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
-  interfaces: {
-    [name: string]: Interface<HandlerMsg, S>
-  }
+  interfaces: Interfaces
   // lifecycle hooks: init, destroy
   init? : Hook
   destroy? : Hook
@@ -33,6 +31,10 @@ export interface Component<S> {
 
 export interface Components {
   [name: string]: Component<any>
+}
+
+export interface Interfaces {
+  [name: string]: Interface<any, any>
 }
 
 export interface Hook {

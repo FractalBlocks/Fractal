@@ -1,4 +1,4 @@
-import {  Actions, Inputs, ev } from '../../core'
+import { Actions, Inputs, ev, Interfaces } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { View } from '../../interfaces/view'
 import { action, toParent } from '../../component'
@@ -45,7 +45,7 @@ const view: View<S> = (ctx, s) => {
   )
 }
 
-export const interfaces = { view }
+export const interfaces: Interfaces = { view }
 
 const style: StyleGroup = {
   base: {
