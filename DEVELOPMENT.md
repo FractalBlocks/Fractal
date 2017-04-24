@@ -29,8 +29,8 @@ We support use of:
 
 There are TODOs for short term:
 
-- Merge utils in root folder, so you can use it by import `fractal-core/style`
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
+- Official support for [Popmotion](https://github.com/Popmotion/popmotion) as an optional animation library
 - Router Docs (ASAP)
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
 - Build an example of Scuttlebott integration (ASAP)
@@ -67,10 +67,8 @@ There are TODOs for medium term:
 
 What are missing for this repo:
 
-- Cancelable callbacks from subcribables in tasks
-- Update free-style dependency to version 2.0
+- Cancelable callbacks from subcribables in tasks, via an instance index
 - Document use cases on stateless components and modules
-- Evaluate flatten composing
 - Implement an example of charts (D3) (SERVICE 3PARTY-DOM-INTEGRATION)
 - Implement on demand large app loading example (@carloslfu)
 - Implement pouchdb integration example (@carloslfu)
