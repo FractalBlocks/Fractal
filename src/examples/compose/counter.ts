@@ -1,5 +1,5 @@
 import { Component, ev, Inputs, Actions } from '../../core'
-import { StyleGroup, clickable } from '../../utils/style'
+import { StyleGroup, clickable } from '../../style'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
@@ -10,7 +10,7 @@ export const state = {
   count: 0,
 }
 
-export type S = typeof state 
+export type S = typeof state
 
 let actions: Actions<S> = {
   Set: (count: number) => state => {

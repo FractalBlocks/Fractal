@@ -1,7 +1,7 @@
 import { Component, Inputs, Actions, ev } from '../../core'
-import { StyleGroup, clickable } from '../../utils/style'
+import { StyleGroup, clickable } from '../../style'
 import { hashMap } from 'mori'
-import { evolve, get } from '../../utils/mori'
+import { evolve, get } from '../../mori'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'

@@ -1,5 +1,5 @@
 import { Component, ev, Inputs } from '../../core'
-import { StyleGroup, clickable } from '../../utils/style'
+import { StyleGroup, clickable } from '../../style'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'

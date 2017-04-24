@@ -1,5 +1,5 @@
 import { run } from '../../core'
-import { workerHandler, workerLog, workerListener } from '../../utils/worker'
+import { workerHandler, workerLog, workerListener } from '../../worker'
 
 let app = run({
   root: require('./app').default,

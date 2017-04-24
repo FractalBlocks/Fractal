@@ -1,8 +1,8 @@
 import { run } from '../../core'
 import { styleHandler } from '../../groups/style'
 import { viewHandler } from '../../interfaces/view'
-import { logFns } from '../../utils/log' // DEV ONLY
-import { mergeStates } from '../../utils/reattach' // DEV ONLY
+import { logFns } from '../../log' // DEV ONLY
+import { mergeStates } from '../../reattach' // DEV ONLY
 
 let app = run({
   root: require('./app').default,

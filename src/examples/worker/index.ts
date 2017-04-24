@@ -1,7 +1,7 @@
-import { runWorker } from '../../utils/worker'
+import { runWorker } from '../../worker'
 import { styleHandler } from '../../groups/style'
 import { viewHandler } from '../../interfaces/view'
-import { logFns } from '../../utils/log'
+import { logFns } from '../../log'
 
 // all communicatios are transfered via postMessage
 runWorker({

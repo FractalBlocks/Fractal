@@ -11,7 +11,7 @@ import {
   execute,
   Module,
   Executable,
-} from '../core'
+} from './core'
 
 // set of helpers for building components
 

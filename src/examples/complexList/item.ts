@@ -1,6 +1,6 @@
 import { Component, Actions, Inputs, ev, _ } from '../../core'
-import { toParent, action, act } from '../../utils/component'
-import { StyleGroup } from '../../utils/style'
+import { toParent, action, act } from '../../component'
+import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 

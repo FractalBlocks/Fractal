@@ -1,5 +1,5 @@
 import { Component, ev, dispatch, _ } from '../../core'
-import { StyleGroup } from '../../utils/style'
+import { StyleGroup } from '../../style'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'

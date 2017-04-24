@@ -1,4 +1,4 @@
-import { Context, EventData } from '../core'
+import { Context, EventData } from './core'
 
 // side effects for log functionality
 

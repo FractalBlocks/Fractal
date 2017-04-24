@@ -5,9 +5,9 @@ import {
   Actions,
   Inputs,
 } from '../../core'
-import { props, vw, setGroup, stateOf } from '../../utils/component'
-import { pipe } from '../../utils/fun'
-import { StyleGroup, mergeStyles } from '../../utils/style'
+import { props, vw, setGroup, stateOf } from '../../component'
+import { pipe } from '../../fun'
+import { StyleGroup, mergeStyles } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 

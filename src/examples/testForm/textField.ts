@@ -1,6 +1,6 @@
 import { Component, Inputs, Actions } from '../../core'
-import { action, act } from '../../utils/component'
-import { StyleGroup, placeholderColor } from '../../utils/style'
+import { action, act } from '../../component'
+import { StyleGroup, placeholderColor } from '../../style'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'

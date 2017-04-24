@@ -1,6 +1,6 @@
 import { Component, interfaceOf } from '../../core'
-import { stateOf } from '../../utils/component'
-import { StyleGroup } from '../../utils/style'
+import { stateOf } from '../../component'
+import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 

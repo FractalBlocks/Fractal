@@ -1,7 +1,7 @@
 import {  Actions, Inputs, ev } from '../../core'
-import { StyleGroup, clickable } from '../../utils/style'
+import { StyleGroup, clickable } from '../../style'
 import { View } from '../../interfaces/view'
-import { action, toParent } from '../../utils/component'
+import { action, toParent } from '../../component'
 import h from 'snabbdom/h'
 import { palette } from './constants'
 

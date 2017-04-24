@@ -4,7 +4,7 @@ import {
   Component,
   EventData,
   ModuleAPI,
-} from '../core'
+} from './core'
 
 declare var self: WorkerAPI
 
