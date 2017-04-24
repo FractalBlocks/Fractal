@@ -1,5 +1,4 @@
-import { HandlerMsg } from './handler'
-import { HandlerObject } from './handler'
+import { HandlerMsg, HandlerObject } from './handler'
 
 export type Identifier = number | string
 
