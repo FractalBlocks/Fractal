@@ -2,11 +2,17 @@
 
 # Next
 
-- Add type HandlerFn<Type, S> and refactor View type in View interface
 - Speed up core replacing for-Objec.keys loop by for-in
-- Add functional utils to functional (fun) that includes: assoc, evolve, not, inc, dec, same (identity) and ifelse all mutant and fully currified
+- Add functions to `fun.ts` that includes: assoc, evolve, not, inc, dec, same (identity) and ifelse all mutant and fully currified
 
 ## Done
+
+# v1.1.0
+
+- Add functional utils to `fun.ts`
+- Add assoc, evolve and evolveKey function to fun utils
+- Add type Interface<Type, S> and refactor View type in View interface
+- Relocate utils to root folder (src)
 
 # v1.0.8
 
