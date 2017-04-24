@@ -62,7 +62,7 @@ let inputs: Inputs<S> = ctx => ({
 
 let _ = undefined // gap for undefined
 
-let childValue: ValueInterface =
+let childValue: ValueInterface<any> =
   (ctx, s) => ({
     tagName: ctx.id,
     content: s,
@@ -603,7 +603,7 @@ describe('Component composition', () => {
     child3: child,
   }
 
-  let mainValue: ValueInterface =
+  let mainValue: ValueInterface<any> =
     (ctx, s) => ({
       tagName: s.key,
       content: s,
@@ -838,7 +838,7 @@ describe('Lifecycle hooks', () => {
     child2: child,
     child3: child,
   }
-  let mainValue: ValueInterface =
+  let mainValue: ValueInterface<any> =
     (ctx, s) => ({
       tagName: s.key,
       content: s,
@@ -919,7 +919,7 @@ describe('Hot swapping', () => {
   let inputs2 = (ctx: Context) => ({
     inc: () => actions2.Inc(),
   })
-  let mainValueV1: ValueInterface =
+  let mainValueV1: ValueInterface<any> =
     (ctx, s) => ({
       tagName: ctx.name,
       content: s.count,
@@ -944,7 +944,7 @@ describe('Hot swapping', () => {
     },
   }
 
-  let mainValueV2: ValueInterface =
+  let mainValueV2: ValueInterface<any> =
     (ctx, s) => ({
       tagName: ctx.name,
       content: 'Fractal is awesome V2!! ' + s.count + ' :D',

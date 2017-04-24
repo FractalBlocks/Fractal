@@ -1,4 +1,4 @@
-import { Context, ModuleAPI, HandlerMsg, EventData } from '../core'
+import { Interface, ModuleAPI, HandlerMsg, EventData } from '../core'
 
 // this interface is not nestable because dont use the nestable interface pattern (this is used only for testing modules)
 
@@ -8,9 +8,7 @@ export interface ValueResponse {
   }
 }
 
-export interface ValueInterface {
-  (ctx: Context, s): HandlerMsg
-}
+export type ValueInterface<S> = Interface<HandlerMsg, S>
 
 export const valueHandler = (cb: (evRes: ValueResponse) => void) => (mod: ModuleAPI) => {
   return {

@@ -25,7 +25,7 @@ export interface Component<S> {
   actions?: Actions<S>
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
   interfaces: {
-    [name: string]: Interface<S>
+    [name: string]: Interface<HandlerMsg, S>
   }
   // lifecycle hooks: init, destroy
   init? : Hook
@@ -102,8 +102,8 @@ export interface Update<S> {
   (state: S): S
 }
 
-export interface Interface<S> {
-  (ctx: Context, state: S): HandlerMsg
+export interface Interface<Type, S>{
+  (ctx: Context, state: S): Type
 }
 
 // a task executes some kind of side effect (output) - Comunications stuff

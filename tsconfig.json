@@ -19,12 +19,7 @@
     "typings/index.d.ts"
   ],
   "include": [
-    "src/core/**/*.ts",
-    "src/examples/**/*.ts",
-    "src/groups/**/*.ts",
-    "src/interfaces/**/*.ts",
-    "src/tasks/**/*.ts",
-    "src/utils/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"

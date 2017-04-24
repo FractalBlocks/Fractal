@@ -1,4 +1,4 @@
-import { Context, ModuleAPI } from '../core'
+import { Interface, ModuleAPI } from '../core'
 import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
 import attributesModule from 'snabbdom/modules/attributes'
@@ -8,9 +8,7 @@ import styleModule from 'snabbdom/modules/style'
 import h from 'snabbdom/h'
 import { VNode } from 'snabbdom/vnode'
 
-export interface View<S> {
-  (ctx: Context, s: S): VNode
-}
+export type View<S> = Interface<VNode, S>
 
 export const viewHandler = selectorElm => (mod: ModuleAPI) => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''

@@ -35,7 +35,7 @@ describe('Utilities for running fractal inside workers', () => {
     wrongTask: (): Task => ['wrongTask', {}],
   })
 
-  let childValue: ValueInterface =
+  let childValue: ValueInterface<any> =
     (ctx, s) => ({
       tagName: ctx.id,
       content: 'Fractal is awesome!! ' + s,
