@@ -296,8 +296,8 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
     /* istanbul ignore else */
     if (<any> input !== 'nothing') {
       execute(ctx, id, <any> input(data))
+      propagate(ctx, id, componentSpace, inputName, data)
     }
-    propagate(ctx, id, componentSpace, inputName, data)
   } else {
     ctx.error('dispatch', `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
   }
@@ -312,17 +312,21 @@ export function propagate (ctx, id, componentSpace: ComponentSpace, inputName, d
     if (inputName[0] === '$') {
       // global notifier ($some), genrally used for lists of components
       let childInputName = inputName.slice(1, inputName.length)
-      let parentInput = ctx.components[parentId].inputs[`$$${componentSpace.def.name}_${childInputName}`]
+      let parentInputName = `$$${componentSpace.def.name}_${childInputName}`
+      let parentInput = ctx.components[parentId].inputs[parentInputName]
       /* istanbul ignore else */
       if (parentInput) {
         execute(ctx, parentId, <any> parentInput(componentSpace.ctx.name))
+        propagate(ctx, parentId, ctx.components[parentId], parentInputName, componentSpace.ctx.name)
       }
     } else {
       // individual parent notifier
-      let parentInput = ctx.components[parentId].inputs[`$${componentSpace.ctx.name}_${inputName}`]
+      let parentInputName = `$${componentSpace.ctx.name}_${inputName}`
+      let parentInput = ctx.components[parentId].inputs[parentInputName]
       /* istanbul ignore else */
       if (parentInput) {
         execute(ctx, parentId, <any> parentInput(data))
+        propagate(ctx, parentId, ctx.components[parentId], parentInputName, data)
       }
     }
   }
