@@ -140,7 +140,7 @@ describe('Component helpers', () => {
 
   })
 
-  describe('send messages to an input of a component from its parent and from outside the module', () => {
+  describe('message interchange between components', () => {
     let childData
     let parentData
     let parentDataUnique
@@ -171,10 +171,10 @@ describe('Component helpers', () => {
           i1: () => 112,
         },
       }
-      let comp: Component<any> = {
+      let root: Component<any> = {
         name: 'MyComp',
         components: {
-          child: Child,
+          Child,
         },
         state: {
           count: 0,
@@ -184,7 +184,7 @@ describe('Component helpers', () => {
           selfMessage: data => {
             selfData = data
           },
-          $child_inputName: data => {
+          $Child_inputName: data => {
             parentData = data
           },
           $$Child_remove: data => {
@@ -197,7 +197,7 @@ describe('Component helpers', () => {
         },
       }
       app = run({
-        root: comp,
+        root,
         interfaces: {},
         error: (source, description) => lastError = [source, description],
       })
@@ -205,45 +205,45 @@ describe('Component helpers', () => {
 
     it ('sendMsg should send a message to a component from outside the module correctly', () => {
       let data = 119
-      sendMsg(app, 'MyComp$child', 'childInput', data)
+      sendMsg(app, 'MyComp$Child', 'childInput', data)
       expect(childData).toEqual(data)
     })
 
     it ('toChild should send a message to a child component from the parent correctly', () => {
       let data = 129
-      toChild(app.ctx.components['MyComp'].ctx, 'child', 'childInput', data)
+      toChild(app.ctx.components['MyComp'].ctx, 'Child', 'childInput', data)
       expect(childData).toEqual(data)
     })
 
     it ('toChild should send an undefined message to a child component from the parent correctly', () => {
-      toChild(app.ctx.components['MyComp'].ctx, 'child', 'childInput')
+      toChild(app.ctx.components['MyComp'].ctx, 'Child', 'childInput')
       expect(childData).toEqual(undefined)
     })
 
     it ('toChild should log an error if there are no input in child', () => {
       let data = 331
-      toChild(app.ctx.components['MyComp'].ctx, 'child', 'inputNameWrong', data)
+      toChild(app.ctx.components['MyComp'].ctx, 'Child', 'inputNameWrong', data)
       expect(lastError).toEqual([
         'toChild',
-        `there are no 'inputNameWrong' input in 'MyComp$child' as expected by 'MyComp'`
+        `there are no 'inputNameWrong' input in 'MyComp$Child' as expected by 'MyComp'`
       ])
     })
 
     it ('toParent should send a message the parent component from a child component', () => {
       let data = 121
-      toParent(app.ctx.components['MyComp$child'].ctx, 'inputName', data)
+      toParent(app.ctx.components['MyComp$Child'].ctx, 'inputName', data)
       expect(parentData).toEqual(data)
     })
 
     it ('toParent should send an undefined message the parent component from a child component', () => {
-      toParent(app.ctx.components['MyComp$child'].ctx, 'inputName')
+      toParent(app.ctx.components['MyComp$Child'].ctx, 'inputName')
       expect(parentData).toEqual(undefined)
     })
 
     it ('toParent should send a message to the parent component from a child component in a unique way', () => {
       let data = 127
-      toParent(app.ctx.components['MyComp$child'].ctx, 'remove', data, true)
-      expect(parentDataUnique).toEqual(['child', data])
+      toParent(app.ctx.components['MyComp$Child'].ctx, 'remove', data, true)
+      expect(parentDataUnique).toEqual(['Child', data])
     })
 
     it ('toParent should not send a message to the parent component from a child component if child is root component', () => {
@@ -254,10 +254,10 @@ describe('Component helpers', () => {
 
     it ('toParent should log an error if there are no input in parent', () => {
       let data = 331
-      toParent(app.ctx.components['MyComp$child'].ctx, 'inputNameWrong', data)
+      toParent(app.ctx.components['MyComp$Child'].ctx, 'inputNameWrong', data)
       expect(lastError).toEqual([
         'toParent',
-        `there are no '$child_inputNameWrong' input in parent 'MyComp' as expected by 'MyComp$child'`
+        `there are no '$Child_inputNameWrong' input in parent 'MyComp' as expected by 'MyComp$Child'`
       ])
     })
 
