@@ -41,7 +41,7 @@ let inputs: Inputs<S> = ctx => ({
   toParent: () => {},
   $child1_toParent: () => actions.Set(17), // child input detection
   $toParentGlobal: () => {},
-  $$_toParentGlobal: () => actions.Set(21), // child input detection
+  $$Child_toParentGlobal: () => actions.Set(21), // child input detection
   inc: () => actions.Inc(),
   action: ([name, value]) => actions[name](value), // generic action input
   dispatch: () => {

@@ -7,6 +7,7 @@ import {
   Executable,
   InputData,
   EventData,
+  ComponentSpace,
 } from './core'
 import {
   HandlerInterface,
@@ -296,30 +297,34 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
     if (<any> input !== 'nothing') {
       execute(ctx, id, <any> input(data))
     }
-    // notifies parent if name starts with $
-    let idParts = id.split('$')
-    if (idParts.length > 1) {
-      let parentId = idParts.slice(0, -1).join('$')
-      // is not root?
-      if (inputName[0] === '$') {
-        // global notifier ($some), genrally used for lists of components
-        let childInputName = inputName.slice(1, inputName.length)
-        let parentInput = ctx.components[parentId].inputs[`$$_${childInputName}`]
-        /* istanbul ignore else */
-        if (parentInput) {
-          execute(ctx, parentId, <any> parentInput(componentSpace.ctx.name))
-        }
-      } else {
-        // individual parent notifier
-        let parentInput = ctx.components[parentId].inputs[`$${componentSpace.ctx.name}_${inputName}`]
-        /* istanbul ignore else */
-        if (parentInput) {
-          execute(ctx, parentId, <any> parentInput(data))
-        }
-      }
-    }
+    propagate(ctx, id, componentSpace, inputName, data)
   } else {
     ctx.error('dispatch', `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
+  }
+}
+
+export function propagate (ctx, id, componentSpace: ComponentSpace, inputName, data) {
+  // notifies parent if name starts with $
+  let idParts = id.split('$')
+  if (idParts.length > 1) {
+    let parentId = idParts.slice(0, -1).join('$')
+    // is not root?
+    if (inputName[0] === '$') {
+      // global notifier ($some), genrally used for lists of components
+      let childInputName = inputName.slice(1, inputName.length)
+      let parentInput = ctx.components[parentId].inputs[`$$${componentSpace.def.name}_${childInputName}`]
+      /* istanbul ignore else */
+      if (parentInput) {
+        execute(ctx, parentId, <any> parentInput(componentSpace.ctx.name))
+      }
+    } else {
+      // individual parent notifier
+      let parentInput = ctx.components[parentId].inputs[`$${componentSpace.ctx.name}_${inputName}`]
+      /* istanbul ignore else */
+      if (parentInput) {
+        execute(ctx, parentId, <any> parentInput(data))
+      }
+    }
   }
 }
 
