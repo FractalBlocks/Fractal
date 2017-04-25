@@ -7,6 +7,11 @@
 
 ## Done
 
+# v1.2.0
+
+- Fix component message interchange by adding propagation
+- Add scope to global component listeners (parent -child communication)
+
 # v1.1.0
 
 - Add functional utils to `fun.ts`

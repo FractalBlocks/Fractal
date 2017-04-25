@@ -30,9 +30,9 @@ We support use of:
 There are TODOs for short term:
 
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
-- Official support for [Popmotion](https://github.com/Popmotion/popmotion) as an optional animation library
 - Router Docs (ASAP)
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
+- Official support for [Popmotion](https://github.com/Popmotion/popmotion) as an optional animation library
 - Build an example of Scuttlebott integration (ASAP)
 - Add error index (DX)
 - Use complexList inside manyLists example and add adapter to complexList
@@ -42,6 +42,7 @@ There are TODOs for short term:
 - Refactor examples to make use of typesafe actions
 - Example of lazy loading
 - Timetravel debugging
+- TESTING: Test propagation of component message interchange
 - Integrate standard linter + trailing commas with tslint
 - Improve test suite with isolated tests
 - Example of RTC in Fractal
