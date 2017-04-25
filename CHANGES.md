@@ -9,6 +9,10 @@
 
 ## Done
 
+# v1.2.1
+
+-Fix nested propagation
+
 # v1.2.0
 
 - Fix component message interchange by adding propagation

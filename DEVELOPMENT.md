@@ -43,7 +43,7 @@ There are TODOs for short term:
 - Refactor examples to make use of typesafe actions
 - Example of lazy loading
 - Timetravel debugging
-- TESTING: Test propagation of component message interchange
+- TESTING: Test propagation / nested propagation of component message interchange
 - Integrate standard linter + trailing commas with tslint
 - Improve test suite with isolated tests
 - Example of RTC in Fractal
