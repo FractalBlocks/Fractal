@@ -1,5 +1,7 @@
 # Changes
 
+# Changes for Fractal core
+
 # Next
 
 - Speed up core replacing for-Objec.keys loop by for-in
