@@ -1,11 +1,11 @@
-import { Component, Inputs, Actions } from '../../core'
+import { Inputs, Actions, Interfaces } from '../../core'
 import { action, act } from '../../component'
 import { StyleGroup, placeholderColor } from '../../style'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-let name = 'TextField'
+export const name = 'TextField'
 
 export const state = {
   focus: false,
@@ -16,11 +16,11 @@ export const state = {
 
 export type S = typeof state
 
-let inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ctx => ({
   action: action(actions),
 })
 
-let actions: Actions<S> = {
+export const actions: Actions<S> = {
   SetError: (error: boolean) => s => {
     s.error = error
     return s
@@ -35,7 +35,7 @@ let actions: Actions<S> = {
   },
 }
 
-let view: View<S> = (ctx, s) => {
+const view: View<S> = (ctx, s) => {
   let style = ctx.groups['style']
   return h('div', {
     key: ctx.name,
@@ -69,6 +69,8 @@ let view: View<S> = (ctx, s) => {
     ]),
   ])
 }
+
+export const interfaces: Interfaces = { view }
 
 const style: StyleGroup = {
   base: {
@@ -111,17 +113,4 @@ const style: StyleGroup = {
   },
 }
 
-let mDef: Component<S> = {
-  name,
-  groups: {
-    style,
-  },
-  state,
-  inputs,
-  actions,
-  interfaces: {
-    view,
-  },
-}
-
-export default mDef
+export const groups = { style }

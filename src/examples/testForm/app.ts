@@ -1,20 +1,19 @@
 import {
-  Component,
-  clone,
-  execute,
   Actions,
   Inputs,
+  Interfaces,
+  clone,
 } from '../../core'
-import { props, vw, setGroup, stateOf } from '../../component'
-import { pipe } from '../../fun'
+import { props, vw, setGroup, stateOf, toChild } from '../../component'
+import { pipe, assoc } from '../../fun'
 import { StyleGroup, mergeStyles } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-import TextField from './textField'
-import Button from './button'
+import * as TextField from './textField'
+import * as Button from './button'
 
-let name = 'Main'
+export const name = 'Main'
 
 let questions = [
   '1 + 1?',
@@ -65,7 +64,7 @@ let clearBtn = pipe(
   setGroup('style', clearBtnStyle)
 )(clone(Button))
 
-let components = {
+export const components = {
   ...questionCmp,
   testBtn,
   clearBtn,
@@ -75,33 +74,33 @@ export interface S {
   correct: true | false | 'unknown'
 }
 
-let state: S = {
+export const state: S = {
   correct: 'unknown',
 }
 
-let actions: Actions<S> = {
+export const actions: Actions<S> = {
   SetCorrect: isCorrect => s => {
     s.correct = isCorrect
     return s
   },
-  Clear: () => s => s,
+  Clear: () => assoc('correct')('unknown'),
 }
 
-let inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ctx => ({
   $testBtn_click: () => {
     let result = Object.keys(questions).map((q, idx) => {
       let isCorrect = stateOf(ctx, q).value === answers[idx]
-      execute(ctx, ctx.id + '$' + q, TextField.actions.SetError(!isCorrect))
+      toChild(ctx, q, 'action', ['SetError', !isCorrect])
       return isCorrect
     }).reduce((a, r) => a && r, true)
     return actions.SetCorrect(result)
   },
   $clearBtn_click: () => {
     Object.keys(questions).forEach(
-      i => execute(ctx, ctx.id + '$' + i, [
-        TextField.actions.SetValue(''),
-        TextField.actions.SetError(false),
-      ])
+      i => {
+        toChild(ctx, i, 'action', ['SetValue', ''])
+        toChild(ctx, i, 'action', ['SetError', false])
+      }
     )
     return actions.Clear()
   },
@@ -141,6 +140,8 @@ let view: View<S> = (ctx, s) => {
   ])
 }
 
+export const interfaces: Interfaces = { view }
+
 let style: StyleGroup = {
   base: {
     display: 'flex',
@@ -166,19 +167,4 @@ let style: StyleGroup = {
   },
 }
 
-let mDef: Component<S> = {
-  name,
-  groups: {
-    style,
-  },
-  state,
-  components,
-  inputs,
-  actions,
-  interfaces: {
-    view,
-  },
-}
-
-export default mDef
-
+export const groups = { style }

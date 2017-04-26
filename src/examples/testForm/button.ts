@@ -1,16 +1,28 @@
-import { Component, ev, dispatch, _ } from '../../core'
+import { Inputs, Actions, Interfaces, ev, _ } from '../../core'
 import { StyleGroup } from '../../style'
+import { toIt } from '../../component'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-let name = 'Button'
+export const name = 'Button'
 
 export const state = ''
 
 export type S = string
 
-let view: View<S> = (ctx, s) => {
+export const inputs: Inputs<S> = ctx => ({
+  click: () => {},
+  keypress: which => {
+    if (which === 13) {
+      toIt(ctx, 'click')
+    }
+  },
+})
+
+export const actions: Actions<S> = {}
+
+const view: View<S> = (ctx, s) => {
   let style = ctx.groups['style']
 
   return h('div', {
@@ -18,13 +30,15 @@ let view: View<S> = (ctx, s) => {
     class: { [style.base]: true },
     attrs: { tabindex: 0 },
     on: {
-      click: ev(ctx, '$click'),
+      click: ev(ctx, 'click'),
       keypress: ev(ctx, 'keypress', _, 'which'),
     },
   }, [
     <any> s
   ])
 }
+
+export const interfaces: Interfaces = { view }
 
 const style: StyleGroup = {
   base: {
@@ -44,24 +58,4 @@ const style: StyleGroup = {
   },
 }
 
-let mDef: Component<S> = {
-  name,
-  state,
-  groups: {
-    style,
-  },
-  inputs: ctx => ({
-    $click: () => {},
-    keypress: which => {
-      if (which === 13) {
-        dispatch(ctx, [ctx.id, '$click'])
-      }
-    },
-  }),
-  actions: {},
-  interfaces: {
-    view,
-  },
-}
-
-export default mDef
+export const groups = { style }

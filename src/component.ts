@@ -44,12 +44,14 @@ export function vw (ctx: Context, componentName: string): HandlerMsg {
   return interfaceOf(ctx, componentName, 'view')
 }
 
+// --- Message interchange between components
+
 // send a message to an input of a component from outside a Module
 export function sendMsg (mod: Module, id: string, inputName: string, msg?) {
   let ctx = mod.ctx
   let inputResult = <Executable<any> | Executable<any>[]> ctx.components[id].inputs[inputName](msg)
-  execute(ctx, id, inputResult)
-  propagate(ctx, id, ctx.components[id], inputName, msg)
+  execute(ctx.components[id].ctx, inputResult)
+  propagate(ctx.components[id].ctx, ctx.components[id], inputName, msg)
 }
 
 // send a message to an input of a component from its parent
@@ -64,8 +66,8 @@ export function toChild (ctx: Context, name: string, inputName: string, msg = un
     )
   }
   let inputResult = <Executable<any> | Executable<any>[]> input(msg)
-  execute(ctx, childId, inputResult)
-  propagate(ctx, childId, ctx.components[childId], inputName, msg)
+  execute(ctx.components[childId].ctx, inputResult)
+  propagate(ctx.components[childId].ctx, ctx.components[childId], inputName, msg)
 }
 
 // send a message to an input of a component from its child
@@ -93,8 +95,8 @@ export function toParent (ctx: Context, outputName: string, msg = undefined, uni
     )
   }
   let inputResult = <Executable<any> | Executable<any>[]> input(outMsg)
-  execute(ctx, parentId, inputResult)
-  propagate(ctx, parentId, ctx.components[parentId], inputParent, outMsg)
+  execute(ctx.components[parentId].ctx, inputResult)
+  propagate(ctx.components[parentId].ctx, ctx.components[parentId], inputParent, outMsg)
 }
 
 // send a message to an input of a component from its child
@@ -108,9 +110,11 @@ export function toIt (ctx: Context, inputName: string, msg?) {
     )
   }
   let inputResult = <Executable<any> | Executable<any>[]> input(msg)
-  execute(ctx, id, inputResult)
-  propagate(ctx, id, ctx.components[id], inputName, inputResult)
+  execute(ctx.components[id].ctx, inputResult)
+  propagate(ctx.components[id].ctx, ctx.components[id], inputName, inputResult)
 }
+
+// ---
 
 // make a new component from another merging her state
 export function props (state) {

@@ -5,13 +5,17 @@
 # Next
 
 - Speed up core replacing for-Objec.keys loop by for-in
-- Add functions to `fun.ts` that includes: assoc, evolve, not, inc, dec, same (identity) and ifelse all mutant and fully currified
 
 ## Done
 
+# v1.3.0
+
+- Remove useless parameter from `execute` function
+- Remove useless parameter from `propagate` function
+
 # v1.2.1
 
--Fix nested propagation
+- Fix nested propagation
 
 # v1.2.0
 

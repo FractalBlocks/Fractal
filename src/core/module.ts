@@ -295,17 +295,18 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
       : eventData[3] // is only event data
     /* istanbul ignore else */
     if (<any> input !== 'nothing') {
-      execute(ctx, id, <any> input(data))
-      propagate(ctx, id, componentSpace, inputName, data)
+      execute(componentSpace.ctx, <any> input(data))
+      propagate(componentSpace.ctx, componentSpace, inputName, data)
     }
   } else {
     ctx.error('dispatch', `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
   }
 }
 
-export function propagate (ctx, id, componentSpace: ComponentSpace, inputName, data) {
+export function propagate (ctx: Context, componentSpace: ComponentSpace, inputName, data) {
   // notifies parent if name starts with $
-  let idParts = id.split('$')
+  let id = ctx.id
+  let idParts = (id + '').split('$')
   if (idParts.length > 1) {
     let parentId = idParts.slice(0, -1).join('$')
     // is not root?
@@ -316,8 +317,8 @@ export function propagate (ctx, id, componentSpace: ComponentSpace, inputName, d
       let parentInput = ctx.components[parentId].inputs[parentInputName]
       /* istanbul ignore else */
       if (parentInput) {
-        execute(ctx, parentId, <any> parentInput(componentSpace.ctx.name))
-        propagate(ctx, parentId, ctx.components[parentId], parentInputName, componentSpace.ctx.name)
+        execute(ctx.components[parentId].ctx, <any> parentInput(componentSpace.ctx.name))
+        propagate(ctx.components[parentId].ctx, ctx.components[parentId], parentInputName, componentSpace.ctx.name)
       }
     } else {
       // individual parent notifier
@@ -325,14 +326,15 @@ export function propagate (ctx, id, componentSpace: ComponentSpace, inputName, d
       let parentInput = ctx.components[parentId].inputs[parentInputName]
       /* istanbul ignore else */
       if (parentInput) {
-        execute(ctx, parentId, <any> parentInput(data))
-        propagate(ctx, parentId, ctx.components[parentId], parentInputName, data)
+        execute(ctx.components[parentId].ctx, <any> parentInput(data))
+        propagate(ctx.components[parentId].ctx, ctx.components[parentId], parentInputName, data)
       }
     }
   }
 }
 
-export function execute (ctxIn: Context, id: Identifier, executable: Executable<any> | Executable<any>[]) {
+export function execute (ctxIn: Context, executable: Executable<any> | Executable<any>[]) {
+  let id = ctxIn.id
   let rootId = (id + '').split('$')[0]
   // Obtain root context
   let ctx = ctxIn.components[rootId].ctx
