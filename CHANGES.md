@@ -4,9 +4,9 @@
 
 # Next
 
-- Speed up core replacing for-Objec.keys loop by for-in
-
 ## Done
+
+- Speed up core replacing for-Object.keys loop by for-in
 
 # v1.3.0
 

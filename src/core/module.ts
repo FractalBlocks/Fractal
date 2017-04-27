@@ -157,20 +157,22 @@ export function merge (ctx: Context, name: Identifier, component: Component<any>
 
 function handleGroups (ctx: Context, component: Component<any>) {
   let space: HandlerObject
-  for (let i = 0, names = Object.keys(component.groups), len = names.length; i < len; i++) {
-    space = ctx.groupHandlers[names[i]]
+  let name
+  for (name in component.groups) {
+    space = ctx.groupHandlers[name]
     if (space) {
-      space.handle([ctx.id, component.groups[names[i]]])
+      space.handle([ctx.id, component.groups[name]])
     } else {
-      ctx.error('merge', `module has no group handler for '${names[i]}' of component '${component.name}' from space '${ctx.id}'`)
+      ctx.error('merge', `module has no group handler for '${name}' of component '${component.name}' from space '${ctx.id}'`)
     }
   }
 }
 
 // add many components to the component index
 export function mergeAll (ctx: Context, components: { [name: string]: Component<any> }, isStatic = false) {
-  for (let i = 0, names = Object.keys(components), len = names.length; i < len; i++) {
-    merge(ctx, names[i], components[names[i]], isStatic)
+  let name
+  for (name in components) {
+    merge(ctx, name, components[name], isStatic)
   }
 }
 
@@ -309,25 +311,26 @@ export function propagate (ctx: Context, componentSpace: ComponentSpace, inputNa
   let idParts = (id + '').split('$')
   if (idParts.length > 1) {
     let parentId = idParts.slice(0, -1).join('$')
+    let parentSpace = ctx.components[parentId]
     // is not root?
     if (inputName[0] === '$') {
       // global notifier ($some), genrally used for lists of components
       let childInputName = inputName.slice(1, inputName.length)
       let parentInputName = `$$${componentSpace.def.name}_${childInputName}`
-      let parentInput = ctx.components[parentId].inputs[parentInputName]
+      let parentInput = parentSpace.inputs[parentInputName]
       /* istanbul ignore else */
       if (parentInput) {
-        execute(ctx.components[parentId].ctx, <any> parentInput(componentSpace.ctx.name))
-        propagate(ctx.components[parentId].ctx, ctx.components[parentId], parentInputName, componentSpace.ctx.name)
+        execute(parentSpace.ctx, <any> parentInput(componentSpace.ctx.name))
+        propagate(parentSpace.ctx, parentSpace, parentInputName, componentSpace.ctx.name)
       }
     } else {
       // individual parent notifier
       let parentInputName = `$${componentSpace.ctx.name}_${inputName}`
-      let parentInput = ctx.components[parentId].inputs[parentInputName]
+      let parentInput = parentSpace.inputs[parentInputName]
       /* istanbul ignore else */
       if (parentInput) {
-        execute(ctx.components[parentId].ctx, <any> parentInput(data))
-        propagate(ctx.components[parentId].ctx, ctx.components[parentId], parentInputName, data)
+        execute(parentSpace.ctx, <any> parentInput(data))
+        propagate(parentSpace.ctx, parentSpace, parentInputName, data)
       }
     }
   }
@@ -384,12 +387,13 @@ export function execute (ctxIn: Context, executable: Executable<any> | Executabl
 // permorms interface recalculation
 export function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.id]
-  for (let i = 0, names = Object.keys(space.def.interfaces), len = names.length; i < len; i++) {
-    if (ctx.interfaceHandlers[names[i]]) {
-      ctx.interfaceHandlers[names[i]].handle(space.def.interfaces[names[i]](ctx, space.state))
+  let name
+  for (name in space.def.interfaces) {
+    if (ctx.interfaceHandlers[name]) {
+      ctx.interfaceHandlers[name].handle(space.def.interfaces[name](ctx, space.state))
     } else {
       // This only can happen when this method is called for a context that is not the root
-      ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${names[i]}' for component '${space.def.name}' from space '${ctx.id}'`)
+      ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.def.name}' from space '${ctx.id}'`)
     }
   }
 }
@@ -477,8 +481,9 @@ export function run (moduleDef: ModuleDef): Module {
       for (let c = 0, len = handlerTypes.length; c < len; c++) {
         handlers = moduleDef[handlerTypes[c] + 's']
         if (handlers) {
-          for (let i = 0, names = Object.keys(handlers), len = names.length; i < len; i++) {
-            ctx[handlerTypes[c] + 'Handlers'][names[i]] = handlers[names[i]](moduleAPI)
+          let name
+          for (name in handlers) {
+            ctx[handlerTypes[c] + 'Handlers'][name] = handlers[name](moduleAPI)
           }
         }
       }
@@ -490,21 +495,23 @@ export function run (moduleDef: ModuleDef): Module {
     // middle function for hot-swapping
     if (middleFn) {
       ctx.components = middleFn(ctx, ctx.components, lastComponents)
-      for (let i = 0, ids = Object.keys(ctx.components), len = ids.length; i < len; i++) {
-        if (!ctx.components[ids[i]].isStatic) {
-          handleGroups(ctx.components[ids[i]].ctx, ctx.components[ids[i]].def)
+      let id
+      for (id in ctx.components) {
+        if (!ctx.components[id].isStatic) {
+          handleGroups(ctx.components[id].ctx, ctx.components[id].def)
         }
       }
     }
 
     // pass initial value to each Interface Handler
-    for (let i = 0, names = Object.keys(component.interfaces), len = names.length; i < len; i++) {
-      if (ctx.interfaceHandlers[names[i]]) {
-        ctx.interfaceHandlers[names[i]].handle(component.interfaces[names[i]](ctx, ctx.components[rootName].state))
+    let name
+    for (name in component.interfaces) {
+      if (ctx.interfaceHandlers[name]) {
+        ctx.interfaceHandlers[name].handle(component.interfaces[name](ctx, ctx.components[rootName].state))
       } else {
         return ctx.error(
           'InterfaceHandlers',
-          `'${rootName}' component has no interface called '${names[i]}', missing interface handler`
+          `'${rootName}' component has no interface called '${name}', missing interface handler`
         )
       }
     }
@@ -526,8 +533,9 @@ export function run (moduleDef: ModuleDef): Module {
     let handlers: HandlerObjectIndex
     for (let c = 0, len = handlerTypes.length; c < len; c++) {
       handlers  = ctx[`${handlerTypes[c]}Handlers`]
-      for (let i = 0, names = Object.keys(handlers), len = names.length; i < len; i++) {
-        handlers[names[i]].dispose()
+      let name
+      for (name in handlers) {
+        handlers[name].dispose()
       }
     }
     unmerge(ctx)
