@@ -6,7 +6,10 @@
 
 ## Done
 
+# v1.3.1
+
 - Speed up core replacing for-Object.keys loop by for-in
+- Message Interchange fuctions propagation is optional, true by default
 
 # v1.3.0
 

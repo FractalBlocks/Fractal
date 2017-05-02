@@ -29,21 +29,21 @@ We support use of:
 
 There are TODOs for short term:
 
+- TESTING(CRITICAL): Test single / nested / optional propagation of component message interchange, now ignored!!
 - Update examples that uses global child listeners acording to v1.2.0 changes
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
 - Add error index (DX)
 - Router Docs (ASAP)
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
-- Official support for [Popmotion](https://github.com/Popmotion/popmotion) as an optional animation library
 - Build an example of Scuttlebott integration (ASAP)
 - Use complexList inside manyLists example and add adapter to complexList
 - Document adapters like a way for nesting complex lists (dynamic component trees)
 - Improve the complexList (AKA add more behavior)
 - Document `Actions<typeof state>`
 - Refactor examples to make use of typesafe actions
-- Example of lazy loading
 - Timetravel debugging
-- TESTING: Test propagation / nested propagation of component message interchange
+- Example of lazy loading
+- Official support for [Popmotion](https://github.com/Popmotion/popmotion) as an optional animation library
 - Integrate standard linter + trailing commas with tslint
 - Improve test suite with isolated tests
 - Example of RTC in Fractal

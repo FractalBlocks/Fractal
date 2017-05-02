@@ -47,16 +47,19 @@ export function vw (ctx: Context, componentName: string): HandlerMsg {
 // --- Message interchange between components
 
 // send a message to an input of a component from outside a Module
-export function sendMsg (mod: Module, id: string, inputName: string, msg?) {
+/* istanbul ignore next */
+export function sendMsg (mod: Module, id: string, inputName: string, msg?, isPropagated = true) {
   let ctx = mod.ctx
   let inputResult = <Executable<any> | Executable<any>[]> ctx.components[id].inputs[inputName](msg)
   execute(ctx.components[id].ctx, inputResult)
-  propagate(ctx.components[id].ctx, ctx.components[id], inputName, msg)
+  if (isPropagated) {
+    propagate(ctx.components[id].ctx, ctx.components[id], inputName, msg)
+  }
 }
 
 // send a message to an input of a component from its parent
-// TODO: log error when input doesn't exist
-export function toChild (ctx: Context, name: string, inputName: string, msg = undefined) {
+/* istanbul ignore next */
+export function toChild (ctx: Context, name: string, inputName: string, msg = undefined, isPropagated = true) {
   let childId = ctx.id + '$' + name
   let input = ctx.components[childId].inputs[inputName]
   if (!input) {
@@ -67,11 +70,14 @@ export function toChild (ctx: Context, name: string, inputName: string, msg = un
   }
   let inputResult = <Executable<any> | Executable<any>[]> input(msg)
   execute(ctx.components[childId].ctx, inputResult)
-  propagate(ctx.components[childId].ctx, ctx.components[childId], inputName, msg)
+  if (isPropagated) {
+    propagate(ctx.components[childId].ctx, ctx.components[childId], inputName, msg)
+  }
 }
 
 // send a message to an input of a component from its child
-export function toParent (ctx: Context, outputName: string, msg = undefined, unique = false) {
+/* istanbul ignore next */
+export function toParent (ctx: Context, outputName: string, msg = undefined, unique = false, isPropagated = true) {
   let outMsg
   let parts = (ctx.id + '').split('$')
   if (parts.length === 1) {
@@ -96,11 +102,14 @@ export function toParent (ctx: Context, outputName: string, msg = undefined, uni
   }
   let inputResult = <Executable<any> | Executable<any>[]> input(outMsg)
   execute(ctx.components[parentId].ctx, inputResult)
-  propagate(ctx.components[parentId].ctx, ctx.components[parentId], inputParent, outMsg)
+  if (isPropagated) {
+    propagate(ctx.components[parentId].ctx, ctx.components[parentId], inputParent, outMsg)
+  }
 }
 
 // send a message to an input of a component from its child
-export function toIt (ctx: Context, inputName: string, msg?) {
+/* istanbul ignore next */
+export function toIt (ctx: Context, inputName: string, msg?, isPropagated = true) {
   let id = ctx.id
   let input = ctx.components[id].inputs[inputName]
   if (!input) {
@@ -111,7 +120,9 @@ export function toIt (ctx: Context, inputName: string, msg?) {
   }
   let inputResult = <Executable<any> | Executable<any>[]> input(msg)
   execute(ctx.components[id].ctx, inputResult)
-  propagate(ctx.components[id].ctx, ctx.components[id], inputName, inputResult)
+  if (isPropagated) {
+    propagate(ctx.components[id].ctx, ctx.components[id], inputName, inputResult)
+  }
 }
 
 // ---
