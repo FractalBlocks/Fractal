@@ -30,6 +30,7 @@ We support use of:
 There are TODOs for short term:
 
 - TESTING(CRITICAL): Test single / nested / optional propagation of component message interchange, now ignored!!
+- Better Logging functions
 - Update examples that uses global child listeners acording to v1.2.0 changes
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
 - Add error index (DX)
