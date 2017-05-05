@@ -1,10 +1,10 @@
-import { Component, Actions, Inputs, ev, _ } from '../../core'
+import { Actions, Inputs, ev, _, Interfaces } from '../../core'
 import { toParent, action, act } from '../../component'
 import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-const name = 'Item'
+export const name = 'Item'
 
 export const state = {
   checked: false,
@@ -13,14 +13,14 @@ export const state = {
 
 export type S = typeof state
 
-const inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ctx => ({
   action: action(actions),
   $$remove: () => {
     toParent(ctx, 'remove', _, true)
   },
 })
 
-const actions: Actions<S> = {
+export const actions: Actions<S> = {
   SetChecked: checked => s => {
     s.checked = checked
     return s
@@ -54,6 +54,8 @@ const view: View<S> = (ctx, s) => {
   ])
 }
 
+export const interfaces: Interfaces = { view }
+
 const style: StyleGroup = {
   base: {
     display: 'flex',
@@ -78,17 +80,4 @@ const style: StyleGroup = {
   },
 }
 
-const comp: Component<S> = {
-  name,
-  groups: {
-    style,
-  },
-  state,
-  inputs,
-  actions,
-  interfaces: {
-    view,
-  },
-}
-
-export default comp
+export const groups = { style }

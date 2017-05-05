@@ -4,7 +4,7 @@ import { styleHandler } from '../../groups/style'
 import { logFns } from '../../log' // DEV ONLY
 import { mergeStates } from '../../reattach' // DEV ONLY
 
-import root from './root'
+import * as root from './root'
 
 const app = run({
   root,
