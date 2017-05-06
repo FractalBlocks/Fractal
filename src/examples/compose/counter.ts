@@ -1,10 +1,10 @@
-import { Component, ev, Inputs, Actions } from '../../core'
+import { Inputs, Actions, Interfaces, ev } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-let name = 'Counter'
+export const name = 'Counter'
 
 export const state = {
   count: 0,
@@ -12,7 +12,7 @@ export const state = {
 
 export type S = typeof state
 
-let actions: Actions<S> = {
+export const actions: Actions<S> = {
   Set: (count: number) => state => {
     state.count = count
     return state
@@ -23,7 +23,7 @@ let actions: Actions<S> = {
   },
 }
 
-let inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ctx => ({
   set: (n: number) => actions.Set(n),
   inc: () => actions.Inc(),
 })
@@ -49,7 +49,7 @@ let view: View<S> = (ctx, s) => {
   ])
 }
 
-
+export const interfaces: Interfaces = { view }
 
 let style: StyleGroup = {
   base: {
@@ -82,17 +82,4 @@ let style: StyleGroup = {
   },
 }
 
-let mDef: Component<S> = {
-  name,
-  groups: {
-    style,
-  },
-  state,
-  inputs,
-  actions,
-  interfaces: {
-    view,
-  },
-}
-
-export default mDef
+export const groups = { style }

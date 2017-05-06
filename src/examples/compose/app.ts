@@ -1,12 +1,12 @@
-import { Component, interfaceOf } from '../../core'
+import { interfaceOf, Interfaces } from '../../core'
 import { stateOf } from '../../component'
 import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-let name = 'Main'
+export const name = 'Main'
 
-let components = {
+export const components = {
   counter: require('./counter').default,
 }
 
@@ -29,6 +29,8 @@ let view: View<S> = (ctx, s) => {
   ])
 }
 
+export const interfaces: Interfaces = { view }
+
 let style: StyleGroup = {
   base: {
     width: '160px',
@@ -43,19 +45,4 @@ let style: StyleGroup = {
   },
 }
 
-let mDef: Component<S> = {
-  name,
-  groups: {
-    style,
-  },
-  state,
-  components,
-  inputs: ctx => ({}),
-  actions: {},
-  interfaces: {
-    view,
-  },
-}
-
-export default mDef
-
+export const groups = { style }

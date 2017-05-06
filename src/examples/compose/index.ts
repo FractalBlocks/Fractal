@@ -4,8 +4,10 @@ import { viewHandler } from '../../interfaces/view'
 import { logFns } from '../../log' // DEV ONLY
 import { mergeStates } from '../../reattach' // DEV ONLY
 
+import * as root from './app'
+
 let app = run({
-  root: require('./app').default,
+  root,
   groups: {
     style: styleHandler(),
   },
@@ -19,7 +21,7 @@ let app = run({
 // Hot reload - DEV ONLY
 if (module.hot) {
   module.hot.accept('./app', () => {
-    let m = require('./app').default
+    let m = require('./app')
     app.moduleAPI.reattach(m, mergeStates)
   })
 }
