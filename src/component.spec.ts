@@ -10,7 +10,6 @@ import {
   sendMsg,
   toChild,
   toParent,
-  toIt,
 } from './component'
 
 describe('Component helpers', () => {
@@ -238,12 +237,6 @@ describe('Component helpers', () => {
       let data = 131
       toParent(app.ctx.components['MyComp'].ctx, 'inputName', data)
       expect(parentDataUnique).toEqual(undefined)
-    })
-
-    it ('toIt should send a message to itself', () => {
-      let data = 121
-      toIt(app.ctx.components['MyComp'].ctx, 'selfMessage', data)
-      expect(selfData).toEqual(data)
     })
 
   })

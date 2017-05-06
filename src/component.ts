@@ -8,8 +8,8 @@ import {
   interfaceOf,
   Group,
   ev,
-  execute,
   Module,
+  toIt,
 } from './core'
 
 // set of helpers for building components
@@ -48,13 +48,13 @@ export function vw (ctx: Context, componentName: string): HandlerMsg {
 /* istanbul ignore next */
 export function sendMsg (mod: Module, id: string, inputName: string, msg?, isPropagated = true) {
   let ctx = mod.ctx
-  execute(ctx.components[id].ctx, inputName, msg, isPropagated)
+  toIt(ctx.components[id].ctx, inputName, msg, isPropagated)
 }
 
 // send a message to an input of a component from its parent
 export function toChild (ctx: Context, name: string, inputName: string, msg = undefined, isPropagated = true) {
   let childId = ctx.id + '$' + name
-  execute(ctx.components[childId].ctx, inputName, msg, isPropagated)
+  toIt(ctx.components[childId].ctx, inputName, msg, isPropagated)
 }
 
 // send a message to an input of a component from its child
@@ -74,13 +74,7 @@ export function toParent (ctx: Context, outputName: string, msg = undefined, uni
     inputParent = `$${name}_${outputName}`
     outMsg = msg
   }
-  execute(ctx.components[parentId].ctx, inputParent, outMsg)
-}
-
-// send a message to an input of a component from itself (wrapper for execute)
-/* istanbul ignore next */
-export function toIt (ctx: Context, inputName: string, msg?, isPropagated = true) {
-  execute(ctx, inputName, msg, isPropagated)
+  toIt(ctx.components[parentId].ctx, inputParent, outMsg)
 }
 
 // ---

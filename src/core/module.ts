@@ -6,6 +6,7 @@ import {
   ComponentSpaceIndex,
   InputData,
   EventData,
+  Executable,
 } from './core'
 import {
   HandlerInterface,
@@ -296,7 +297,7 @@ export const dispatch = (ctxIn: Context, eventData: EventData, isPropagated = tr
     : eventData[4] === 'context'
     ? eventData[2] // is only context
     : eventData[3] // is only event data
-  execute(componentSpace.ctx, inputName, data)
+  toIt(componentSpace.ctx, inputName, data)
 }
 
 export function propagate (ctx: Context, inputName: string, data: any) {
@@ -322,16 +323,14 @@ export function propagate (ctx: Context, inputName: string, data: any) {
     }
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      execute(parentSpace.ctx, parentInputName, msg)
+      toIt(parentSpace.ctx, parentInputName, msg)
     }
   }
 }
 
-export function execute (ctxIn: Context, inputName: string, data: any, isPropagated = true) {
-  let id = ctxIn.id
-  let rootId = (id + '').split('$')[0]
-  // Obtain root context
-  let ctx = ctxIn.components[rootId].ctx
+// send a message to an input of a component from itself
+export function toIt (ctx: Context, inputName: string, data?, isPropagated = true) {
+  let id = ctx.id
   let componentSpace = ctx.components[id]
 
   let input = componentSpace.inputs[inputName]
@@ -343,59 +342,76 @@ export function execute (ctxIn: Context, inputName: string, data: any, isPropaga
     )
     return
   }
-  ctx.beforeInput(ctxIn, inputName, data)
+  ctx.beforeInput(ctx, inputName, data)
   /* istanbul ignore else */
   if (<any> input !== 'nothing') {
     // call the input
     let executable = input(data)
 
     if (executable !== undefined) {
-      if (typeof executable === 'function') {
-        // single update
-        componentSpace.state = (<Update<any>> executable)(componentSpace.state)
-        notifyInterfaceHandlers(ctx) // root context
-      } else {
-        /* istanbul ignore else */
-        if (executable instanceof Array) {
-          if (executable[0] && typeof executable[0] === 'string') {
-            // single task
-            if (!ctx.taskHandlers[executable[0]]) {
-              return ctx.error('execute', `there are no task handler for '${executable[0]}' in component '${componentSpace.def.name}' from space '${id}'`)
-            }
-            ctx.taskHandlers[executable[0]].handle(executable[1])
-          } else {
-            /* istanbul ignore else */
-            if (executable[0] instanceof Array || typeof executable[0] === 'function') {
-              // list of updates and tasks
-              for (let i = 0, len = executable.length; i < len; i++) {
-                if (typeof executable[i] === 'function') {
-                  // is an update
-                  componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
-                  notifyInterfaceHandlers(ctx) // root context
-                } else {
-                    /* istanbul ignore else */
-                    if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
-                    // single task
-                    if (!ctx.taskHandlers[executable[i][0]]) {
-                      return ctx.error('execute', `there are no task handler for '${executable[i][0]}' in component '${componentSpace.def.name}' from space '${id}'`)
-                    }
-                    ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
-                  }
-                }
-                // the else branch never occurs because of Typecript check
-              }
-            }
-          }
-        }
-        // the else branch never occurs because of Typecript check
-      }
+      execute(ctx, executable)
     }
   }
   /* istanbul ignore else */
   if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
-    propagate(ctxIn, inputName, data)
+    propagate(ctx, inputName, data)
   }
-  ctx.afterInput(ctxIn, inputName, data)
+  ctx.afterInput(ctx, inputName, data)
+}
+
+// execute an executable in a context, executable parameter should not be undefined
+export function execute (ctx: Context, executable: void | Executable<any> | Executable<any>[]) {
+  let id = ctx.id
+  let componentSpace = ctx.components[id]
+  let rootId = (id + '').split('$')[0]
+  // Obtain root context
+  let rootCtx = ctx.components[rootId].ctx
+
+  if (typeof executable === 'function') {
+    // single update
+    componentSpace.state = (<Update<any>> executable)(componentSpace.state)
+    notifyInterfaceHandlers(rootCtx) // root context
+  } else {
+    /* istanbul ignore else */
+    if (executable instanceof Array) {
+      if (executable[0] && typeof executable[0] === 'string') {
+        // single task
+        if (!ctx.taskHandlers[executable[0]]) {
+          return ctx.error(
+            'execute',
+            `there are no task handler for '${executable[0]}' in component '${componentSpace.def.name}' from space '${id}'`
+          )
+        }
+        ctx.taskHandlers[executable[0]].handle(executable[1])
+      } else {
+        /* istanbul ignore else */
+        if (executable[0] instanceof Array || typeof executable[0] === 'function') {
+          // list of updates and tasks
+          for (let i = 0, len = executable.length; i < len; i++) {
+            if (typeof executable[i] === 'function') {
+              // is an update
+              componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
+              notifyInterfaceHandlers(rootCtx) // root context
+            } else {
+                /* istanbul ignore else */
+                if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
+                // single task
+                if (!ctx.taskHandlers[executable[i][0]]) {
+                  return ctx.error(
+                    'execute',
+                    `there are no task handler for '${executable[i][0]}' in component '${componentSpace.def.name}' from space '${id}'`
+                  )
+                }
+                ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
+              }
+            }
+            // the else branch never occurs because of Typecript check
+          }
+        }
+      }
+    }
+    // the else branch never occurs because of Typecript check
+  }
 }
 
 // permorms interface recalculation
