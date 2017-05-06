@@ -29,13 +29,16 @@ We support use of:
 
 There are TODOs for short term:
 
+- Todo-mvc example in a separated repo
+- Flux-Challenge example and do a PR to Staltz repo
 - TESTING(CRITICAL): Test single / nested / optional propagation of component message interchange, now ignored!!
 - Better Logging functions
+- Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
 - Update examples that uses global child listeners acording to v1.2.0 changes
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
+- Evaluate a way for keeping state in inputs, maybe support use of generators e.g. keep waiting for 3 messages after execute some action or task
 - Add error index (DX)
 - Router Docs (ASAP)
-- Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
 - Build an example of Scuttlebott integration (ASAP)
 - Use complexList inside manyLists example and add adapter to complexList
 - Document adapters like a way for nesting complex lists (dynamic component trees)
