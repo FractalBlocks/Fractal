@@ -4,10 +4,12 @@ import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
+import * as Counter from './counter'
+
 export const name = 'Main'
 
 export const components = {
-  counter: require('./counter').default,
+  Counter,
 }
 
 export const state = {}
@@ -23,9 +25,9 @@ let view: View<S> = (ctx, s) => {
     h('div', {
       class: { [style.childCount]: true },
     }, [
-      stateOf(ctx, 'counter').count,
+      stateOf(ctx, 'Counter').count,
     ]),
-    interfaceOf(ctx, 'counter', 'view'),
+    interfaceOf(ctx, 'Counter', 'view'),
   ])
 }
 

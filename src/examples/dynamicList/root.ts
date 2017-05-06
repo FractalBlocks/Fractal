@@ -1,10 +1,10 @@
-import { Component, Actions, Inputs, ev, _ } from '../../core'
+import { Actions, Inputs, ev, _, Interfaces } from '../../core'
 import { action, act } from '../../component'
 import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-const name = 'Root'
+export const name = 'Root'
 
 export const state = {
   text: '',
@@ -13,7 +13,7 @@ export const state = {
 
 export type S = typeof state
 
-const inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ctx => ({
   action: action(actions),
   inputKeyup: ([keyCode, text]) =>
     keyCode === 13 && text !== ''
@@ -23,7 +23,7 @@ const inputs: Inputs<S> = ctx => ({
     ] : actions.SetText(text),
 })
 
-const actions: Actions<S> = {
+export const actions: Actions<S> = {
   SetText: text => s => {
     s.text = text
     return s
@@ -47,6 +47,7 @@ const view: View<S> = (ctx, s) => {
   }, [
     h('input', {
       class: { [style.input]: true },
+      attrs: { placeholder: 'Type and hit enter' },
       props: { value: s.text },
       on: {
         keyup: ev(ctx, 'inputKeyup', _, [
@@ -73,6 +74,8 @@ const view: View<S> = (ctx, s) => {
     ),
   ])
 }
+
+export const interfaces: Interfaces = { view }
 
 const generalFont = {
   fontFamily: 'sans-serif',
@@ -122,17 +125,4 @@ const style: StyleGroup = {
   },
 }
 
-const comp: Component<S> = {
-  name,
-  groups: {
-    style,
-  },
-  state,
-  inputs,
-  actions,
-  interfaces: {
-    view,
-  },
-}
-
-export default comp
+export const groups = { style }

@@ -1,6 +1,5 @@
-import { Inputs, Actions, Interfaces, ev, _ } from '../../core'
+import { Inputs, Actions, Interfaces, ev, _, toIt } from '../../core'
 import { StyleGroup } from '../../style'
-import { toIt } from '../../component'
 
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'

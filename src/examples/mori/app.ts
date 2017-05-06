@@ -1,4 +1,4 @@
-import { Component, Inputs, Actions, ev } from '../../core'
+import { Inputs, Actions, ev, Interfaces } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { hashMap } from 'mori'
 import { evolve, get } from '../../mori'
@@ -6,18 +6,18 @@ import { evolve, get } from '../../mori'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
 
-let name = 'Main'
+export const name = 'Main'
 
-let state = hashMap<string, string>(
+export const state: any = hashMap<string, string>(
   'count', 0,
 )
 
-let actions: Actions<any> = {
+export const  actions: Actions<any> = {
   Set: (count: number) => evolve('count', () => count),
   Inc: () => evolve('count', x => x + 1),
 }
 
-let inputs: Inputs<any> = ctx => ({
+export const  inputs: Inputs<any> = ctx => ({
   set: n => actions.Set(n),
   inc: () => actions.Inc(),
 })
@@ -42,6 +42,8 @@ let view: View<any> = (ctx, s) => {
     }, 'reset'),
   ])
 }
+
+export const interfaces: Interfaces = { view }
 
 let style: StyleGroup = {
   base: {
@@ -73,18 +75,5 @@ let style: StyleGroup = {
     ...clickable,
   },
 }
-let mDef: Component<any> = {
-  name,
-  groups: {
-    style,
-  },
-  state,
-  inputs,
-  actions,
-  interfaces: {
-    view,
-  },
-}
 
-export default mDef
-
+export const groups = { style }

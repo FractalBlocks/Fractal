@@ -1,5 +1,5 @@
-import { Actions, Inputs, ev, merge, unmerge, clone, Interfaces } from '../../core'
-import { action, vw, props, toChild, stateOf, toIt } from '../../component'
+import { Actions, Inputs, ev, merge, unmerge, clone, Interfaces, toIt } from '../../core'
+import { action, vw, props, toChild, stateOf } from '../../component'
 import { StyleGroup, clickable } from '../../style'
 import { View } from '../../interfaces/view'
 import h from 'snabbdom/h'
