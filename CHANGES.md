@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.4.2
+
+- Fix log when state is not an object
+
 # v1.4.1
 
 - Fix log functions
