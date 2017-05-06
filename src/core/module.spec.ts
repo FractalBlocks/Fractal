@@ -283,7 +283,7 @@ describe('One Component + module functionality', function () {
     expect(app.ctx.components['Main'].state === root.state).toBeFalsy()
   })
 
-  it('should work a component with no inputs', () => {
+  it('a component should work with no inputs', () => {
     let root: Component<any> = {
       name,
       state: {},
@@ -511,7 +511,7 @@ describe('One Component + module functionality', function () {
   it('should log an error when try to dispatch an inexistent input of a module', () => {
     value._dispatch(['Main', 'someInput'])
     expect(lastLog).toEqual([
-      'dispatch',
+      'execute',
       `there are no input named 'someInput' in component 'Main' from space 'Main'`,
     ])
   })

@@ -10,8 +10,6 @@ import {
   ev,
   execute,
   Module,
-  Executable,
-  propagate,
 } from './core'
 
 // set of helpers for building components
@@ -50,33 +48,16 @@ export function vw (ctx: Context, componentName: string): HandlerMsg {
 /* istanbul ignore next */
 export function sendMsg (mod: Module, id: string, inputName: string, msg?, isPropagated = true) {
   let ctx = mod.ctx
-  let inputResult = <Executable<any> | Executable<any>[]> ctx.components[id].inputs[inputName](msg)
-  execute(ctx.components[id].ctx, inputResult)
-  if (isPropagated) {
-    propagate(ctx.components[id].ctx, ctx.components[id], inputName, msg)
-  }
+  execute(ctx.components[id].ctx, inputName, msg, isPropagated)
 }
 
 // send a message to an input of a component from its parent
-/* istanbul ignore next */
 export function toChild (ctx: Context, name: string, inputName: string, msg = undefined, isPropagated = true) {
   let childId = ctx.id + '$' + name
-  let input = ctx.components[childId].inputs[inputName]
-  if (!input) {
-    return ctx.error(
-      'toChild',
-      `there are no '${inputName}' input in '${childId}' as expected by '${ctx.id}'`
-    )
-  }
-  let inputResult = <Executable<any> | Executable<any>[]> input(msg)
-  execute(ctx.components[childId].ctx, inputResult)
-  if (isPropagated) {
-    propagate(ctx.components[childId].ctx, ctx.components[childId], inputName, msg)
-  }
+  execute(ctx.components[childId].ctx, inputName, msg, isPropagated)
 }
 
 // send a message to an input of a component from its child
-/* istanbul ignore next */
 export function toParent (ctx: Context, outputName: string, msg = undefined, unique = false, isPropagated = true) {
   let outMsg
   let parts = (ctx.id + '').split('$')
@@ -93,36 +74,13 @@ export function toParent (ctx: Context, outputName: string, msg = undefined, uni
     inputParent = `$${name}_${outputName}`
     outMsg = msg
   }
-  let input = ctx.components[parentId].inputs[inputParent]
-  if (!input) {
-    return ctx.error(
-      'toParent',
-      `there are no '${inputParent}' input in parent '${parentId}' as expected by '${ctx.id}'`
-    )
-  }
-  let inputResult = <Executable<any> | Executable<any>[]> input(outMsg)
-  execute(ctx.components[parentId].ctx, inputResult)
-  if (isPropagated) {
-    propagate(ctx.components[parentId].ctx, ctx.components[parentId], inputParent, outMsg)
-  }
+  execute(ctx.components[parentId].ctx, inputParent, outMsg)
 }
 
-// send a message to an input of a component from its child
+// send a message to an input of a component from itself (wrapper for execute)
 /* istanbul ignore next */
 export function toIt (ctx: Context, inputName: string, msg?, isPropagated = true) {
-  let id = ctx.id
-  let input = ctx.components[id].inputs[inputName]
-  if (!input) {
-    return ctx.error(
-      'toIt',
-      `there are no '${inputName}' input in '${id}' as expected by itself`
-    )
-  }
-  let inputResult = <Executable<any> | Executable<any>[]> input(msg)
-  execute(ctx.components[id].ctx, inputResult)
-  if (isPropagated) {
-    propagate(ctx.components[id].ctx, ctx.components[id], inputName, inputResult)
-  }
+  execute(ctx, inputName, msg, isPropagated)
 }
 
 // ---

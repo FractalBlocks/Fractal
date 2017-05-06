@@ -4,10 +4,8 @@ import {
   Update,
   Context,
   ComponentSpaceIndex,
-  Executable,
   InputData,
   EventData,
-  ComponentSpace,
 } from './core'
 import {
   HandlerInterface,
@@ -26,7 +24,7 @@ export interface ModuleDef {
   init? (mod: ModuleAPI): void
   destroy? (mod: ModuleAPI): void
   // Middleware for inputs
-  onDispatch? (ctx: Context, eventData: EventData): void
+  onDispatch? (ctx: Context, eventData: EventData): void // TODO: REMOVE
   // callbacks (side effects) for log messages
   warn? (source: string, description: string): void
   error? (source: string, description: string): void
@@ -289,107 +287,109 @@ export const dispatch = (ctxIn: Context, eventData: EventData, isPropagated = tr
     return ctx.error('dispatch', `there are no component space '${id}'`)
   }
   let inputName = eventData[1]
-  let input = componentSpace.inputs[inputName]
-  if (input) {
-    // extract data from eventData
-    let data = eventData[4] === 'pair' // is both?
-      ? [eventData[2], eventData[3]] // is both event data + context
-      : eventData[4] === 'context'
-      ? eventData[2] // is only context
-      : eventData[3] // is only event data
-    /* istanbul ignore else */
-    if (<any> input !== 'nothing') {
-      execute(componentSpace.ctx, <any> input(data))
-      if (isPropagated) {
-        propagate(componentSpace.ctx, componentSpace, inputName, data)
-      }
-    }
-  } else {
-    ctx.error(
-      'dispatch',
-      `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`
-    )
-  }
+  // extract data from eventData
+  let data = eventData[4] === 'pair' // is both?
+    ? [eventData[2], eventData[3]] // is both event data + context
+    : eventData[4] === 'context'
+    ? eventData[2] // is only context
+    : eventData[3] // is only event data
+  execute(componentSpace.ctx, inputName, data)
 }
 
-export function propagate (ctx: Context, componentSpace: ComponentSpace, inputName, data) {
+export function propagate (ctx: Context, inputName: string, data: any) {
   // notifies parent if name starts with $
   let id = ctx.id
   let idParts = (id + '').split('$')
+  let componentSpace = ctx.components[id]
   if (idParts.length > 1) {
+    // is not root?
     let parentId = idParts.slice(0, -1).join('$')
     let parentSpace = ctx.components[parentId]
-    // is not root?
+    let msg
+    let parentInputName
     if (inputName[0] === '$') {
       // global notifier ($some), genrally used for lists of components
       let childInputName = inputName.slice(1, inputName.length)
-      let parentInputName = `$$${componentSpace.def.name}_${childInputName}`
-      let parentInput = parentSpace.inputs[parentInputName]
-      /* istanbul ignore else */
-      if (parentInput) {
-        execute(parentSpace.ctx, <any> parentInput(componentSpace.ctx.name))
-        propagate(parentSpace.ctx, parentSpace, parentInputName, componentSpace.ctx.name)
-      }
+      parentInputName = `$$${componentSpace.def.name}_${childInputName}`
+      msg = componentSpace.ctx.name
     } else {
       // individual parent notifier
-      let parentInputName = `$${componentSpace.ctx.name}_${inputName}`
-      let parentInput = parentSpace.inputs[parentInputName]
-      /* istanbul ignore else */
-      if (parentInput) {
-        execute(parentSpace.ctx, <any> parentInput(data))
-        propagate(parentSpace.ctx, parentSpace, parentInputName, data)
-      }
+      parentInputName = `$${componentSpace.ctx.name}_${inputName}`
+      msg = data
+    }
+    /* istanbul ignore else */
+    if (parentSpace.inputs[parentInputName]) {
+      execute(parentSpace.ctx, parentInputName, msg)
     }
   }
 }
 
-export function execute (ctxIn: Context, executable: Executable<any> | Executable<any>[]) {
+export function execute (ctxIn: Context, inputName: string, data: any, isPropagated = true) {
   let id = ctxIn.id
   let rootId = (id + '').split('$')[0]
   // Obtain root context
   let ctx = ctxIn.components[rootId].ctx
   let componentSpace = ctx.components[id]
 
-  // obtain
+  let input = componentSpace.inputs[inputName]
 
-  if (typeof executable === 'function') {
-    // single update
-    componentSpace.state = (<Update<any>> executable)(componentSpace.state)
-    notifyInterfaceHandlers(ctx) // root context
-  } else {
-    /* istanbul ignore else */
-    if (executable instanceof Array) {
-      if (executable[0] && typeof executable[0] === 'string') {
-        // single task
-        if (!ctx.taskHandlers[executable[0]]) {
-          return ctx.error('execute', `there are no task handler for '${executable[0]}' in component '${componentSpace.def.name}' from space '${id}'`)
-        }
-        ctx.taskHandlers[executable[0]].handle(executable[1])
+  if (input === undefined) {
+    ctx.error(
+      'execute',
+      `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${id}'`
+    )
+    return
+  }
+  /* istanbul ignore else */
+  if (<any> input !== 'nothing') {
+    // call the input
+    let executable = input(data)
+
+    if (executable !== undefined) {
+      if (typeof executable === 'function') {
+        // single update
+        componentSpace.state = (<Update<any>> executable)(componentSpace.state)
+        notifyInterfaceHandlers(ctx) // root context
       } else {
         /* istanbul ignore else */
-        if (executable[0] instanceof Array || typeof executable[0] === 'function') {
-          // list of updates and tasks
-          for (let i = 0, len = executable.length; i < len; i++) {
-            if (typeof executable[i] === 'function') {
-              // is an update
-              componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
-              notifyInterfaceHandlers(ctx) // root context
-            } else {
-                /* istanbul ignore else */
-                if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
-                // single task
-                if (!ctx.taskHandlers[executable[i][0]]) {
-                  return ctx.error('execute', `there are no task handler for '${executable[i][0]}' in component '${componentSpace.def.name}' from space '${id}'`)
+        if (executable instanceof Array) {
+          if (executable[0] && typeof executable[0] === 'string') {
+            // single task
+            if (!ctx.taskHandlers[executable[0]]) {
+              return ctx.error('execute', `there are no task handler for '${executable[0]}' in component '${componentSpace.def.name}' from space '${id}'`)
+            }
+            ctx.taskHandlers[executable[0]].handle(executable[1])
+          } else {
+            /* istanbul ignore else */
+            if (executable[0] instanceof Array || typeof executable[0] === 'function') {
+              // list of updates and tasks
+              for (let i = 0, len = executable.length; i < len; i++) {
+                if (typeof executable[i] === 'function') {
+                  // is an update
+                  componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
+                  notifyInterfaceHandlers(ctx) // root context
+                } else {
+                    /* istanbul ignore else */
+                    if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
+                    // single task
+                    if (!ctx.taskHandlers[executable[i][0]]) {
+                      return ctx.error('execute', `there are no task handler for '${executable[i][0]}' in component '${componentSpace.def.name}' from space '${id}'`)
+                    }
+                    ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
+                  }
                 }
-                ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
+                // the else branch never occurs because of Typecript check
               }
             }
-            // the else branch never occurs because of Typecript check
           }
         }
+        // the else branch never occurs because of Typecript check
       }
     }
-    // the else branch never occurs because of Typecript check
+  }
+  /* istanbul ignore else */
+  if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
+    propagate(ctxIn, inputName, data)
   }
 }
 
