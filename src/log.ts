@@ -11,7 +11,10 @@ export const error = (source: string, description: string) =>
   console.error(`source: ${source}, description: ${description}`)
 
 export const beforeInput = (ctx, inputName, data) => {
-  let state = clone(stateOf(ctx))
+  let state = stateOf(ctx)
+  if (typeof state === 'object') {
+    state = clone(state)
+  }
   // <any> until groupCollapsed issue in TS repo is merged https://github.com/Microsoft/TypeScript/pull/15630
   ;(<any> console.groupCollapsed)(
     `%c input %c${inputName} %cfrom %c${ctx.id}`,
@@ -27,7 +30,10 @@ export const beforeInput = (ctx, inputName, data) => {
 // color for actions (not yet implemented) #58C6F8
 
 export const afterInput = (ctx, inputName, data) => {
-  let state = clone(stateOf(ctx))
+  let state = stateOf(ctx)
+  if (typeof state === 'object') {
+    state = clone(state)
+  }
   console.info('%c next state  ', 'color: #3CA43F; font-weight: bold;', state)
   console.groupEnd()
 }
