@@ -6,6 +6,11 @@
 
 ## Done
 
+# v1.4.3
+
+- Fix execute function
+- Move toIt to core
+
 # v1.4.2
 
 - Fix log when state is not an object
