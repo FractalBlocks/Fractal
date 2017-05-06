@@ -278,8 +278,9 @@ export function computeEvent(event: any, iData: InputData): EventData {
 }
 
 // dispatch an input based on eventData to the respective component
-// ctx should be the root context
-export const dispatch = (ctxIn: Context, eventData: EventData) => {
+/* istanbul ignore next */
+// TODO: test the propagation
+export const dispatch = (ctxIn: Context, eventData: EventData, isPropagated = true) => {
   let id = eventData[0] + ''
   // root component
   let ctx = ctxIn.components[(id + '').split('$')[0]].ctx
@@ -290,6 +291,7 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
   let inputName = eventData[1]
   let input = componentSpace.inputs[inputName]
   if (input) {
+    // extract data from eventData
     let data = eventData[4] === 'pair' // is both?
       ? [eventData[2], eventData[3]] // is both event data + context
       : eventData[4] === 'context'
@@ -298,10 +300,15 @@ export const dispatch = (ctxIn: Context, eventData: EventData) => {
     /* istanbul ignore else */
     if (<any> input !== 'nothing') {
       execute(componentSpace.ctx, <any> input(data))
-      propagate(componentSpace.ctx, componentSpace, inputName, data)
+      if (isPropagated) {
+        propagate(componentSpace.ctx, componentSpace, inputName, data)
+      }
     }
   } else {
-    ctx.error('dispatch', `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`)
+    ctx.error(
+      'dispatch',
+      `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${eventData[0]}'`
+    )
   }
 }
 
@@ -343,10 +350,12 @@ export function execute (ctxIn: Context, executable: Executable<any> | Executabl
   let ctx = ctxIn.components[rootId].ctx
   let componentSpace = ctx.components[id]
 
+  // obtain
+
   if (typeof executable === 'function') {
     // single update
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
-    notifyInterfaceHandlers(ctx)
+    notifyInterfaceHandlers(ctx) // root context
   } else {
     /* istanbul ignore else */
     if (executable instanceof Array) {
@@ -364,7 +373,7 @@ export function execute (ctxIn: Context, executable: Executable<any> | Executabl
             if (typeof executable[i] === 'function') {
               // is an update
               componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
-              notifyInterfaceHandlers(ctx)
+              notifyInterfaceHandlers(ctx) // root context
             } else {
                 /* istanbul ignore else */
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
