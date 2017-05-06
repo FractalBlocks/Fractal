@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.4.1
+
+- Fix log functions
+
 # v1.4.0
 
 - Add isPropagated optional parameter to dispatch function
