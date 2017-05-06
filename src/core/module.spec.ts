@@ -468,31 +468,62 @@ describe('One Component + module functionality', function () {
     expect(lastLog).toEqual(error)
   })
 
-  // it('should execute onDispatch when dispatch an input', done => {
-  //   let valueFn
-  //   let lastValue
-  //   function onValue(val) {
-  //     lastValue = val
-  //     if (valueFn) {
-  //       valueFn(val)
-  //     }
-  //   }
+  it('should execute beforeInput before dispatch an input', done => {
+    let valueFn
+    let lastValue
+    function onValue(val) {
+      lastValue = val
+      if (valueFn) {
+        valueFn(val)
+      }
+    }
 
-  //   let app = run({
-  //     root,
-  //     interfaces: {
-  //       value: valueHandler(onValue),
-  //     },
-  //     onDispatch: (ctx, ev) => {
-  //       expect(ctx === app.ctx)
-  //       expect(ev).toEqual(['Main', 'set', 10, undefined, 'context'])
-  //       done()
-  //     },
-  //   })
+    let app = run({
+      root,
+      interfaces: {
+        value: valueHandler(onValue),
+      },
+      beforeInput: (ctx, inputName, data) => {
+        expect(ctx === app.ctx)
+        expect(inputName).toEqual('set')
+        expect(data).toEqual(10)
+        expect(ctx.components.Main.state).toEqual(0)
+        done()
+      },
+    })
 
-  //   lastValue._dispatch(computeEvent({}, value.set))
+    lastValue._dispatch(computeEvent({}, value.set))
 
-  // })
+  })
+
+it('should execute afterInput before dispatch an input', done => {
+    let valueFn
+    let lastValue
+    function onValue(val) {
+      lastValue = val
+      if (valueFn) {
+        valueFn(val)
+      }
+    }
+
+    let app = run({
+      root,
+      interfaces: {
+        value: valueHandler(onValue),
+      },
+      afterInput: (ctx, inputName, data) => {
+        expect(ctx === app.ctx)
+        expect(inputName).toEqual('set')
+        expect(data).toEqual(10)
+        expect(ctx.components.Main.state).toEqual(10)
+        done()
+      },
+    })
+
+    lastValue._dispatch(computeEvent({}, value.set))
+
+  })
+
 
   it('should delegate warn function', () => {
     let warn = ['child', 'warn 1']

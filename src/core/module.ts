@@ -23,7 +23,9 @@ export interface ModuleDef {
   beforeInit? (mod: ModuleAPI): void
   init? (mod: ModuleAPI): void
   destroy? (mod: ModuleAPI): void
-  // hooks for inputs (temporary empty)
+  // hooks for inputs
+  beforeInput? (ctxIn: Context, inputName: string, data: any): void
+  afterInput? (ctxIn: Context, inputName: string, data: any): void
   // callbacks (side effects) for log messages
   warn? (source: string, description: string): void
   error? (source: string, description: string): void
@@ -90,6 +92,8 @@ export function createContext (ctx: Context, name: Identifier): Context {
     groupHandlers: ctx.groupHandlers,
     interfaceHandlers: ctx.interfaceHandlers,
     taskHandlers: ctx.taskHandlers,
+    beforeInput: ctx.beforeInput,
+    afterInput: ctx.afterInput,
     warn: ctx.warn,
     error: ctx.error,
   }
@@ -276,7 +280,7 @@ export function computeEvent(event: any, iData: InputData): EventData {
 
 // dispatch an input based on eventData to the respective component
 /* istanbul ignore next */
-// TODO: test the propagation
+// TODO: test propagation (CRITICAL)
 export const dispatch = (ctxIn: Context, eventData: EventData, isPropagated = true) => {
   let id = eventData[0] + ''
   // root component
@@ -339,6 +343,7 @@ export function execute (ctxIn: Context, inputName: string, data: any, isPropaga
     )
     return
   }
+  ctx.beforeInput(ctxIn, inputName, data)
   /* istanbul ignore else */
   if (<any> input !== 'nothing') {
     // call the input
@@ -390,6 +395,7 @@ export function execute (ctxIn: Context, inputName: string, data: any, isPropaga
   if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
     propagate(ctxIn, inputName, data)
   }
+  ctx.afterInput(ctxIn, inputName, data)
 }
 
 // permorms interface recalculation
@@ -433,6 +439,16 @@ export function run (moduleDef: ModuleDef): Module {
         taskHandlers: {},
         interfaceHandlers: {},
         // error and warning handling
+        beforeInput: (ctxIn, inputName, data) => {
+          if (moduleDef.beforeInput) {
+            moduleDef.beforeInput(ctxIn, inputName, data)
+          }
+        },
+        afterInput: (ctxIn, inputName, data) => {
+          if (moduleDef.afterInput) {
+            moduleDef.afterInput(ctxIn, inputName, data)
+          }
+        },
         warn: (source, description) => {
           if (moduleDef.warn) {
             moduleDef.warn(source, description)

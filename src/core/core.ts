@@ -134,13 +134,16 @@ export interface Context {
   interfaceHandlers: {
     [name: string]: HandlerObject
   }
+  // input hooks delegation
+  beforeInput? (ctxIn: Context, inputName: string, data: any): void
+  afterInput? (ctxIn: Context, inputName: string, data: any): void
   // error and warning delegation
   warn: {
     (source: string, description: string): void
   }
   error: {
     (source: string, description: string): void
-  }
+  },
 }
 
 export interface ComponentSpaceIndex {
