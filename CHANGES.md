@@ -4,7 +4,14 @@
 
 # Next
 
+- Add beforeInput and afterInput events to Context and Module
+- Better Logging functions
+
 ## Done
+
+- Add isPropagated optional parameter to dispatch function
+- Refactor and simplify API
+- Remove onDispatch event from Module and log helpers
 
 # v1.3.1
 

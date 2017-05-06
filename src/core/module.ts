@@ -23,8 +23,7 @@ export interface ModuleDef {
   beforeInit? (mod: ModuleAPI): void
   init? (mod: ModuleAPI): void
   destroy? (mod: ModuleAPI): void
-  // Middleware for inputs
-  onDispatch? (ctx: Context, eventData: EventData): void // TODO: REMOVE
+  // hooks for inputs (temporary empty)
   // callbacks (side effects) for log messages
   warn? (source: string, description: string): void
   error? (source: string, description: string): void
@@ -454,11 +453,7 @@ export function run (moduleDef: ModuleDef): Module {
     // API for modules
     moduleAPI = {
       // dispatch function type used for handlers
-      dispatch: moduleDef.onDispatch
-        ? (eventData: EventData) => {
-          dispatch(ctx, eventData)
-          moduleDef.onDispatch(ctx, eventData)
-        } : (eventData: EventData) => dispatch(ctx, eventData),
+      dispatch: (eventData: EventData) => dispatch(ctx, eventData),
       dispose,
       reattach,
       // merge a component to the component index

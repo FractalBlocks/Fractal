@@ -468,31 +468,31 @@ describe('One Component + module functionality', function () {
     expect(lastLog).toEqual(error)
   })
 
-  it('should execute onDispatch when dispatch an input', done => {
-    let valueFn
-    let lastValue
-    function onValue(val) {
-      lastValue = val
-      if (valueFn) {
-        valueFn(val)
-      }
-    }
+  // it('should execute onDispatch when dispatch an input', done => {
+  //   let valueFn
+  //   let lastValue
+  //   function onValue(val) {
+  //     lastValue = val
+  //     if (valueFn) {
+  //       valueFn(val)
+  //     }
+  //   }
 
-    let app = run({
-      root,
-      interfaces: {
-        value: valueHandler(onValue),
-      },
-      onDispatch: (ctx, ev) => {
-        expect(ctx === app.ctx)
-        expect(ev).toEqual(['Main', 'set', 10, undefined, 'context'])
-        done()
-      },
-    })
+  //   let app = run({
+  //     root,
+  //     interfaces: {
+  //       value: valueHandler(onValue),
+  //     },
+  //     onDispatch: (ctx, ev) => {
+  //       expect(ctx === app.ctx)
+  //       expect(ev).toEqual(['Main', 'set', 10, undefined, 'context'])
+  //       done()
+  //     },
+  //   })
 
-    lastValue._dispatch(computeEvent({}, value.set))
+  //   lastValue._dispatch(computeEvent({}, value.set))
 
-  })
+  // })
 
   it('should delegate warn function', () => {
     let warn = ['child', 'warn 1']
