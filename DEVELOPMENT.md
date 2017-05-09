@@ -29,9 +29,8 @@ We support use of:
 
 There are TODOs for short term:
 
-- TESTING(CRITICAL): Test single / nested / optional propagation of `execute` function!!
+- Flux-Challenge example and do a PR to Staltz repo (WIP)
 - Todo-mvc example in a separated repo
-- Flux-Challenge example and do a PR to Staltz repo
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
 - Update examples that uses global child listeners acording to v1.2.0 changes
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
