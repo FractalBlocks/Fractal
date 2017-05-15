@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.4.4
+
+- Add merge to functional utils fun.ts
+
 # v1.4.3
 
 - Fix execute function

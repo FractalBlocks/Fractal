@@ -46,3 +46,13 @@ export function mapToObj (arr: any[], fn: { (idx, value?): KeyValuePair } ): any
   }
   return result
 }
+
+export function merge (objSrc) {
+  return function (obj) {
+    let key
+    for (key in objSrc) {
+      obj[key] = objSrc[key]
+    }
+    return obj
+  }
+}

@@ -2,8 +2,10 @@ import {
   assoc,
   evolve,
   evolveKey,
+  pipe,
+  mapToObj,
+  merge,
 } from './fun'
-import { pipe, mapToObj } from './fun'
 
 describe('Functional utils', () => {
 
@@ -67,6 +69,19 @@ describe('Functional utils', () => {
         a0: 'a1elm',
         a1: 'a2elm',
         a2: 'a3elm',
+      })
+    })
+
+  })
+
+  describe('merge helper', () => {
+
+    it('should merge two objects', () => {
+      expect(merge({ a: 1, b: 2 })({ c: 3, d: 4 })).toEqual({
+        a: 1,
+        b: 2,
+        c: 3,
+        d: 4,
       })
     })
 
