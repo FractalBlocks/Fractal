@@ -41,7 +41,7 @@ export type S = number
 ```
 
 We declare a `state` variable and initialize to zero and declare the type `S` to `number`
-The `export``stuff is because of we need to export this things to import them where we need the component
+The `export` stuff is because of we need to export this things to import them where we need the component
 
 Oh too short!
 
