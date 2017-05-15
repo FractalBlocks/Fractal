@@ -1,16 +1,13 @@
 import { Inputs, Actions, ev, Interfaces } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { View } from '../../interfaces/view'
-import { assoc, evolveKey } from '../../fun'
 import h from 'snabbdom/h'
 
 export const name = 'Main'
 
-export const state = {
-  count: 0,
-}
+export const state = 0
 
-export type S = typeof state
+export type S = number
 
 export const inputs: Inputs<S> = ctx => ({
   set: (n: number) => actions.Set(n),
@@ -18,8 +15,8 @@ export const inputs: Inputs<S> = ctx => ({
 })
 
 export const actions: Actions<S> = {
-  Set: assoc('count'),
-  Inc: () => evolveKey('count')(x => x + 1),
+  Set: n => () => n,
+  Inc: () => s => s + 1,
 }
 
 const view: View<S> = (ctx, s) => {
@@ -33,7 +30,7 @@ const view: View<S> = (ctx, s) => {
       on: {
         click: ev(ctx, 'inc'),
       },
-    }, `${s.count}`),
+    }, s + ''),
     h('div', {
       class: { [style.reset]: true },
       on: {
