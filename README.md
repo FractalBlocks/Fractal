@@ -37,6 +37,8 @@ Or in nodejs, browserify, webpack like environments:
 npm i --save fractal-core
 ```
 
+See our [basic tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/tutorial-basics.md) and the examples.
+
 ## Run the examples
 
 There are many useful examples at examples folder. Be sure that you have installed [Node.js](https://nodejs.org/en/), please [download Fractal source](https://github.com/FractalBlocks/Fractal/archive/master.zip) and extract them.
