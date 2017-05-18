@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.4.5
+
+- Fix view event listeners snabbdom module event pausing
+
 # v1.4.4
 
 - Add merge to functional utils fun.ts
