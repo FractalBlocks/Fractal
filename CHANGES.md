@@ -6,6 +6,14 @@
 
 ## Done
 
+# v1.4.10
+
+- Fix type signature of `assoc` functional helper
+
+# v1.4.9
+
+- Fix build
+
 # v1.4.8
 
 - Refactor view interface file structure
