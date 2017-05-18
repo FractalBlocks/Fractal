@@ -1,6 +1,10 @@
-import { VNode, VNodeData } from 'snabbdom/vnode'
+import { VNode, VNodeData } from './vnode'
 import { Module } from 'snabbdom/modules/module'
 import { computeEvent, InputData, ModuleAPI } from '../core'
+
+export interface On {
+  [event: string]: InputData
+}
 
 export const eventListenersModule = (mod: ModuleAPI): Module => {
 
@@ -107,7 +111,7 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
     create: updateEventListeners,
     update: updateEventListeners,
     destroy: updateEventListeners,
-  } as Module
+  } as any
 }
 
 export default eventListenersModule

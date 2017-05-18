@@ -2,7 +2,7 @@ import { Actions, Inputs, ev, _, Interfaces } from '../../core'
 import { toParent, action, act } from '../../component'
 import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 
 export const name = 'Item'
 

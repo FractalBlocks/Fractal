@@ -8,7 +8,7 @@ import { props, vw, setGroup, stateOf, toChild } from '../../component'
 import { pipe, assoc } from '../../fun'
 import { StyleGroup, mergeStyles } from '../../style'
 import { View } from '../../interfaces/view'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 
 import * as TextField from './textField'
 import * as Button from './button'

@@ -2,7 +2,7 @@ import { Component, interfaceOf } from '../../core'
 import { stateOf } from '../../component'
 import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 
 let name = 'Main'
 

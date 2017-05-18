@@ -6,6 +6,12 @@
 
 ## Done
 
+# v1.4.6
+
+- Update snabbdom version
+- Implement VNodeData and other stuff for h types
+- Add `interfaces/h` for using without import snabbdom
+
 # v1.4.5
 
 - Fix view event listeners snabbdom module event pausing

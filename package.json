@@ -1,6 +1,6 @@
 {
   "name": "fractal-core",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "A minimalist and well crafted app, content or component is our conviction",
   "main": "core/index.js",
   "typings": "core/index.d.ts",
@@ -58,7 +58,7 @@
     "deep-equal": "^1.0.1",
     "mori": "^0.3.2",
     "navigo": "^4.5.2",
-    "snabbdom": "^0.6.1",
+    "snabbdom": "^0.6.8",
     "typestyle": "^1.2.0"
   },
   "devDependencies": {

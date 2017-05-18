@@ -2,7 +2,7 @@ import { Actions, Inputs, ev, merge, unmerge, clone, Interfaces, toIt } from '..
 import { action, vw, props, toChild, stateOf } from '../../component'
 import { StyleGroup, clickable } from '../../style'
 import { View } from '../../interfaces/view'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 
 import * as Item from './item'
 

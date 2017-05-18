@@ -2,7 +2,7 @@ import { Inputs, Actions, Interfaces, ev, _, toIt } from '../../core'
 import { StyleGroup } from '../../style'
 
 import { View } from '../../interfaces/view'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 
 export const name = 'Button'
 

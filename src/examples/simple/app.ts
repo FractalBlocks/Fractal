@@ -1,7 +1,7 @@
 import { Inputs, Actions, ev, Interfaces } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { View } from '../../interfaces/view'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 
 export const name = 'Main'
 

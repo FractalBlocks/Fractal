@@ -5,8 +5,8 @@ import attributesModule from 'snabbdom/modules/attributes'
 import propsModule from 'snabbdom/modules/props'
 import eventlistenersModule from './viewEventlisteners'
 import styleModule from 'snabbdom/modules/style'
-import h from 'snabbdom/h'
-import { VNode } from 'snabbdom/vnode'
+import h from './h'
+import { VNode } from './vnode'
 
 export type View<S> = Interface<VNode, S>
 
@@ -26,7 +26,7 @@ export const viewHandler = selectorElm => (mod: ModuleAPI) => {
 
   function handler (vnode: VNode) {
     let vnode_mapped = h('div' + selector, { key: selector }, [vnode])
-    state = patchFn(state, vnode_mapped)
+    state = patchFn(state, <any> vnode_mapped)
     lastContainer = state
   }
 

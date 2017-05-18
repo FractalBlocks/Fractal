@@ -3,7 +3,7 @@ import { action, act } from '../../component'
 import { StyleGroup, placeholderColor } from '../../style'
 
 import { View } from '../../interfaces/view'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 
 export const name = 'TextField'
 

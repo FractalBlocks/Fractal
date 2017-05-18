@@ -4,7 +4,7 @@ import { hashMap } from 'mori'
 import { evolve, get } from '../../mori'
 
 import { View } from '../../interfaces/view'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 
 export const name = 'Main'
 

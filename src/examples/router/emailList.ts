@@ -2,7 +2,7 @@ import { Actions, Inputs, ev, Interfaces } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { View } from '../../interfaces/view'
 import { action, toParent } from '../../component'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 import { palette } from './constants'
 
 export const name = 'EmailList'

@@ -2,7 +2,7 @@ import { Actions, Inputs, Interfaces, Components, Hook, ev, _ } from '../../core
 import { StyleGroup } from '../../style'
 import { View } from '../../interfaces/view'
 import { vw, toChild, action } from '../../component'
-import h from 'snabbdom/h'
+import h from '../../interfaces/h'
 import { palette } from './constants'
 
 let emailDB = {
