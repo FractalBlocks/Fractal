@@ -1,8 +1,10 @@
 import { run } from '../../core'
 import { workerHandler, workerLog, workerListener } from '../../worker'
 
+import * as root from './App'
+
 let app = run({
-  root: require('./app').default,
+  root,
   beforeInit: workerListener,
   groups: {
     style: workerHandler('group', 'style'),
@@ -16,8 +18,8 @@ let app = run({
 
 // Hot reload - doesnt work in a worker for now
 if (module.hot) {
-  module.hot.accept('./app', () => {
-    let m = require('./app').default
+  module.hot.accept('./App', () => {
+    let m = require('./App')
     app.moduleAPI.reattach(m)
   })
 }

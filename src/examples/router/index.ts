@@ -5,7 +5,7 @@ import { logFns } from '../../log' // DEV ONLY
 import { mergeStates } from '../../reattach' // DEV ONLY
 import Navigo = require('navigo')
 
-import * as root from './root'
+import * as root from './Root'
 
 const routesHandler: Handler = () => ctx => {
 
@@ -62,8 +62,8 @@ const app = run({
 
 // Hot reload - DEV ONLY
 if (module.hot) {
-  module.hot.accept('./root', () => {
-    let m = require('./root')
+  module.hot.accept('./Root', () => {
+    let m = require('./Root')
     app.moduleAPI.reattach(m, mergeStates)
   })
 }

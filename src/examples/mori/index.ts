@@ -4,7 +4,7 @@ import { styleHandler } from '../../groups/style'
 import { logFns } from '../../log' // DEV ONLY
 import { mergeStates } from '../../reattach' // DEV ONLY
 
-import * as root from './app'
+import * as root from './App'
 
 let app = run({
   root,
@@ -21,8 +21,8 @@ let app = run({
 
 // Hot reload - DEV ONLY
 if (module.hot) {
-  module.hot.accept('./app', () => {
-    let m = require('./app')
+  module.hot.accept('./App', () => {
+    let m = require('./App')
     app.moduleAPI.reattach(m, mergeStates)
   })
 }
