@@ -6,6 +6,12 @@
 
 ## Done
 
+# v1.4.8
+
+- Refactor view interface file structure
+- Include h as a view method
+- Include vnode into core view methods
+
 # v1.4.7
 
 - Add ignore to On interface for event handlers
