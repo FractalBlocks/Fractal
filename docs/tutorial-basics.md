@@ -178,7 +178,7 @@ This is it, we have our first counter, next see the working code with extra impo
 ```typescript
 import { Inputs, Actions, Interfaces, ev } from 'fractal-core'
 import { View } from 'fractal-core/interfaces/view'
-import h from 'snabbdom/h'
+import h from 'fractal-core/interfaces/h'
 
 export let state = 0
 
