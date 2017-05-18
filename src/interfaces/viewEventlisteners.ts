@@ -7,9 +7,13 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
   function invokeHandler(handler: InputData, event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       // call function handler
-      mod.dispatch(computeEvent(event, handler))
       event.preventDefault()
       event.stopPropagation()
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          mod.dispatch(computeEvent(event, handler))
+        }, 0)
+      })
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
@@ -40,11 +44,7 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
 
   function createListener() {
     return function handler(event: Event) {
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-            handleEvent(event, (handler as any).vnode)
-        }, 0)
-      })
+      handleEvent(event, (handler as any).vnode)
     }
   }
 
