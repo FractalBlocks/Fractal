@@ -1,7 +1,7 @@
 // -- Functional functions (just fun)
 // Use them for building actions in a declarative and concise way
 
-export const assoc = (key: string) => (value: string) => obj => {
+export const assoc = (key: string) => (value: any) => obj => {
   obj[key] = value
   return obj
 }
