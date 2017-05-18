@@ -3,12 +3,12 @@ import { Module } from 'snabbdom/modules/module'
 import { computeEvent, InputData, ModuleAPI } from '../core'
 
 export interface On {
-  [event: string]: InputData
+  [event: string]: InputData | 'ignore'
 }
 
 export const eventListenersModule = (mod: ModuleAPI): Module => {
 
-  function invokeHandler(handler: InputData, event?: Event): void {
+  function invokeHandler(handler: InputData | 'ignore', event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       // call function handler
       event.preventDefault()

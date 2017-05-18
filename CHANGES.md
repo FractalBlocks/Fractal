@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.4.7
+
+- Add ignore to On interface for event handlers
+
 # v1.4.6
 
 - Update snabbdom version
