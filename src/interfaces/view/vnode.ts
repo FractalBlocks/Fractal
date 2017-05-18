@@ -1,7 +1,7 @@
 import { Hooks } from 'snabbdom/hooks'
 import { AttachData } from 'snabbdom/helpers/attachto'
 import { VNodeStyle } from 'snabbdom/modules/style'
-import { On } from './viewEventlisteners'
+import { On } from './eventListeners'
 import { Attrs } from 'snabbdom/modules/attributes'
 import { Classes } from 'snabbdom/modules/class'
 import { Props } from 'snabbdom/modules/props'

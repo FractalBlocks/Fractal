@@ -1,6 +1,6 @@
 import { VNode, VNodeData } from './vnode'
 import { Module } from 'snabbdom/modules/module'
-import { computeEvent, InputData, ModuleAPI } from '../core'
+import { computeEvent, InputData, ModuleAPI } from '../../core'
 
 export interface On {
   [event: string]: InputData | 'ignore'

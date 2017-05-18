@@ -1,18 +1,18 @@
-import { Handler, Context } from '../core'
+import { Interface, ModuleAPI } from '../../core'
 import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
 import attributesModule from 'snabbdom/modules/attributes'
 import propsModule from 'snabbdom/modules/props'
-import eventlistenersModule from './viewEventlisteners'
+import eventlistenersModule from './eventListeners'
 import styleModule from 'snabbdom/modules/style'
-import h from 'snabbdom/h'
-import { VNode } from 'snabbdom/vnode'
+import { default as _h } from './h'
+import { VNode } from './vnode'
 
-export interface ViewInterface {
-  (ctx: Context, s): VNode
-}
+export const h = _h
 
-export const viewHandler: Handler = selectorElm => mod => {
+export type View<S> = Interface<VNode, S>
+
+export const viewHandler = selectorElm => (mod: ModuleAPI) => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let lastContainer
   let state
@@ -26,15 +26,10 @@ export const viewHandler: Handler = selectorElm => mod => {
     styleModule,
   ])
 
-  function wraperPatch (o, n) {
-    let newContainer = patchFn(o, n)
-    lastContainer = newContainer
-    return newContainer
-  }
-
   function handler (vnode: VNode) {
     let vnode_mapped = h('div' + selector, { key: selector }, [vnode])
-    state = wraperPatch(state, vnode_mapped)
+    state = patchFn(state, <any> vnode_mapped)
+    lastContainer = state
   }
 
   return {
