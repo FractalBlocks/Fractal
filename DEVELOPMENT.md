@@ -40,8 +40,6 @@ There are TODOs for short term:
 - Build an example of Scuttlebott integration (ASAP)
 - Use complexList inside manyLists example and add adapter to complexList
 - Document adapters like a way for nesting complex lists (dynamic component trees)
-- Improve the complexList (AKA add more behavior)
-- Document `Actions<typeof state>`
 - Refactor examples to make use of typesafe actions
 - Timetravel debugging
 - Example of lazy loading
@@ -53,7 +51,6 @@ There are TODOs for short term:
 - Porting all the drivers and task handlers from fractal.js to handlers in Fractal
 - Larger examples
 - Tutorials and videos
-- Porting FractalBlocks to Fractal
 - Proff of concept: Fractal-Java
 
 There are TODOs for medium term:
