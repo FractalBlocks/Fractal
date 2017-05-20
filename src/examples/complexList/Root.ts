@@ -1,4 +1,4 @@
-import { Actions, Inputs, ev, merge, unmerge, clone, Interfaces, toIt } from '../../core'
+import { Actions, Inputs, ev, nest, unnest, clone, Interfaces, toIt } from '../../core'
 import { action, vw, props, toChild, stateOf } from '../../component'
 import { StyleGroup, clickable } from '../../style'
 import { View, h } from '../../interfaces/view'
@@ -19,7 +19,7 @@ export const inputs: Inputs<S> = ctx => ({
   action: action(actions),
   inputKeyup: ([idx, [keyCode, text]]) => {
     if (keyCode === 13 && text !== '') {
-      merge(ctx, idx, props({ text })(clone(Item)))
+      nest(ctx, idx, props({ text })(clone(Item)))
       return [
         actions.SetText(''),
         actions.New(),
@@ -43,7 +43,7 @@ export const inputs: Inputs<S> = ctx => ({
     }
   },
   $$Item_remove: ([idx]) => {
-    unmerge(ctx, idx)
+    unnest(ctx, idx)
     return actions.Remove(idx)
   },
 })
