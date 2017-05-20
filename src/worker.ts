@@ -60,22 +60,22 @@ export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
         _self.postMessage(['dispose'])
         /* istanbul ignore next */
         break
-      case 'merge':
+      case 'nest':
         // not implemented yet, should deserialize a component with a safe eval
         mod.error('workerListener', `unimplemented method`)
         /* istanbul ignore next */
         break
-      case 'mergeAll':
+      case 'nestAll':
         // not implemented yet, should deserialize a list of components with a safe eval
         mod.error('workerListener', `unimplemented method`)
         /* istanbul ignore next */
         break
-      case 'unmerge':
+      case 'unnest':
         // not implemented yet, should deserialize a component with a safe eval
         mod.error('workerListener', `unimplemented method`)
         /* istanbul ignore next */
         break
-      case 'unmergeAll':
+      case 'unnestAll':
         // not implemented yet, should deserialize a list of components with a safe eval
         mod.error('workerListener', `unimplemented method`)
         /* istanbul ignore next */
@@ -129,14 +129,14 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     dispatch: (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
     dispose,
     reattach,
-    // merge a component to the component index
-    merge: (name: string, component: Component<any>) => worker.postMessage(['merge', name, component]),
-    // merge many components to the component index
-    mergeAll: (components: { [name: string]: Component<any> }) => worker.postMessage(['mergeAll', components]),
-    // unmerge a component to the component index
-    unmerge: (name: string) => worker.postMessage(['unmerge', name]),
-    // unmerge many components to the component index
-    unmergeAll: (components: string[]) => worker.postMessage(['unmergeAll', components]),
+    // nest a component to the component index
+    nest: (name: string, component: Component<any>) => worker.postMessage(['nest', name, component]),
+    // nest many components to the component index
+    nestAll: (components: { [name: string]: Component<any> }) => worker.postMessage(['nestAll', components]),
+    // unnest a component to the component index
+    unnest: (name: string) => worker.postMessage(['unnest', name]),
+    // unnest many components to the component index
+    unnestAll: (components: string[]) => worker.postMessage(['unnestAll', components]),
     // delegated methods
     setGroup: (id, name, group) => worker.postMessage(['setGroup', id, name, group]),
     warn: def.warn,

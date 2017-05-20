@@ -61,10 +61,10 @@ export interface ModuleAPI {
   dispatch (eventData: EventData): void
   dispose (): void
   reattach (comp: Component<any>, middleFn?: MiddleFn): void
-  merge (name: string, component: Component<any>): void
-  mergeAll (components: { [name: string]: Component<any> }): void
-  unmerge (name: string): void
-  unmergeAll (components: string[]): void
+  nest (name: string, component: Component<any>): void
+  nestAll (components: { [name: string]: Component<any> }): void
+  unnest (name: string): void
+  unnestAll (components: string[]): void
   setGroup (id: string, name: string, space: any): void
   warn (source, description): void
   error (source, description): void
@@ -116,11 +116,11 @@ export function interfaceOf (ctx: Context, name: string, interfaceName: string):
 }
 
 // add a component to the component index
-export function merge (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Context {
+export function nest (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Context {
   // namespaced name if is a child
   let id = ctx.id === '' ? name : ctx.id + '$' + name
   if (ctx.components[id]) {
-    ctx.warn('merge', `component '${ctx.id}' has overwritten component space '${id}'`)
+    ctx.warn('nest', `component '${ctx.id}' has overwritten component space '${id}'`)
   }
 
   if (ctx.components[ctx.id] && !ctx.components[ctx.id].components[name]) {
@@ -141,7 +141,7 @@ export function merge (ctx: Context, name: Identifier, component: Component<any>
 
   // composition
   if (component.components) {
-    mergeAll(childCtx, component.components, isStatic)
+    nestAll(childCtx, component.components, isStatic)
   }
 
   if (component.groups) {
@@ -165,25 +165,28 @@ function handleGroups (ctx: Context, component: Component<any>) {
     if (space) {
       space.handle([ctx.id, component.groups[name]])
     } else {
-      ctx.error('merge', `module has no group handler for '${name}' of component '${component.name}' from space '${ctx.id}'`)
+      ctx.error(
+        'nest',
+        `module has no group handler for '${name}' of component '${component.name}' from space '${ctx.id}'`
+      )
     }
   }
 }
 
 // add many components to the component index
-export function mergeAll (ctx: Context, components: { [name: string]: Component<any> }, isStatic = false) {
+export function nestAll (ctx: Context, components: { [name: string]: Component<any> }, isStatic = false) {
   let name
   for (name in components) {
-    merge(ctx, name, components[name], isStatic)
+    nest(ctx, name, components[name], isStatic)
   }
 }
 
 // remove a component to the component index, if name is not defined dispose the root
-export function unmerge (ctx: Context, name?:  string): void {
+export function unnest (ctx: Context, name?:  string): void {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
-    return ctx.error('unmerge', `there is no component with name '${name}' at component '${ctx.id}'`)
+    return ctx.error('unnest', `there is no component with name '${name}' at component '${ctx.id}'`)
   }
   if (name !== undefined) {
     delete ctx.components[ctx.id].components[name]
@@ -192,7 +195,7 @@ export function unmerge (ctx: Context, name?:  string): void {
   let components = componentSpace.components
   /* istanbul ignore else */
   if (components) {
-    unmergeAll(ctx.components[id].ctx, Object.keys(components))
+    unnestAll(ctx.components[id].ctx, Object.keys(components))
   }
   // lifecycle hook: destroy
   if (componentSpace.def.destroy) {
@@ -203,9 +206,9 @@ export function unmerge (ctx: Context, name?:  string): void {
 }
 
 // add many components to the component index
-export function unmergeAll (ctx: Context, components: string[]) {
+export function unnestAll (ctx: Context, components: string[]) {
   for (let i = 0, len = components.length; i < len; i++) {
-    unmerge(ctx, components[i])
+    unnest(ctx, components[i])
   }
 }
 
@@ -489,13 +492,13 @@ export function run (moduleDef: ModuleDef): Module {
       dispose,
       reattach,
       // merge a component to the component index
-      merge: (name, component) => merge(ctx, name, component),
+      nest: (name, component) => nest(ctx, name, component),
       // merge many components to the component index
-      mergeAll: components => mergeAll(ctx, components),
-      // unmerge a component to the component index
-      unmerge: name => unmerge(ctx, name),
-      // unmerge many components to the component index
-      unmergeAll: components => unmergeAll(ctx, components),
+      nestAll: components => nestAll(ctx, components),
+      // unnest a component to the component index
+      unnest: name => unnest(ctx, name),
+      // unnest many components to the component index
+      unnestAll: components => unnestAll(ctx, components),
       // set a space of a certain component
       setGroup: (id, name, space) => {
         ctx.components[id].ctx.groups[name] = space
@@ -526,7 +529,7 @@ export function run (moduleDef: ModuleDef): Module {
     }
 
     // merges main component and ctx.id now contains it name
-    ctx = merge(ctx, component.name, component, true)
+    ctx = nest(ctx, component.name, component, true)
 
     // middle function for hot-swapping
     if (middleFn) {
@@ -574,7 +577,7 @@ export function run (moduleDef: ModuleDef): Module {
         handlers[name].dispose()
       }
     }
-    unmerge(ctx)
+    unnest(ctx)
     ctx = undefined
     this.isDisposed = true
   }

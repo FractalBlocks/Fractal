@@ -1,4 +1,4 @@
-import { Module, Component, run, merge } from './index'
+import { Module, Component, run, nest } from './index'
 import { valueHandler } from '../interfaces/value'
 import { mergeStates } from '../reattach'
 
@@ -102,7 +102,7 @@ describe('Hot swaping functionality', () => {
     },
   }
 
-  it('should merge components', done => {
+  it('should nest components', done => {
     let count = 0
     let app = setup(Comp, () => 0, group => {
       if (group[1] === 'childV2') {
@@ -115,7 +115,7 @@ describe('Hot swaping functionality', () => {
       }
     })
 
-    merge(app.ctx, '0', Child)
+    nest(app.ctx, '0', Child)
 
     app.moduleAPI.reattach(CompV2, mergeStates)
   })
@@ -156,7 +156,7 @@ describe('Hot swaping functionality', () => {
       done()
     })
 
-    merge(app.ctx, '0', Child)
+    nest(app.ctx, '0', Child)
 
     let ChildV2: Component<any> = {
       name: 'Child',

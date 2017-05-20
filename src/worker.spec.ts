@@ -265,7 +265,7 @@ describe('Utilities for running fractal inside workers', () => {
     }
   }
 
-  it('should merge the space', done => {
+  it('should nest the space', done => {
     groupFn = group => {
       expect(group).toBe('MainGroup')
       done()
@@ -350,7 +350,7 @@ describe('Utilities for running fractal inside workers', () => {
     })
   })
 
-  it('should merge a component via moduleAPI, UNIMPLEMENTED', done => {
+  it('should nest a component via moduleAPI, UNIMPLEMENTED', done => {
     logFn = log => {
       expect(log).toEqual([
         'workerListener',
@@ -358,12 +358,12 @@ describe('Utilities for running fractal inside workers', () => {
       ])
       done()
     }
-    worker.moduleAPI.merge('newComponent', root)
+    worker.moduleAPI.nest('newComponent', root)
     // when implemented:
     // expect(workerModule.ctx.components['Main$newComponent']).toBeDefined()
   })
 
-  it('should merge a component index via moduleAPI, UNIMPLEMENTED', done => {
+  it('should nest a component index via moduleAPI, UNIMPLEMENTED', done => {
     logFn = log => {
       expect(log).toEqual([
         'workerListener',
@@ -371,12 +371,12 @@ describe('Utilities for running fractal inside workers', () => {
       ])
       done()
     }
-    worker.moduleAPI.mergeAll({
+    worker.moduleAPI.nestAll({
       newComponent: root,
     })
   })
 
-  it('should unmerge a component via moduleAPI, UNIMPLEMENTED', done => {
+  it('should unnest a component via moduleAPI, UNIMPLEMENTED', done => {
     logFn = log => {
       expect(log).toEqual([
         'workerListener',
@@ -384,10 +384,10 @@ describe('Utilities for running fractal inside workers', () => {
       ])
       done()
     }
-    worker.moduleAPI.unmerge('newComponent')
+    worker.moduleAPI.unnest('newComponent')
   })
 
-  it('should unmerge a component index via moduleAPI, UNIMPLEMENTED', done => {
+  it('should unnest a component index via moduleAPI, UNIMPLEMENTED', done => {
     logFn = log => {
       expect(log).toEqual([
         'workerListener',
@@ -395,7 +395,7 @@ describe('Utilities for running fractal inside workers', () => {
       ])
       done()
     }
-    worker.moduleAPI.unmergeAll(['newComponent'])
+    worker.moduleAPI.unnestAll(['newComponent'])
   })
 
   // dispose module

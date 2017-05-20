@@ -3,7 +3,8 @@ import {
   Module,
   Context,
   run,
-  merge,
+  nest,
+  unnest,
   interfaceOf,
   ev,
   Executable,
@@ -13,7 +14,6 @@ import {
   computeEvent,
   EventData,
   dispatch,
-  unmerge,
   HandlerInterface,
   notifyInterfaceHandlers,
   clone,
@@ -160,24 +160,24 @@ describe('Context functions', function () {
 
   })
 
-  it('should merge a component to context (merge)', () => {
-    merge(rootCtx, 'child', root)
+  it('should nest a component to context (nest)', () => {
+    nest(rootCtx, 'child', root)
     expect(ctx.components[`Main$child`]).toBeDefined()
   })
 
-  it('should merge a component to context (merge) and mark it as dynamic', () => {
-    merge(rootCtx, 'childDynamic', root, false)
+  it('should nest a component to context (nest) and mark it as dynamic', () => {
+    nest(rootCtx, 'childDynamic', root, false)
     expect(ctx.components[`Main$childDynamic`]).toBeDefined()
   })
 
   it('should overwrite a component if has the same name and log a warning', () => {
     ctx.components[`Main$child`].state = 17
-    merge(rootCtx, 'child', root)
+    nest(rootCtx, 'child', root)
     expect(ctx.components[`Main$child`]).toBeDefined()
     // should overwrite
     expect(ctx.components[`Main$child`].state).toEqual(0)
     expect(lastLog)
-      .toEqual(['merge', `component 'Main' has overwritten component space 'Main$child'`])
+      .toEqual(['nest', `component 'Main' has overwritten component space 'Main$child'`])
   })
 
   it('should get an interface message from a certain component (interfaceOf)', () => {
@@ -264,7 +264,7 @@ describe('One Component + module functionality', function () {
     expect(initialized).toBe(true)
   })
 
-  it('should clone the state when merge a component if is an object', () => {
+  it('should clone the state when nest a component if is an object', () => {
     let root: Component<any> = {
       name,
       state: {},
@@ -322,7 +322,7 @@ describe('One Component + module functionality', function () {
       warn: (source, description) => lastLog = [source, description],
       error: (source, description) => lastLog = [source, description],
     })
-    app.moduleAPI.merge('child', root)
+    app.moduleAPI.nest('child', root)
     let space = app.ctx.components['Main$child']
     notifyInterfaceHandlers(space.ctx)
     expect(lastLog).toEqual([
@@ -680,7 +680,7 @@ describe('Component composition', () => {
     dispose: () => 0,
   })
 
-  it('should merge child components', () => {
+  it('should nest child components', () => {
     app = run({
       root: main,
       groups: {
@@ -699,7 +699,7 @@ describe('Component composition', () => {
     expect(groupLog).toEqual(['ChildValueGroup', 'ChildValueGroup', 'ChildValueGroup', 'MainValueGroup'])
   })
 
-  it('should merge groups', () => {
+  it('should nest groups', () => {
     expect(app.ctx.components['Main'].ctx.groups['value']).toEqual('MainValueGroupF1')
     expect(app.ctx.components['Main$child1'].ctx.groups['value']).toEqual('ChildValueGroupF1')
     expect(app.ctx.components['Main$child2'].ctx.groups['value']).toEqual('ChildValueGroupF1')
@@ -719,7 +719,7 @@ describe('Component composition', () => {
       error: (source, description) => log = [source, description],
     })
     expect(log).toEqual([
-      'merge',
+      'nest',
       `module has no group handler for 'value' of component 'Main' from space 'Main'`
     ])
   })
@@ -762,12 +762,12 @@ describe('Component composition', () => {
     value._dispatch(value.childValue1.toParent)
   })
 
-  it('should unmerge a component tree', () => {
-    unmerge(app.ctx)
+  it('should unnest a component tree', () => {
+    unnest(app.ctx)
     expect(Object.keys(app.ctx.components).length).toEqual(0)
   })
 
-  it('should log an error when unmerge an inexistent component', () => {
+  it('should log an error when unnest an inexistent component', () => {
     let lastLog
     app = run({
       root: main,
@@ -779,16 +779,16 @@ describe('Component composition', () => {
       },
       error: (source, description) => lastLog = [source, description],
     })
-    unmerge(app.ctx, 'wrong')
+    unnest(app.ctx, 'wrong')
     expect(lastLog).toEqual([
-      'unmerge',
+      'unnest',
       `there is no component with name 'wrong' at component 'Main'`,
     ])
   })
 
   // module API
 
-  it('module API merge should merge a component', () => {
+  it('module API nest should nest a component', () => {
     app = run({
       root: main,
       groups: {
@@ -798,15 +798,15 @@ describe('Component composition', () => {
         value: valueHandler(() => 0),
       },
     })
-    app.moduleAPI.merge('mainChild', main)
+    app.moduleAPI.nest('mainChild', main)
     expect(app.ctx.components['Main$mainChild']).toBeDefined()
     expect(app.ctx.components['Main$mainChild$child1']).toBeDefined()
     expect(app.ctx.components['Main$mainChild$child2']).toBeDefined()
     expect(app.ctx.components['Main$mainChild$child3']).toBeDefined()
   })
 
-  it('module API mergeAll should merge many components', () => {
-    app.moduleAPI.mergeAll({
+  it('module API nestAll should nest many components', () => {
+    app.moduleAPI.nestAll({
       fancyChild1: child,
       fancyChild2: child,
       fancyChild3: child,
@@ -816,21 +816,21 @@ describe('Component composition', () => {
     expect(app.ctx.components['Main$fancyChild3']).toBeDefined()
   })
 
-  it('module API unmerge should unmerge a component tree', () => {
-    app.moduleAPI.unmerge('mainChild')
+  it('module API unnest should unnest a component tree', () => {
+    app.moduleAPI.unnest('mainChild')
     expect(app.ctx.components['Main$mainChild']).toBeUndefined()
     expect(app.ctx.components['Main$mainChild$child1']).toBeUndefined()
     expect(app.ctx.components['Main$mainChild$child2']).toBeUndefined()
     expect(app.ctx.components['Main$mainChild$child3']).toBeUndefined()
   })
 
-  it('module API unmergeAll should unmerge many components', () => {
-    app.moduleAPI.mergeAll({
+  it('module API unnestAll should unnest many components', () => {
+    app.moduleAPI.nestAll({
       fancyChild1: child,
       fancyChild2: child,
       fancyChild3: child,
     })
-    app.moduleAPI.unmergeAll([
+    app.moduleAPI.unnestAll([
       'fancyChild1',
       'fancyChild2',
       'fancyChild3',
