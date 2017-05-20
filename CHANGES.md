@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.4.11
+
+- Rename `merge` core function to `nest`
+
 # v1.4.10
 
 - Fix type signature of `assoc` functional helper
