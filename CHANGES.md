@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.4.12
+
+- Add VNode to View interface exports
+
 # v1.4.11
 
 - Rename `merge` core function to `nest`
