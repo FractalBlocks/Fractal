@@ -6,9 +6,10 @@
 
 ## Done
 
-# v1.4.12
+# v1.4.13
 
 - Component init hooks are executed after first `notifyInterfaceHandlers`
+- Add Components type to components parameter of nest function
 
 # v1.4.12
 
