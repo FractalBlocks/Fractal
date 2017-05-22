@@ -7,6 +7,7 @@ import {
   InputData,
   EventData,
   Executable,
+  Components,
 } from './core'
 import {
   HandlerInterface,
@@ -89,6 +90,7 @@ export function createContext (ctx: Context, name: Identifier): Context {
     name,
     groups: {},
     // delegation
+    global: ctx.global,
     components: ctx.components,
     groupHandlers: ctx.groupHandlers,
     interfaceHandlers: ctx.interfaceHandlers,
@@ -117,6 +119,37 @@ export function interfaceOf (ctx: Context, name: string, interfaceName: string):
 
 // add a component to the component index
 export function nest (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Context {
+  // create the global object for initialization
+  ctx.global = {
+    initialized: false, // disable notifyInterfaceHandlers temporarily
+  }
+
+  let childCtx = _nest(ctx, name, component, isStatic)
+
+  // init lifecycle hooks: init all descendant components
+  initAll(childCtx)
+
+  childCtx.global.initialized = true
+
+  return childCtx
+}
+
+// init all descendant components
+function initAll (ctx: Context) {
+  let space = ctx.components[ctx.id]
+  if (space.def.init) {
+    space.def.init(ctx)
+  }
+  if (space.components === undefined) {
+    return
+  }
+  let childName
+  for (childName in space.components) {
+    initAll(ctx.components[ctx.id + '$' + childName].ctx)
+  }
+}
+
+function _nest (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Context {
   // namespaced name if is a child
   let id = ctx.id === '' ? name : ctx.id + '$' + name
   if (ctx.components[id]) {
@@ -141,17 +174,12 @@ export function nest (ctx: Context, name: Identifier, component: Component<any>,
 
   // composition
   if (component.components) {
-    nestAll(childCtx, component.components, isStatic)
+    _nestAll(childCtx, component.components, isStatic)
   }
 
   if (component.groups) {
     // Groups are handled automatically only when comoponent are initialized
     handleGroups(childCtx, component)
-  }
-
-  // lifecycle hook: init
-  if (component.init) {
-    component.init(childCtx)
   }
 
   return childCtx
@@ -174,10 +202,14 @@ function handleGroups (ctx: Context, component: Component<any>) {
 }
 
 // add many components to the component index
-export function nestAll (ctx: Context, components: { [name: string]: Component<any> }, isStatic = false) {
+export function nestAll (ctx: Context, components: Components, isStatic = false): void {
+  _nestAll(ctx, components, isStatic)
+}
+
+function _nestAll (ctx: Context, components: Components, isStatic = false): void {
   let name
   for (name in components) {
-    nest(ctx, name, components[name], isStatic)
+    _nest(ctx, name, components[name], isStatic)
   }
 }
 
@@ -373,7 +405,9 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
   if (typeof executable === 'function') {
     // single update
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
-    notifyInterfaceHandlers(rootCtx) // root context
+    if (ctx.global.initialized) {
+      notifyInterfaceHandlers(rootCtx) // root context
+    }
   } else {
     /* istanbul ignore else */
     if (executable instanceof Array) {
@@ -394,7 +428,9 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
             if (typeof executable[i] === 'function') {
               // is an update
               componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
-              notifyInterfaceHandlers(rootCtx) // root context
+              if (ctx.global.initialized) {
+                notifyInterfaceHandlers(rootCtx) // root context
+              }
             } else {
                 /* istanbul ignore else */
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
@@ -452,6 +488,9 @@ export function run (moduleDef: ModuleDef): Module {
         id: '',
         name: rootName,
         groups: {},
+        global: {
+          initialized: false,
+        },
         // component index
         components: {},
         groupHandlers: {},

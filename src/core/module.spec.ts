@@ -21,6 +21,7 @@ import {
 } from './index'
 import { mergeStates } from '../reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
+import { toIt } from "./module";
 
 // Component definition to perform tests
 
@@ -110,6 +111,9 @@ describe('Context functions', function () {
     id: 'Main',
     name: 'Main',
     groups: {},
+    global: {
+      initialized: false,
+    },
     groupHandlers: {},
     taskHandlers: {},
     interfaceHandlers: {},
@@ -846,7 +850,7 @@ describe('Lifecycle hooks', () => {
   let disposeLog = []
 
   let init = ctx => {
-    dispatch(ctx, ev(ctx, 'inc'))
+    toIt(ctx, 'inc')
   }
   let destroy = ctx => {
     let parts = ctx.id.split('$')

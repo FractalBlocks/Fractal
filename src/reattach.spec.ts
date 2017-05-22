@@ -8,6 +8,9 @@ describe('mergeStates function should merge the states of the lastComponents and
     name,
     groups: {},
     components: {},
+    global: {
+      initialized: false,
+    },
     groupHandlers: {},
     interfaceHandlers: {},
     taskHandlers: {},

@@ -134,6 +134,12 @@ export interface Context {
   interfaceHandlers: {
     [name: string]: HandlerObject
   }
+  // global flags delegation
+  global: {
+    // global is scoped by it's creation in nest function
+    // and only used for initialization for nest function and notifyInterfaceHandlers
+    initialized: boolean
+  },
   // input hooks delegation
   beforeInput? (ctxIn: Context, inputName: string, data: any): void
   afterInput? (ctxIn: Context, inputName: string, data: any): void
