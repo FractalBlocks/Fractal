@@ -8,6 +8,10 @@
 
 # v1.4.12
 
+- Component init hooks are executed after first `notifyInterfaceHandlers`
+
+# v1.4.12
+
 - Add VNode to View interface exports
 
 # v1.4.11
