@@ -140,15 +140,13 @@ function initAll (ctx: Context) {
   if (space.def.init) {
     space.def.init(ctx)
   }
-  if (space.components === undefined) {
-    return
-  }
   let childName
   for (childName in space.components) {
     initAll(ctx.components[ctx.id + '$' + childName].ctx)
   }
 }
 
+/* istanbul ignore next */
 function _nest (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Context {
   // namespaced name if is a child
   let id = ctx.id === '' ? name : ctx.id + '$' + name
@@ -202,10 +200,12 @@ function handleGroups (ctx: Context, component: Component<any>) {
 }
 
 // add many components to the component index
+/* istanbul ignore next */
 export function nestAll (ctx: Context, components: Components, isStatic = false): void {
   _nestAll(ctx, components, isStatic)
 }
 
+/* istanbul ignore next */
 function _nestAll (ctx: Context, components: Components, isStatic = false): void {
   let name
   for (name in components) {
@@ -405,6 +405,7 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
   if (typeof executable === 'function') {
     // single update
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
+    /* istanbul ignore else */
     if (ctx.global.initialized) {
       notifyInterfaceHandlers(rootCtx) // root context
     }
@@ -428,6 +429,7 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
             if (typeof executable[i] === 'function') {
               // is an update
               componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
+              /* istanbul ignore else */
               if (ctx.global.initialized) {
                 notifyInterfaceHandlers(rootCtx) // root context
               }
