@@ -6,9 +6,11 @@ import propsModule from 'snabbdom/modules/props'
 import eventlistenersModule from './eventListeners'
 import styleModule from 'snabbdom/modules/style'
 import { default as _h } from './h'
-import { VNode } from './vnode'
+import { VNode as _VNode } from './vnode'
 
 export const h = _h
+
+export type VNode = _VNode
 
 export type View<S> = Interface<VNode, S>
 
