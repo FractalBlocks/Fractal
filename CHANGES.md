@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.5.0
+
+- Add global events handler to view interface
+
 # v1.4.13
 
 - Component init hooks are executed after first `notifyInterfaceHandlers`
