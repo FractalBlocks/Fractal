@@ -2,6 +2,7 @@ import { Hooks } from 'snabbdom/hooks'
 import { AttachData } from 'snabbdom/helpers/attachto'
 import { VNodeStyle } from 'snabbdom/modules/style'
 import { On } from './eventListeners'
+import { OnGlobal } from './globalListeners'
 import { Attrs } from 'snabbdom/modules/attributes'
 import { Classes } from 'snabbdom/modules/class'
 import { Props } from 'snabbdom/modules/props'
@@ -26,6 +27,7 @@ export interface VNodeData {
     style?: VNodeStyle
     dataset?: Dataset
     on?: On
+    global?: OnGlobal
     hero?: Hero
     attachData?: AttachData
     hook?: Hooks
