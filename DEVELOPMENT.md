@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Document and build an examl of global listeners
 - Flux-Challenge example and do a PR to Staltz repo (WIP)
 - Todo-mvc example in a separated repo
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
