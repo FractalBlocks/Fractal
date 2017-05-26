@@ -6,6 +6,12 @@
 
 ## Done
 
+# v1.6.0
+
+- toParent has removed because enforce coupling of components
+- act has new signature
+- Add toAct helper
+
 # v1.5.6
 
 - Global listeners are attached to main container
