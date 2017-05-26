@@ -1,7 +1,7 @@
 import { Actions, Inputs, Interfaces, ev } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { View, h } from '../../interfaces/view'
-import { action, toParent } from '../../component'
+import { action } from '../../component'
 import { palette } from './constants'
 
 export const name = 'Email'
@@ -18,9 +18,7 @@ export type S = typeof state
 
 export const inputs: Inputs<S> = ctx => ({
   action: action(actions),
-  back: () => {
-    toParent(ctx, 'back')
-  },
+  back: () => {},
 })
 
 export const actions: Actions<S> = {

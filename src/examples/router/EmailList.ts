@@ -1,7 +1,7 @@
 import { Actions, Inputs, ev, Interfaces } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { View, h } from '../../interfaces/view'
-import { action, toParent } from '../../component'
+import { action } from '../../component'
 import { palette } from './constants'
 
 export const name = 'EmailList'
@@ -14,9 +14,7 @@ export type S = typeof state
 
 export const inputs: Inputs<S> = ctx => ({
   action: action(actions),
-  selectEmail: id => {
-    toParent(ctx, 'select', id)
-  },
+  select: id => {},
 })
 
 export const actions: Actions<S> = {
@@ -37,7 +35,7 @@ const view: View<S> = (ctx, s) => {
       id => h('div', {
         class: { [style.item]: true },
         on: {
-          click: ev(ctx, 'selectEmail', id),
+          click: ev(ctx, 'select', id),
         },
       }, s.emails[id].sender + ' - ' + s.emails[id].title + ' - Date: ' + s.emails[id].date)
     ),
