@@ -149,17 +149,17 @@ describe('Context functions', function () {
 
     it('should accept * for returning all the event object', () => {
       let data = ev(ctx, 'inputName', '*')
-      expect(data).toEqual(['Main$child', 'inputName', '*', undefined, { default: true, propagate: true }])
+      expect(data).toEqual(['Main$child', 'inputName', '*', undefined, undefined])
     })
 
     it('should accept a property name for returning a part of the event object', () => {
       let data = ev(ctx, 'inputName', 'value')
-      expect(data).toEqual(['Main$child', 'inputName', 'value', undefined, { default: true, propagate: true }])
+      expect(data).toEqual(['Main$child', 'inputName', 'value', undefined, undefined])
     })
 
     it('should accept an extra argument', () => {
       let data = ev(ctx, 'inputName', 'value', 'extra')
-      expect(data).toEqual(['Main$child', 'inputName', 'value', 'extra', { default: true, propagate: true }])
+      expect(data).toEqual(['Main$child', 'inputName', 'value', 'extra', undefined])
     })
 
     it('should accept an options argument', () => {
