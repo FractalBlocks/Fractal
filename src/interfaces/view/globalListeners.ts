@@ -16,9 +16,14 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
 
   function invokeHandler(handler: InputData, event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
+      let ctxData = handler[2]
+      if (!ctxData || ctxData._default === undefined || ctxData._default === true) {
+        event.preventDefault()
+      }
+      if (!ctxData || ctxData._propagate === undefined || ctxData._propagate === true) {
+        event.stopPropagation()
+      }
       // call function handler
-      event.preventDefault()
-      event.stopPropagation()
       requestAnimationFrame(() => {
         setTimeout(() => {
           mod.dispatch(computeEvent(event, handler))
