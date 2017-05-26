@@ -65,7 +65,7 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
 
   function updateEventListeners(oldVnode: VNode, vnode?: VNode): void {
     var oldGlobal = (oldVnode.data as VNodeData).global,
-        oldListener = (oldVnode as any).listener,
+        oldListener = (oldVnode as any).globalListener,
         global = vnode && (vnode.data as VNodeData).global,
         name: string
 
@@ -97,23 +97,23 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
     // add new listeners which has not already attached
     if (global) {
       // reuse existing listener or create new
-      var listener = (vnode as any).listener = (oldVnode as any).listener || createListener()
+      var globalListener = (vnode as any).globalListener = (oldVnode as any).globalListener || createListener()
       // update vnode for listener
-      listener.vnode = vnode
+      globalListener.vnode = vnode
 
       // if element changed or added we add all needed listeners unconditionally
       if (!oldGlobal) {
         for (name in global) {
           // add listener if element was changed or new listeners added
           let elm = getContainer(state.lastContainer)
-          elm.addEventListener(name, listener, false)
+          elm.addEventListener(name, globalListener, false)
         }
       } else {
         for (name in global) {
           // add listener if new listener added
           if (!oldGlobal[name]) {
             let elm = getContainer(state.lastContainer)
-            elm.addEventListener(name, listener, false)
+            elm.addEventListener(name, globalListener, false)
           }
         }
       }
