@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.5.1
+
+- View event listeners can control preventDefault and stopPropagation via context data _default and _propagate properties
+
 # v1.5.0
 
 - Add global events handler to view interface
