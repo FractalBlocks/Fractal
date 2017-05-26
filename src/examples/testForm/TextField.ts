@@ -44,7 +44,7 @@ const view: View<S> = (ctx, s) => {
       attrs: { placeholder: s.placeholder },
       props: { value: s.value },
       on: {
-        keydown: act(ctx, 'SetValue', _, ['target', 'value']),
+        keyup: act(ctx, 'SetValue', _, ['target', 'value']),
         focus: act(ctx, 'SetFocus', true),
         blur: act(ctx, 'SetFocus', false),
       },
