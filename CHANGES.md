@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.5.3
+
+- Fix bad npm upload
+
 # v1.5.2
 
 - Add options parameter to event listeners at Fractal core, with `default` and `propagate` options
