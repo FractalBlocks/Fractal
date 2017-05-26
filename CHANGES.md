@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.5.5
+
+- Fix bug related to global-local listeners
+
 # v1.5.4
 
 - Event options are optional in core interface
