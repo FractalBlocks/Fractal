@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.5.4
+
+- Event options are optional in core interface
+
 # v1.5.3
 
 - Fix bad npm upload
