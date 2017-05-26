@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.5.6
+
+- Global listeners are attached to main container
+
 # v1.5.5
 
 - Fix bug related to global-local listeners
