@@ -35,7 +35,7 @@ export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any
 
 // generic action dispatcher
 export const act = (ctx: Context, actionName: string, context?: any, param?: any, options?: EventOptions): InputData => {
-  return ev(ctx, 'action', [actionName, context], param, options)
+  return ev(ctx, 'action', context !== undefined ? [actionName, context] : actionName, param, options)
 }
 
 // generic action self caller

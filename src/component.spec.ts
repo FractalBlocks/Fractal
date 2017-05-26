@@ -40,6 +40,11 @@ describe('Component helpers', () => {
     it('should return the same as ev without the input name', () => {
       expect(act(<any> ctx, 'actionName', 's', 'value')).toEqual(ev(<any> ctx, 'action', ['actionName', 's'], 'value'))
     })
+
+    it('should return the same as ev without the input name when context data is undefined', () => {
+      expect(act(<any> ctx, 'actionName', undefined, 'value')).toEqual(ev(<any> ctx, 'action', 'actionName', 'value'))
+    })
+
   })
 
   describe('Generic action self caller', () => {
