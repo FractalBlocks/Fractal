@@ -63,6 +63,11 @@ export interface Actions<S> {
   [name: string]: Action<S>
 }
 
+export interface EventOptions {
+  default: boolean
+  propagate: boolean
+}
+
 // is the data of an event, refers to some event of a component - Comunications stuff
 /* NOTE: function strings can be:
   - '*': which means, serialize all the event object
@@ -73,6 +78,7 @@ export interface InputData extends Array<any> {
   1: string // input name
   2?: any // context parameter
   3?: any // a param function string / value is optional
+  4?: EventOptions
 }
 
 // event data comes from an interface / task handler as a result of processing InputData - Comunications stuff

@@ -10,6 +10,7 @@ import {
   ev,
   Module,
   toIt,
+  EventOptions,
 } from './core'
 
 // set of helpers for building components
@@ -33,8 +34,8 @@ export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any
 }
 
 // generic action dispatcher
-export const act = (ctx: Context, context?: any, param?: any): InputData => {
-  return ev(ctx, 'action', context, param)
+export const act = (ctx: Context, context?: any, param?: any, options?: EventOptions): InputData => {
+  return ev(ctx, 'action', context, param, options)
 }
 
 // extract view interface, sintax sugar

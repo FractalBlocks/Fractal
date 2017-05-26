@@ -8,6 +8,7 @@ import {
   EventData,
   Executable,
   Components,
+  EventOptions,
 } from './core'
 import {
   HandlerInterface,
@@ -245,12 +246,17 @@ export function unnestAll (ctx: Context, components: string[]) {
 }
 
 // create an InputData array
-export function ev (ctx: Context, inputName: string, context?: any, param?: any): InputData {
-  if (context !== undefined || param !== undefined) {
-    return [ctx.id, inputName, context, param]
-  } else {
-    return [ctx.id, inputName]
+export function ev (
+  ctx: Context,
+  inputName: string,
+  context?: any,
+  param?: any,
+  options: EventOptions = {
+    default: true,
+    propagate: true,
   }
+): InputData {
+  return [ctx.id, inputName, context, param, options]
 }
 
 function computePath (path: any[], event) {
