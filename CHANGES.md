@@ -6,6 +6,8 @@
 
 ## Done
 
+- Fix logging stuff in globalListeners
+
 # v1.6.0
 
 - toParent has removed because enforce coupling of components

@@ -106,7 +106,6 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
           // add listener if element was changed or new listeners added
           let elm = getContainer(state.lastContainer)
           elm.addEventListener(name, globalListener, false)
-          console.log(state.lastContainer)
         }
       } else {
         for (name in global) {
@@ -114,7 +113,6 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
           if (!oldGlobal[name]) {
             let elm = getContainer(state.lastContainer)
             elm.addEventListener(name, globalListener, false)
-            console.log(state.lastContainer)
           }
         }
       }
