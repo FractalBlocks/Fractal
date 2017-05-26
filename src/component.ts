@@ -15,7 +15,7 @@ import {
 
 // set of helpers for building components
 
-// generic action
+// generic action input
 export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any> => {
   let name
   let value
@@ -30,12 +30,17 @@ export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any
     name = arg1
     value = arg2
   }
-  return actions[name](value) // generic action dispatcher
+  return actions[name](value)
 }
 
 // generic action dispatcher
-export const act = (ctx: Context, context?: any, param?: any, options?: EventOptions): InputData => {
-  return ev(ctx, 'action', context, param, options)
+export const act = (ctx: Context, actionName: string, context?: any, param?: any, options?: EventOptions): InputData => {
+  return ev(ctx, 'action', [actionName, context], param, options)
+}
+
+// generic action self caller
+export const toAct = (ctx: Context, actionName: string, data?: any, isPropagated = true) => {
+  return toIt(ctx, 'action', [actionName, data], isPropagated)
 }
 
 // extract view interface, sintax sugar
@@ -56,26 +61,6 @@ export function sendMsg (mod: Module, id: string, inputName: string, msg?, isPro
 export function toChild (ctx: Context, name: string, inputName: string, msg = undefined, isPropagated = true) {
   let childId = ctx.id + '$' + name
   toIt(ctx.components[childId].ctx, inputName, msg, isPropagated)
-}
-
-// send a message to an input of a component from its child
-export function toParent (ctx: Context, outputName: string, msg = undefined, unique = false, isPropagated = true) {
-  let outMsg
-  let parts = (ctx.id + '').split('$')
-  if (parts.length === 1) {
-    return
-  }
-  let inputParent
-  let name = parts.splice(parts.length - 1, 1)[0]
-  let parentId = parts.join('$')
-  if (unique) {
-    inputParent = `$$${ctx.components[ctx.id].def.name}_${outputName}`
-    outMsg = [name, msg]
-  } else {
-    inputParent = `$${name}_${outputName}`
-    outMsg = msg
-  }
-  toIt(ctx.components[parentId].ctx, inputParent, outMsg)
 }
 
 // ---

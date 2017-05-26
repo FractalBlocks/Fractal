@@ -9,12 +9,12 @@ import {
   spaceOf,
   sendMsg,
   toChild,
-  toParent,
+  toAct,
 } from './component'
 
 describe('Component helpers', () => {
 
-  describe('Generic input', () => {
+  describe('Generic action input', () => {
 
     let actions = {
       a1: x => x,
@@ -38,8 +38,37 @@ describe('Component helpers', () => {
   describe('act function sugar for generic inputs', () => {
     let ctx = {}
     it('should return the same as ev without the input name', () => {
-      expect(act(<any> ctx, 's', 'value')).toEqual(ev(<any> ctx, 'action', 's', 'value'))
+      expect(act(<any> ctx, 'actionName', 's', 'value')).toEqual(ev(<any> ctx, 'action', ['actionName', 's'], 'value'))
     })
+  })
+
+  describe('Generic action self caller', () => {
+    let actionData = []
+    let root: Component<any> = {
+      name: 'MyComp',
+      state: 0,
+      inputs: ctx => ({
+        action: ([name, data]) => {
+          actionData = [name, data]
+        },
+      }),
+      actions: {
+        Inc: s => s + 1,
+      },
+      interfaces: {},
+    }
+    let app = run({
+      root,
+      interfaces: {},
+    })
+
+    it('should call input with the action name and data', () => {
+      toAct(app.ctx.components.MyComp.ctx, 'Name', 'data1')
+      expect(actionData).toEqual(['Name', 'data1'])
+      toAct(app.ctx.components.MyComp.ctx, 'Name', 'data2', true)
+      expect(actionData).toEqual(['Name', 'data2'])
+    })
+
   })
 
   describe('props function for making a new component by modifying the state', () => {
@@ -108,9 +137,7 @@ describe('Component helpers', () => {
       },
       inputs: ctx => ({}),
       actions: {},
-      interfaces: {
-        i1: () => 112,
-      },
+      interfaces: {},
     }
     let comp: Component<any> = {
       name: 'MyComp',
@@ -123,9 +150,7 @@ describe('Component helpers', () => {
       },
       inputs: ctx => ({}),
       actions: {},
-      interfaces: {
-        i1: () => 112,
-      },
+      interfaces: {},
     }
     let app = run({
       root: comp,
@@ -164,9 +189,7 @@ describe('Component helpers', () => {
           },
         }),
         actions: {},
-        interfaces: {
-          i1: () => 112,
-        },
+        interfaces: {},
       }
       let root: Component<any> = {
         name: 'MyComp',
@@ -189,9 +212,7 @@ describe('Component helpers', () => {
           },
         }),
         actions: {},
-        interfaces: {
-          i1: () => 112,
-        },
+        interfaces: {},
       }
       app = run({
         root,
@@ -214,29 +235,6 @@ describe('Component helpers', () => {
     it ('toChild should send an undefined message to a child component from the parent correctly', () => {
       toChild(app.ctx.components['MyComp'].ctx, 'Child', 'childInput')
       expect(childData).toEqual(undefined)
-    })
-
-    it ('toParent should send a message the parent component from a child component', () => {
-      let data = 121
-      toParent(app.ctx.components['MyComp$Child'].ctx, 'inputName', data, false, true)
-      expect(parentData).toEqual(data)
-    })
-
-    it ('toParent should send an undefined message the parent component from a child component', () => {
-      toParent(app.ctx.components['MyComp$Child'].ctx, 'inputName')
-      expect(parentData).toEqual(undefined)
-    })
-
-    it ('toParent should send a message to the parent component from a child component in a unique way', () => {
-      let data = 127
-      toParent(app.ctx.components['MyComp$Child'].ctx, 'remove', data, true)
-      expect(parentDataUnique).toEqual(['Child', data])
-    })
-
-    it ('toParent should not send a message to the parent component from a child component if child is root component', () => {
-      let data = 131
-      toParent(app.ctx.components['MyComp'].ctx, 'inputName', data)
-      expect(parentDataUnique).toEqual(undefined)
     })
 
   })
