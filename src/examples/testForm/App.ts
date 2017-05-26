@@ -77,14 +77,6 @@ export const state: S = {
   correct: 'unknown',
 }
 
-export const actions: Actions<S> = {
-  SetCorrect: isCorrect => s => {
-    s.correct = isCorrect
-    return s
-  },
-  Clear: () => assoc('correct')('unknown'),
-}
-
 export const inputs: Inputs<S> = ctx => ({
   $testBtn_click: () => {
     let result = Object.keys(questions).map((q, idx) => {
@@ -104,6 +96,14 @@ export const inputs: Inputs<S> = ctx => ({
     return actions.Clear()
   },
 })
+
+export const actions: Actions<S> = {
+  SetCorrect: isCorrect => s => {
+    s.correct = isCorrect
+    return s
+  },
+  Clear: () => assoc('correct')('unknown'),
+}
 
 let view: View<S> = (ctx, s) => {
   let style = ctx.groups['style']
