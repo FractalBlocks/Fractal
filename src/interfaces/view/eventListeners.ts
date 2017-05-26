@@ -11,10 +11,10 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
   function invokeHandler(handler: InputData | 'ignore', event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
-      if (options.default) {
+      if (!options || options.default === undefined || options.default) {
         event.preventDefault()
       }
-      if (options.propagate) {
+      if (!options || options.propagate === undefined || options.propagate) {
         event.stopPropagation()
       }
       // call function handler

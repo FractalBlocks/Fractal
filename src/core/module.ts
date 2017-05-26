@@ -251,10 +251,7 @@ export function ev (
   inputName: string,
   context?: any,
   param?: any,
-  options: EventOptions = {
-    default: true,
-    propagate: true,
-  }
+  options?: EventOptions
 ): InputData {
   return [ctx.id, inputName, context, param, options]
 }
