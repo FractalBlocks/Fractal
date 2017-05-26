@@ -1,5 +1,5 @@
-import { Actions, Inputs, ev, _, Interfaces } from '../../core'
-import { toParent, action, act } from '../../component'
+import { Actions, Inputs, ev, Interfaces } from '../../core'
+import { action, act } from '../../component'
 import { StyleGroup } from '../../style'
 import { View, h } from '../../interfaces/view'
 
@@ -14,9 +14,7 @@ export type S = typeof state
 
 export const inputs: Inputs<S> = ctx => ({
   action: action(actions),
-  $$remove: () => {
-    toParent(ctx, 'remove', _, true)
-  },
+  $remove: () => {},
 })
 
 export const actions: Actions<S> = {
@@ -47,7 +45,7 @@ const view: View<S> = (ctx, s) => {
     h('span', {
       class: { [style.remove]: true },
       on: {
-        click: ev(ctx, '$$remove'),
+        click: ev(ctx, '$remove'),
       },
     }, 'remove'),
   ])

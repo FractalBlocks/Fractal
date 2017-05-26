@@ -42,7 +42,7 @@ export const inputs: Inputs<S> = ctx => ({
       }
     }
   },
-  $$Item_remove: ([idx]) => {
+  $$Item_remove: idx => {
     unnest(ctx, idx)
     return actions.Remove(idx)
   },
