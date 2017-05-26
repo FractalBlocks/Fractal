@@ -6,6 +6,10 @@
 
 ## Done
 
+# v1.5.2
+
+- Add options parameter to event listeners at Fractal core, with `default` and `propagate` options
+
 # v1.5.1
 
 - View event listeners can control preventDefault and stopPropagation via context data _default and _propagate properties
