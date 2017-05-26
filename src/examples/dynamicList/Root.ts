@@ -65,7 +65,7 @@ const view: View<S> = (ctx, s) => {
           h('span', {
             class: { [style.remove]: true },
             on: {
-              click: act(ctx, ['Remove', idx]),
+              click: act(ctx, 'Remove', idx),
             },
           }, 'remove'),
         ]),
