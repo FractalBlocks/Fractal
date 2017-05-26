@@ -7,8 +7,7 @@ export interface OnGlobal {
 }
 
 function getContainer (lastContainer) {
-  let elm = (<any> lastContainer).elm
-  ? (<VNode> lastContainer).elm.childNodes[0] : lastContainer.childNodes[0]
+  let elm = (<any> lastContainer).elm ? (<VNode> lastContainer).elm : lastContainer
   return elm
 }
 
@@ -107,6 +106,7 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
           // add listener if element was changed or new listeners added
           let elm = getContainer(state.lastContainer)
           elm.addEventListener(name, globalListener, false)
+          console.log(state.lastContainer)
         }
       } else {
         for (name in global) {
@@ -114,6 +114,7 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
           if (!oldGlobal[name]) {
             let elm = getContainer(state.lastContainer)
             elm.addEventListener(name, globalListener, false)
+            console.log(state.lastContainer)
           }
         }
       }
