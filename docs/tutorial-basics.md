@@ -209,5 +209,17 @@ export const interfaces: Interfaces = { view }
 
 Whats next for this chapter?
 
-- Use styles
 - Run our Counter
+- Use styles
+
+Next chapters?
+
+- Component Composition
+  - Composition
+  - Messaging
+- Handlers (A.K.A. Side Effects)
+  - Interfaces
+  - Groups
+  - Tasks
+- Real world example
+- Server Side Rendering (SSR)

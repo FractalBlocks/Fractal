@@ -59,12 +59,8 @@ There are TODOs for medium term:
 
 - Research(experiment, observe and write) about multi-module apps
 - Implement fractal-native using anvil
-  - Implement flyd-java
-  - Implement union-type-java
-- Implement fratal-native iOS
-  - Implement flyd-swift
-  - Implement union-type-swift
-  - Implement anvil-ios
+- Implement fractal-native iOS
+  - Implement anvil-ios, Note that we can use [PortalView](https://github.com/guidomb/PortalView)
 
 ## TODOs
 
