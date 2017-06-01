@@ -1,6 +1,7 @@
 import { Actions, Inputs, ev, nest, unnest, clone, Interfaces, toIt } from '../../core'
 import { action, vw, props, toChild, stateOf } from '../../component'
 import { StyleGroup, clickable } from '../../style'
+import { assoc } from '../../fun'
 import { View, h } from '../../interfaces/view'
 
 import * as Item from './Item'
@@ -30,15 +31,17 @@ export const inputs: Inputs<S> = ctx => ({
   },
   setCheckAll: (checked: boolean) => {
     let items = stateOf(ctx).items
-    for (let i = 0, keys = Object.keys(items), len = keys.length; i < len; i++) {
-      toChild(ctx, keys[i], 'action', ['SetChecked', checked])
+    let key
+    for (key in items) {
+      toChild(ctx, key, 'action', ['SetChecked', checked])
     }
   },
   removeChecked: () => {
     let items = stateOf(ctx).items
-    for (let i = 0, keys = Object.keys(items), len = keys.length; i < len; i++) {
-      if (stateOf(ctx,  keys[i]).checked) {
-        toIt(ctx, '$$Item_remove', [keys[i]])
+    let key
+    for (key in items) {
+      if (stateOf(ctx,  key).checked) {
+        toIt(ctx, '$$Item_remove', key)
       }
     }
   },
@@ -49,10 +52,7 @@ export const inputs: Inputs<S> = ctx => ({
 })
 
 export const actions: Actions<S> = {
-  SetText: text => s => {
-    s.text = text
-    return s
-  },
+  SetText: assoc('text'),
   New: () => s => {
     s.items[s.numItems] = s.numItems
     s.numItems++
