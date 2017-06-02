@@ -1,6 +1,6 @@
 import { HandlerMsg, HandlerObject } from './handler'
-import { InterfaceHelpers } from "./interface";
-import { InputHelpers } from "./inputs";
+import { InterfaceHelpers } from './interface'
+import { InputHelpers } from './input'
 
 export type Identifier = number | string
 
