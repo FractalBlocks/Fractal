@@ -78,13 +78,12 @@ describe('Interface functions and helpers', () => {
 
   describe('act function sugar for generic inputs', () => {
     let ctx = {}
-    let ctxEv = ev(<any> ctx)
     it('should return the same as ev without the input name', () => {
-      expect(act(ctxEv)('actionName', 's', 'value')).toEqual(ev(<any> ctx)('action', ['actionName', 's'], 'value'))
+      expect(act(<any> ctx)('actionName', 's', 'value')).toEqual(ev(<any> ctx)('action', ['actionName', 's'], 'value'))
     })
 
     it('should return the same as ev without the input name when context data is undefined', () => {
-      expect(act(ctxEv)('actionName', undefined, 'value')).toEqual(ev(<any> ctx)('action', 'actionName', 'value'))
+      expect(act(<any> ctx)('actionName', undefined, 'value')).toEqual(ev(<any> ctx)('action', 'actionName', 'value'))
     })
 
   })
@@ -119,8 +118,7 @@ describe('Interface functions and helpers', () => {
     })
 
     it ('should be the same to use vw and interfaceOf functions', () => {
-      let ctxInterfaceOf = interfaceOf(app.ctx)
-      let interfaceObj = vw(ctxInterfaceOf)('child')
+      let interfaceObj = vw(app.ctx)('child')
       expect(interfaceObj).toEqual(interfaceOf(app.ctx.components['MyComp'].ctx)('child', 'view'))
     })
 
