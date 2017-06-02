@@ -1,6 +1,5 @@
 import { hashMap, HashMap, get as moriGet, conj } from 'mori'
 
-
 // TODO: test it!!
 /* istanbul ignore next */
 export function evolve(..._args): { (hashMapObj: HashMap<string, any>): HashMap<string, any> } {
