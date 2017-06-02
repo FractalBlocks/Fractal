@@ -2,6 +2,7 @@ import { hashMap, HashMap, get as moriGet, conj } from 'mori'
 
 
 // TODO: test it!!
+/* istanbul ignore next */
 export function evolve(..._args): { (hashMapObj: HashMap<string, any>): HashMap<string, any> } {
   return function (hashMapObj) {
     let changes = []
@@ -19,5 +20,5 @@ export function evolve(..._args): { (hashMapObj: HashMap<string, any>): HashMap<
   }
 }
 
+/* istanbul ignore next */
 export const get = (t, key) => moriGet<string, any>(t, key)
-
