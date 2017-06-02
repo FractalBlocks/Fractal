@@ -2,7 +2,7 @@
 // side effects for log functionality
 
 import { clone } from './core'
-import { stateOf } from './core/inputs'
+import { stateOf } from './core/input'
 
 export const warn = (source: string, description: string) =>
   console.warn(`source: ${source}, description: ${description}`)
