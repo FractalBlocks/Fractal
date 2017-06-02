@@ -834,7 +834,7 @@ describe('Lifecycle hooks', () => {
   let disposeLog = []
 
   let init = ctx => {
-    toIt(ctx, 'inc')
+    toIt(ctx)('inc')
   }
   let destroy = ctx => {
     let parts = ctx.id.split('$')

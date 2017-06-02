@@ -265,40 +265,46 @@ export function propagate (ctx: Context, inputName: string, data: any) {
     }
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      toIt(parentSpace.ctx, parentInputName, msg)
+      toIt(parentSpace.ctx)(parentInputName, msg)
     }
   }
 }
 
+export interface CtxToIt {
+  (inputName: string, data?, isPropagated?: boolean): void
+}
+
 // send a message to an input of a component from itself
-export function toIt (ctx: Context, inputName: string, data?, isPropagated = true) {
+export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
 
-  let input = componentSpace.inputs[inputName]
+  return (inputName, data, isPropagated = true) => {
+    let input = componentSpace.inputs[inputName]
 
-  if (input === undefined) {
-    ctx.error(
-      'execute',
-      `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${id}'`
-    )
-    return
-  }
-  ctx.beforeInput(ctx, inputName, data)
-  /* istanbul ignore else */
-  if (<any> input !== 'nothing') {
-    // call the input
-    let executable = input(data)
-
-    if (executable !== undefined) {
-      execute(ctx, executable)
+    if (input === undefined) {
+      ctx.error(
+        'execute',
+        `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${id}'`
+      )
+      return
     }
+    ctx.beforeInput(ctx, inputName, data)
+    /* istanbul ignore else */
+    if (<any> input !== 'nothing') {
+      // call the input
+      let executable = input(data)
+
+      if (executable !== undefined) {
+        execute(ctx, executable)
+      }
+    }
+    /* istanbul ignore else */
+    if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
+      propagate(ctx, inputName, data)
+    }
+    ctx.afterInput(ctx, inputName, data)
   }
-  /* istanbul ignore else */
-  if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
-    propagate(ctx, inputName, data)
-  }
-  ctx.afterInput(ctx, inputName, data)
 }
 
 // execute an executable in a context, executable parameter should not be undefined
