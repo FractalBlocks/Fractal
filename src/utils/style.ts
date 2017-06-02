@@ -64,6 +64,7 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
   return mergedGroup
 }
 
+/* istanbul ignore next */
 export const placeholderColor = (color: string): types.NestedCSSProperties => ({
   $nest: {
     '&::-webkit-input-placeholder': { /* Chrome/Opera/Safari */
