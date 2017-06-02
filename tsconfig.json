@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "outDir": "./",
+    "outDir": "./lib",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,

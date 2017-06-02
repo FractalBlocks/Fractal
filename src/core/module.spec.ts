@@ -19,7 +19,7 @@ import {
   clone,
   Inputs,
 } from './index'
-import { mergeStates } from '../reattach'
+import { mergeStates } from '../utils/reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
 import { toIt } from './module'
 

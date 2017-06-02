@@ -6,7 +6,7 @@ import {
   EventData,
   HandlerInterface,
   Inputs,
-} from './core'
+} from '../core'
 import {
   runWorker,
   WorkerAPI,
@@ -14,7 +14,7 @@ import {
   workerLog,
   workerListener,
 } from './worker'
-import { valueHandler, ValueInterface } from './interfaces/value'
+import { valueHandler, ValueInterface } from '../interfaces/value'
 
 describe('Utilities for running fractal inside workers', () => {
 

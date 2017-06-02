@@ -6,7 +6,7 @@ import {
   Group,
   Module,
   toIt,
-} from './core'
+} from '../core'
 
 // set of helpers for building components
 

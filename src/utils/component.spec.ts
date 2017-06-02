@@ -1,4 +1,4 @@
-import { Component, run, clone } from './core'
+import { Component, run, clone } from '../core'
 import {
   action,
   props,

@@ -1,6 +1,6 @@
-import { Module, Component, run, nest } from './index'
+import { Module, Component, run, nest } from '../core'
 import { valueHandler } from '../interfaces/value'
-import { mergeStates } from '../reattach'
+import { mergeStates } from './reattach'
 
 describe('Hot swaping functionality', () => {
 
