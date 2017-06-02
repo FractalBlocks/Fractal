@@ -18,18 +18,13 @@ export interface InterfaceHelpers {
   vw: CtxVw
 }
 
-export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => {
-  const _interfaceOf = interfaceOf(ctx)
-  const _ev = ev(ctx)
-
-  return {
-    ctx,
-    interfaceOf: _interfaceOf,
-    ev: _ev,
-    act: act(_ev),
-    vw: vw(_interfaceOf),
-  }
-}
+export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
+  ctx,
+  interfaceOf: interfaceOf(ctx),
+  ev: ev(ctx),
+  act: act(ctx),
+  vw: vw(ctx),
+})
 
 export interface CtxInterfaceOf {
   (name: string, interfaceName: string): any
@@ -58,8 +53,10 @@ export interface CtxAct {
 }
 
 // generic action dispatcher
-export const act = (ev: CtxEv): CtxAct => (actionName, context, param, options): InputData => {
-  return ev('action', context !== undefined ? [actionName, context] : actionName, param, options)
+export const act = (ctx: Context): CtxAct => {
+  let _ev = ev(ctx)
+  return (actionName, context, param, options): InputData =>
+    _ev('action', context !== undefined ? [actionName, context] : actionName, param, options)
 }
 
 export interface CtxVw {
@@ -67,8 +64,9 @@ export interface CtxVw {
 }
 
 // extract view interface, sintax sugar
-export const vw = (interfaceOf: CtxInterfaceOf): CtxVw => componentName => {
-  return interfaceOf(componentName, 'view')
+export const vw = (ctx: Context): CtxVw => {
+  let _interfaceOf = interfaceOf(ctx)
+  return componentName => _interfaceOf(componentName, 'view')
 }
 
 export interface CtxEv {
@@ -143,7 +141,7 @@ export function computeEvent(event: any, iData: InputData): EventData {
 
 // dispatch an input based on eventData to the respective component
 /* istanbul ignore next */
-// TODO: test propagation (CRITICAL)
+// TODO: optimize via currification
 export const dispatch = (ctxIn: Context, eventData: EventData, isPropagated = true) => {
   let id = eventData[0] + ''
   // root component
@@ -159,5 +157,5 @@ export const dispatch = (ctxIn: Context, eventData: EventData, isPropagated = tr
     : eventData[4] === 'context'
     ? eventData[2] // is only context
     : eventData[3] // is only event data
-  toIt(componentSpace.ctx, inputName, data)
+  toIt(componentSpace.ctx)(inputName, data)
 }
