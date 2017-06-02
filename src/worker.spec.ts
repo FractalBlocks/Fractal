@@ -1,12 +1,11 @@
 import {
-  Context,
   Component,
   Task,
-  ev,
   run,
   Handler,
   EventData,
   HandlerInterface,
+  Inputs,
 } from './core'
 import {
   runWorker,
@@ -28,20 +27,20 @@ describe('Utilities for running fractal inside workers', () => {
     Inc: () => s => s + 1,
   }
 
-  let inputs = (ctx: Context) => ({
+  let inputs: Inputs<number> = ({ ctx, ev }) => ({
     set: (n: number) => actions.Set(n),
     inc: () => actions.Inc(),
-    task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
+    task: (): Task => ['log', { info: 'info', cb: ev('inc') }],
     wrongTask: (): Task => ['wrongTask', {}],
   })
 
   let childValue: ValueInterface<any> =
-    (ctx, s) => ({
+    ({ ctx, ev }) => s => ({
       tagName: ctx.id,
       content: 'Fractal is awesome!! ' + s,
-      inc: ev(ctx, 'inc'),
-      task: ev(ctx, 'task'),
-      wrongTask: ev(ctx, 'wrongTask'),
+      inc: ev('inc'),
+      task: ev('task'),
+      wrongTask: ev('wrongTask'),
     })
 
   let root: Component<any> = {

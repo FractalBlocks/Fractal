@@ -21,7 +21,7 @@ import {
 } from './index'
 import { mergeStates } from '../reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
-import { toIt } from "./module";
+import { toIt } from './module'
 
 // Component definition to perform tests
 
@@ -36,7 +36,7 @@ let actions = {
   Inc: () => s => s + 1,
 }
 
-let inputs: Inputs<S> = ctx => ({
+let inputs: Inputs<S> = ({ ctx }) => ({
   set: (n: number) => actions.Set(n),
   setExtra: ([value, extra]) => actions.Set(value + extra),
   toParent: () => {},
@@ -46,15 +46,15 @@ let inputs: Inputs<S> = ctx => ({
   inc: () => actions.Inc(),
   action: ([name, value]) => actions[name](value), // generic action input
   dispatch: () => {
-    dispatch(ctx, computeEvent({}, ev(ctx, 'inc')))
+    dispatch(ctx, computeEvent({}, ev(ctx)('inc')))
   },
-  task: (): Task => ['log', { info: 'info', cb: ev(ctx, 'inc') }],
+  task: (): Task => ['log', { info: 'info', cb: ev(ctx)('inc') }],
   wrongTask: (): Task => ['wrongTask', {}],
   executableListWrong: (): Executable<S>[] => [
     ['wrongTask2', {}],
   ],
   executableListTask: (): Executable<S>[] => [
-    ['log', { info: 'info2', cb: ev(ctx, 'inc') }],
+    ['log', { info: 'info2', cb: ev(ctx)('inc') }],
   ],
   executableListAction: (): Executable<S>[] => [
     actions.Inc(),
@@ -64,27 +64,27 @@ let inputs: Inputs<S> = ctx => ({
 let _ = undefined // gap for undefined
 
 let childValue: ValueInterface<any> =
-  (ctx, s) => ({
+  ({ctx}) => s => ({
     tagName: ctx.id,
     content: s,
-    inc: ev(ctx, 'inc'),
-    task: ev(ctx, 'task'),
-    set: ev(ctx, 'set', 10),
-    setFnAll: ev(ctx, 'set', _, '*'),
-    setFnValue: ev(ctx, 'set', _, 'value'),
-    setFnPath: ev(ctx, 'set', _, ['target', 'value']),
-    setFnExtra: ev(ctx, 'setExtra', 5, 'value'),
-    setFnGeneric: ev(ctx, 'action', 'Set', 'value'),
-    setFnKeys: ev(ctx, 'set', _, [['a', 'b']]),
-    setFnPathKeys: ev(ctx, 'set', _, ['p1', 'p2', ['a', 'b', 'c']]),
-    setFnPaths: ev(ctx, 'set', _, [['p1', 'z'], ['a'], ['p1', 'p2', ['a', 'b', 'c']]]),
-    toParent: ev(ctx, 'toParent'),
-    toParentGlobal: ev(ctx, '$toParentGlobal'),
-    wrongTask: ev(ctx, 'wrongTask'),
-    dispatch: ev(ctx, 'dispatch'),
-    executableListWrong: ev(ctx, 'executableListWrong'),
-    executableListTask: ev(ctx, 'executableListTask'),
-    executableListAction: ev(ctx, 'executableListAction'),
+    inc: ev(ctx)('inc'),
+    task: ev(ctx)('task'),
+    set: ev(ctx)('set', 10),
+    setFnAll: ev(ctx)('set', _, '*'),
+    setFnValue: ev(ctx)('set', _, 'value'),
+    setFnPath: ev(ctx)('set', _, ['target', 'value']),
+    setFnExtra: ev(ctx)('setExtra', 5, 'value'),
+    setFnGeneric: ev(ctx)('action', 'Set', 'value'),
+    setFnKeys: ev(ctx)('set', _, [['a', 'b']]),
+    setFnPathKeys: ev(ctx)('set', _, ['p1', 'p2', ['a', 'b', 'c']]),
+    setFnPaths: ev(ctx)('set', _, [['p1', 'z'], ['a'], ['p1', 'p2', ['a', 'b', 'c']]]),
+    toParent: ev(ctx)('toParent'),
+    toParentGlobal: ev(ctx)('$toParentGlobal'),
+    wrongTask: ev(ctx)('wrongTask'),
+    dispatch: ev(ctx)('dispatch'),
+    executableListWrong: ev(ctx)('executableListWrong'),
+    executableListTask: ev(ctx)('executableListTask'),
+    executableListAction: ev(ctx)('executableListAction'),
   })
 
 let root: Component<S> = {
@@ -148,22 +148,22 @@ describe('Context functions', function () {
   describe('ev function helper for sintetizing InputData', () => {
 
     it('should accept * for returning all the event object', () => {
-      let data = ev(ctx, 'inputName', '*')
+      let data = ev(ctx)('inputName', '*')
       expect(data).toEqual(['Main$child', 'inputName', '*', undefined, undefined])
     })
 
     it('should accept a property name for returning a part of the event object', () => {
-      let data = ev(ctx, 'inputName', 'value')
+      let data = ev(ctx)('inputName', 'value')
       expect(data).toEqual(['Main$child', 'inputName', 'value', undefined, undefined])
     })
 
     it('should accept an extra argument', () => {
-      let data = ev(ctx, 'inputName', 'value', 'extra')
+      let data = ev(ctx)('inputName', 'value', 'extra')
       expect(data).toEqual(['Main$child', 'inputName', 'value', 'extra', undefined])
     })
 
     it('should accept an options argument', () => {
-      let data = ev(ctx, 'inputName', 'value', 'extra', { default: false, propagate: false })
+      let data = ev(ctx)('inputName', 'value', 'extra', { default: false, propagate: false })
       expect(data).toEqual(['Main$child', 'inputName', 'value', 'extra', { default: false, propagate: false }])
     })
 
@@ -187,27 +187,6 @@ describe('Context functions', function () {
     expect(ctx.components[`Main$child`].state).toEqual(0)
     expect(lastLog)
       .toEqual(['nest', `component 'Main' has overwritten component space 'Main$child'`])
-  })
-
-  it('should get an interface message from a certain component (interfaceOf)', () => {
-    let state = rootCtx.components[rootCtx.id + '$child'].state
-    expect(interfaceOf(rootCtx, 'child', 'value')).toEqual(childValue(createContext(rootCtx, 'child'), state))
-  })
-
-  it('should log an error if try to get an interface message from an inexistent component (interfaceOf)', () => {
-    interfaceOf(rootCtx, 'wrong', 'value')
-    expect(lastLog).toEqual([
-      'interfaceOf',
-      `there are no component space 'Main$wrong'`,
-    ])
-  })
-
-  it('should log an error if try to get an inexistent interface message from a certain component (interfaceOf)', () => {
-    interfaceOf(rootCtx, 'child', 'wrong')
-    expect(lastLog).toEqual([
-      'interfaceOf',
-      `there are no interface 'wrong' in component 'Main' from space 'Main$child'`,
-    ])
   })
 
 })
@@ -644,13 +623,13 @@ describe('Component composition', () => {
   }
 
   let mainValue: ValueInterface<any> =
-    (ctx, s) => ({
+    ({ ctx }) => s => ({
       tagName: s.key,
       content: s,
-      inc: ev(ctx, 'inc'),
-      childValue1: interfaceOf(ctx, 'child1', 'value'),
-      childValue2: interfaceOf(ctx, 'child2', 'value'),
-      childValue3: interfaceOf(ctx, 'child3', 'value'),
+      inc: ev(ctx)('inc'),
+      childValue1: interfaceOf(ctx)('child1', 'value'),
+      childValue2: interfaceOf(ctx)('child2', 'value'),
+      childValue3: interfaceOf(ctx)('child3', 'value'),
     })
 
   let main: Component<any> = {
@@ -879,13 +858,13 @@ describe('Lifecycle hooks', () => {
     child3: child,
   }
   let mainValue: ValueInterface<any> =
-    (ctx, s) => ({
+    ({ ctx }) => s => ({
       tagName: s.key,
       content: s,
-      inc: ev(ctx, 'inc'),
-      childValue1: interfaceOf(ctx, 'child1', 'value'),
-      childValue2: interfaceOf(ctx, 'child2', 'value'),
-      childValue3: interfaceOf(ctx, 'child3', 'value'),
+      inc: ev(ctx)('inc'),
+      childValue1: interfaceOf(ctx)('child1', 'value'),
+      childValue2: interfaceOf(ctx)('child2', 'value'),
+      childValue3: interfaceOf(ctx)('child3', 'value'),
     })
 
   let main: Component<any> = {
@@ -956,18 +935,18 @@ describe('Hot swapping', () => {
       return s
     },
   }
-  let inputs2 = (ctx: Context) => ({
+  let inputs2 = ({ ctx }) => ({
     inc: () => actions2.Inc(),
   })
   let mainValueV1: ValueInterface<any> =
-    (ctx, s) => ({
+    ({ ctx }) => s => ({
       tagName: ctx.name,
       content: s.count,
       content2: s.count2,
-      inc: ev(ctx, 'inc'),
-      childValue1: interfaceOf(ctx, 'child1', 'value'),
-      childValue2: interfaceOf(ctx, 'child2', 'value'),
-      childValue3: interfaceOf(ctx, 'child3', 'value'),
+      inc: ev(ctx)('inc'),
+      childValue1: interfaceOf(ctx)('child1', 'value'),
+      childValue2: interfaceOf(ctx)('child2', 'value'),
+      childValue3: interfaceOf(ctx)('child3', 'value'),
     })
 
   let mainV1: Component<any> = {
@@ -985,14 +964,14 @@ describe('Hot swapping', () => {
   }
 
   let mainValueV2: ValueInterface<any> =
-    (ctx, s) => ({
+    ({ ctx }) => s => ({
       tagName: ctx.name,
       content: 'Fractal is awesome V2!! ' + s.count + ' :D',
       content2: 'Fractal is awesome V2!! ' + s.count2 + ' :D',
-      inc: ev(ctx, 'inc'),
-      childValue1: interfaceOf(ctx, 'child1', 'value'),
-      childValue2: interfaceOf(ctx, 'child2', 'value'),
-      childValue3: interfaceOf(ctx, 'child3', 'value'),
+      inc: ev(ctx)('inc'),
+      childValue1: interfaceOf(ctx)('child1', 'value'),
+      childValue2: interfaceOf(ctx)('child2', 'value'),
+      childValue3: interfaceOf(ctx)('child3', 'value'),
     })
 
   let mainV2: Component<any> = {

@@ -1,4 +1,6 @@
 import { HandlerMsg, HandlerObject } from './handler'
+import { InterfaceHelpers } from "./interface";
+import { InputHelpers } from "./inputs";
 
 export type Identifier = number | string
 
@@ -44,7 +46,7 @@ export interface Hook {
 export type Group = any
 
 export interface Inputs<S> {
-  (ctx: Context): InputIndex<S>
+  (helpers: InputHelpers): InputIndex<S>
 }
 
 export interface InputIndex<S> {
@@ -110,7 +112,15 @@ export interface Update<S> {
 }
 
 export interface Interface<Type, S>{
-  (ctx: Context, state: S): Type
+  (helpers: InterfaceHelpers) : CtxInterface<Type, S>
+}
+
+export interface CtxInterface<Type, S> {
+  (state: S): Type
+}
+
+export interface CtxInterfaceIndex {
+  [name: string]: CtxInterface<any, any>
 }
 
 // a task executes some kind of side effect (output) - Comunications stuff
@@ -169,6 +179,7 @@ export interface ComponentSpace {
   isStatic: boolean
   state: any
   inputs: InputIndex<any>
+  interfaces: CtxInterfaceIndex
   // component index for dynamic handling (new and dispose)
   components: {
     [name: string]: true
@@ -177,7 +188,3 @@ export interface ComponentSpace {
 }
 
 export type Executable<S> = Update<S> | Task
-
-export interface CtxInterface {
-  state: HandlerMsg
-}

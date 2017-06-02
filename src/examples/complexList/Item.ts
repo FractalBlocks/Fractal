@@ -1,5 +1,5 @@
-import { Actions, Inputs, ev, Interfaces } from '../../core'
-import { action, act } from '../../component'
+import { Actions, Inputs, Interfaces } from '../../core'
+import { action } from '../../component'
 import { StyleGroup } from '../../style'
 import { View, h } from '../../interfaces/view'
 
@@ -24,7 +24,7 @@ export const actions: Actions<S> = {
   },
 }
 
-const view: View<S> = (ctx, s) => {
+const view: View<S> = ({ ctx, ev, act }) => s => {
   let style = ctx.groups.style
 
   return h('li', {
@@ -38,14 +38,14 @@ const view: View<S> = (ctx, s) => {
         checked: s.checked,
       },
       on: {
-        change: act(ctx, 'SetChecked', ['target', 'checked']),
+        change: act('SetChecked', ['target', 'checked']),
       },
     }),
     <any> s.text,
     h('span', {
       class: { [style.remove]: true },
       on: {
-        click: ev(ctx, '$remove'),
+        click: ev('$remove'),
       },
     }, 'remove'),
   ])

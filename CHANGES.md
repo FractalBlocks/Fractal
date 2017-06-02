@@ -2,10 +2,16 @@
 
 # Changes for Fractal core
 
-# Next
+# Next v2.0.0
+
 
 ## Done
 
+- Interface ctx argument replaced by helpers object, increase redability and speed
+- Currying all the interface helpers and group on interface.ts
+- Add an interface index to ComponentSpace increasing speed
+- Inputs ctx argument replaced by input helpers object
+- Currying interfaces for optimize speed
 - Fix logging stuff in globalListeners
 
 # v1.6.0

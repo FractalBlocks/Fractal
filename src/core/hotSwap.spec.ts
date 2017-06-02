@@ -24,7 +24,7 @@ describe('Hot swaping functionality', () => {
       value: 'subchild',
     },
     interfaces: {
-      value: (ctx, s) => ({ value: '21' }),
+      value: () => s => ({ value: '21' }),
     },
   }
 
@@ -40,7 +40,7 @@ describe('Hot swaping functionality', () => {
       value: 'child',
     },
     interfaces: {
-      value: (ctx, s) => ({ value: '17' }),
+      value: () => s => ({ value: '17' }),
     },
   }
 
@@ -56,7 +56,7 @@ describe('Hot swaping functionality', () => {
       value: 'main',
     },
     interfaces: {
-      value: (ctx, s) => ({ value: '12345' }),
+      value: () => s => ({ value: '12345' }),
     },
   }
 
@@ -66,7 +66,7 @@ describe('Hot swaping functionality', () => {
       value: 'subchildV2',
     },
     interfaces: {
-      value: (ctx, s) => ({ value: '21' }),
+      value: () => s => ({ value: '21' }),
     },
   }
 
@@ -82,7 +82,7 @@ describe('Hot swaping functionality', () => {
       value: 'childV2',
     },
     interfaces: {
-      value: (ctx, s) => ({ value: 'V2' }),
+      value: () => s => ({ value: 'V2' }),
     },
   }
 
@@ -98,7 +98,7 @@ describe('Hot swaping functionality', () => {
       value: 'V2',
     },
     interfaces: {
-      value: (ctx, s) => ({ value: 'V2' }),
+      value: () => s => ({ value: 'V2' }),
     },
   }
 
@@ -130,7 +130,7 @@ describe('Hot swaping functionality', () => {
         value: 'child',
       },
       interfaces: {
-        value: (ctx, s) => ({ value: '17' }),
+        value: () => s => ({ value: '17' }),
       },
     }
     let Comp: Component<any> = {
@@ -145,7 +145,7 @@ describe('Hot swaping functionality', () => {
         value: 'main',
       },
       interfaces: {
-        value: (ctx, s) => ({ value: '12345' }),
+        value: () => s => ({ value: '12345' }),
       },
     }
     let app = setup(Comp, () => 0, () => 0, (source, description) => {
@@ -167,7 +167,7 @@ describe('Hot swaping functionality', () => {
         value: 'childV2',
       },
       interfaces: {
-        value: (ctx, s) => ({ value: 'V2' }),
+        value: () => s => ({ value: 'V2' }),
       },
     }
 
@@ -183,7 +183,7 @@ describe('Hot swaping functionality', () => {
         value: 'V2',
       },
       interfaces: {
-        value: (ctx, s) => ({ value: 'V2' }),
+        value: () => s => ({ value: 'V2' }),
       },
     }
     app.moduleAPI.reattach(CompV2, mergeStates)

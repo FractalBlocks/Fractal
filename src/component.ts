@@ -3,14 +3,9 @@ import {
   Update,
   Component,
   Context,
-  InputData,
-  HandlerMsg,
-  interfaceOf,
   Group,
-  ev,
   Module,
   toIt,
-  EventOptions,
 } from './core'
 
 // set of helpers for building components
@@ -33,19 +28,9 @@ export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any
   return actions[name](value)
 }
 
-// generic action dispatcher
-export const act = (ctx: Context, actionName: string, context?: any, param?: any, options?: EventOptions): InputData => {
-  return ev(ctx, 'action', context !== undefined ? [actionName, context] : actionName, param, options)
-}
-
 // generic action self caller
 export const toAct = (ctx: Context, actionName: string, data?: any, isPropagated = true) => {
   return toIt(ctx, 'action', [actionName, data], isPropagated)
-}
-
-// extract view interface, sintax sugar
-export function vw (ctx: Context, componentName: string): HandlerMsg {
-  return interfaceOf(ctx, componentName, 'view')
 }
 
 // --- Message interchange between components
