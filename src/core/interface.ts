@@ -8,7 +8,7 @@ import {
   HandlerMsg,
 } from './handler'
 import { toIt } from './module'
-import { stateOf, CtxStateOf } from './inputs'
+import { stateOf, CtxStateOf } from './input'
 
 export interface InterfaceHelpers {
   ctx: Context

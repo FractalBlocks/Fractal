@@ -15,7 +15,7 @@ import {
   HandlerObject,
 } from './handler'
 import { makeInterfaceHelpers, dispatch } from './interface'
-import { makeInputHelpers } from './inputs'
+import { makeInputHelpers } from './input'
 
 export interface ModuleDef {
   root: Component<any>

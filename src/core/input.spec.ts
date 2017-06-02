@@ -1,6 +1,6 @@
-import { stateOf, toChild, toAct } from './inputs'
-import { run } from "./module";
-import { Component } from "./core";
+import { stateOf, toChild, toAct } from './input'
+import { run } from './module'
+import { Component } from './core'
 
 describe('Input functions and helpers', () => {
 
