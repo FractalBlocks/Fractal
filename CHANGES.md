@@ -6,6 +6,10 @@
 
 ## Done
 
+# v2.0.2
+
+- Fix CtxNest type signature and worker.ts
+
 # v2.0.1
 
 - Add stateOf to interface helpers
