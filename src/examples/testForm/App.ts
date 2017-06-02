@@ -3,10 +3,13 @@ import {
   Inputs,
   Interfaces,
   clone,
+  setGroup,
+  pipe,
+  assoc,
+  props,
+  StyleGroup,
+  mergeStyles,
 } from '../../core'
-import { props, setGroup } from '../../component'
-import { pipe, assoc } from '../../fun'
-import { StyleGroup, mergeStyles } from '../../style'
 import { View, h } from '../../interfaces/view'
 
 import * as TextField from './TextField'

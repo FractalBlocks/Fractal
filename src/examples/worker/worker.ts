@@ -1,5 +1,4 @@
-import { run } from '../../core'
-import { workerHandler, workerLog, workerListener } from '../../worker'
+import { run, workerHandler, workerLog, workerListener } from '../../core'
 
 import * as root from './App'
 

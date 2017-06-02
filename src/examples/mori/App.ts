@@ -1,8 +1,6 @@
-import { Inputs, Actions, Interfaces } from '../../core'
-import { StyleGroup, clickable } from '../../style'
+import { Inputs, Actions, Interfaces, StyleGroup, clickable, Mori as M } from '../../core'
 import { View, h } from '../../interfaces/view'
 import { hashMap } from 'mori'
-import { evolve, get } from '../../mori'
 
 export const name = 'Main'
 
@@ -11,8 +9,8 @@ export const state: any = hashMap<string, string>(
 )
 
 export const  actions: Actions<any> = {
-  Set: (count: number) => evolve('count', () => count),
-  Inc: () => evolve('count', x => x + 1),
+  Set: (count: number) => M.evolve('count', () => count),
+  Inc: () => M.evolve('count', x => x + 1),
 }
 
 export const  inputs: Inputs<any> = ctx => ({
@@ -23,7 +21,7 @@ export const  inputs: Inputs<any> = ctx => ({
 let view: View<any> = ({ ctx, ev }) => s => {
   let style = ctx.groups['style']
   return h('div', {
-    key: get(s, 'key'),
+    key: M.get(s, 'key'),
     class: { [style.base]: true },
   }, [
     h('div', {
@@ -31,7 +29,7 @@ let view: View<any> = ({ ctx, ev }) => s => {
       on: {
         click: ev('inc'),
       },
-    }, `${get(s, 'count')}`),
+    }, `${M.get(s, 'count')}`),
     h('div', {
       class: { [style.reset]: true },
       on: {

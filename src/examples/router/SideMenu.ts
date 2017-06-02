@@ -1,9 +1,8 @@
-import { Actions, Inputs, Interfaces } from '../../core'
-import { StyleGroup, clickable } from '../../style'
+import { Actions, Inputs, Interfaces, StyleGroup, clickable } from '../../core'
 import { View, h } from '../../interfaces/view'
 import { palette } from './constants'
 
-export const name = 'Root'
+export const name = 'SideMenu'
 
 export const state = 'Received'
 

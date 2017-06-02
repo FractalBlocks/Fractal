@@ -1,5 +1,4 @@
-import { Interfaces, Inputs, Actions } from '../../core'
-import { StyleGroup, clickable } from '../../style'
+import { Interfaces, Inputs, Actions, StyleGroup, clickable } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const name = 'Counter'

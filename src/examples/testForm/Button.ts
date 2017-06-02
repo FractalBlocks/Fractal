@@ -1,5 +1,4 @@
-import { Inputs, Actions, Interfaces, _ } from '../../core'
-import { StyleGroup } from '../../style'
+import { Inputs, Actions, Interfaces, StyleGroup, _ } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const name = 'Button'

@@ -1,6 +1,4 @@
-import { Actions, Inputs, _, Interfaces } from '../../core'
-import { action } from '../../component'
-import { StyleGroup } from '../../style'
+import { Actions, Inputs, _, Interfaces, action, StyleGroup } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const name = 'Root'

@@ -1,7 +1,5 @@
-import { Actions, Inputs, Interfaces } from '../../core'
-import { StyleGroup, clickable } from '../../style'
+import { Actions, Inputs, Interfaces, action, StyleGroup, clickable } from '../../core'
 import { View, h } from '../../interfaces/view'
-import { action } from '../../component'
 import { palette } from './constants'
 
 export const name = 'Email'

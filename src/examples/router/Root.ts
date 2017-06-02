@@ -1,6 +1,4 @@
-import { Actions, Inputs, Interfaces, Components, Hook, toChild, _ } from '../../core'
-import { StyleGroup } from '../../style'
-import { action } from '../../component'
+import { Actions, Inputs, Interfaces, Components, Hook, toChild, action, StyleGroup, _ } from '../../core'
 import { View, h } from '../../interfaces/view'
 import { palette } from './constants'
 

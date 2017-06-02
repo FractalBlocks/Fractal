@@ -1,5 +1,4 @@
-import { Interfaces } from '../../core'
-import { StyleGroup } from '../../style'
+import { Interfaces, StyleGroup } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 import * as Counter from './Counter'

@@ -6,6 +6,8 @@
 
 ## Done
 
+- Ignore log.ts and style.ts coverage for now
+- Remove cs() unused function from style.ts
 - Due to Webpack 2 has tree shaking and is the desired build tool, we should have one import for all the core functions, migration all helpers to core index
 
 # v2.0.4

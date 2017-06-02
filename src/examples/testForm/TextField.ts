@@ -1,6 +1,12 @@
-import { Inputs, Actions, Interfaces, _ } from '../../core'
-import { action } from '../../component'
-import { StyleGroup, placeholderColor } from '../../style'
+import {
+  Inputs,
+  Actions,
+  Interfaces,
+  action,
+  StyleGroup,
+  placeholderColor,
+  _,
+} from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const name = 'TextField'

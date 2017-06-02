@@ -1,7 +1,14 @@
-import { Actions, Inputs, clone, Interfaces } from '../../core'
-import { action, props } from '../../component'
-import { StyleGroup, clickable } from '../../style'
-import { assoc } from '../../fun'
+import {
+  Actions,
+  Inputs,
+  clone,
+  Interfaces,
+  assoc,
+  action,
+  props,
+  StyleGroup,
+  clickable,
+} from '../../core'
 import { View, h } from '../../interfaces/view'
 
 import * as Item from './Item'

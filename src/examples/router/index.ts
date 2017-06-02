@@ -1,8 +1,13 @@
-import { run, Handler, computeEvent } from '../../core'
+import {
+  run,
+  Handler,
+  computeEvent,
+  // DEV
+  logFns,
+  mergeStates,
+} from '../../core'
 import { viewHandler } from '../../interfaces/view'
 import { styleHandler } from '../../groups/style'
-import { logFns } from '../../log' // DEV ONLY
-import { mergeStates } from '../../reattach' // DEV ONLY
 import Navigo = require('navigo')
 
 import * as root from './Root'

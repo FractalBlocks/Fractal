@@ -1,8 +1,11 @@
-import { run } from '../../core'
+import {
+  run,
+  // DEV
+  logFns,
+  mergeStates,
+} from '../../core'
 import { viewHandler } from '../../interfaces/view'
 import { styleHandler } from '../../groups/style'
-import { logFns } from '../../log' // DEV ONLY
-import { mergeStates } from '../../reattach' // DEV ONLY
 
 import * as root from './Root'
 
