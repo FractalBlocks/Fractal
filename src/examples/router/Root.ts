@@ -1,9 +1,8 @@
-import { Actions, Inputs, Interfaces, Components, Hook, _ } from '../../core'
+import { Actions, Inputs, Interfaces, Components, Hook, toChild, _ } from '../../core'
 import { StyleGroup } from '../../style'
 import { action } from '../../component'
 import { View, h } from '../../interfaces/view'
 import { palette } from './constants'
-import { toChild } from '../../core/inputs'
 
 let emailDB = {
   '12323ewrd': { title: 'hello friend', content: 'hello firend, I want to ...', sender: 'Carlos Galarza', date: '12/12/2017' },
