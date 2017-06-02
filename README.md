@@ -6,7 +6,7 @@ We believe into more than frameworks, we believe that minimalist and well crafte
 
 ## How it works?
 
-- It is minimal, core logic are less than 500 lines of code and you can see how it works
+- It is minimal, core logic are less than 700 lines of code and you can see how it works
 - Excelent Developer Experience, we love to improve your experience
     - We have hot-swaping
     - We have TimeTravel debugging (soon)
