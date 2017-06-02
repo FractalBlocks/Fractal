@@ -6,6 +6,12 @@
 
 ## Done
 
+# v2.0.3
+
+- Fix dependencies from input refactor
+- Add input to core (fix)
+- Rename inputs for input
+
 # v2.0.2
 
 - Fix CtxNest type signature and worker.ts
