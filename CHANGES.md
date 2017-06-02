@@ -6,6 +6,10 @@
 
 ## Done
 
+# v2.1.1
+
+- Remove mori helpers from core
+
 # v2.1.0
 
 - Ignore log.ts and style.ts coverage for now
