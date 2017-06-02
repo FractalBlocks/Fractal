@@ -6,6 +6,11 @@
 
 ## Done
 
+# v2.0.4
+
+- Fix input import in core.ts
+- Fix input import in log.ts
+
 # v2.0.3
 
 - Fix dependencies from input refactor
