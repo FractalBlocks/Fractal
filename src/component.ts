@@ -28,27 +28,12 @@ export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any
   return actions[name](value)
 }
 
-// generic action self caller
-export const toAct = (ctx: Context, actionName: string, data?: any, isPropagated = true) => {
-  return toIt(ctx, 'action', [actionName, data], isPropagated)
-}
-
-// --- Message interchange between components
-
 // send a message to an input of a component from outside a Module
 /* istanbul ignore next */
 export function sendMsg (mod: Module, id: string, inputName: string, msg?, isPropagated = true) {
   let ctx = mod.ctx
-  toIt(ctx.components[id].ctx, inputName, msg, isPropagated)
+  toIt(ctx.components[id].ctx)(inputName, msg, isPropagated)
 }
-
-// send a message to an input of a component from its parent
-export function toChild (ctx: Context, name: string, inputName: string, msg = undefined, isPropagated = true) {
-  let childId = ctx.id + '$' + name
-  toIt(ctx.components[childId].ctx, inputName, msg, isPropagated)
-}
-
-// ---
 
 // make a new component from another merging her state
 export function props (state) {

@@ -5,8 +5,6 @@ import {
   setGroup,
   spaceOf,
   sendMsg,
-  toChild,
-  toAct,
 } from './component'
 
 describe('Component helpers', () => {
@@ -28,35 +26,6 @@ describe('Component helpers', () => {
 
     it('should accept an action-contextValue pair as first argument and a fetch value in the second', () => {
       expect(actionFn([['a1', 10], 7])).toEqual([10, 7])
-    })
-
-  })
-
-  describe('Generic action self caller', () => {
-    let actionData = []
-    let root: Component<any> = {
-      name: 'MyComp',
-      state: 0,
-      inputs: ctx => ({
-        action: ([name, data]) => {
-          actionData = [name, data]
-        },
-      }),
-      actions: {
-        Inc: s => s + 1,
-      },
-      interfaces: {},
-    }
-    let app = run({
-      root,
-      interfaces: {},
-    })
-
-    it('should call input with the action name and data', () => {
-      toAct(app.ctx.components.MyComp.ctx, 'Name', 'data1')
-      expect(actionData).toEqual(['Name', 'data1'])
-      toAct(app.ctx.components.MyComp.ctx, 'Name', 'data2', true)
-      expect(actionData).toEqual(['Name', 'data2'])
     })
 
   })
@@ -118,77 +87,43 @@ describe('Component helpers', () => {
 
   })
 
-  describe('message interchange between components', () => {
-    let childData
-    let parentData
-    let parentDataUnique
-    let selfData
-    let app
+  describe('send a message from outside the app', () => {
 
-    beforeEach(() => {
-      childData = undefined
-      parentData = undefined
-      parentDataUnique = undefined
-      selfData = undefined
+    let childData = undefined
 
-      let Child: Component<any> = {
-        name: 'Child',
-        state: {
-          count: 0,
-          data: 10,
+    let Child: Component<any> = {
+      name: 'Child',
+      state: {
+        count: 0,
+        data: 10,
+      },
+      inputs: ctx => ({
+        childInput: data => {
+          childData = data
         },
-        inputs: ctx => ({
-          childInput: data => {
-            childData = data
-          },
-        }),
-        actions: {},
-        interfaces: {},
-      }
-      let root: Component<any> = {
-        name: 'MyComp',
-        components: {
-          Child,
-        },
-        state: {
-          count: 0,
-          data: 10,
-        },
-        inputs: ctx => ({
-          selfMessage: data => {
-            selfData = data
-          },
-          $Child_inputName: data => {
-            parentData = data
-          },
-          $$Child_remove: data => {
-            parentDataUnique = data
-          },
-        }),
-        actions: {},
-        interfaces: {},
-      }
-      app = run({
-        root,
-        interfaces: {},
-      })
+      }),
+      actions: {},
+      interfaces: {},
+    }
+    let root: Component<any> = {
+      name: 'MyComp',
+      components: {
+        Child,
+      },
+      state: {},
+      inputs: ctx => ({}),
+      actions: {},
+      interfaces: {},
+    }
+    let app = run({
+      root,
+      interfaces: {},
     })
 
     it ('sendMsg should send a message to a component from outside the module correctly', () => {
       let data = 119
       sendMsg(app, 'MyComp$Child', 'childInput', data)
       expect(childData).toEqual(data)
-    })
-
-    it ('toChild should send a message to a child component from the parent correctly', () => {
-      let data = 129
-      toChild(app.ctx.components['MyComp'].ctx, 'Child', 'childInput', data, true)
-      expect(childData).toEqual(data)
-    })
-
-    it ('toChild should send an undefined message to a child component from the parent correctly', () => {
-      toChild(app.ctx.components['MyComp'].ctx, 'Child', 'childInput')
-      expect(childData).toEqual(undefined)
     })
 
   })

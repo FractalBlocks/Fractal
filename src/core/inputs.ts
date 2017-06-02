@@ -1,10 +1,14 @@
 import { Context } from './core'
 import { CtxEv, ev } from './interface'
+import { toIt, CtxToIt } from './module'
 
 export interface InputHelpers {
   ctx: Context
   ev: CtxEv
   stateOf: CtxStateOf
+  toIt: CtxToIt
+  toChild: CtxToChild
+  toAct: CtxToAct
 }
 
 export const makeInputHelpers = (ctx: Context) => ({
@@ -31,3 +35,29 @@ export const stateOf = (ctx: Context): CtxStateOf => name => {
     )
   }
 }
+
+// --- Message interchange between components
+
+export interface CtxToChild {
+  (name: string, inputName: string, msg?, isPropagated?): void
+}
+
+// send a message to an input of a component from its parent
+export const toChild = (ctx: Context) => (name, inputName, msg = undefined, isPropagated = true) => {
+  let childId = ctx.id + '$' + name
+  toIt(ctx.components[childId].ctx)(inputName, msg, isPropagated)
+}
+
+// ---
+
+export interface CtxToAct {
+  (actionName: string, data?: any, isPropagated?: boolean): void
+}
+
+// generic action self caller
+export const toAct = (ctx: Context): CtxToAct => {
+  let _toIt = toIt(ctx)
+  return (actionName, data, isPropagated = true) =>
+    _toIt('action', [actionName, data], isPropagated)
+}
+
