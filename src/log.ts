@@ -2,7 +2,7 @@
 // side effects for log functionality
 
 import { clone } from './core'
-import { stateOf } from './component'
+import { stateOf } from './core/inputs'
 
 export const warn = (source: string, description: string) =>
   console.warn(`source: ${source}, description: ${description}`)
@@ -11,7 +11,7 @@ export const error = (source: string, description: string) =>
   console.error(`source: ${source}, description: ${description}`)
 
 export const beforeInput = (ctx, inputName, data) => {
-  let state = stateOf(ctx)
+  let state = stateOf(ctx)()
   if (typeof state === 'object') {
     state = clone(state)
   }
@@ -30,7 +30,7 @@ export const beforeInput = (ctx, inputName, data) => {
 // color for actions (not yet implemented) #58C6F8
 
 export const afterInput = (ctx, inputName, data) => {
-  let state = stateOf(ctx)
+  let state = stateOf(ctx)()
   if (typeof state === 'object') {
     state = clone(state)
   }

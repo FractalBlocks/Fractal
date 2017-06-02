@@ -65,10 +65,10 @@ export interface ModuleAPI {
   dispatch (eventData: EventData): void
   dispose (): void
   reattach (comp: Component<any>, middleFn?: MiddleFn): void
-  nest (name: string, component: Component<any>): void
-  nestAll (components: { [name: string]: Component<any> }): void
-  unnest (name: string): void
-  unnestAll (components: string[]): void
+  nest: CtxNest
+  unnest: CtxUnnest
+  nestAll: CtxNestAll
+  unnestAll: CtxUnnestAll
   setGroup (id: string, name: string, space: any): void
   warn (source, description): void
   error (source, description): void
@@ -87,9 +87,8 @@ export const handlerTypes = ['interface', 'task', 'group']
 
 // create context for a component
 export function createContext (ctx: Context, name: Identifier): Context {
-  let id = ctx.id === '' ? name : `${ctx.id}$${name}`
   return {
-    id, // the component id
+    id: `${ctx.id}$${name}`, // the component id
     name,
     groups: {},
     // delegation
@@ -105,8 +104,12 @@ export function createContext (ctx: Context, name: Identifier): Context {
   }
 }
 
+export interface CtxNest {
+  (name: Identifier, component: Component<any>, isStatic?: boolean): Context
+}
+
 // add a component to the component index
-export function nest (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Context {
+export const nest = (ctx: Context) => (name, component, isStatic = false) => {
   // create the global object for initialization
   ctx.global = {
     initialized: false, // disable notifyInterfaceHandlers temporarily
@@ -146,22 +149,32 @@ function _nest (ctx: Context, name: Identifier, component: Component<any>, isSta
     ctx.components[ctx.id].components[name] = true
   }
 
-  let childCtx = createContext(ctx, name)
+  let childCtx
+  if (ctx.id === '') { // is root?
+    childCtx = ctx
+    ctx.id = name
+  } else {
+    childCtx = createContext(ctx, name)
+  }
 
   ctx.components[id] = {
     ctx: childCtx,
     isStatic,
     // if state is an object, it is cloned
     state: typeof component.state === 'object' ? clone(component.state) : component.state,
-    inputs: component.inputs ? component.inputs(makeInputHelpers(childCtx)) : {},
+    inputs: {}, // input helpers needs to be initialized after ComponentSpace, because references
     interfaces: _makeInterfaces(childCtx, component.interfaces),
     components: clone(component.components || {}),
     def: component,
   }
 
+  if (component.inputs) {
+    ctx.components[id].inputs = component.inputs(makeInputHelpers(childCtx))
+  }
+
   // composition
   if (component.components) {
-    _nestAll(childCtx, component.components, isStatic)
+    nestAll(childCtx)(component.components, isStatic)
   }
 
   if (component.groups) {
@@ -197,22 +210,25 @@ function handleGroups (ctx: Context, component: Component<any>) {
   }
 }
 
-// add many components to the component index
-/* istanbul ignore next */
-export function nestAll (ctx: Context, components: Components, isStatic = false): void {
-  _nestAll(ctx, components, isStatic)
+export interface CtxNestAll {
+  (components: Components, isStatic?: boolean): void
 }
 
+// add many components to the component index
 /* istanbul ignore next */
-function _nestAll (ctx: Context, components: Components, isStatic = false): void {
+export const nestAll = (ctx: Context): CtxNestAll => (components, isStatic = false) => {
   let name
   for (name in components) {
     _nest(ctx, name, components[name], isStatic)
   }
 }
 
+export interface CtxUnnest {
+  (name?:  string): void
+}
+
 // remove a component to the component index, if name is not defined dispose the root
-export function unnest (ctx: Context, name?:  string): void {
+export const unnest = (ctx: Context): CtxUnnest => name => {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
@@ -225,7 +241,7 @@ export function unnest (ctx: Context, name?:  string): void {
   let components = componentSpace.components
   /* istanbul ignore else */
   if (components) {
-    unnestAll(ctx.components[id].ctx, Object.keys(components))
+    unnestAll(ctx.components[id].ctx)(Object.keys(components))
   }
   // lifecycle hook: destroy
   if (componentSpace.def.destroy) {
@@ -235,10 +251,15 @@ export function unnest (ctx: Context, name?:  string): void {
   delete ctx.components[id]
 }
 
+export interface CtxUnnestAll {
+  (components: string[]): void
+}
+
 // add many components to the component index
-export function unnestAll (ctx: Context, components: string[]) {
+export const unnestAll = (ctx: Context): CtxUnnestAll => components => {
+  let _unnest = unnest(ctx)
   for (let i = 0, len = components.length; i < len; i++) {
-    unnest(ctx, components[i])
+    _unnest(components[i])
   }
 }
 
@@ -446,13 +467,13 @@ export function run (moduleDef: ModuleDef): Module {
       dispose,
       reattach,
       // merge a component to the component index
-      nest: (name, component) => nest(ctx, name, component),
+      nest: nest(ctx),
       // merge many components to the component index
-      nestAll: components => nestAll(ctx, components),
+      nestAll: nestAll(ctx),
       // unnest a component to the component index
-      unnest: name => unnest(ctx, name),
+      unnest: unnest(ctx),
       // unnest many components to the component index
-      unnestAll: components => unnestAll(ctx, components),
+      unnestAll: unnestAll(ctx),
       // set a space of a certain component
       setGroup: (id, name, space) => {
         ctx.components[id].ctx.groups[name] = space
@@ -483,7 +504,7 @@ export function run (moduleDef: ModuleDef): Module {
     }
 
     // merges main component and ctx.id now contains it name
-    ctx = nest(ctx, component.name, component, true)
+    ctx = nest(ctx)(component.name, component, true)
     let rootSpace = ctx.components[ctx.id]
 
     // middle function for hot-swapping
@@ -532,7 +553,7 @@ export function run (moduleDef: ModuleDef): Module {
         handlers[name].dispose()
       }
     }
-    unnest(ctx)
+    unnest(ctx)()
     ctx = undefined
     this.isDisposed = true
   }

@@ -45,7 +45,7 @@ describe('Interface functions and helpers', () => {
       },
     }
 
-    nest(rootCtx, 'Child', root)
+    nest(rootCtx)('Child', root)
 
 
     it('should get an interface message from a certain component (interfaceOf)', () => {

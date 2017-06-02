@@ -170,18 +170,18 @@ describe('Context functions', function () {
   })
 
   it('should nest a component to context (nest)', () => {
-    nest(rootCtx, 'child', root)
+    nest(rootCtx)('child', root)
     expect(ctx.components[`Main$child`]).toBeDefined()
   })
 
   it('should nest a component to context (nest) and mark it as dynamic', () => {
-    nest(rootCtx, 'childDynamic', root, false)
+    nest(rootCtx)('childDynamic', root, false)
     expect(ctx.components[`Main$childDynamic`]).toBeDefined()
   })
 
   it('should overwrite a component if has the same name and log a warning', () => {
     ctx.components[`Main$child`].state = 17
-    nest(rootCtx, 'child', root)
+    nest(rootCtx)('child', root)
     expect(ctx.components[`Main$child`]).toBeDefined()
     // should overwrite
     expect(ctx.components[`Main$child`].state).toEqual(0)
@@ -751,7 +751,7 @@ describe('Component composition', () => {
   })
 
   it('should unnest a component tree', () => {
-    unnest(app.ctx)
+    unnest(app.ctx)()
     expect(Object.keys(app.ctx.components).length).toEqual(0)
   })
 
@@ -767,7 +767,7 @@ describe('Component composition', () => {
       },
       error: (source, description) => lastLog = [source, description],
     })
-    unnest(app.ctx, 'wrong')
+    unnest(app.ctx)('wrong')
     expect(lastLog).toEqual([
       'unnest',
       `there is no component with name 'wrong' at component 'Main'`,

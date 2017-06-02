@@ -115,7 +115,7 @@ describe('Hot swaping functionality', () => {
       }
     })
 
-    nest(app.ctx, '0', Child)
+    nest(app.ctx)('0', Child)
 
     app.moduleAPI.reattach(CompV2, mergeStates)
   })
@@ -156,7 +156,7 @@ describe('Hot swaping functionality', () => {
       done()
     })
 
-    nest(app.ctx, '0', Child)
+    nest(app.ctx)('0', Child)
 
     let ChildV2: Component<any> = {
       name: 'Child',

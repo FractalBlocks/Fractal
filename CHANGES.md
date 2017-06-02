@@ -4,11 +4,10 @@
 
 # Next v2.0.0
 
-- Add stateOf, toIt, toChild, nest and unnest to input helpers
-- Group all input helpers to inputs.ts
-
 ## Done
 
+- Add stateOf, toIt, toChild, nest, unnest, nestAll and unnestAll to input helpers and curry them
+- Group all input helpers to inputs.ts
 - Interface ctx argument replaced by helpers object, increase redability and speed
 - Currying all the interface helpers and group on interface.ts
 - Add an interface index to ComponentSpace increasing speed

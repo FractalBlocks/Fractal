@@ -1,6 +1,17 @@
 import { Context } from './core'
 import { CtxEv, ev } from './interface'
-import { toIt, CtxToIt } from './module'
+import {
+  toIt,
+  CtxToIt,
+  CtxNest,
+  CtxUnnestAll,
+  CtxNestAll,
+  CtxUnnest,
+  nest,
+  unnest,
+  nestAll,
+  unnestAll,
+} from './module'
 
 export interface InputHelpers {
   ctx: Context
@@ -9,12 +20,23 @@ export interface InputHelpers {
   toIt: CtxToIt
   toChild: CtxToChild
   toAct: CtxToAct
+  nest: CtxNest
+  unnest: CtxUnnest
+  nestAll: CtxNestAll
+  unnestAll: CtxUnnestAll
 }
 
-export const makeInputHelpers = (ctx: Context) => ({
+export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   ctx,
   ev: ev(ctx),
   stateOf: stateOf(ctx),
+  toIt: toIt(ctx),
+  toChild: toChild(ctx),
+  toAct: toAct(ctx),
+  nest: nest(ctx),
+  unnest: unnest(ctx),
+  nestAll: nestAll(ctx),
+  unnestAll: unnestAll(ctx),
 })
 
 
