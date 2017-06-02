@@ -1,5 +1,5 @@
-import { Actions, Inputs, nest, unnest, clone, Interfaces, toIt } from '../../core'
-import { action, props, toChild, stateOf } from '../../component'
+import { Actions, Inputs, clone, Interfaces } from '../../core'
+import { action, props } from '../../component'
 import { StyleGroup, clickable } from '../../style'
 import { assoc } from '../../fun'
 import { View, h } from '../../interfaces/view'
@@ -16,11 +16,11 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs<S> = ({ ctx }) => ({
+export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => ({
   action: action(actions),
   inputKeyup: ([idx, [keyCode, text]]) => {
     if (keyCode === 13 && text !== '') {
-      nest(ctx, idx, props({ text })(clone(Item)))
+      nest(idx, props({ text })(clone(Item)))
       return [
         actions.SetText(''),
         actions.New(),
@@ -30,23 +30,23 @@ export const inputs: Inputs<S> = ({ ctx }) => ({
     }
   },
   setCheckAll: (checked: boolean) => {
-    let items = stateOf(ctx).items
+    let items = stateOf().items
     let key
     for (key in items) {
-      toChild(ctx, key, 'action', ['SetChecked', checked])
+      toChild(key, 'action', ['SetChecked', checked])
     }
   },
   removeChecked: () => {
-    let items = stateOf(ctx).items
+    let items = stateOf().items
     let key
     for (key in items) {
-      if (stateOf(ctx,  key).checked) {
-        toIt(ctx, '$$Item_remove', key)
+      if (stateOf(key).checked) {
+        toIt('$$Item_remove', key)
       }
     }
   },
   $$Item_remove: idx => {
-    unnest(ctx, idx)
+    unnest(idx)
     return actions.Remove(idx)
   },
 })

@@ -70,20 +70,6 @@ export function setGroup (name: string, group: Group) {
   }
 }
 
-export function stateOf (ctx: Context, name?: string): any {
-  let id = name ? ctx.id + '$' + name : ctx.id
-  let space = ctx.components[id]
-  if (space) {
-    return space.state
-  } else {
-    ctx.error('stateOf',
-      name
-      ? `there are no child '${name}' in space '${ctx.id}'`
-      : `there are no space '${id}'`
-    )
-  }
-}
-
 export function spaceOf (ctx: Context): any {
   return ctx.components[ctx.id]
 }

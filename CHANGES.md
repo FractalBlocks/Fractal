@@ -4,6 +4,8 @@
 
 # Next v2.0.0
 
+- Add stateOf, toIt, toChild, nest and unnest to input helpers
+- Group all input helpers to inputs.ts
 
 ## Done
 
