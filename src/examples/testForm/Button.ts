@@ -1,4 +1,4 @@
-import { Inputs, Actions, Interfaces, ev, _, toIt } from '../../core'
+import { Inputs, Actions, Interfaces, _ } from '../../core'
 import { StyleGroup } from '../../style'
 import { View, h } from '../../interfaces/view'
 
@@ -8,18 +8,18 @@ export const state = ''
 
 export type S = string
 
-export const inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ({ ctx, toIt }) => ({
   click: () => {},
   keypress: which => {
     if (which === 13) {
-      toIt(ctx, 'click')
+      toIt('click')
     }
   },
 })
 
 export const actions: Actions<S> = {}
 
-const view: View<S> = (ctx, s) => {
+const view: View<S> = ({ ctx, ev }) => s => {
   let style = ctx.groups['style']
 
   return h('div', {
@@ -27,8 +27,8 @@ const view: View<S> = (ctx, s) => {
     class: { [style.base]: true },
     attrs: { tabindex: 0 },
     on: {
-      click: ev(ctx, 'click'),
-      keypress: ev(ctx, 'keypress', _, 'which'),
+      click: ev('click'),
+      keypress: ev('keypress', _, 'which'),
     },
   }, [
     <any> s

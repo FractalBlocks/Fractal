@@ -1,4 +1,4 @@
-import { Inputs, Actions, ev, Interfaces } from '../../core'
+import { Inputs, Actions, Interfaces } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { View, h } from '../../interfaces/view'
 
@@ -18,7 +18,7 @@ export const actions: Actions<S> = {
   Inc: () => s => s + 1,
 }
 
-const view: View<S> = (ctx, s) => {
+const view: View<S> = ({ ctx, ev }) => s => {
   let style = ctx.groups['style']
   return h('div', {
     key: ctx.name,
@@ -27,13 +27,13 @@ const view: View<S> = (ctx, s) => {
     h('div', {
       class: { [style.count]: true },
       on: {
-        click: ev(ctx, 'inc'),
+        click: ev('inc'),
       },
     }, s + ''),
     h('div', {
       class: { [style.reset]: true },
       on: {
-        click: ev(ctx, 'set', 0),
+        click: ev('set', 0),
       },
     }, 'reset'),
   ])

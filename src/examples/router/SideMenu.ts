@@ -15,7 +15,7 @@ export const inputs: Inputs<S> = ctx => ({
 export const actions: Actions<S> = {
 }
 
-const view: View<S> = (ctx, s) => {
+const view: View<S> = ({ ctx }) => s => {
   let style = ctx.groups.style
 
   return h('nav', {

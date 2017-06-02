@@ -1,8 +1,9 @@
-import { Actions, Inputs, Interfaces, Components, Hook, ev, _ } from '../../core'
+import { Actions, Inputs, Interfaces, Components, Hook, _ } from '../../core'
 import { StyleGroup } from '../../style'
-import { vw, toChild, action } from '../../component'
+import { action } from '../../component'
 import { View, h } from '../../interfaces/view'
 import { palette } from './constants'
+import { toChild } from '../../core/inputs'
 
 let emailDB = {
   '12323ewrd': { title: 'hello friend', content: 'hello firend, I want to ...', sender: 'Carlos Galarza', date: '12/12/2017' },
@@ -31,16 +32,16 @@ export const state = {
 export type S = typeof state
 
 export const init: Hook = ctx => {
-  toChild(ctx, 'EmailList', 'action', ['SetEmails', emailDB])
+  toChild(ctx)('EmailList', 'action', ['SetEmails', emailDB])
 }
 
-export const inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ({ ctx, toChild }) => ({
   action: action(actions),
   $EmailList_select: emailId => {
     let email = emailDB[emailId] !== undefined
       ? emailDB[emailId]
       : { title: 'Not Found', content: 'Email Not Found', sender: 'Sparky the invisible man', date: 'unknown' }
-    toChild(ctx, 'Email', 'action', ['Set', email])
+    toChild('Email', 'action', ['Set', email])
     return actions.SetView(['Email', emailId])
   },
   $Email_back: () => {
@@ -56,28 +57,30 @@ const actions: Actions<S> = {
   },
 }
 
-const view: View<S> = (ctx, s) => {
+const view: View<S> = ({ ctx, vw }) => s => {
   let style = ctx.groups.style
 
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
   }, [
-    vw(ctx, 'SideMenu'),
-    vw(ctx, s.view),
+    vw('SideMenu'),
+    vw(s.view),
   ])
 }
 
 export interface Routes<S> {
-  (ctx, s: S): {
-    [regExp: string]: any
+  (ctx): {
+    (s: S): {
+      [regExp: string]: any
+    }
   }
 }
 
-const routes: Routes<S> = (ctx, s) => ({
+const routes: Routes<S> = ({ ctx, ev }) => s => ({
   _: '/' + s.emailId,
-  '/': ev(ctx, 'action', ['SetView', ['EmailList']]),
-  '/:id': ev(ctx, '$EmailList_select', _, ['params', 'id']),
+  '/': ev('action', ['SetView', ['EmailList']]),
+  '/:id': ev('$EmailList_select', _, ['params', 'id']),
 })
 
 export const interfaces: Interfaces = { view, routes }

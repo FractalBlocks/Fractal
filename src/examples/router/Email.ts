@@ -1,4 +1,4 @@
-import { Actions, Inputs, Interfaces, ev } from '../../core'
+import { Actions, Inputs, Interfaces } from '../../core'
 import { StyleGroup, clickable } from '../../style'
 import { View, h } from '../../interfaces/view'
 import { action } from '../../component'
@@ -16,7 +16,7 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ({ ctx }) => ({
   action: action(actions),
   back: () => {},
 })
@@ -25,7 +25,7 @@ export const actions: Actions<S> = {
   Set: email => () => email,
 }
 
-const view: View<S> = (ctx, s) => {
+const view: View<S> = ({ ctx, ev }) => s => {
   let style = ctx.groups.style
 
   return h('div', {
@@ -36,7 +36,7 @@ const view: View<S> = (ctx, s) => {
       h('div', {
         class: { [style.back]: true },
         on: {
-          click: ev(ctx, 'back'),
+          click: ev('back'),
         },
       }, 'back'),
       h('div', {class: { [style.title]: true }}, s.title),

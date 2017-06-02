@@ -4,7 +4,7 @@ import {
   Interfaces,
   clone,
 } from '../../core'
-import { props, vw, setGroup, stateOf, toChild } from '../../component'
+import { props, setGroup } from '../../component'
 import { pipe, assoc } from '../../fun'
 import { StyleGroup, mergeStyles } from '../../style'
 import { View, h } from '../../interfaces/view'
@@ -77,11 +77,11 @@ export const state: S = {
   correct: 'unknown',
 }
 
-export const inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ({ ctx, stateOf, toChild }) => ({
   $testBtn_click: () => {
     let result = Object.keys(questions).map((q, idx) => {
-      let isCorrect = stateOf(ctx, q).value === answers[idx]
-      toChild(ctx, q, 'action', ['SetError', !isCorrect])
+      let isCorrect = stateOf(q).value === answers[idx]
+      toChild(q, 'action', ['SetError', !isCorrect])
       return isCorrect
     }).reduce((a, r) => a && r, true)
     return actions.SetCorrect(result)
@@ -89,8 +89,8 @@ export const inputs: Inputs<S> = ctx => ({
   $clearBtn_click: () => {
     Object.keys(questions).forEach(
       i => {
-        toChild(ctx, i, 'action', ['SetValue', ''])
-        toChild(ctx, i, 'action', ['SetError', false])
+        toChild(i, 'action', ['SetValue', ''])
+        toChild(i, 'action', ['SetError', false])
       }
     )
     return actions.Clear()
@@ -105,7 +105,7 @@ export const actions: Actions<S> = {
   Clear: () => assoc('correct')('unknown'),
 }
 
-let view: View<S> = (ctx, s) => {
+let view: View<S> = ({ ctx, vw }) => s => {
   let style = ctx.groups['style']
   return h('div', {
     key: name,
@@ -117,7 +117,7 @@ let view: View<S> = (ctx, s) => {
       h('div', {
         class: { [style.questions]: true },
       }, Object.keys(questionCmp).map(
-          i => vw(ctx, i)
+          i => vw(i)
         ),
       ),
       h('p', {
@@ -133,8 +133,8 @@ let view: View<S> = (ctx, s) => {
         ? 'Correct'
         : 'There are mistakes!'
       ),
-      vw(ctx, 'testBtn'),
-      vw(ctx, 'clearBtn'),
+      vw('testBtn'),
+      vw('clearBtn'),
     ]),
   ])
 }

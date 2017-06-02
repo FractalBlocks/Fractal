@@ -1,5 +1,5 @@
 import { Inputs, Actions, Interfaces, _ } from '../../core'
-import { action, act } from '../../component'
+import { action } from '../../component'
 import { StyleGroup, placeholderColor } from '../../style'
 import { View, h } from '../../interfaces/view'
 
@@ -33,7 +33,7 @@ export const actions: Actions<S> = {
   },
 }
 
-const view: View<S> = (ctx, s) => {
+const view: View<S> = ({ ctx, act }) => s => {
   let style = ctx.groups['style']
   return h('div', {
     key: ctx.name,
@@ -44,9 +44,9 @@ const view: View<S> = (ctx, s) => {
       attrs: { placeholder: s.placeholder },
       props: { value: s.value },
       on: {
-        keyup: act(ctx, 'SetValue', _, ['target', 'value']),
-        focus: act(ctx, 'SetFocus', true),
-        blur: act(ctx, 'SetFocus', false),
+        keyup: act('SetValue', _, ['target', 'value']),
+        focus: act('SetFocus', true),
+        blur: act('SetFocus', false),
       },
     }),
     h('div', {
