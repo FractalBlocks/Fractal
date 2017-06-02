@@ -1,5 +1,4 @@
-import { interfaceOf, Interfaces } from '../../core'
-import { stateOf } from '../../component'
+import { Interfaces } from '../../core'
 import { StyleGroup } from '../../style'
 import { View, h } from '../../interfaces/view'
 
@@ -15,7 +14,7 @@ export const state = {}
 
 export type S = typeof state
 
-let view: View<S> = (ctx, s) => {
+let view: View<S> = ({ ctx, stateOf, vw }) => s => {
   let style = ctx.groups['style']
   return h('div', {
     key: name,
@@ -24,9 +23,9 @@ let view: View<S> = (ctx, s) => {
     h('div', {
       class: { [style.childCount]: true },
     }, [
-      stateOf(ctx, 'Counter').count,
+      stateOf('Counter').count,
     ]),
-    interfaceOf(ctx, 'Counter', 'view'),
+    vw('Counter'),
   ])
 }
 

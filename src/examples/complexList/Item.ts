@@ -12,7 +12,7 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs<S> = ctx => ({
+export const inputs: Inputs<S> = ({ ctx }) => ({
   action: action(actions),
   $remove: () => {},
 })

@@ -1,5 +1,5 @@
-import { Actions, Inputs, ev, _, Interfaces } from '../../core'
-import { action, act } from '../../component'
+import { Actions, Inputs, _, Interfaces } from '../../core'
+import { action } from '../../component'
 import { StyleGroup } from '../../style'
 import { View, h } from '../../interfaces/view'
 
@@ -37,7 +37,7 @@ export const actions: Actions<S> = {
   },
 }
 
-const view: View<S> = (ctx, s) => {
+const view: View<S> = ({ ctx, ev, act }) => s => {
   let style = ctx.groups.style
 
   return h('div', {
@@ -49,7 +49,7 @@ const view: View<S> = (ctx, s) => {
       attrs: { placeholder: 'Type and hit enter' },
       props: { value: s.text },
       on: {
-        keyup: ev(ctx, 'inputKeyup', _, [
+        keyup: ev('inputKeyup', _, [
           ['keyCode'],
           ['target', 'value'],
         ]),
@@ -65,7 +65,7 @@ const view: View<S> = (ctx, s) => {
           h('span', {
             class: { [style.remove]: true },
             on: {
-              click: act(ctx, 'Remove', idx),
+              click: act('Remove', idx),
             },
           }, 'remove'),
         ]),

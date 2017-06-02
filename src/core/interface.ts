@@ -7,12 +7,13 @@ import {
 import {
   HandlerMsg,
 } from './handler'
-import { toIt } from './module';
-
+import { toIt } from './module'
+import { stateOf, CtxStateOf } from './inputs'
 
 export interface InterfaceHelpers {
   ctx: Context
   interfaceOf: CtxInterfaceOf
+  stateOf: CtxStateOf
   ev: CtxEv
   act: CtxAct
   vw: CtxVw
@@ -21,6 +22,7 @@ export interface InterfaceHelpers {
 export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
   ctx,
   interfaceOf: interfaceOf(ctx),
+  stateOf: stateOf(ctx),
   ev: ev(ctx),
   act: act(ctx),
   vw: vw(ctx),

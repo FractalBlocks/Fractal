@@ -6,6 +6,10 @@
 
 ## Done
 
+# v2.0.1
+
+- Add stateOf to interface helpers
+
 # v2.0.0
 
 - Add stateOf, toIt, toChild, nest, unnest, nestAll and unnestAll to input helpers and curry them
