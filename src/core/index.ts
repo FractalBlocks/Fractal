@@ -1,4 +1,5 @@
 export * from './core'
 export * from './module'
+export * from './input'
 export * from './interface'
 export * from './handler'
