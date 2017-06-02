@@ -357,6 +357,7 @@ describe('Utilities for running fractal inside workers', () => {
       ])
       done()
     }
+    worker.moduleAPI.nest('newComponent', root, true)
     worker.moduleAPI.nest('newComponent', root)
     // when implemented:
     // expect(workerModule.ctx.components['Main$newComponent']).toBeDefined()
@@ -370,6 +371,9 @@ describe('Utilities for running fractal inside workers', () => {
       ])
       done()
     }
+    worker.moduleAPI.nestAll({
+      newComponent: root,
+    }, true)
     worker.moduleAPI.nestAll({
       newComponent: root,
     })
