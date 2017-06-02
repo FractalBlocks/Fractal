@@ -1,7 +1,6 @@
 import {
   HandlerInterfaceIndex,
   HandlerObject,
-  Component,
   EventData,
   ModuleAPI,
 } from './core'
@@ -130,9 +129,9 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     dispose,
     reattach,
     // nest a component to the component index
-    nest: (name: string, component: Component<any>) => worker.postMessage(['nest', name, component]),
+    nest: (name, component, isStatic = false) => worker.postMessage(['nest', name, component]),
     // nest many components to the component index
-    nestAll: (components: { [name: string]: Component<any> }) => worker.postMessage(['nestAll', components]),
+    nestAll: (components, isStatic = false) => worker.postMessage(['nestAll', components]),
     // unnest a component to the component index
     unnest: (name: string) => worker.postMessage(['unnest', name]),
     // unnest many components to the component index

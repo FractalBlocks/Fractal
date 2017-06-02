@@ -105,7 +105,7 @@ export function createContext (ctx: Context, name: Identifier): Context {
 }
 
 export interface CtxNest {
-  (name: Identifier, component: Component<any>, isStatic?: boolean): Context
+  (name: Identifier, component: Component<any>, isStatic?: boolean): Context | void
 }
 
 // add a component to the component index
