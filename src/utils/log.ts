@@ -3,12 +3,15 @@
 
 import { clone, stateOf } from '../core'
 
+/* istanbul ignore next */
 export const warn = (source: string, description: string) =>
   console.warn(`source: ${source}, description: ${description}`)
 
+/* istanbul ignore next */
 export const error = (source: string, description: string) =>
   console.error(`source: ${source}, description: ${description}`)
 
+/* istanbul ignore next */
 export const beforeInput = (ctx, inputName, data) => {
   let state = stateOf(ctx)()
   if (typeof state === 'object') {
@@ -28,6 +31,7 @@ export const beforeInput = (ctx, inputName, data) => {
 
 // color for actions (not yet implemented) #58C6F8
 
+/* istanbul ignore next */
 export const afterInput = (ctx, inputName, data) => {
   let state = stateOf(ctx)()
   if (typeof state === 'object') {

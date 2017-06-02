@@ -17,6 +17,7 @@ export interface ComponentGroups {
   [className: string]: StyleGroup
 }
 
+/* istanbul ignore next */
 export function styleGroup (instance: TypeStyle, stylesObj: StyleGroup, moduleName: string): StyleClasses {
   let classes = {}
   for (let key in stylesObj) {
@@ -29,6 +30,7 @@ export function styleGroup (instance: TypeStyle, stylesObj: StyleGroup, moduleNa
   return <StyleClasses> classes
 }
 
+/* istanbul ignore next */
 export function hasBaseObject (obj: Object): boolean {
   for (let key in obj) {
     if (obj[key] !== null && typeof obj[key] === 'object' && key == 'base') {
@@ -39,24 +41,14 @@ export function hasBaseObject (obj: Object): boolean {
 }
 
 // function for ngClass with one dynamic property
+/* istanbul ignore next */
 export function c(className: string, condition: boolean): any {
   return {
     [className]: condition,
   }
 }
 
-// function for ngClass with many dynamic properties
-export function cs() {
-  let obj = {}
-  if (arguments.length % 2 !== 0) {
-    throw 'Error CS function should have an even number of arguments'
-  }
-  for (let i = 0, len = arguments.length; i < len; i += 2) {
-    obj[arguments[i]] = arguments[i + 1]
-  }
-  return obj
-}
-
+/* istanbul ignore next */
 export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup {
   let mergedGroup: StyleGroup = { base: {} }
   for(let i = 0, keys = Object.keys(group1), len = keys.length; i < len; i++) {
