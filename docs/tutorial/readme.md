@@ -2,9 +2,11 @@
 
 We love simplicity and minimalism, and if you are dealing with the inherent complexity of software you should too.
 
-Well lets start!!, suppose you want to make a fromlike that:
+Well lets start!!, suppose you want to make a from like that:
 
 (TODO: take an snapshot and put it here)
+(TODO: link to working form here)
+(TODO: link to working form code here)
 
 We can divide it in components:
 
@@ -14,9 +16,49 @@ We can divide it in components:
   - Name Input
   - Animated submit button
 
-Nice!, we will start with or first component the Counter, this what we will do in this chapter
+Nice!, we will start with or first component the Counter, this what we will do in this chapter. This is how Counter looks like:
 
-Lets decompose the Counter behaviour in the Fractal way ;) .
+(TODO: take an snapshot and put it here)
+(TODO: link to working Counter)
+[Code here](https://github.com/FractalBlocks/Fractal/tree/master/src/docs/counter)
+
+And the final code:
+
+```typescript
+import { Inputs, Actions, Interfaces } from 'fractal-core'
+import { View, h } from 'fractal-core/interfaces/view'
+
+export const name = 'Counter'
+
+export let state = 0
+
+export type S = number
+
+export const inputs: Inputs<S> = () => ({
+  inc: actions.Inc,
+  dec: actions.Dec,
+})
+
+export const actions: Actions<S> = {
+  Inc: () => s => s + 1,
+  Dec: () => s => s - 1,
+}
+
+const view: View<S> =
+  ({ ev }) => s => h('div', [
+    h('button', {
+      on: { click: ev('inc') },
+    }, '+'),
+    h('div', s + ''),
+    h('button', {
+      on: { click: ev('dec') },
+    }, '-'),
+  ])
+
+export const interfaces: Interfaces = { view }
+```
+
+Well, lets decompose the Counter behaviour in the Fractal way ;) .
 
 The Counter should have:
 
@@ -49,7 +91,7 @@ Oh too short!
 
 ```typescript
 const view: View<S> =
-  (ctx, s) => h('div', [
+  () => s => h('div', [
     h('button', '+'), // <--- increment button
   ])
 ```
@@ -61,7 +103,7 @@ The `s` is the state variable and ctx is the context, we will go deeper in conte
 
 ```typescript
 const view: View<S> =
-  (ctx, s) => h('div', [
+  () => s => h('div', [
     h('button', '+'),
     h('div', s + ''), // <--- This line shows the state
   ])
@@ -96,7 +138,7 @@ h('div', [
 
 ```typescript
 const view: View<S> =
-  (ctx, s) => h('div', [
+  () => s => h('div', [
     h('button', '+'),
     h('div', s + ''),
     h('button', '-'), // <--- decrement button
@@ -111,9 +153,9 @@ For achive that we need to listen for clicks in the Increment Button:
 
 ```typescript
 const view: View<S> =
-  (ctx, s) => h('div', [
+  ({ ev }) => s => h('div', [
     h('button', {
-      on: { click: ev(ctx, 'inc') }, // <--- event listener that sends a message to 'inc' input when click the button
+      on: { click: ev('inc') }, // <--- event listener that sends a message to 'inc' input when click the button
     }, '+'),
     h('div', s + ''),
     h('button', '-'),
@@ -123,7 +165,7 @@ const view: View<S> =
 In Fractal, the events from outside the application are like messages that inputs receive. Inputs are a very powerful concept we can use for complex event handling (you can use FRP here!), dispatching many actions / tasks and child-parent communication, we will go deeper on Fractal Inputs later.
 
 ```typescript
-export const inputs: Inputs = ctx => ({
+export const inputs: Inputs<S> = () => ({
   // inputName: msg => void | Executable | Executable[],
   inc: msg => console.log(msg),
 })
@@ -132,16 +174,16 @@ export const inputs: Inputs = ctx => ({
 Nice!! we receive the message!!, so we need to add 1 to `state`. The unique way to modify the state is via actions, this is a key concept in Fractal. See:
 
 ```typescript
-export const actions: Actions = {
+export const actions: Actions<S> = {
   // actionName: actualState => newState,
-  Inc: s => s + 1,
+  Inc: () => s => s + 1,
 }
 ```
 
 Pretty simple, an action is a function that receive the `state` and returns the next `state`. So we are going to execute 'Inc' action when the 'inc' input are triggered.
 
 ```typescript
-export const inputs: Inputs = ctx => ({
+export const inputs: Inputs<S> = () => ({
   inc: actions.Inc,
 })
 ```
@@ -151,75 +193,87 @@ Next
 - Click on Decrement Button should substract 1 to the `state`, so lets replicate the same as with Increment Button
 
 ```typescript
-export const inputs: Inputs = ctx => ({
+export const inputs: Inputs<S> = () => ({
   inc: actions.Inc,
   dec: actions.Dec,
 })
 
-export const actions: Actions = {
-  Inc: s => s + 1,
-  Dec: s => s - 1,
+export const actions: Actions<S> = {
+  Inc: () => s => s + 1,
+  Dec: () => s => s - 1,
 }
 
 const view: View<S> =
-  (ctx, s) => h('div', [
+  () => s => h('div', [
     h('button', {
-      on: { click: ev(ctx, 'inc') },
+      on: { click: ev('inc') },
     }, '+'),
     h('div', s + ''),
     h('button', {
-      on: { click: ev(ctx, 'dec') }, // <--- event listener that sends a message to 'dec' input when click the button
+      on: { click: ev('dec') }, // <--- event listener that sends a message to 'dec' input when click the button
     }, '-'),
   ])
 ```
 
-This is it, we have our first counter, next see the working code with extra import and export stuff
+This is it, we have our first component, the Counter. Lets run it!, we will use the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart), so visit and follow [this steps]([Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart#fractal-quickstart) to setup the quickstart.
+
+In the `app/` [folder](https://github.com/FractalBlocks/Fractal-quickstart/tree/master/app) we have all the file for running our application.
+
+First we will copy the code below to `Root.ts` (our Counter) file (in app/ folder)
 
 ```typescript
-import { Inputs, Actions, Interfaces, ev } from 'fractal-core'
+import { Inputs, Actions, Interfaces } from 'fractal-core'
 import { View, h } from 'fractal-core/interfaces/view'
+
+export const name = 'Counter'
 
 export let state = 0
 
 export type S = number
 
-export const inputs: Inputs = ctx => ({
+export const inputs: Inputs<S> = () => ({
   inc: actions.Inc,
   dec: actions.Dec,
 })
 
-export const actions: Actions = {
-  Inc: s => s + 1,
-  Dec: s => s - 1,
+export const actions: Actions<S> = {
+  Inc: () => s => s + 1,
+  Dec: () => s => s - 1,
 }
 
 const view: View<S> =
-  (ctx, s) => h('div', [
+  ({ ev }) => s => h('div', [
     h('button', {
-      on: { click: ev(ctx, 'inc') },
-    }, '+'),
+      on: { click: ev('inc') },
+    }),
     h('div', s + ''),
     h('button', {
-      on: { click: ev(ctx, 'dec') },
+      on: { click: ev('dec') },
     }, '-'),
   ])
 
 export const interfaces: Interfaces = { view }
 ```
 
-Whats next for this chapter?
+Let's start the development server with `npm start` and open [http://localhost:3000](http://localhost:3000) in a new tab. Now you will see our awesome Counter, nice right?. Oh!! try the hot swapping feature, it's nice and so useful during development, change the count, modify the div that show the count as follows:
 
-- Run our Counter
-- Use styles
+```typescript
+const view: View<S> =
+  ({ ev }) => s => h('div', [
+    h('button', {
+      on: { click: ev('inc') },
+    }),
+    h('div', 'Count: ' + s + ''),
+    h('button', {
+      on: { click: ev('dec') },
+    }, '-'),
+  ])
+```
 
-Next chapters?
+Save and see the browser, our code have been charged immediately without reload the page and without reseting our count. This is it!
 
-- Component Composition
-  - Composition
-  - Messaging
-- Handlers (A.K.A. Side Effects)
-  - Interfaces
-  - Groups
-  - Tasks
-- Real world example
-- Server Side Rendering (SSR)
+
+Next section we will see how [Styling our Counter]() :heart: (Soon ...)
+(TODO: link)
+
+See the full [contents here](https://github.com/FractalBlocks/Fractal/tree/master/docs/tutorial/index.md)

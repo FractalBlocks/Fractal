@@ -62,7 +62,7 @@ npm run dev ./src/examples/NAME_OF_EXAMPLE
 for example:
 
 ```bash
-npm run dev ./src/examples/compose
+npm run dev ./src/examples/complexList
 ```
 
 ## Run tests
