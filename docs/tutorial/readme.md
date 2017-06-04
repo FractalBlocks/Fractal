@@ -18,11 +18,13 @@ We can divide it in components:
 
 Nice!, we will start with or first component the Counter, this what we will do in this chapter. This is how Counter looks like:
 
-(TODO: take an snapshot and put it here)
-(TODO: link to working Counter)
-[Code here](https://github.com/FractalBlocks/Fractal/tree/master/src/docs/counter)
+Image (TODO: take an snapshot and put it here)
 
-And the final code:
+(TODO: link to working Counter)
+
+[Link to code here](https://github.com/FractalBlocks/Fractal/tree/master/src/docs/counter)
+
+See the final code below:
 
 ```typescript
 import { Inputs, Actions, Interfaces } from 'fractal-core'
@@ -215,7 +217,7 @@ const view: View<S> =
   ])
 ```
 
-This is it, we have our first component, the Counter. Lets run it!, we will use the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart), so visit and follow [this steps]([Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart#fractal-quickstart) to setup the quickstart.
+This is it, we have our first component, the Counter. Lets run it!, we will use the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart), so visit and follow [this steps](https://github.com/FractalBlocks/Fractal-quickstart#fractal-quickstart) to setup the quickstart.
 
 In the `app/` [folder](https://github.com/FractalBlocks/Fractal-quickstart/tree/master/app) we have all the file for running our application.
 
@@ -273,7 +275,6 @@ const view: View<S> =
 Save and see the browser, our code have been charged immediately without reload the page and without reseting our count. This is it!
 
 
-Next section we will see how [Styling our Counter]() :heart: (Soon ...)
-(TODO: link)
+Next section we will see how [Styling our Counter]() :heart: (Soon ...) (TODO: link)
 
 See the full [contents here](https://github.com/FractalBlocks/Fractal/tree/master/docs/tutorial/index.md)

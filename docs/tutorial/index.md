@@ -2,7 +2,7 @@
 
 ## Done
 
-- [Getting started](https://github.com/FractalBlocks/Fractal/tree/master/docs/tutorial/readme.md)
+- [Let's start simple](https://github.com/FractalBlocks/Fractal/tree/master/docs/tutorial/readme.md)
 
 ## Soon
 
