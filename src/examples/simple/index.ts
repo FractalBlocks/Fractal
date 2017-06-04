@@ -12,7 +12,7 @@ import * as root from './App'
 let app = run({
   root,
   groups: {
-    style: styleHandler('app-style'),
+    style: styleHandler('', true),
   },
   interfaces: {
     view: viewHandler('#app'),

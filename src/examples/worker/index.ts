@@ -6,7 +6,7 @@ import { viewHandler } from '../../interfaces/view'
 runWorker({
   worker: new (<any> require('worker-loader!./worker')),
   groups: {
-    style: styleHandler(),
+    style: styleHandler('', true),
   },
   interfaces: {
     view: viewHandler('#app'),
