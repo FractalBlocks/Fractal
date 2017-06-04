@@ -9,9 +9,8 @@
 - Styling our Counter
 - Composing components
 - Sending messages between components
-- Managing side effects with handlers
-  - Interfaces
-  - Groups
-  - Tasks
+- Fetching content
+- Routing
+- Handling complex inputs with FRP
 - Real world example
 - Server Side Rendering (SSR)
