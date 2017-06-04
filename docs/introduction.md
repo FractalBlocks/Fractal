@@ -1,3 +1,4 @@
+(Soon ... WIP, see tutorial-basics.md)
 # Fractal architecture
 
 ## Module / Component tree
@@ -16,6 +17,4 @@
 
 ## Child input listeners (AKA input propagation)
 
-
 ## Component Message Interchange (AKA messages)
-
