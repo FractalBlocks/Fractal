@@ -11,18 +11,13 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
   function invokeHandler(handler: InputData | 'ignore', event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
-      if (!options || options.default === undefined || options.default) {
+      if (!options || options.default === undefined || !options.default) {
         event.preventDefault()
       }
-      if (!options || options.propagate === undefined || options.propagate) {
+      if (!options || options.propagate === undefined || !options.propagate) {
         event.stopPropagation()
       }
-      // call function handler
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          mod.dispatch(computeEvent(event, handler))
-        }, 0)
-      })
+      mod.dispatch(computeEvent(event, handler))
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
