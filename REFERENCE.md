@@ -2,9 +2,7 @@
 
 ## TODOs
 
-- Implement simple and intuitive examples
-- Port basic examples of Fractal.js to new version
-- Implement reference docs generation from tests and tsdoc writing comments for documentation
+- Update this doc
 
 ## Code structure
 
