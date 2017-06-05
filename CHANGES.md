@@ -4,6 +4,8 @@
 
 # Next
 
+- Add error message when toChild is executed with an invalid child name
+
 ## Done
 
 # v2.1.1
