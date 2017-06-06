@@ -23,11 +23,9 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
         event.stopPropagation()
       }
       // call function handler
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          mod.dispatch(computeEvent(event, handler))
-        }, 0)
-      })
+      setTimeout(() => {
+        mod.dispatch(computeEvent(event, handler))
+      }, 0)
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
