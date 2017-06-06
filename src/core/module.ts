@@ -300,7 +300,7 @@ export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
 
-  return (inputName, data, isPropagated = true) => {
+  return (inputName, data, isPropagated = true) => setTimeout(() => {
     let input = componentSpace.inputs[inputName]
 
     if (input === undefined) {
@@ -325,7 +325,7 @@ export const toIt = (ctx: Context): CtxToIt => {
       propagate(ctx, inputName, data)
     }
     ctx.afterInput(ctx, inputName, data)
-  }
+  }, 0)
 }
 
 // execute an executable in a context, executable parameter should not be undefined

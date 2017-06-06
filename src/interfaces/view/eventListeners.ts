@@ -17,7 +17,9 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
       if (!options || options.propagate === undefined || !options.propagate) {
         event.stopPropagation()
       }
-      mod.dispatch(computeEvent(event, handler))
+      setTimeout(() => {
+        mod.dispatch(computeEvent(event, handler))
+      }, 0)
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
