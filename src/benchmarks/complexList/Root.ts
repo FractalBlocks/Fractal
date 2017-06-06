@@ -61,7 +61,7 @@ export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => (
 export const actions: Actions<S> = {
   SetText: assoc('text'),
   New: () => s => {
-    s.items[s.numItems] = s.numItems
+    s.items[s.numItems] = true
     s.numItems++
     return s
   },
