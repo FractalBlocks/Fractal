@@ -1,4 +1,4 @@
-import { Actions, Inputs, Interfaces, action, StyleGroup } from '../../core'
+import { Actions, Inputs, Interfaces, action, StyleGroup, _ } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const name = 'Item'
@@ -36,7 +36,7 @@ const view: View<S> = ({ ctx, ev, act }) => s => {
         checked: s.checked,
       },
       on: {
-        change: act('SetChecked', ['target', 'checked']),
+        change: act('SetChecked', _, ['target', 'checked']),
       },
     }),
     <any> s.text,

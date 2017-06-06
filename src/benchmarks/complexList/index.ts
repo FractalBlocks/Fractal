@@ -17,6 +17,7 @@ const app = run({
   interfaces: {
     view: viewHandler('#app'),
   },
+  // ...logFns,
   afterInput: (ctx, inputName, data) => {
     end = window.performance.now()
     results[i] = end - start
