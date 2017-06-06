@@ -18,6 +18,7 @@ import {
   notifyInterfaceHandlers,
   clone,
   Inputs,
+  assoc,
 } from './index'
 import { mergeStates } from '../utils/reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
@@ -593,6 +594,63 @@ it('should execute afterInput before dispatch an input', done => {
 
   it('should call destroy hook when dispose a module', () => {
     expect(disposed).toEqual(true)
+  })
+
+})
+
+
+describe('toIt core function for executing inputs', () => {
+  let rootData
+  const actions = {
+    Set: assoc('count'),
+  }
+  let root: Component<any> = {
+    name: 'Root',
+    state: {
+      count: 0,
+      data: 10,
+    },
+    inputs: () => ({
+      input: data => {
+        rootData = data
+      },
+      set: actions.Set,
+    }),
+    actions,
+    interfaces: {
+      value: ({ ctx }) => s => ({
+        count: s.count,
+      }),
+    },
+  }
+  let valueCb
+  let app = run({
+    root,
+    interfaces: {
+      value: valueHandler(v => {
+        if (valueCb) {
+          valueCb(v)
+        }
+      }),
+    },
+  })
+
+  it ('toIt should send a message to an input sync', () => {
+    let data = 129
+    toIt(app.ctx.components['Root'].ctx)('input', data)
+    expect(rootData).toEqual(data)
+  })
+
+  it ('toIt should send a message to an input async', done => {
+    let data = 127
+    let value
+    valueCb = v => {
+      value = v.count
+      expect(value).toEqual(data)
+      done()
+    }
+    toIt(app.ctx.components['Root'].ctx)('set', data, true)
+    expect(value).toEqual(undefined)
   })
 
 })

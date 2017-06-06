@@ -4,9 +4,13 @@
 
 # Next
 
-- Add error message when toChild is executed with an invalid child name
 
 ## Done
+
+- Change the order of isAsync and isPropagate arguments
+- Add error message when toChild is executed with an invalid child name
+- Fix global event listeners async
+- Add async option to toIt, toChild and toAct
 
 # v2.1.1
 

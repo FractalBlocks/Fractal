@@ -292,7 +292,7 @@ export function propagate (ctx: Context, inputName: string, data: any) {
 }
 
 export interface CtxToIt {
-  (inputName: string, data?, isPropagated?: boolean, isAsync?: boolean): void
+  (inputName: string, data?, isAsync?: boolean, isPropagated?: boolean): void
 }
 
 // send a message to an input of a component from itself
@@ -325,10 +325,10 @@ export const toIt = (ctx: Context): CtxToIt => {
     }
     ctx.afterInput(ctx, inputName, data)
   }
-  return (inputName, data, isPropagated = true, isAsync = false) =>
+  return (inputName, data, isAsync = false, isPropagated = true) =>
     isAsync
-    ? setTimeout(() => toItSync(inputName, data, isPropagated = true), 0)
-    : toItSync(inputName, data, isPropagated = true)
+    ? setTimeout(() => toItSync(inputName, data, isPropagated), 0)
+    : toItSync(inputName, data, isPropagated)
 }
 
 // execute an executable in a context, executable parameter should not be undefined

@@ -61,7 +61,7 @@ export const stateOf = (ctx: Context): CtxStateOf => name => {
 // --- Message interchange between components
 
 export interface CtxToChild {
-  (name: string, inputName: string, msg?, isPropagated?, isAsync?: boolean): void
+  (name: string, inputName: string, msg?, isAsync?: boolean, isPropagated?: boolean): void
 }
 
 // send a message to an input of a component from its parent
@@ -69,11 +69,16 @@ export const toChild = (ctx: Context) => (
   name,
   inputName,
   msg = undefined,
-  isPropagated = true,
-  isAsync = false
+  isAsync = false,
+  isPropagated = true
 ) => {
   let childId = ctx.id + '$' + name
-  toIt(ctx.components[childId].ctx)(inputName, msg, isPropagated, isAsync)
+  let space = ctx.components[childId]
+  if (space) {
+    toIt(space.ctx)(inputName, msg, isAsync, isPropagated)
+  } else {
+    ctx.error('toChild', `there are no child '${name}' in space '${ctx.id}'`)
+  }
 }
 
 // ---
@@ -85,6 +90,6 @@ export interface CtxToAct {
 // generic action self caller
 export const toAct = (ctx: Context): CtxToAct => {
   let _toIt = toIt(ctx)
-  return (actionName, data, isPropagated = true, isAsync = false) =>
+  return (actionName, data, isAsync = false, isPropagated = true) =>
     _toIt('action', [actionName, data], isPropagated, isAsync)
 }
