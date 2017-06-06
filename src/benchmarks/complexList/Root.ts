@@ -40,7 +40,7 @@ export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => (
     let items = stateOf().items
     let key
     for (key in items) {
-      toChild(key, 'action', ['SetChecked', checked])
+      toChild(key, 'action', ['SetChecked', checked], false, true)
     }
   },
   removeChecked: () => {
@@ -48,7 +48,7 @@ export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => (
     let key
     for (key in items) {
       if (stateOf(key).checked) {
-        toIt('$$Item_remove', key)
+        toIt('$$Item_remove', key, true, true)
       }
     }
   },
