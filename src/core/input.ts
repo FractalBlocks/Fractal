@@ -84,12 +84,12 @@ export const toChild = (ctx: Context) => (
 // ---
 
 export interface CtxToAct {
-  (actionName: string, data?: any, isPropagated?: boolean): void
+  (actionName: string, data?: any, isAsync?: boolean, isPropagated?: boolean): void
 }
 
 // generic action self caller
 export const toAct = (ctx: Context): CtxToAct => {
   let _toIt = toIt(ctx)
   return (actionName, data, isAsync = false, isPropagated = true) =>
-    _toIt('action', [actionName, data], isPropagated, isAsync)
+    _toIt('action', [actionName, data], isAsync, isPropagated)
 }

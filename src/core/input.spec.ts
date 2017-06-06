@@ -120,7 +120,7 @@ describe('Input functions and helpers', () => {
     it('should call input with the action name and data', () => {
       toAct(app.ctx.components.MyComp.ctx)('Name', 'data1')
       expect(actionData).toEqual(['Name', 'data1'])
-      toAct(app.ctx.components.MyComp.ctx)('Name', 'data2', true)
+      toAct(app.ctx.components.MyComp.ctx)('Name', 'data2', false, true)
       expect(actionData).toEqual(['Name', 'data2'])
     })
 

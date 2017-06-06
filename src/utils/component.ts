@@ -30,7 +30,7 @@ export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any
 
 // send a message to an input of a component from outside a Module
 /* istanbul ignore next */
-export function sendMsg (mod: Module, id: string, inputName: string, msg?, isAsync = true, isPropagated = true) {
+export function sendMsg (mod: Module, id: string, inputName: string, msg?, isAsync = false, isPropagated = true) {
   let ctx = mod.ctx
   toIt(ctx.components[id].ctx)(inputName, msg, isAsync, isPropagated)
 }
