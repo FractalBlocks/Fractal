@@ -6,6 +6,8 @@
 
 ## Done
 
+# v2.2.0
+
 - Fix sendMsg and toAct functions
 - Add error message when toChild is executed with an invalid child name
 - Add async option to sendMsg function
