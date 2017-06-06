@@ -4,11 +4,11 @@
 
 # Next
 
-
 ## Done
 
-- Change the order of isAsync and isPropagate arguments
 - Add error message when toChild is executed with an invalid child name
+- Add async option to sendMsg function
+- Change the order of isAsync and isPropagate arguments
 - Fix global event listeners async
 - Add async option to toIt, toChild and toAct
 

@@ -45,7 +45,7 @@ describe('Input functions and helpers', () => {
 
   })
 
-  describe('Message interchange between components', () => {
+  describe('toChild function', () => {
     let childData
     let Child: Component<any> = {
       name: 'Child',
@@ -62,7 +62,7 @@ describe('Input functions and helpers', () => {
       interfaces: {},
     }
     let root: Component<any> = {
-      name: 'MyComp',
+      name: 'Root',
       components: {
         Child,
       },
@@ -71,20 +71,27 @@ describe('Input functions and helpers', () => {
       actions: {},
       interfaces: {},
     }
+    let error
     let app = run({
       root,
       interfaces: {},
+      error: (source, description) => error = [source, description],
     })
 
-    it ('toChild should send a message to a child component from the parent correctly', () => {
+    it ('should send a message to a child component from the parent correctly', () => {
       let data = 129
-      toChild(app.ctx.components['MyComp'].ctx)('Child', 'childInput', data)
+      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data)
       expect(childData).toEqual(data)
     })
 
-    it ('toChild should send an undefined message to a child component from the parent correctly', () => {
-      toChild(app.ctx.components['MyComp'].ctx)('Child', 'childInput')
+    it ('should send an undefined message to a child component from the parent correctly', () => {
+      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput')
       expect(childData).toEqual(undefined)
+    })
+
+    it ('should log an error when there is no child', () => {
+      toChild(app.ctx.components['Root'].ctx)('Wrong', 'childInput')
+      expect(error).toEqual(['toChild', `there are no child 'Wrong' in space 'Root'`])
     })
 
   })
