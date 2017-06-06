@@ -79,9 +79,12 @@ describe('Input functions and helpers', () => {
     })
 
     it ('should send a message to a child component from the parent correctly', () => {
-      let data = 129
-      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data)
-      expect(childData).toEqual(data)
+      let data1 = 129
+      let data2 = 129
+      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data1)
+      expect(childData).toEqual(data1)
+      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data2, false, true)
+      expect(childData).toEqual(data2)
     })
 
     it ('should send an undefined message to a child component from the parent correctly', () => {

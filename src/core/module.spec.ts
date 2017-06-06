@@ -637,7 +637,7 @@ describe('toIt core function for executing inputs', () => {
 
   it ('toIt should send a message to an input sync', () => {
     let data = 129
-    toIt(app.ctx.components['Root'].ctx)('input', data)
+    toIt(app.ctx.components['Root'].ctx)('input', data, false, true)
     expect(rootData).toEqual(data)
   })
 
@@ -649,7 +649,7 @@ describe('toIt core function for executing inputs', () => {
       expect(value).toEqual(data)
       done()
     }
-    toIt(app.ctx.components['Root'].ctx)('set', data, true)
+    toIt(app.ctx.components['Root'].ctx)('set', data, true, true)
     expect(value).toEqual(undefined)
   })
 

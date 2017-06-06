@@ -299,9 +299,8 @@ export interface CtxToIt {
 export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
-  let toItSync = (inputName, data, isPropagated = true) => {
+  function toItSync (inputName, data, isPropagated) {
     let input = componentSpace.inputs[inputName]
-
     if (input === undefined) {
       ctx.error(
         'execute',
