@@ -12,7 +12,7 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
     - We have TimeTravel debugging (soon)
 - Excelent error / warn handling:
     - Your app will never crash
-    - Application logs are meaningfu. No more WTF?!! errors
+    - Application logs are meaningful. No more WTF?!! errors
     - You can search for any error in our complete error index, a list of all possible errors can happen with the respective solution (soon).
 - Gives you powerful patterns and composing tools that helps to build small and large apps
 - A clear and flexible architecture that scales
