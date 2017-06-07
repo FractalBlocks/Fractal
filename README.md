@@ -6,14 +6,14 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 
 ## How it works?
 
-- It is minimal, core logic are less than 700 lines of code and you can see how it works
-- Excelent Developer Experience, we love to improve your experience
-    - We have hot-swaping
+- Fractal is minimal. Core logic is less than 700 lines of code and you can see how it works
+- Excelent developer experience. We love to improve your experience
+    - We have hot-swapping
     - We have TimeTravel debugging (soon)
 - Excelent error / warn handling:
-    - your app will never crash
-    - Logs are meaningful
-    - You can search for any error in our complete error index, a list of all possible errors can happen (soon).
+    - Your app will never crash
+    - Application logs are meaningfu. No more WTF?!! errors
+    - You can search for any error in our complete error index, a list of all possible errors can happen with the respective solution (soon).
 - Gives you powerful patterns and composing tools that helps to build small and large apps
 - A clear and flexible architecture that scales
 - Easy integrable and emmbedable by design
