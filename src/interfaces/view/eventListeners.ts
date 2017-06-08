@@ -11,13 +11,11 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
   function invokeHandler(handler: InputData | 'ignore', event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
-      if (options) {
-        if (options.listenPrevented !== true && event.defaultPrevented) {
-          return
-        }
-        if (options.default === false) {
-          event.preventDefault()
-        }
+      if ((options && options.listenPrevented !== true || !options) && event.defaultPrevented) {
+        return
+      }
+      if (options && options.default === false) {
+        event.preventDefault()
       }
       setTimeout(() => {
         mod.dispatch(computeEvent(event, handler))

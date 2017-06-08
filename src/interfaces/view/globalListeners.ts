@@ -16,13 +16,11 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
   function invokeHandler(handler: InputData, event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
-      if (options) {
-        if (options.listenPrevented !== true && event.defaultPrevented) {
-          return
-        }
-        if (options.default === false) {
-          event.preventDefault()
-        }
+      if ((options && options.listenPrevented !== true || !options) && event.defaultPrevented) {
+        return
+      }
+      if (options && options.default === false) {
+        event.preventDefault()
       }
       // call function handler
       setTimeout(() => {
