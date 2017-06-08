@@ -6,6 +6,11 @@
 
 ## Done
 
+# v2.3.1
+
+- Global event listeners do not handle prevented events by default
+- Add listenPrevented options to event listeners
+
 # v2.3.0
 
 - Global event listeners handle all the events, and normal do not handle events that are prevented
