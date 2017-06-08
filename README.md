@@ -13,25 +13,25 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 - Excelent error / warn handling:
     - Your app will never crash
     - Application logs are meaningful. No more WTF?!! errors
-    - You can search for any error in our complete error index, a list of all possible errors can happen with the respective solution (soon).
+    - You can search for any error in our complete error index, a list of all possible errors can happen with her respective solution (soon)
+- You can serialize the whole side effects, this means you can run Fractal in a [webworker](https://github.com/FractalBlocks/Fractal/blob/master/src/examples/worker/index.ts), in a server via websockets or even in a remote browser via WebRTC :')
 - Gives you powerful patterns and composing tools that helps to build small and large apps
 - A clear and flexible architecture that scales
-- Easy integrable and emmbedable by design
-- High code quality, we love that!! and helps you to achive it in your proyect :heart:
-- Its clear and concise, all you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
-- We support hot-swaping code in production :rose: (soon)
+- Easily integrable and embeddable by design
+- High code quality, we love that!! and we helps you to achive it in your proyect :heart:
+- Its clear and concise. All you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
+- We support hot-swapping code in production :rose: (soon)
 - Your code are flexible, composable and reausable. Modularization as a foundation
-- The state is isolated, this mean is serializable and you can hot-swap code updating the UI without reload the navigator
-- You can serialize the whole side effects, this means you can run fractal in a [webworker](https://github.com/FractalBlocks/Fractal/blob/master/src/examples/worker/index.ts), in a server via websockets or even in a remote browser via WebRTC :')
-- Lazy loading of components
+- The state is isolated, this mean it is serializable and you can hot-swap code updating the UI without reload the navigator
+- Lazy loading of components (soon)
 
 See the [design document](https://github.com/FractalBlocks/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
 
 ## Getting started
 
-The recomended way is using webpack, please download the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) repo, this gives you all things ready.
+The recomended way is using Webpack, please download the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) repo, this gives you all things ready.
 
-Or in nodejs, browserify, webpack like environments:
+Or in nodejs, browserify, Webpack like environments:
 
 ```bash
 npm i --save fractal-core
