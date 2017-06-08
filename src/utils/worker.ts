@@ -123,6 +123,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   }
 
   // API for modules
+  /* istanbul ignore next */
   let moduleAPI: ModuleAPI = {
     // dispatch function type used for handlers
     dispatch: (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
