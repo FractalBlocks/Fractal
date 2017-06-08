@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Document that we don't support stop propagation of DOM events as a design choice because of [this article](https://css-tricks.com/dangers-stopping-event-propagation/)
 - Document simple, dynamic and general propagation and it's secuential evaluation
 - Document and build an example of pausing View events (global and local)
 - Document and build an example of global listeners
