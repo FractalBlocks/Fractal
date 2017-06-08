@@ -281,12 +281,12 @@ export function propagate (ctx: Context, inputName: string, data: any) {
     parentInputName = `$$${componentSpace.def.name}_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      toIt(parentSpace.ctx)(parentInputName, [componentSpace.def.name, data])
+      toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data])
     }
     parentInputName = `$_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data])
+      toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data, componentSpace.def.name])
     }
   }
 }

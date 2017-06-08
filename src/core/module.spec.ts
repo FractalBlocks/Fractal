@@ -929,7 +929,7 @@ describe('toChild function', () => {
       valueCb = value => {
         calls++
         if (calls === 2) {
-          expect(value.dynamicCount).toEqual(['CompName', data])
+          expect(value.dynamicCount).toEqual(['SpaceName', data])
           done()
         }
       }
@@ -942,7 +942,7 @@ describe('toChild function', () => {
       valueCb = value => {
         calls++
         if (calls === 3) {
-          expect(value.generalCount).toEqual(['SpaceName', data])
+          expect(value.generalCount).toEqual(['SpaceName', data, 'CompName'])
           done()
         }
       }
