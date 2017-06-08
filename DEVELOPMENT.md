@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Document that global event listeners handle all the events, and normal do not handle events that are prevented ( default: false )
 - Document that we don't support stop propagation of DOM events as a design choice because of [this article](https://css-tricks.com/dangers-stopping-event-propagation/)
 - Document simple, dynamic and general propagation and it's secuential evaluation
 - Document and build an example of pausing View events (global and local)
@@ -37,7 +38,6 @@ There are TODOs for short term:
 - Flux-Challenge example and do a PR to Staltz repo (WIP)
 - Todo-mvc example in a separated repo
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
-- Update examples that uses global child listeners acording to v1.2.0 changes
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
 - Evaluate a way for keeping state in inputs, maybe support use of generators e.g. keep waiting for 3 messages after execute some action or task
 - Add error index (DX)
