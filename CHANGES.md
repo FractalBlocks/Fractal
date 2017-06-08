@@ -8,6 +8,7 @@
 
 # v2.2.0
 
+- Reimplemented propagation in simple, dynamic and general, as a sequence
 - Fix sendMsg and toAct functions
 - Add error message when toChild is executed with an invalid child name
 - Add async option to sendMsg function
