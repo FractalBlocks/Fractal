@@ -272,21 +272,21 @@ export function propagate (ctx: Context, inputName: string, data: any) {
     // is not root?
     let parentId = idParts.slice(0, -1).join('$')
     let parentSpace = ctx.components[parentId]
-    let msg
     let parentInputName
-    if (inputName[0] === '$') {
-      // global notifier ($some), genrally used for lists of components
-      let childInputName = inputName.slice(1, inputName.length)
-      parentInputName = `$$${componentSpace.def.name}_${childInputName}`
-      msg = componentSpace.ctx.name
-    } else {
-      // individual parent notifier
-      parentInputName = `$${componentSpace.ctx.name}_${inputName}`
-      msg = data
-    }
+    parentInputName = `$${componentSpace.ctx.name}_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      toIt(parentSpace.ctx)(parentInputName, msg)
+      toIt(parentSpace.ctx)(parentInputName, data)
+    }
+    parentInputName = `$$${componentSpace.def.name}_${inputName}`
+    /* istanbul ignore else */
+    if (parentSpace.inputs[parentInputName]) {
+      toIt(parentSpace.ctx)(parentInputName, [componentSpace.def.name, data])
+    }
+    parentInputName = `$_${inputName}`
+    /* istanbul ignore else */
+    if (parentSpace.inputs[parentInputName]) {
+      toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data])
     }
   }
 }

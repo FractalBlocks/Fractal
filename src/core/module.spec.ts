@@ -19,6 +19,7 @@ import {
   clone,
   Inputs,
   assoc,
+  toChild,
 } from './index'
 import { mergeStates } from '../utils/reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
@@ -790,22 +791,178 @@ describe('Component composition', () => {
     value._dispatch(value.childValue1.dispatch)
   })
 
-  it('parent should react to child events when have an global input called $$_childInputName', done => {
-    let value = lastValue
-    valueFn = value => {
-      expect(value.content).toBe(21)
-      done()
+describe('toChild function', () => {
+    let childData
+    let Child: Component<any> = {
+      name: 'Child',
+      state: {
+        count: 0,
+        data: 10,
+      },
+      inputs: ctx => ({
+        childInput: data => {
+          childData = data
+        },
+      }),
+      actions: {},
+      interfaces: {},
     }
-    value._dispatch(value.childValue1.toParentGlobal)
+    let root: Component<any> = {
+      name: 'Root',
+      components: {
+        Child,
+      },
+      state: {},
+      inputs: ctx => ({}),
+      actions: {},
+      interfaces: {},
+    }
+    let error
+    let app = run({
+      root,
+      interfaces: {},
+      error: (source, description) => error = [source, description],
+    })
+
+    it ('should send a message to a child component from the parent correctly', () => {
+      let data1 = 129
+      let data2 = 129
+      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data1)
+      expect(childData).toEqual(data1)
+      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data2, false, true)
+      expect(childData).toEqual(data2)
+    })
+
+    it ('should send an undefined message to a child component from the parent correctly', () => {
+      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput')
+      expect(childData).toEqual(undefined)
+    })
+
+    it ('should log an error when there is no child', () => {
+      toChild(app.ctx.components['Root'].ctx)('Wrong', 'childInput')
+      expect(error).toEqual(['toChild', `there are no child 'Wrong' in space 'Root'`])
+    })
+
   })
 
-  it('parent should react to child events when have an input called $childName_childInputName', done => {
-    let value = lastValue
-    valueFn = value => {
-      expect(value.content).toBe(17)
-      done()
-    }
-    value._dispatch(value.childValue1.toParent)
+
+  describe('Input propagation', () => {
+    let valueCb
+    let app
+    let propagationSequence = []
+
+    beforeEach(() => {
+      let Child: Component<any> = {
+        name: 'CompName',
+        state: {},
+        inputs: ctx => ({
+          childInput: x => {},
+        }),
+        actions: {},
+        interfaces: {},
+      }
+      const actions = {
+        Set: ([name, value]) => assoc(name)(value),
+      }
+      let root: Component<any> = {
+        name: 'Root',
+        components: {
+          SpaceName: Child,
+        },
+        state: {
+          simpleCount: 0,
+          dynamicCount: 0,
+          generalCount: 0,
+        },
+        inputs: ctx => ({
+          $SpaceName_childInput: x => {
+            propagationSequence.push('simple')
+            return actions.Set(['simpleCount', x])
+          },
+          $$CompName_childInput: x => {
+            propagationSequence.push('dynamic')
+            return actions.Set(['dynamicCount', x])
+          },
+          $_childInput: x => {
+            propagationSequence.push('general')
+            return actions.Set(['generalCount', x])
+          },
+        }),
+        actions,
+        interfaces: {
+          value: () => s => ({
+            simpleCount: s.simpleCount,
+            dynamicCount: s.dynamicCount,
+            generalCount: s.generalCount,
+          }),
+        },
+      }
+      app = run({
+        root,
+        interfaces: {
+          value: valueHandler(v => {
+            if (valueCb) {
+              valueCb(v)
+            }
+          }),
+        },
+      })
+
+    })
+
+    it('simple propagation: parent should react to childInput when have an input called $SpaceName_childInput', done => {
+      let data = 17
+      let calls = 0
+      valueCb = value => {
+        calls++
+        if (calls === 1) {
+          expect(value.simpleCount).toEqual(data)
+          done()
+        }
+      }
+      toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
+    })
+
+    it('dynamic propagation: parent should react to childInput when have an input called $$CompName_childInput', done => {
+      let data = 23
+      let calls = 0
+      valueCb = value => {
+        calls++
+        if (calls === 2) {
+          expect(value.dynamicCount).toEqual(['CompName', data])
+          done()
+        }
+      }
+      toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
+    })
+
+    it('general propagation: parent should react to childInput when have an input called $_childInput', done => {
+      let data = 31
+      let calls = 0
+      valueCb = value => {
+        calls++
+        if (calls === 3) {
+          expect(value.generalCount).toEqual(['SpaceName', data])
+          done()
+        }
+      }
+      toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
+    })
+
+    it('propagation sequence: simple, dynamic and general', done => {
+      propagationSequence = []
+      let data = 37
+      let calls = 0
+      valueCb = value => {
+        calls++
+        if (calls === 3) {
+          expect(propagationSequence).toEqual(['simple', 'dynamic', 'general'])
+          done()
+        }
+      }
+      toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
+    })
+
   })
 
   it('should unnest a component tree', () => {
