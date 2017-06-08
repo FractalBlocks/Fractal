@@ -16,11 +16,8 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
   function invokeHandler(handler: InputData, event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
-      if (!options || options.default === undefined || options.default) {
+      if (options && options.default === false) {
         event.preventDefault()
-      }
-      if (!options || options.propagate === undefined || options.propagate) {
-        event.stopPropagation()
       }
       // call function handler
       setTimeout(() => {
@@ -32,10 +29,8 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
         invokeHandler(handler[i])
       }
     } else if (handler === 'ignore') {
-      // TODO: document ignored and passed view event handlers
       // this handler is ignored
       event.preventDefault()
-      event.stopPropagation()
     } else if (handler === '' && handler === undefined) {
       // this handler is passed
       return

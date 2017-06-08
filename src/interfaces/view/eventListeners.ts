@@ -11,11 +11,8 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
   function invokeHandler(handler: InputData | 'ignore', event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
-      if (!options || options.default === undefined || !options.default) {
+      if (options && options.default === false) {
         event.preventDefault()
-      }
-      if (!options || options.propagate === undefined || !options.propagate) {
-        event.stopPropagation()
       }
       setTimeout(() => {
         mod.dispatch(computeEvent(event, handler))
@@ -26,10 +23,8 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
         invokeHandler(handler[i])
       }
     } else if (handler === 'ignore') {
-      // TODO: document ignored and passed view event handlers
       // this handler is ignored
       event.preventDefault()
-      event.stopPropagation()
     } else if (handler === '' && handler === undefined) {
       // this handler is passed
       return
@@ -43,7 +38,7 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
         on = (vnode.data as VNodeData).on
 
     // call event handler(s) if exists
-    if (on && on[name]) {
+    if (on && on[name] && !event.defaultPrevented) {
       invokeHandler(on[name], event)
     }
   }

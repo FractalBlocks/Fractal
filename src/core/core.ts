@@ -67,7 +67,6 @@ export interface Actions<S> {
 
 export interface EventOptions {
   default?: boolean
-  propagate?: boolean
 }
 
 // is the data of an event, refers to some event of a component - Comunications stuff
