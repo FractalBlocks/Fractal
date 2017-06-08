@@ -6,6 +6,10 @@
 
 ## Done
 
+# v2.2.1
+
+- Fix implementation of dynamic propagation
+
 # v2.2.0
 
 - Reimplemented propagation in simple, dynamic and general, as a sequence
