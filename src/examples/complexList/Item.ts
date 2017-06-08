@@ -12,7 +12,7 @@ export type S = typeof state
 
 export const inputs: Inputs<S> = ({ ctx }) => ({
   action: action(actions),
-  $remove: () => {},
+  remove: () => {},
 })
 
 export const actions: Actions<S> = {
@@ -43,7 +43,7 @@ const view: View<S> = ({ ctx, ev, act }) => s => {
     h('span', {
       class: { [style.remove]: true },
       on: {
-        click: ev('$remove'),
+        click: ev('remove'),
       },
     }, 'remove'),
   ])

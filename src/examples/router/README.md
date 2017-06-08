@@ -7,8 +7,8 @@ Initial POC of a router for Fractal using sheet-router
 - Email App (Root)
   - Side Menu (nav)
     - Received
-    - Important
-    - Sent
+    - Important (Soon)
+    - Sent (Soon)
   - Board
     - List
     - Email

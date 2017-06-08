@@ -48,11 +48,11 @@ export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => (
     let key
     for (key in items) {
       if (stateOf(key).checked) {
-        toIt('$$Item_remove', key)
+        toIt('$$Item_remove', [key])
       }
     }
   },
-  $$Item_remove: idx => {
+  $$Item_remove: ([idx]) => {
     unnest(idx)
     return actions.Remove(idx)
   },
