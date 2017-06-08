@@ -29,7 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
-- Document that global event listeners handle all the events, and normal do not handle events that are prevented ( default: false )
+- Document that global and normal event listeners do not handle events that are prevented ( default: false ) and there are a listenPrevented option to reverse this behaviour
 - Document that we don't support stop propagation of DOM events as a design choice because of [this article](https://css-tricks.com/dangers-stopping-event-propagation/)
 - Document simple, dynamic and general propagation and it's secuential evaluation
 - Document and build an example of pausing View events (global and local)
