@@ -11,8 +11,13 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
   function invokeHandler(handler: InputData | 'ignore', event?: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
-      if (options && options.default === false) {
-        event.preventDefault()
+      if (options) {
+        if (options.listenPrevented !== true && event.defaultPrevented) {
+          return
+        }
+        if (options.default === false) {
+          event.preventDefault()
+        }
       }
       setTimeout(() => {
         mod.dispatch(computeEvent(event, handler))
@@ -38,7 +43,7 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
         on = (vnode.data as VNodeData).on
 
     // call event handler(s) if exists
-    if (on && on[name] && !event.defaultPrevented) {
+    if (on && on[name]) {
       invokeHandler(on[name], event)
     }
   }
