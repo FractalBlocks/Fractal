@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Document simple, dynamic and general propagation and it's secuential evaluation
 - Document and build an example of pausing View events (global and local)
 - Document and build an example of global listeners
 - Flux-Challenge example and do a PR to Staltz repo (WIP)
