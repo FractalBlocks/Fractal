@@ -6,6 +6,10 @@
 
 ## Done
 
+# v2.3.2
+
+- Fix default prevented behaviour
+
 # v2.3.1
 
 - Global event listeners do not handle prevented events by default
