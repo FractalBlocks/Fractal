@@ -33,6 +33,7 @@ There are TODOs for short term:
 - Document simple, dynamic and general propagation and it's secuential evaluation
 - Document and build an example of pausing View events (global and local)
 - Document and build an example of global listeners
+- Document ignored and passed view event handlers
 - Flux-Challenge example and do a PR to Staltz repo (WIP)
 - Todo-mvc example in a separated repo
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
