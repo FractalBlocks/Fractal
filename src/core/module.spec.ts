@@ -165,8 +165,8 @@ describe('Context functions', function () {
     })
 
     it('should accept an options argument', () => {
-      let data = ev(ctx)('inputName', 'value', 'extra', { default: false, propagate: false })
-      expect(data).toEqual(['Main$child', 'inputName', 'value', 'extra', { default: false, propagate: false }])
+      let data = ev(ctx)('inputName', 'value', 'extra', { default: false })
+      expect(data).toEqual(['Main$child', 'inputName', 'value', 'extra', { default: false }])
     })
 
   })
