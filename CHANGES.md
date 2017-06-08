@@ -6,6 +6,11 @@
 
 ## Done
 
+# v2.3.0
+
+- Global event listeners handle all the events, and normal do not handle events that are prevented
+- stopPropagation is not allowed by design
+
 # v2.2.1
 
 - Fix implementation of dynamic propagation
