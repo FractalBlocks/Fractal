@@ -200,7 +200,7 @@ This is it!! we have our first component, the Counter. Lets run it!, we will use
 
 In the `app/` [folder](https://github.com/FractalBlocks/Fractal-quickstart/tree/master/app) we have all files for running our application.
 
-I an editor, lets copy the code below to `Root.ts` file (our Counter in app/ folder)
+I an editor, lets copy the code below to `Root.ts` file (our Counter in `app/` folder)
 
 ```typescript
 import { Inputs, Actions, Interfaces } from 'fractal-core'
