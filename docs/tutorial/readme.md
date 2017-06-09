@@ -157,7 +157,7 @@ export const actions: Actions<S> = {
 }
 ```
 
-Pretty simple!!, an Action is a function that returns a function that takes the `state` and returns the next `state`. So we are going to execute 'Inc' action when the 'inc' input are triggered.
+Pretty simple!!, An Action is a function that returns a function that takes the `state` and returns the next `state`. So, we are going to execute 'Inc' action when the 'inc' input is triggered, that is when the user clicked the Increment Button
 
 ```typescript
 export const inputs: Inputs<S> = () => ({
@@ -165,7 +165,7 @@ export const inputs: Inputs<S> = () => ({
 })
 ```
 
-Next
+Just one thing more!!
 
 6. Click on Decrement Button should substract 1 to the `state`, so lets replicate the same as with Increment Button
 
@@ -183,16 +183,20 @@ export const actions: Actions<S> = {
 const view: View<S> =
   () => s => h('div', [
     h('button', {
-      on: { click: ev('inc') },
+      on: {
+        click: ev('inc'),
+      },
     }, '+'),
     h('div', s + ''),
     h('button', {
-      on: { click: ev('dec') }, // <--- event listener that sends a message to 'dec' input when click the button
+      on: {
+        click: ev('dec'), // <--- event listener send a message to 'dec' input, when user click the button
+      },
     }, '-'),
   ])
 ```
 
-This is it, we have our first component, the Counter. Lets run it!, we will use the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart), so visit and follow [this steps](https://github.com/FractalBlocks/Fractal-quickstart#fractal-quickstart) to setup the quickstart.
+This is it!! we have our first component, the Counter. Lets run it!, we will use the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart), so visit and follow [this steps](https://github.com/FractalBlocks/Fractal-quickstart#fractal-quickstart) to setup the quickstart.
 
 In the `app/` [folder](https://github.com/FractalBlocks/Fractal-quickstart/tree/master/app) we have all the file for running our application.
 
