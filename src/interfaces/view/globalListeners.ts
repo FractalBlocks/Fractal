@@ -1,6 +1,7 @@
 import { VNode, VNodeData } from './vnode'
 import { Module } from 'snabbdom/modules/module'
 import { computeEvent, InputData, ModuleAPI } from '../../core'
+import { isDescendant } from './utils'
 
 export interface OnGlobal {
   [event: string]: InputData
@@ -13,10 +14,14 @@ function getContainer (lastContainer) {
 
 export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VNode | Element }): Module => {
 
-  function invokeHandler(handler: InputData, event?: Event): void {
+  function invokeHandler(handler: InputData, event: Event, vnode: VNode): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
-      if ((options && options.listenPrevented !== true || !options) && event.defaultPrevented) {
+      if (
+        (options && options.listenPrevented !== true || !options) && event.defaultPrevented
+        || (options && options.selfPropagated !== true || !options)
+        && (isDescendant(vnode.elm, event.srcElement) || vnode.elm === event.srcElement)
+      ) {
         return
       }
       if (options && options.default === false) {
@@ -29,7 +34,7 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
-        invokeHandler(handler[i])
+        invokeHandler(handler[i], event, vnode)
       }
     } else if (handler === 'ignore') {
       // this handler is ignored
@@ -48,7 +53,7 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
 
     // call event handler(s) if exists
     if (global && global[name]) {
-      invokeHandler(global[name], event)
+      invokeHandler(global[name], event, vnode)
     }
   }
 

@@ -8,7 +8,7 @@ export interface On {
 
 export const eventListenersModule = (mod: ModuleAPI): Module => {
 
-  function invokeHandler(handler: InputData | 'ignore', event?: Event): void {
+  function invokeHandler(handler: InputData | 'ignore', event: Event): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
       if ((options && options.listenPrevented !== true || !options) && event.defaultPrevented) {
@@ -23,7 +23,7 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
-        invokeHandler(handler[i])
+        invokeHandler(handler[i], event)
       }
     } else if (handler === 'ignore') {
       // this handler is ignored

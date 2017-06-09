@@ -68,6 +68,7 @@ export interface Actions<S> {
 export interface EventOptions {
   default?: boolean
   listenPrevented?: boolean
+  selfPropagated?: boolean // only for global events
 }
 
 // is the data of an event, refers to some event of a component - Comunications stuff
