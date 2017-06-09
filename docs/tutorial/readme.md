@@ -198,9 +198,9 @@ const view: View<S> =
 
 This is it!! we have our first component, the Counter. Lets run it!, we will use the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart), so visit and follow [this steps](https://github.com/FractalBlocks/Fractal-quickstart#fractal-quickstart) to setup the quickstart.
 
-In the `app/` [folder](https://github.com/FractalBlocks/Fractal-quickstart/tree/master/app) we have all the file for running our application.
+In the `app/` [folder](https://github.com/FractalBlocks/Fractal-quickstart/tree/master/app) we have all files for running our application.
 
-First we will copy the code below to `Root.ts` (our Counter) file (in app/ folder)
+I an editor, lets copy the code below to `Root.ts` file (our Counter in app/ folder)
 
 ```typescript
 import { Inputs, Actions, Interfaces } from 'fractal-core'
