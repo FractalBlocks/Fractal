@@ -1,7 +1,7 @@
 
 // side effects for log functionality
 
-import { clone, stateOf } from '../core'
+import { clone, _stateOf } from '../core'
 
 /* istanbul ignore next */
 export const warn = (source: string, description: string) =>
@@ -13,7 +13,7 @@ export const error = (source: string, description: string) =>
 
 /* istanbul ignore next */
 export const beforeInput = (ctx, inputName, data) => {
-  let state = stateOf(ctx)()
+  let state = _stateOf(ctx)()
   if (typeof state === 'object') {
     state = clone(state)
   }
@@ -33,7 +33,7 @@ export const beforeInput = (ctx, inputName, data) => {
 
 /* istanbul ignore next */
 export const afterInput = (ctx, inputName, data) => {
-  let state = stateOf(ctx)()
+  let state = _stateOf(ctx)()
   if (typeof state === 'object') {
     state = clone(state)
   }
