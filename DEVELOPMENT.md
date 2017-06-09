@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Document global events listener selfPropagated option
 - Document that global and normal event listeners do not handle events that are prevented ( default: false ) and there are a listenPrevented option to reverse this behaviour
 - Document that we don't support stop propagation of DOM events as a design choice because of [this article](https://css-tricks.com/dangers-stopping-event-propagation/)
 - Document simple, dynamic and general propagation and it's secuential evaluation
