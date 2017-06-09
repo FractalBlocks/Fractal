@@ -8,7 +8,7 @@ import {
   HandlerMsg,
 } from './handler'
 import { toIt } from './module'
-import { stateOf, CtxStateOf } from './input'
+import { _stateOf, CtxStateOf } from './input'
 
 export interface InterfaceHelpers {
   ctx: Context
@@ -21,11 +21,11 @@ export interface InterfaceHelpers {
 
 export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
   ctx,
-  interfaceOf: interfaceOf(ctx),
-  stateOf: stateOf(ctx),
-  ev: ev(ctx),
-  act: act(ctx),
-  vw: vw(ctx),
+  interfaceOf: _interfaceOf(ctx),
+  stateOf: _stateOf(ctx),
+  ev: _ev(ctx),
+  act: _act(ctx),
+  vw: _vw(ctx),
 })
 
 export interface CtxInterfaceOf {
@@ -33,7 +33,7 @@ export interface CtxInterfaceOf {
 }
 
 // gets an interface message from a certain component
-export const interfaceOf = (ctx: Context) => (name: string, interfaceName) => {
+export const _interfaceOf = (ctx: Context) => (name: string, interfaceName) => {
   let id = `${ctx.id}$${name}`
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
@@ -55,10 +55,10 @@ export interface CtxAct {
 }
 
 // generic action dispatcher
-export const act = (ctx: Context): CtxAct => {
-  let _ev = ev(ctx)
+export const _act = (ctx: Context): CtxAct => {
+  let _evCtx = _ev(ctx)
   return (actionName, context, param, options): InputData =>
-    _ev('action', context !== undefined ? [actionName, context] : actionName, param, options)
+    _evCtx('action', [actionName, context], param, options)
 }
 
 export interface CtxVw {
@@ -66,9 +66,9 @@ export interface CtxVw {
 }
 
 // extract view interface, sintax sugar
-export const vw = (ctx: Context): CtxVw => {
-  let _interfaceOf = interfaceOf(ctx)
-  return componentName => _interfaceOf(componentName, 'view')
+export const _vw = (ctx: Context): CtxVw => {
+  let _interfaceOfCtx = _interfaceOf(ctx)
+  return componentName => _interfaceOfCtx(componentName, 'view')
 }
 
 export interface CtxEv {
@@ -76,7 +76,7 @@ export interface CtxEv {
 }
 
 // create an InputData array
-export const ev = (ctx: Context): CtxEv => (inputName, context, param, options) => {
+export const _ev = (ctx: Context): CtxEv => (inputName, context, param, options) => {
   return [ctx.id, inputName, context, param, options]
 }
 

@@ -1,5 +1,5 @@
 import { Context } from './core'
-import { CtxEv, ev } from './interface'
+import { CtxEv, _ev } from './interface'
 import {
   toIt,
   CtxToIt,
@@ -28,8 +28,8 @@ export interface InputHelpers {
 
 export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   ctx,
-  ev: ev(ctx),
-  stateOf: stateOf(ctx),
+  ev: _ev(ctx),
+  stateOf: _stateOf(ctx),
   toIt: toIt(ctx),
   toChild: toChild(ctx),
   toAct: toAct(ctx),
@@ -44,7 +44,7 @@ export interface CtxStateOf {
   (name?: string): any
 }
 
-export const stateOf = (ctx: Context): CtxStateOf => name => {
+export const _stateOf = (ctx: Context): CtxStateOf => name => {
   let id = name ? ctx.id + '$' + name : ctx.id
   let space = ctx.components[id]
   if (space) {

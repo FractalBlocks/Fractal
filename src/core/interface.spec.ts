@@ -1,6 +1,6 @@
 import { Context, Component } from './core'
 import { createContext, run, nest } from './module'
-import { ev, act, interfaceOf, makeInterfaceHelpers, vw } from './interface'
+import { _ev, _act, _interfaceOf, makeInterfaceHelpers, _vw } from './interface'
 import { ValueInterface } from '../interfaces/value'
 
 describe('Interface functions and helpers', () => {
@@ -50,7 +50,7 @@ describe('Interface functions and helpers', () => {
 
     it('should get an interface message from a certain component (interfaceOf)', () => {
       let state = rootCtx.components[rootCtx.id + '$Child'].state
-      expect(interfaceOf(rootCtx)('Child', 'value'))
+      expect(_interfaceOf(rootCtx)('Child', 'value'))
         .toEqual(
           childValue(
             makeInterfaceHelpers(createContext(rootCtx, 'Child'))
@@ -59,7 +59,7 @@ describe('Interface functions and helpers', () => {
     })
 
     it('should log an error if try to get an interface message from an inexistent component (interfaceOf)', () => {
-      interfaceOf(rootCtx)('Wrong', 'value')
+      _interfaceOf(rootCtx)('Wrong', 'value')
       expect(lastLog).toEqual([
         'interfaceOf',
         `there are no component space 'Main$Wrong'`,
@@ -67,7 +67,7 @@ describe('Interface functions and helpers', () => {
     })
 
     it('should log an error if try to get an inexistent interface message from a certain component (interfaceOf)', () => {
-      interfaceOf(rootCtx)('Child', 'wrong')
+      _interfaceOf(rootCtx)('Child', 'wrong')
       expect(lastLog).toEqual([
         'interfaceOf',
         `there are no interface 'wrong' in component 'Child' from space 'Main$Child'`,
@@ -79,11 +79,7 @@ describe('Interface functions and helpers', () => {
   describe('act function sugar for generic inputs', () => {
     let ctx = {}
     it('should return the same as ev without the input name', () => {
-      expect(act(<any> ctx)('actionName', 's', 'value')).toEqual(ev(<any> ctx)('action', ['actionName', 's'], 'value'))
-    })
-
-    it('should return the same as ev without the input name when context data is undefined', () => {
-      expect(act(<any> ctx)('actionName', undefined, 'value')).toEqual(ev(<any> ctx)('action', 'actionName', 'value'))
+      expect(_act(<any> ctx)('actionName', 's', 'value')).toEqual(_ev(<any> ctx)('action', ['actionName', 's'], 'value'))
     })
 
   })
@@ -118,8 +114,8 @@ describe('Interface functions and helpers', () => {
     })
 
     it ('should be the same to use vw and interfaceOf functions', () => {
-      let interfaceObj = vw(app.ctx)('child')
-      expect(interfaceObj).toEqual(interfaceOf(app.ctx.components['MyComp'].ctx)('child', 'view'))
+      let interfaceObj = _vw(app.ctx)('child')
+      expect(interfaceObj).toEqual(_interfaceOf(app.ctx.components['MyComp'].ctx)('child', 'view'))
     })
 
   })

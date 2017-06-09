@@ -1,4 +1,4 @@
-import { stateOf, toChild, toAct } from './input'
+import { _stateOf, toChild, toAct } from './input'
 import { run } from './module'
 import { Component } from './core'
 
@@ -25,21 +25,21 @@ describe('Input functions and helpers', () => {
     }
 
     it('should return the component state from her context', () => {
-      expect(stateOf(<any> ctx)()).toBe(ctx.components[ctx.id].state)
+      expect(_stateOf(<any> ctx)()).toBe(ctx.components[ctx.id].state)
     })
 
     it('should get the state from a certain component', () => {
-      let state = stateOf(<any> ctx)('child')
+      let state = _stateOf(<any> ctx)('child')
       expect(state).toEqual(ctx.components['id1$child'].state)
     })
 
     it('should log an error if there are no ctx space', () => {
-      stateOf(<any> ctx2)()
+      _stateOf(<any> ctx2)()
       expect(lastError).toEqual(['stateOf', `there are no space 'wrong'`])
     })
 
     it('should log an error if there are no child space', () => {
-      stateOf(<any> ctx)('wrongChild')
+      _stateOf(<any> ctx)('wrongChild')
       expect(lastError).toEqual(['stateOf', `there are no child 'wrongChild' in space 'id1'`])
     })
 
