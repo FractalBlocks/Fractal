@@ -7,13 +7,13 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 ## How it works?
 
 - Fractal is minimal. Core logic is less than 700 lines of code and you can see how it works
-- Excelent developer experience. We love to improve your experience
+- Excellent developer experience. We love to improve your experience
     - We have hot-swapping
     - We have TimeTravel debugging (soon)
-- Excelent error / warn handling:
+- Excellent error / warn handling:
     - Your app will never crash
     - Application logs are meaningful. No more WTF?!! errors
-    - You can search for any error in our complete error index, a list of all possible errors can happen with her respective solution (soon)
+    - You can search for any error in our complete error index, a list of all possible errors can happen with their respective solution (soon)
 - You can serialize the whole side effects, this means you can run Fractal in a [webworker](https://github.com/FractalBlocks/Fractal/blob/master/src/examples/worker/index.ts), in a server via websockets or even in a remote browser via WebRTC :')
 - Gives you powerful patterns and composing tools that helps to build small and large apps
 - A clear and flexible architecture that scales
@@ -21,7 +21,7 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 - High code quality, we love that!! and we helps you to achive it in your proyect :heart:
 - Its clear and concise. All you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
 - We support hot-swapping code in production :rose: (soon)
-- Your code are flexible, composable and reausable. Modularization as a foundation
+- Your code is flexible, composable and reausable. Modularization as a foundation
 - The state is isolated, this mean it is serializable and you can hot-swap code updating the UI without reload the navigator
 - Lazy loading of components (soon)
 

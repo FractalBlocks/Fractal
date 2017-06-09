@@ -26,21 +26,21 @@ Image (TODO: take an snapshot and put it here)
 
 Well, lets decompose the Counter behaviour in the Fractal way ;) .
 
-The Counter should have:
+The Counter should have the next requirements:
 
-- A value that we will call the `state` that is numeric and should be 0 by default
-- A button for increment
-- A text for showing the actual value
-- A button for decrement
+1. A value that we will call the `state` that is numeric and should be 0 by default
+2. A button for increment
+3. A text for showing the actual value
+4. A button for decrement
 
 Well now what are the possible interactions?
 
-- Click on Increment Button should add 1 to the `state`
-- Click on Decrement Button should substract 1 to the `state`
+5. Click on Increment Button should add 1 to the `state`
+6. Click on Decrement Button should substract 1 to the `state`
 
-Oh! pretty simple, right?. Let see some code. We will implement it using the requirements:
+Oh! pretty simple, right?. Let see some code. We will implement it using the above requirements:
 
-- Should have a value that we will call the `state` that is numeric and should be 0 by default
+1. Should have a value that we will call the `state` that is numeric and should be 0 by default
 
 ```typescript
 export let state = 0
@@ -48,12 +48,11 @@ export let state = 0
 export type S = number
 ```
 
-We declare a `state` variable and initialize to zero and declare the type `S` to `number`
-The `export` stuff is because of we need to export this things to import them where we need the component
+We declare a `state` variable, initialize to zero and declare the type `S` to `number`. The `export` stuff is because of we will import them where we need the component
 
-Oh!, too short!
+Oh!, too short!, lets continue
 
-- Should have a button for increment, this one is part of the view so see the code here:
+2. Should have a button for increment, this one is part of the view, so see the code:
 
 ```typescript
 const view: View<S> =
@@ -62,10 +61,11 @@ const view: View<S> =
   ])
 ```
 
-The `h` function is a helper to create view elements
-The `s` is the state variable and ctx is the context, we will go deeper in context later
+The `h` function is a helper to create view elements.
 
-- Should have a text for showing the actual value
+The `s` is the state variable.
+
+3. Should have a text for showing the actual value
 
 ```typescript
 const view: View<S> =
@@ -75,9 +75,9 @@ const view: View<S> =
   ])
 ```
 
-The `s + ''` part transforms `s` to a string, avoiding a compile error
+For avoiding a compile error with `s` because `h` receives a string. The `s + ''` is the most easly way to parse `s` to a string.
 
-Lets see the structure of the `h` helper. There are three forms of using it:
+Lets see the structure of the `h` function. There are three forms of using it:
 
 ```typescript
 // h(tagName, string | arrayOfElements)
@@ -88,7 +88,7 @@ h('div', {}, 'Hello!')
 h('div', {}, [])
 ```
 
-We will use the options object later, this is used for set attributes, properties, styles and events to the element
+We will use the options object later, this is used for settting attributes, properties, styles and events to the element.
 
 Next you can see an example of nesting elements:
 
@@ -99,8 +99,7 @@ h('div', [
 ])
 ```
 
-- Should have a button for decrement
-
+4. Should have a button for decrement
 
 ```typescript
 const view: View<S> =
@@ -113,31 +112,43 @@ const view: View<S> =
 
 Right now we have our component view almost complete. We need to work on the interactions that are only two
 
-- Click on Increment Button should add 1 to the `state`
+5. Click on Increment Button should add 1 to the `state`
 
-For achive that we need to listen for clicks in the Increment Button:
+For achive it, we need to listen clicks in the Increment Button:
 
 ```typescript
 const view: View<S> =
   ({ ev }) => s => h('div', [
     h('button', {
-      on: { click: ev('inc') }, // <--- event listener that sends a message to 'inc' input when click the button
+      on: { // 'on' is used to group event listeners such as: click, mouseover, keydown ...
+        click: ev('inc'), // this line associate the click event with the 'inc' input
+      },
     }, '+'),
     h('div', s + ''),
     h('button', '-'),
   ])
 ```
 
-In Fractal, the events from outside the application are like messages that inputs receive. Inputs are a very powerful concept we can use for complex event handling (you can use FRP here!), dispatching many actions / tasks and child-parent communication, we will go deeper on Fractal Inputs later.
+In Fractal, the events from outside the application are like messages that the `inputs` receives. `Inputs` are a very powerful concept. We can use it for:
+
+- Dispatch many actions / tasks
+- Child-parent communication
+- Complex event handling (you can use FRP here!)
+
+We will go deeper on Fractal `inputs` later.
+
+We will declare our `inputs` below:
 
 ```typescript
 export const inputs: Inputs<S> = () => ({
   // inputName: msg => void | Executable | Executable[],
-  inc: msg => console.log(msg),
+  inc: () => console.log('User hits a click!!'),
 })
 ```
 
-Nice!! we receive the message!!, so we need to add 1 to `state`. The unique way to modify the state is via actions, this is a key concept in Fractal. See:
+Nice!! We receive the message!! So we need to add 1 to `state` and not to log 'User hits a click!!'. The unique way to modify the `state` is via `actions`, this is a key concept in Fractal.
+
+Let's go ahead and declare our `actions`:
 
 ```typescript
 export const actions: Actions<S> = {
@@ -146,7 +157,7 @@ export const actions: Actions<S> = {
 }
 ```
 
-Pretty simple, an action is a function that receive the `state` and returns the next `state`. So we are going to execute 'Inc' action when the 'inc' input are triggered.
+Pretty simple!!, an Action is a function that returns a function that takes the `state` and returns the next `state`. So we are going to execute 'Inc' action when the 'inc' input are triggered.
 
 ```typescript
 export const inputs: Inputs<S> = () => ({
@@ -156,7 +167,7 @@ export const inputs: Inputs<S> = () => ({
 
 Next
 
-- Click on Decrement Button should substract 1 to the `state`, so lets replicate the same as with Increment Button
+6. Click on Decrement Button should substract 1 to the `state`, so lets replicate the same as with Increment Button
 
 ```typescript
 export const inputs: Inputs<S> = () => ({
