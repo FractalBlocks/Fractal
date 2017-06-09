@@ -37,7 +37,7 @@ Or in nodejs, browserify, Webpack like environments:
 npm i --save fractal-core
 ```
 
-See our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/tutorial/readme.md) and the examples.
+Or see our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/tutorial/readme.md) and the examples.
 
 ## Run the examples
 
