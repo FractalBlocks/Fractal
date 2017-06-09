@@ -203,7 +203,11 @@ In the `app/` [folder](https://github.com/FractalBlocks/Fractal-quickstart/tree/
 In an editor, lets copy the code below and paste it to `Root.ts` file in `app/` folder.
 
 ```typescript
-import { Inputs, Actions, Interfaces } from 'fractal-core'
+import {
+  Inputs,
+  Actions,
+  Interfaces,
+} from 'fractal-core'
 import { View, h } from 'fractal-core/interfaces/view'
 
 export const name = 'Counter'
@@ -226,7 +230,7 @@ const view: View<S> =
   ({ ev }) => s => h('div', [
     h('button', {
       on: { click: ev('inc') },
-    }),
+    }, '+'),
     h('div', s + ''),
     h('button', {
       on: { click: ev('dec') },
