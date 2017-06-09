@@ -6,6 +6,13 @@
 
 ## Done
 
+# v2.4.0
+
+- Add selfPropagated property to global event listeners
+- Refactor event propagation
+- Add isDescendant view helper
+- Make input and interface helpers internal methods differnt with _, for example act with _act
+
 # v2.3.2
 
 - Fix default prevented behaviour
