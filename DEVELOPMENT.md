@@ -25,7 +25,7 @@ We support use of:
 - Snabbdom for vdom: used in examples and view interface handlers
 - Typestyle for safe styles: used in examples
 
-## Roadmap
+## Roadmap (What is next?)
 
 There are TODOs for short term:
 
@@ -36,6 +36,7 @@ There are TODOs for short term:
 - Document and build an example of pausing View events (global and local)
 - Document and build an example of global listeners
 - Document ignored and passed view event handlers
+- Start prototyping of core implementation in WebAssembly (ASAP)
 - Flux-Challenge example and do a PR to Staltz repo (WIP)
 - Todo-mvc example in a separated repo
 - Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
@@ -77,15 +78,13 @@ What are missing for this repo:
 - Implement pouchdb integration example (@carloslfu)
 - Implement an example of whole service pattern, serviceTest module and API definitions
 - Implement ui-modules as an example of setting-up an own design framework for an app, take the button from quickstart repo
-- Reference tutorials whe done.
-- Build Fractal logo in Haskell Diagrams and include source code (FANCY)
 
 ## Ideas
 
 What maybe great for this repo:
 
+- Build Fractal logo in Haskell Diagrams and include source code (FANCY)
 - Evaluate usage of Fractal for backend and nano-micro services approach
-- Explore porting Fractal to Haskell, makes sense build a DSL. A good starting point [Threepenny-gui] (https://wiki.haskell.org/Threepenny-gui) and [Haste Language](http://haste-lang.org/)
 - Document integration of manifest.json for webapps
 - Implement live examples
 - Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal
@@ -103,3 +102,4 @@ What maybe great for this repo:
 - Implement more examples and tutorials
 - Make videotutorials and start a difusion campaign
 - Put a rank function to data utils
+- Explore porting Fractal to Haskell, makes sense build a DSL. A good starting point [Threepenny-gui] (https://wiki.haskell.org/Threepenny-gui) and [Haste Language](http://haste-lang.org/)
