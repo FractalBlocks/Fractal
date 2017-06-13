@@ -6,6 +6,7 @@
 /examples/
 /benchmarks/
 /utils/
+/docsExamples/
 coverage/
 reports/
 webpack-stats.json
