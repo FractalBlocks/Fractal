@@ -6,6 +6,10 @@
 
 ## Done
 
+# v2.4.1
+
+- Replace css property -moz-placeholder by placeholder-shown for Firefox 51+
+
 # v2.4.0
 
 - Add selfPropagated property to global event listeners
