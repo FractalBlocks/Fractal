@@ -71,7 +71,7 @@ export const placeholderColor = (color: string): types.NestedCSSProperties => ({
       $unique: true,
       color: color,
     },
-    '&::-moz-placeholder': { /* Firefox 19+ */
+    '&:placeholder-shown': { /* Firefox 19+ */
       $unique: true,
       color: color,
     },
