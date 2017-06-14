@@ -39,7 +39,7 @@
   "dependencies": {
     "deep-equal": "^1.0.1",
     "mori": "^0.3.2",
-    "navigo": "^4.5.2",
+    "navigo": "^5.2.0",
     "snabbdom": "^0.6.8",
     "typestyle": "^1.2.0"
   },
