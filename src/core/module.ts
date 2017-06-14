@@ -394,10 +394,11 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
 // permorms interface recalculation
 export function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.id]
-  let name
-  for (name in space.interfaces) {
+  for (let name in space.interfaces) {
     if (ctx.interfaceHandlers[name]) {
-      ctx.interfaceHandlers[name].handle(space.interfaces[name](space.state))
+      setTimeout(() => {
+        ctx.interfaceHandlers[name].handle(space.interfaces[name](space.state))
+      }, 0)
     } else {
       // This only can happen when this method is called for a context that is not the root
       ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.def.name}' from space '${ctx.id}'`)
