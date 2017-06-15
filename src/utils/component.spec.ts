@@ -5,6 +5,7 @@ import {
   setGroup,
   spaceOf,
   sendMsg,
+  styles,
 } from './component'
 
 describe('Component helpers', () => {
@@ -26,34 +27,6 @@ describe('Component helpers', () => {
 
     it('should accept an action-contextValue pair as first argument and a fetch value in the second', () => {
       expect(actionFn([['a1', 10], 7])).toEqual([10, 7])
-    })
-
-  })
-
-  describe('props function for making a new component by modifying the state', () => {
-
-    let comp: Component<any> = {
-      name: 'MyComp',
-      state: {
-        count: 0,
-        data: 10,
-      },
-      inputs: ctx => ({}),
-      actions: {},
-      interfaces: {},
-    }
-
-    it('should make a new component when passing an object by merging with default state', () => {
-      let newComp = props({ count: 4 })(clone(comp))
-      expect(newComp).toBeDefined()
-      expect(newComp.state['data']).toEqual(10)
-      expect(newComp.state['count']).toEqual(4)
-    })
-
-    it('should make a new component when passing a value by replacing the state', () => {
-      let newComp = props(5)(clone(comp))
-      expect(newComp).toBeDefined()
-      expect(newComp.state).toEqual(5)
     })
 
   })
@@ -139,6 +112,76 @@ describe('Component helpers', () => {
     }
     it('should return the component state from her context', () => {
       expect(spaceOf(<any> ctx)).toBe(ctx.components[ctx.id])
+    })
+
+  })
+
+
+  describe('props function for making a new component by modifying the state', () => {
+
+    let comp: Component<any> = {
+      name: 'MyComp',
+      state: {
+        count: 0,
+        data: 10,
+      },
+      inputs: ctx => ({}),
+      actions: {},
+      interfaces: {},
+    }
+
+    it('should make a new component when passing an object by merging with default state', () => {
+      let newComp = props({ count: 4 })(clone(comp))
+      expect(newComp).toBeDefined()
+      expect(newComp.state['data']).toEqual(10)
+      expect(newComp.state['count']).toEqual(4)
+    })
+
+    it('should make a new component when passing a value by replacing the state', () => {
+      let newComp = props(5)(clone(comp))
+      expect(newComp).toBeDefined()
+      expect(newComp.state).toEqual(5)
+    })
+
+  })
+
+  describe('styles function for making a new component by merging the component style', () => {
+
+    let comp: Component<any> = {
+      name: 'MyComp',
+      state: {},
+      interfaces: {},
+      groups: {
+        style: {
+          base: {
+            padding: '10px',
+          },
+          input: {
+            margin: '10px',
+          },
+        },
+      },
+    }
+
+    it('should make a new component when passing an object by merging with default state', () => {
+      let newComp = styles({
+        base: {
+          padding: '5px',
+        },
+        input: {
+          width: '100px',
+        },
+      })(clone(comp))
+      expect(newComp).toBeDefined()
+      expect(newComp.groups.style).toEqual({
+        base: {
+          padding: '5px',
+        },
+        input: {
+          margin: '10px',
+          width: '100px',
+        },
+      })
     })
 
   })
