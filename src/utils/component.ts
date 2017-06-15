@@ -6,6 +6,8 @@ import {
   Group,
   Module,
   toIt,
+  StyleGroup,
+  mergeStyles,
 } from '../core'
 
 // set of helpers for building components
@@ -19,7 +21,8 @@ export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any
     value = arg1[1]
     if (arg2 !== undefined) {
       // add fetch value
-      value = [value, arg2]
+      // TODO: test it!!
+      value = (value !== undefined) ? [value, arg2]: arg2
     }
   } else {
     name = arg1
@@ -35,6 +38,17 @@ export function sendMsg (mod: Module, id: string, inputName: string, msg?, isAsy
   toIt(ctx.components[id].ctx)(inputName, msg, isAsync, isPropagated)
 }
 
+export function setGroup (name: string, group: Group) {
+  return function (comp: Component<any>): Component<any> {
+    comp.groups[name] = group
+    return comp
+  }
+}
+
+export function spaceOf (ctx: Context): any {
+  return ctx.components[ctx.id]
+}
+
 // make a new component from another merging her state
 export function props (state) {
   return function (comp: Component<any>): Component<any> {
@@ -48,13 +62,9 @@ export function props (state) {
   }
 }
 
-export function setGroup (name: string, group: Group) {
-  return function (comp: Component<any>): Component<any> {
-    comp.groups[name] = group
+export function styles (style: StyleGroup) {
+  return function (comp: Component<any>): Component<any>{
+    comp.groups.style = mergeStyles(comp.groups.style, style)
     return comp
   }
-}
-
-export function spaceOf (ctx: Context): any {
-  return ctx.components[ctx.id]
 }
