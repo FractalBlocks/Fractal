@@ -4,7 +4,7 @@ import { computeEvent, InputData, ModuleAPI } from '../../core'
 import { isDescendant } from './utils'
 
 export interface OnGlobal {
-  [event: string]: InputData
+  [event: string]: InputData | 'ignore'
 }
 
 function getContainer (lastContainer) {
@@ -14,7 +14,7 @@ function getContainer (lastContainer) {
 
 export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VNode | Element }): Module => {
 
-  function invokeHandler(handler: InputData, event: Event, vnode: VNode): void {
+  function invokeHandler(handler: InputData | 'ignore', event: Event, vnode: VNode): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
       if (
