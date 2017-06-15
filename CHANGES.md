@@ -4,6 +4,13 @@
 
 # Next
 
+WIP:
+
+- Router
+- Test of async notifyInterfaceHandlers
+- Router example
+- Test of interfaceOrder
+
 ## Done
 
 - Add interfaceOrder to modules
