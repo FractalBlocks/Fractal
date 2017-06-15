@@ -486,7 +486,7 @@ describe('One Component + module functionality', function () {
 
   })
 
-it('should execute afterInput before dispatch an input', done => {
+  it('should execute afterInput before dispatch an input', done => {
     let valueFn
     let lastValue
     function onValue(val) {
@@ -656,6 +656,53 @@ describe('toIt core function for executing inputs', () => {
 
 })
 
+describe('interfaceOrder property of module definition for ordering initial evaluation of interfaces', () => {
+  let root: Component<any> = {
+    name: 'Root',
+    state: {},
+    interfaces: {
+      value3: () => s => ({}),
+      value2: () => s => ({}),
+      value1: () => s => ({}),
+    },
+  }
+
+  it('should evaluate interfaces acording with interface order', done => {
+    let order = []
+    return run({
+      root,
+      interfaceOrder: ['value1', 'value2', 'value3'],
+      interfaces: {
+        value3: valueHandler(v => {
+          order.push('value3')
+          expect(order).toEqual(['value1', 'value2', 'value3'])
+          done()
+        }),
+        value2: valueHandler(v => order.push('value2')),
+        value1: valueHandler(v => order.push('value1')),
+      },
+    })
+  })
+
+  it('should log an error and notify error callback when module dont have an InterfaceHandler that is in interfaceOrder', done => {
+    return run({
+      root,
+      interfaceOrder: ['value1', 'value2'],
+      interfaces: {
+        value1: valueHandler(v => {}),
+      },
+      error: (source, description) => {
+        expect([source, description]).toEqual([
+          'InterfaceHandlers',
+          `'Root' component has no interface called 'value2', missing interface handler`,
+        ])
+        done()
+      },
+    })
+  })
+
+})
+
 describe('Component composition', () => {
 
   // Managed composition
@@ -791,7 +838,7 @@ describe('Component composition', () => {
     value._dispatch(value.childValue1.dispatch)
   })
 
-describe('toChild function', () => {
+  describe('toChild function', () => {
     let childData
     let Child: Component<any> = {
       name: 'Child',
@@ -847,11 +894,10 @@ describe('toChild function', () => {
 
 
   describe('Input propagation', () => {
-    let valueCb
-    let app
-    let propagationSequence = []
-
-    beforeEach(() => {
+    const actions = {
+      Set: ([name, value]) => assoc(name)(value),
+    }
+    const buildApp = (state, inputs, valueInterface, valueCb) => {
       let Child: Component<any> = {
         name: 'CompName',
         state: {},
@@ -861,107 +907,107 @@ describe('toChild function', () => {
         actions: {},
         interfaces: {},
       }
-      const actions = {
-        Set: ([name, value]) => assoc(name)(value),
-      }
       let root: Component<any> = {
         name: 'Root',
         components: {
           SpaceName: Child,
         },
-        state: {
-          simpleCount: 0,
-          dynamicCount: 0,
-          generalCount: 0,
-        },
-        inputs: ctx => ({
-          $SpaceName_childInput: x => {
-            propagationSequence.push('simple')
-            return actions.Set(['simpleCount', x])
-          },
-          $$CompName_childInput: x => {
-            propagationSequence.push('dynamic')
-            return actions.Set(['dynamicCount', x])
-          },
-          $_childInput: x => {
-            propagationSequence.push('general')
-            return actions.Set(['generalCount', x])
-          },
-        }),
+        state,
+        inputs,
         actions,
         interfaces: {
-          value: () => s => ({
-            simpleCount: s.simpleCount,
-            dynamicCount: s.dynamicCount,
-            generalCount: s.generalCount,
-          }),
+          value: valueInterface,
         },
       }
-      app = run({
+      return run({
         root,
         interfaces: {
           value: valueHandler(v => {
-            if (valueCb) {
-              valueCb(v)
-            }
+            valueCb(v)
           }),
         },
       })
-
-    })
+    }
 
     it('simple propagation: parent should react to childInput when have an input called $SpaceName_childInput', done => {
       let data = 17
       let calls = 0
-      valueCb = value => {
-        calls++
-        if (calls === 1) {
-          expect(value.simpleCount).toEqual(data)
-          done()
+      const app = buildApp(
+        { simpleCount: 0 },
+        () => ({
+          $SpaceName_childInput: x => actions.Set(['simpleCount', x]),
+        }),
+        () => s => ({
+          simpleCount: s.simpleCount,
+        }),
+        value => {
+          calls++
+          if (calls === 2) {
+            expect(value.simpleCount).toEqual(data)
+            done()
+          }
         }
-      }
+      )
       toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
     })
 
     it('dynamic propagation: parent should react to childInput when have an input called $$CompName_childInput', done => {
       let data = 23
       let calls = 0
-      valueCb = value => {
-        calls++
-        if (calls === 2) {
-          expect(value.dynamicCount).toEqual(['SpaceName', data])
-          done()
+      const app = buildApp(
+        { dynamicCount: 0 },
+        ctx => ({
+          $$CompName_childInput: x => actions.Set(['dynamicCount', x]),
+        }),
+        () => s => ({
+          dynamicCount: s.dynamicCount,
+        }),
+        value => {
+          calls++
+          if (calls === 2) {
+            expect(value.dynamicCount).toEqual(['SpaceName', data])
+            done()
+          }
         }
-      }
+      )
       toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
     })
 
     it('general propagation: parent should react to childInput when have an input called $_childInput', done => {
       let data = 31
       let calls = 0
-      valueCb = value => {
-        calls++
-        if (calls === 3) {
-          expect(value.generalCount).toEqual(['SpaceName', data, 'CompName'])
-          done()
+      const app = buildApp(
+        { generalCount: 0 },
+        ctx => ({
+          $_childInput: x => actions.Set(['generalCount', x]),
+        }),
+        () => s => ({
+          generalCount: s.generalCount,
+        }),
+        value => {
+          calls++
+          if (calls === 2) {
+            expect(value.generalCount).toEqual(['SpaceName', data, 'CompName'])
+            done()
+          }
         }
-      }
+      )
       toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
     })
 
-    it('propagation sequence: simple, dynamic and general', done => {
-      propagationSequence = []
-      let data = 37
-      let calls = 0
-      valueCb = value => {
-        calls++
-        if (calls === 3) {
-          expect(propagationSequence).toEqual(['simple', 'dynamic', 'general'])
-          done()
-        }
-      }
-      toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
-    })
+    // it('propagation sequence: simple, dynamic and general', done => {
+    //   propagationSequence = []
+    //   let data = 37
+    //   let calls = 0
+    //   valueCb = value => {
+    //     calls++
+    //     if (calls === 3) {
+    //       expect(propagationSequence).toEqual(['simple', 'dynamic', 'general'])
+    //       done()
+    //     }
+    //   }
+    //   toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
+    // })
 
   })
 
@@ -1231,23 +1277,34 @@ describe('Hot swapping', () => {
     expect(value.childValue3.content).toBe(0)
   })
 
-  it('should reattach root component merging the states using ', () => {
+  it('should reattach root component merging the states using deep merge', done => {
+    let calls = 0
     app = run({
       root: mainV1,
       interfaces: {
-        value: valueHandler(onValue),
+        value: valueHandler((v: any) => {
+          calls++
+          switch (calls) {
+            case 1:
+              v._dispatch(v.inc)
+              break
+            case 2:
+              expect(v.content).toBe(1)
+              expect(v.content2).toBe(12)
+              app.moduleAPI.reattach(mainV2, mergeStates)
+              break
+            case 3:
+              expect(v.content).toBe('Fractal is awesome V2!! 1 :D')
+              expect(v.content2).toBe('Fractal is awesome V2!! 125 :D')
+              done()
+              break
+          }
+        }),
       },
     })
-    value = lastValue
-    value._dispatch(value.inc)
-    value = lastValue
-    expect(value.content).toBe(1)
-    expect(value.content2).toBe(12)
-    app.moduleAPI.reattach(mainV2, mergeStates)
-    value = lastValue
-    expect(value.content).toBe('Fractal is awesome V2!! 1 :D')
-    expect(value.content2).toBe('Fractal is awesome V2!! 125 :D')
   })
+
+
 
 })
 
