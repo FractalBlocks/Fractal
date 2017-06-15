@@ -25,6 +25,7 @@ export const styleHandler = (containerName?: string, debug = false) => (mod: Mod
         name = parts[parts.length - 1]
       }
       style = styleGroup(instance, styleObj, name)
+      instance.forceRenderStyles()
       mod.setGroup(id, 'style', style)
     },
     dispose: () => {

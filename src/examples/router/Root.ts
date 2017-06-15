@@ -1,5 +1,16 @@
-import { Actions, Inputs, Interfaces, Components, Hook, toChild, action, StyleGroup, _ } from '../../core'
+import {
+  Actions,
+  Inputs,
+  Interfaces,
+  Components,
+  Hook,
+  toChild,
+  action,
+  StyleGroup,
+  _,
+} from '../../core'
 import { View, h } from '../../interfaces/view'
+import { Routes } from '../../interfaces/router'
 import { palette } from './constants'
 
 let emailDB = {
@@ -66,17 +77,9 @@ const view: View<S> = ({ ctx, vw }) => s => {
   ])
 }
 
-export interface Routes<S> {
-  (ctx): {
-    (s: S): {
-      [regExp: string]: any
-    }
-  }
-}
-
 const routes: Routes<S> = ({ ctx, ev }) => s => ({
-  _: '/' + s.emailId,
-  '/': ev('action', ['SetView', ['EmailList']]),
+  name: '/' + s.emailId,
+  // '/': ev('action', ['SetView', ['EmailList']]),
   '/:id': ev('$EmailList_select', _, ['params', 'id']),
 })
 

@@ -33,7 +33,7 @@
   "author": "Carlos Galarza <carloslfu@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fractalPlatform/Fractal.git"
+    "url": "https://github.com/FractalBlocks/Fractal.git"
   },
   "license": "MIT",
   "dependencies": {

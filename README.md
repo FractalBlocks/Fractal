@@ -24,7 +24,7 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 - Your code is flexible, composable and reausable. Modularization as a foundation
 - The state is isolated, this mean it is serializable and you can hot-swap code updating the UI without reload the navigator
 - Blazingly fast because we use WebAssembly (Soon ... Work In Progress)
-- Lazy loading of components (soon)
+- Lazy loading of components (Example soon...)
 
 See the [design document](https://github.com/FractalBlocks/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
 

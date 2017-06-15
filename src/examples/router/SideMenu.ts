@@ -9,12 +9,13 @@ export const state = 'Received'
 export type S = string
 
 export const inputs: Inputs<S> = ctx => ({
+  selected: () => {},
 })
 
 export const actions: Actions<S> = {
 }
 
-const view: View<S> = ({ ctx }) => s => {
+const view: View<S> = ({ ctx, ev }) => s => {
   let style = ctx.groups.style
 
   return h('nav', {
@@ -32,6 +33,7 @@ const view: View<S> = ({ ctx }) => s => {
           [style.optionSelected]: s === option,
         },
         on: {
+          click: ev('selected', option),
         },
       }, option)
     )

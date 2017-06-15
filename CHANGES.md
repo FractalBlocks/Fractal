@@ -6,6 +6,13 @@
 
 ## Done
 
+- Add interfaceOrder to modules
+- notifyInterfaceHandlers works async
+
+# v2.5.0
+
+- Add router interface handler
+
 # v2.4.1
 
 - Replace css property -moz-placeholder by placeholder-shown for Firefox 51+

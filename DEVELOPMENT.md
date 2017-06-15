@@ -29,6 +29,8 @@ We support use of:
 
 There are TODOs for short term:
 
+- Document interfaceOrder. This method is used to set the order of the initial evaluation of interfaces
+- Test interfaceOrder core function (CRITICAL)
 - Document global events listener selfPropagated option
 - Document that global and normal event listeners do not handle events that are prevented ( default: false ) and there are a listenPrevented option to reverse this behaviour
 - Document that we don't support stop propagation of DOM events as a design choice because of [this article](https://css-tricks.com/dangers-stopping-event-propagation/)

@@ -1,6 +1,6 @@
-# Fractal Router POC
+# Fractal router example
 
-Initial POC of a router for Fractal using sheet-router
+Fractal router example using Navigo
 
 ## Objetive
 

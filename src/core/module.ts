@@ -24,6 +24,7 @@ export interface ModuleDef {
   groups?: HandlerInterfaceIndex
   tasks?: HandlerInterfaceIndex
   interfaces: HandlerInterfaceIndex
+  interfaceOrder?: Array<string>
   // lifecycle hooks for modules
   beforeInit? (mod: ModuleAPI): void
   init? (mod: ModuleAPI): void
@@ -396,9 +397,7 @@ export function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.id]
   for (let name in space.interfaces) {
     if (ctx.interfaceHandlers[name]) {
-      setTimeout(() => {
-        ctx.interfaceHandlers[name].handle(space.interfaces[name](space.state))
-      }, 0)
+      setTimeout(() => ctx.interfaceHandlers[name].handle(space.interfaces[name](space.state)), 0)
     } else {
       // This only can happen when this method is called for a context that is not the root
       ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.def.name}' from space '${ctx.id}'`)
@@ -522,15 +521,30 @@ export function run (moduleDef: ModuleDef): Module {
     }
 
     // pass initial value to each Interface Handler
+    // -- interfaceOrder
+    let interfaceOrder = moduleDef.interfaceOrder
     let name
+    let errorNotHandler = name => ctx.error(
+      'InterfaceHandlers',
+      `'${rootName}' component has no interface called '${name}', missing interface handler`
+    )
+    if (interfaceOrder) {
+      for (let i = 0; name = interfaceOrder[i]; i++) {
+        if (ctx.interfaceHandlers[name]) {
+          ctx.interfaceHandlers[name].handle(rootSpace.interfaces[name](ctx.components[rootName].state))
+        } else {
+          return errorNotHandler(name)
+        }
+      }
+    }
     for (name in rootSpace.interfaces) {
+      if (interfaceOrder && interfaceOrder.indexOf(name) !== -1) {
+        continue // interface evaluated yet
+      }
       if (ctx.interfaceHandlers[name]) {
         ctx.interfaceHandlers[name].handle(rootSpace.interfaces[name](ctx.components[rootName].state))
       } else {
-        return ctx.error(
-          'InterfaceHandlers',
-          `'${rootName}' component has no interface called '${name}', missing interface handler`
-        )
+        return errorNotHandler(name)
       }
     }
 
