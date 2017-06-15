@@ -1,5 +1,6 @@
 import { types, getStyles as _getStyles } from 'typestyle'
 import { TypeStyle } from 'typestyle/lib/internal/typestyle'
+import { deepmerge } from './deepmerge'
 
 export const getStyles = _getStyles
 
@@ -56,7 +57,7 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
   }
   for(let i = 0, keys = Object.keys(group2), len = keys.length; i < len; i++) {
     if (mergedGroup[keys[i]] && typeof mergedGroup[keys[i]] === 'object') {
-      mergedGroup[keys[i]] = Object.assign({}, mergedGroup[keys[i]], group2[keys[i]])
+      mergedGroup[keys[i]] = deepmerge(mergedGroup[keys[i]], group2[keys[i]])
     } else {
       mergedGroup[keys[i]] = group2[keys[i]]
     }

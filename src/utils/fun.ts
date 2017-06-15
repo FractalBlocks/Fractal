@@ -56,3 +56,5 @@ export function merge (objSrc) {
     return obj
   }
 }
+
+export { deepmerge, deepmergeAll } from './deepmerge'
