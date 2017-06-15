@@ -7,12 +7,15 @@
 WIP:
 
 - Router
-- Test of async notifyInterfaceHandlers
 - Router example
-- Test of interfaceOrder
 
 ## Done
 
+# v2.6.0
+
+- Test of interfaceOrder
+- Test of async notifyInterfaceHandlers
+- Add ignore to global event listener type signature
 - Add interfaceOrder to modules
 - notifyInterfaceHandlers works async
 
