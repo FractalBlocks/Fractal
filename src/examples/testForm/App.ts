@@ -3,17 +3,16 @@ import {
   Inputs,
   Interfaces,
   clone,
-  setGroup,
-  pipe,
   assoc,
   props,
+  styles,
   StyleGroup,
-  mergeStyles,
+  pipe,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
-import * as TextField from './TextField'
-import * as Button from './Button'
+import * as TextFieldBase from './TextField'
+import * as ButtonBase from './Button'
 
 export const name = 'Main'
 
@@ -31,45 +30,40 @@ let answers = [
   '4',
 ]
 
-let inputStyle = mergeStyles(TextField.groups['style'], {
+let TextField = styles({
   base: {
     width: 'calc(100% - 30px)',
     margin: '15px',
   },
-})
+})(clone(TextFieldBase))
 
 let questionCmp = <any> questions.map(
-  q => pipe(
-    props({ placeholder: q }),
-    setGroup('style', inputStyle),
-  )(clone(TextField))
+  q => props({ placeholder: q })(clone(TextField))
 )
 
-let clearBtnStyle = mergeStyles(Button.groups['style'], {
-  base: {
-    marginTop: '5px',
-    color: '#5E6060',
-    backgroundColor: 'none',
-    $nest: {
-      '&:hover': {
-        color: '#1E4691',
-        backgroundColor: 'none',
+let TestBtn = props('Test')(clone(ButtonBase))
+
+let ClearBtn = pipe(
+  styles({
+    base: {
+      marginTop: '5px',
+      color: '#5E6060',
+      backgroundColor: 'none',
+      $nest: {
+        '&:hover': {
+          color: '#1E4691',
+          backgroundColor: 'none',
+        },
       },
     },
-  },
-})
-
-let testBtn = props('Test')(clone(Button))
-
-let clearBtn = pipe(
+  }),
   props('Clear'),
-  setGroup('style', clearBtnStyle)
-)(clone(Button))
+)(clone(ButtonBase))
 
 export const components = {
   ...questionCmp,
-  testBtn,
-  clearBtn,
+  TestBtn,
+  ClearBtn,
 }
 
 export interface S {
@@ -81,7 +75,7 @@ export const state: S = {
 }
 
 export const inputs: Inputs<S> = ({ ctx, stateOf, toChild }) => ({
-  $testBtn_click: () => {
+  $TestBtn_click: () => {
     let result = Object.keys(questions).map((q, idx) => {
       let isCorrect = stateOf(q).value === answers[idx]
       toChild(q, 'action', ['SetError', !isCorrect])
@@ -89,7 +83,7 @@ export const inputs: Inputs<S> = ({ ctx, stateOf, toChild }) => ({
     }).reduce((a, r) => a && r, true)
     return actions.SetCorrect(result)
   },
-  $clearBtn_click: () => {
+  $ClearBtn_click: () => {
     Object.keys(questions).forEach(
       i => {
         toChild(i, 'action', ['SetValue', ''])
@@ -136,8 +130,8 @@ let view: View<S> = ({ ctx, vw }) => s => {
         ? 'Correct'
         : 'There are mistakes!'
       ),
-      vw('testBtn'),
-      vw('clearBtn'),
+      vw('TestBtn'),
+      vw('ClearBtn'),
     ]),
   ])
 }
