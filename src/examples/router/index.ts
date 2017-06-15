@@ -15,11 +15,11 @@ const app = run({
   groups: {
     style: styleHandler('', true),
   },
+  interfaceOrder: ['routes'],
   interfaces: {
     view: viewHandler('#app'),
     routes: routesHandler(),
   },
-  interfaceOrder: ['routes'],
   ...logFns,
 })
 
