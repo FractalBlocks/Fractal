@@ -29,6 +29,9 @@ We support use of:
 
 There are TODOs for short term:
 
+- Tests for deepmerge.ts
+- Types for deepmerge.ts
+- Document deepmerge.ts
 - Document interfaceOrder. This method is used to set the order of the initial evaluation of interfaces
 - Document global events listener selfPropagated option
 - Document that global and normal event listeners do not handle events that are prevented ( default: false ) and there are a listenPrevented option to reverse this behaviour
