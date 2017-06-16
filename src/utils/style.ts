@@ -1,6 +1,6 @@
 import { types, getStyles as _getStyles } from 'typestyle'
 import { TypeStyle } from 'typestyle/lib/internal/typestyle'
-import { deepmerge } from './deepmerge'
+import { deepmerge } from './fun'
 
 export const getStyles = _getStyles
 

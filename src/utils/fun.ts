@@ -57,4 +57,7 @@ export function merge (objSrc) {
   }
 }
 
-export { deepmerge, deepmergeAll } from './deepmerge'
+import _deepmerge = require('deepmerge')
+
+export const deepmerge = _deepmerge
+export const deepmergeAll = _deepmerge.all
