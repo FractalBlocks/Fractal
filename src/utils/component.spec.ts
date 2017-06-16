@@ -29,6 +29,10 @@ describe('Component helpers', () => {
       expect(actionFn([['a1', 10], 7])).toEqual([10, 7])
     })
 
+    it('should accept an action / undefined contextual value and return only the function parameter', () => {
+      expect(actionFn([['a1', undefined], 23])).toEqual(23)
+    })
+
   })
 
   describe('setGroup function for setting a component group', () => {
