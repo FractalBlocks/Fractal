@@ -4,15 +4,17 @@
 
 # Next
 
-- Test case for hotfix in `action` function in component helpers
-
 WIP:
 
 - Router
 - Router example
 
-## Done (v2.7.0 - next)
+## Done
 
+# v2.7.0
+
+- Test case for hotfix in `action` function in component helpers
+- Add deepmerge as a dependency
 - Hotfix in `action` function in component helpers
 - Add deepmerge and deepmergeAll functions to functional helpers
 - Add `styles` function for making a new component by merging the component style
