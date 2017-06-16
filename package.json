@@ -38,6 +38,7 @@
   "license": "MIT",
   "dependencies": {
     "deep-equal": "^1.0.1",
+    "deepmerge": "^1.4.3",
     "mori": "^0.3.2",
     "navigo": "^5.2.0",
     "snabbdom": "^0.6.8",
