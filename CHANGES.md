@@ -6,10 +6,13 @@
 
 WIP:
 
+- Integrate ResizeSensor for listening element size changes
 - Router
 - Router example
 
 ## Done
+
+- Fix deepmerge issue
 
 # v2.7.0
 

@@ -98,7 +98,7 @@ const view: View<S> = ({ ctx, ev, vw }) => s => {
         class: { [style.menuItem]: true },
         on: { click: ev('setCheckAll', false) },
       }, 'uncheck all'),
-      h('div', {
+      h('div#el', {
         class: { [style.menuItem]: true },
         on: { click: ev('removeChecked') },
       }, 'remove checked'),
