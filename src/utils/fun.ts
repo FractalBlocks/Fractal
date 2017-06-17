@@ -57,7 +57,7 @@ export function merge (objSrc) {
   }
 }
 
-import _deepmerge = require('deepmerge')
+import * as _deepmerge from 'deepmerge/dist/umd'
 
 export const deepmerge = _deepmerge
 export const deepmergeAll = _deepmerge.all
