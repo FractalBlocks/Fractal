@@ -4,6 +4,8 @@
 
 # Next
 
+- Fix benchmark
+
 WIP:
 
 - Integrate ResizeSensor for listening element size changes
