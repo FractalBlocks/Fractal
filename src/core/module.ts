@@ -93,6 +93,7 @@ export function createContext (ctx: Context, name: Identifier): Context {
     name,
     groups: {},
     // delegation
+    rootCtx: ctx.rootCtx,
     global: ctx.global,
     components: ctx.components,
     groupHandlers: ctx.groupHandlers,
@@ -335,16 +336,13 @@ export const toIt = (ctx: Context): CtxToIt => {
 export function execute (ctx: Context, executable: void | Executable<any> | Executable<any>[]) {
   let id = ctx.id
   let componentSpace = ctx.components[id]
-  let rootId = (id + '').split('$')[0]
-  // Obtain root context
-  let rootCtx = ctx.components[rootId].ctx
 
   if (typeof executable === 'function') {
     // single update
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
     /* istanbul ignore else */
     if (ctx.global.initialized) {
-      notifyInterfaceHandlers(rootCtx) // root context
+      notifyInterfaceHandlers(ctx) // root context
     }
   } else {
     /* istanbul ignore else */
@@ -368,7 +366,7 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
               componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
               /* istanbul ignore else */
               if (ctx.global.initialized) {
-                notifyInterfaceHandlers(rootCtx) // root context
+                notifyInterfaceHandlers(ctx) // root context
               }
             } else {
                 /* istanbul ignore else */
@@ -422,7 +420,7 @@ export function run (moduleDef: ModuleDef): Module {
     // if is hot swapping, do not recalculat context
     if (!lastComponents) {
       // root context
-      ctx = {
+      ctx = <any> { // because of rootCtx delegation
         id: '',
         name: rootName,
         groups: {},
@@ -457,6 +455,7 @@ export function run (moduleDef: ModuleDef): Module {
           }
         },
       }
+      ctx.rootCtx = ctx // nice right? :)
     } else {
       // hot swaping mode preserves root context, but restore id to '' because this way merge knows is root context
       ctx.id = ''

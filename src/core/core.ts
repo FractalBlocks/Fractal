@@ -157,6 +157,8 @@ export interface Context {
     // and only used for initialization for nest function and notifyInterfaceHandlers
     initialized: boolean
   },
+  // root context delegation
+  rootCtx: Context
   // input hooks delegation
   beforeInput? (ctxIn: Context, inputName: string, data: any): void
   afterInput? (ctxIn: Context, inputName: string, data: any): void
@@ -176,8 +178,7 @@ export interface ComponentSpaceIndex {
 // contextualized space in the component index
 export interface ComponentSpace {
   ctx: Context
-  // META: is statically composed?
-  isStatic: boolean
+  isStatic: boolean // Is statically composed?
   state: any
   inputs: InputIndex<any>
   interfaces: CtxInterfaceIndex

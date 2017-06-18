@@ -12,6 +12,8 @@ WIP:
 
 ## Done
 
+- Cached interfaces
+- Root context delegation
 - Fix deepmerge issue
 
 # v2.7.0

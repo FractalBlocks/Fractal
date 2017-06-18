@@ -1,4 +1,4 @@
-import { Context, Component } from './core'
+import { Component } from './core'
 import { createContext, run, nest } from './module'
 import { _ev, _act, _interfaceOf, makeInterfaceHelpers, _vw } from './interface'
 import { ValueInterface } from '../interfaces/value'
@@ -9,7 +9,7 @@ describe('Interface functions and helpers', () => {
 
     let lastLog
 
-    let rootCtx: Context = {
+    let rootCtx: any = {
       id: 'Main',
       name: 'Main',
       groups: {},
@@ -28,6 +28,7 @@ describe('Interface functions and helpers', () => {
         lastLog = [source, description]
       },
     }
+    rootCtx.rootCtx = rootCtx
 
     let childValue: ValueInterface<any> =
       ({ ctx }) => s => ({

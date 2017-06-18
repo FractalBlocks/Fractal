@@ -109,7 +109,7 @@ describe('Context functions', function () {
 
   let lastLog
 
-  let rootCtx: Context = {
+  let rootCtx: any = {
     id: 'Main',
     name: 'Main',
     groups: {},
@@ -128,6 +128,7 @@ describe('Context functions', function () {
       lastLog = [source, description]
     },
   }
+  rootCtx.rootCtx = rootCtx
 
   let ctx: Context
   it('should create a child context (createContext)', () => {
