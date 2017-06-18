@@ -1,9 +1,9 @@
-import { Context, ComponentSpaceIndex } from '../core'
+import { ComponentSpaceIndex } from '../core'
 import { mergeStates } from './reattach'
 
 describe('mergeStates function should merge the states of the lastComponents and the context', () => {
 
-  let ctx: Context = {
+  let ctx: any = {
     id: '',
     name,
     groups: {},
@@ -17,6 +17,7 @@ describe('mergeStates function should merge the states of the lastComponents and
     warn: () => 0,
     error: () => 0,
   }
+  ctx.rootCtx = ctx
 
   function createCompIndex (state, defState, name = 'Main', defs = {}, isStatic = true): ComponentSpaceIndex {
     return {

@@ -392,7 +392,7 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
 
 // permorms interface recalculation
 export function notifyInterfaceHandlers (ctx: Context) {
-  let space = ctx.components[ctx.id]
+  let space = ctx.components[ctx.rootCtx.id]
   for (let name in space.interfaces) {
     if (ctx.interfaceHandlers[name]) {
       setTimeout(() => ctx.interfaceHandlers[name].handle(space.interfaces[name](space.state)), 0)
