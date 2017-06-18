@@ -361,8 +361,8 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
         if (executable[0] instanceof Array || typeof executable[0] === 'function') {
           // list of updates and tasks
           for (let i = 0, len = executable.length; i < len; i++) {
-            if (typeof executable[i] === 'function') {
-              // is an update
+            if (typeof executable[i] === 'function') { // is an update?
+              // perform the update
               componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
               /* istanbul ignore else */
               if (ctx.global.initialized) {
