@@ -182,6 +182,9 @@ export interface ComponentSpace {
   state: any
   inputs: InputIndex<any>
   interfaces: CtxInterfaceIndex
+  interfaceValues: { // caches interfaces
+    [name: string]: any
+  }
   // component index for dynamic handling (new and dispose)
   components: {
     [name: string]: true

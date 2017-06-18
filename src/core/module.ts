@@ -166,6 +166,7 @@ function _nest (ctx: Context, name: Identifier, component: Component<any>, isSta
     state: typeof component.state === 'object' ? clone(component.state) : component.state,
     inputs: {}, // input helpers needs to be initialized after ComponentSpace, because references
     interfaces: _makeInterfaces(childCtx, component.interfaces),
+    interfaceValues: {},
     components: clone(component.components || {}),
     def: component,
   }
@@ -342,7 +343,7 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
     /* istanbul ignore else */
     if (ctx.global.initialized) {
-      notifyInterfaceHandlers(ctx) // root context
+      calcAndNotifyInterfaces(ctx) // root context
     }
   } else {
     /* istanbul ignore else */
@@ -366,7 +367,7 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
               componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
               /* istanbul ignore else */
               if (ctx.global.initialized) {
-                notifyInterfaceHandlers(ctx) // root context
+                calcAndNotifyInterfaces(ctx) // root context
               }
             } else {
                 /* istanbul ignore else */
@@ -387,6 +388,17 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
       }
     }
     // the else branch never occurs because of Typecript check
+  }
+}
+
+export function calcAndNotifyInterfaces (ctx: Context) {
+  // calc and caches interfaces
+  let space = ctx.components[ctx.id]
+  for (let name in space.interfaces) {
+    setTimeout(() => {
+      space.interfaceValues[name] = space.interfaces[name](space.state)
+      notifyInterfaceHandlers(ctx)
+    }, 0)
   }
 }
 

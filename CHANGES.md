@@ -12,7 +12,7 @@ WIP:
 
 ## Done
 
-- Cached interfaces
+- Cached interfaces (CRAZY optimization, now interfaces are blazingly more faster)
 - Root context delegation
 - Fix deepmerge issue
 

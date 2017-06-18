@@ -27,6 +27,7 @@ describe('mergeStates function should merge the states of the lastComponents and
         state,
         inputs: {},
         interfaces: {},
+        interfaceValues: {},
         components: {},
         // component index for dynamic handling (new and dispose)
         def: {

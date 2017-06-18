@@ -47,7 +47,15 @@ export const _interfaceOf = (ctx: Context) => (name: string, interfaceName) => {
     )
     return {}
   }
-  return componentSpace.interfaces[interfaceName](componentSpace.state)
+  // search in interface cache
+  let cache = componentSpace.interfaceValues[interfaceName]
+  if (cache) {
+    return cache
+  } else {
+    // caches interface
+    componentSpace.interfaceValues[interfaceName] = componentSpace.interfaces[interfaceName](componentSpace.state)
+    return componentSpace.interfaceValues[interfaceName]
+  }
 }
 
 export interface CtxAct {
