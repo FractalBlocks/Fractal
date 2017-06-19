@@ -4,7 +4,7 @@ import { computeEvent, InputData, ModuleAPI } from '../../core'
 import { isDescendant } from './utils'
 
 export interface OnGlobal {
-  [event: string]: InputData | 'ignore'
+  [event: string]: InputData | InputData[] | 'ignore'
 }
 
 function getContainer (lastContainer) {
@@ -14,7 +14,7 @@ function getContainer (lastContainer) {
 
 export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VNode | Element }): Module => {
 
-  function invokeHandler(handler: InputData | 'ignore', event: Event, vnode: VNode): void {
+  function invokeHandler(handler: InputData | InputData[] | 'ignore', event: Event, vnode: VNode): void {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
       if (
@@ -29,7 +29,7 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
       }
       // call function handler
       setTimeout(() => {
-        mod.dispatch(computeEvent(event, handler))
+        mod.dispatch(computeEvent(event, <InputData> handler))
       }, 0)
     } else if (handler instanceof Array) {
       // call multiple handlers
