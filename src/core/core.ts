@@ -40,7 +40,7 @@ export interface Interfaces {
 }
 
 export interface Hook {
-  (ctx: Context): void
+  (helpers: InputHelpers): void
 }
 
 export type Group = any

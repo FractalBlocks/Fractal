@@ -131,7 +131,7 @@ export const nest = (ctx: Context) => (name, component, isStatic = false) => {
 function initAll (ctx: Context) {
   let space = ctx.components[ctx.id]
   if (space.def.init) {
-    space.def.init(ctx)
+    space.def.init(makeInputHelpers(ctx))
   }
   let childName
   for (childName in space.components) {
@@ -248,7 +248,7 @@ export const unnest = (ctx: Context): CtxUnnest => name => {
   }
   // lifecycle hook: destroy
   if (componentSpace.def.destroy) {
-    componentSpace.def.destroy(ctx.components[id].ctx)
+    componentSpace.def.destroy(makeInputHelpers(ctx.components[id].ctx))
   }
 
   delete ctx.components[id]

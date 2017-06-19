@@ -13,6 +13,8 @@ WIP:
 
 ## Done
 
+- Inject input helpers to component hooks
+
 # v2.8.0
 
 - Implement path updates (fixes bugs in interface cache implementation)
