@@ -36,7 +36,7 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
     }
   }
 
-  function handleEvent(event: Event, vnode: VNode) {
+  function handleEvent (event: Event, vnode: VNode) {
     var name = event.type,
         on = (vnode.data as VNodeData).on
 
@@ -46,13 +46,13 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
     }
   }
 
-  function createListener() {
+  function createListener () {
     return function handler(event: Event) {
       handleEvent(event, (handler as any).vnode)
     }
   }
 
-  function updateEventListeners(oldVnode: VNode, vnode?: VNode): void {
+  function updateEventListeners (oldVnode: VNode, vnode?: VNode): void {
     var oldOn = (oldVnode.data as VNodeData).on,
         oldListener = (oldVnode as any).listener,
         oldElm: Element = oldVnode.elm as Element,
