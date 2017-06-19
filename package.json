@@ -26,7 +26,7 @@
     "test": "karma start",
     "test:watch": "karma start --no-single-run --auto-watch",
     "posttest": "codecov -f coverage/*.json",
-    "dev": "webpack-dev-server --config config/webpack-dev.config.js --hot --inline --port 3000 --entry",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack-dev.config.js --hot --inline --port 3000 --entry",
     "compile": "tsc",
     "benchmarks": "ts-node benchmarks"
   },
