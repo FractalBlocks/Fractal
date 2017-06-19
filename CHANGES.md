@@ -4,7 +4,6 @@
 
 # Next
 
-- Implement path updates (fixes bugs in chache implementation)
 
 WIP:
 
@@ -14,6 +13,9 @@ WIP:
 
 ## Done
 
+# v2.8.0
+
+- Implement path updates (fixes bugs in interface cache implementation)
 - Cached interfaces (CRAZY optimization, now interfaces are blazingly more faster)
 - Root context delegation
 - Fix deepmerge issue
