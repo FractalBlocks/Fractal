@@ -1096,10 +1096,10 @@ describe('Component composition', () => {
 describe('Lifecycle hooks', () => {
   let disposeLog = []
 
-  let init = ctx => {
+  let init = ({ ctx }) => {
     toIt(ctx)('inc')
   }
-  let destroy = ctx => {
+  let destroy = ({ ctx }) => {
     let parts = ctx.id.split('$')
     disposeLog.push(parts[parts.length - 1])
   }
