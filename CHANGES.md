@@ -4,6 +4,7 @@
 
 # Next
 
+- Resize snabbdom module for bind the element size to the state
 
 WIP:
 
