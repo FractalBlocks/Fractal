@@ -4,7 +4,6 @@ import {
   Interfaces,
   Components,
   Hook,
-  toChild,
   action,
   StyleGroup,
   _,
@@ -39,8 +38,8 @@ export const state = {
 
 export type S = typeof state
 
-export const init: Hook = ctx => {
-  toChild(ctx)('EmailList', 'action', ['SetEmails', emailDB])
+export const init: Hook = ({ toChild }) => {
+  toChild('EmailList', 'action', ['SetEmails', emailDB])
 }
 
 export const inputs: Inputs<S> = ({ ctx, toChild }) => ({
