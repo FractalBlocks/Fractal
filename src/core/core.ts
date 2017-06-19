@@ -93,6 +93,7 @@ export interface EventData extends Array<any> {
   4?: 'pair' | 'fn' | 'context'
 }
 
+// TODO: update this stuff!, maybe put this in the docs
 /* function string makes easy to serialize InputData, if '*' the data fetched are the whole event object, if 'other' extract 'other' property from event object
    all this stuff allow to serialize communication between root component and handlers, this means you can execute a root component in a worker (even remotely in a host computer)
    and handlers still dispatch inputs, a solution for serializing event callbacks.

@@ -39,7 +39,6 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   unnestAll: unnestAll(ctx),
 })
 
-
 export interface CtxStateOf {
   (name?: string): any
 }
