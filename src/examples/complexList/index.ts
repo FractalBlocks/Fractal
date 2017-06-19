@@ -20,14 +20,6 @@ const app = run({
   ...logFns,
 })
 
-// import { ResizeSensor } from '../../utils/resizeSensor'
-
-// let el = document.getElementById('el')
-
-// new ResizeSensor(el, () => {
-//   console.log(el.getBoundingClientRect().width, 'BBox')
-// })
-
 // Hot reload - DEV ONLY
 if (module.hot) {
   module.hot.accept('./Root', () => {
