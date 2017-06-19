@@ -394,9 +394,17 @@ export function execute (ctx: Context, executable: void | Executable<any> | Exec
 export function calcAndNotifyInterfaces (ctx: Context) {
   // calc and caches interfaces
   let space = ctx.components[ctx.id]
+  let idParts = (ctx.id + '').split('$')
+  idParts.pop()
   for (let name in space.interfaces) {
     setTimeout(() => {
       space.interfaceValues[name] = space.interfaces[name](space.state)
+      // remove cache of parent component spaces
+      let parts = idParts.slice(0)
+      for (let i = parts.length - 1; i >=0 ; i--) {
+        ctx.components[parts.join('$')].interfaceValues[name] = undefined
+        parts.pop()
+      }
       notifyInterfaceHandlers(ctx)
     }, 0)
   }
@@ -407,7 +415,7 @@ export function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.rootCtx.id]
   for (let name in space.interfaces) {
     if (ctx.interfaceHandlers[name]) {
-      setTimeout(() => ctx.interfaceHandlers[name].handle(space.interfaces[name](space.state)), 0)
+      ctx.interfaceHandlers[name].handle(space.interfaces[name](space.state))
     } else {
       // This only can happen when this method is called for a context that is not the root
       ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.def.name}' from space '${ctx.id}'`)

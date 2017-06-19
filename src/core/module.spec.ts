@@ -20,6 +20,7 @@ import {
   Inputs,
   assoc,
   toChild,
+  Actions,
 } from './index'
 import { mergeStates } from '../utils/reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
@@ -1305,8 +1306,6 @@ describe('Hot swapping', () => {
     })
   })
 
-
-
 })
 
 describe('Clone function helper', () => {
@@ -1326,6 +1325,134 @@ describe('Clone function helper', () => {
     obj3.c.obj2.a = 3
     expect(obj3.c.obj2.a === obj2.a).toBeFalsy()
     expect(obj3.c.obj2.b === obj2.b).toBeFalsy()
+  })
+
+})
+
+describe('Interface tree updates, the way we caches all the tree except the touched parts', () => {
+
+  // lets build a 4 level binary tree of components (15 components)
+
+  let leafs: Component<any>[] = []
+
+  let leafActions: Actions<any> = {
+    Inc: () => s => {
+      s.count++
+      return s
+    },
+  }
+
+  for (let i = 0; i < 8; i++) {
+    leafs[i] = {
+      name: 'Leaf' + i,
+      state: { count: 0 },
+      inputs: () => ({
+        inc: leafActions.Inc,
+      }),
+      actions: leafActions,
+      interfaces: {
+        value: ({ ev }) => s => ({ count: s.count, inc: ev('inc') }),
+      },
+    }
+  }
+
+  let thirdLvl: Component<any>[] = []
+
+  for (let i = 0; i < 4; i++) {
+    thirdLvl[i] = {
+      name: 'Third' + i,
+      components: {
+        ['Leaf' + i * 2]: leafs[i * 2],
+        ['Leaf' + (i * 2 + 1)]: leafs[i * 2 + 1],
+      },
+      state: { count: 0 },
+      interfaces: {
+        value: ({ interfaceOf }) => s => ({
+          ['Leaf' + i * 2]: interfaceOf('Leaf' + i * 2, 'value'),
+          ['Leaf' + (i * 2 + 1)]: interfaceOf('Leaf' + (i * 2 + 1), 'value'),
+        }),
+      },
+    }
+  }
+
+  let secondLvl: Component<any>[] = []
+
+  for (let i = 0; i < 2; i++) {
+    secondLvl[i] = {
+      name: 'Second' + i,
+      components: {
+        ['Third' + i * 2]: thirdLvl[i * 2],
+        ['Third' + (i * 2 + 1)]: thirdLvl[i * 2 + 1],
+      },
+      state: { count: 0 },
+      interfaces: {
+        value: ({ interfaceOf }) => s => ({
+          ['Third' + i * 2]: interfaceOf('Third' + i * 2, 'value'),
+          ['Third' + (i * 2 + 1)]: interfaceOf('Third' + (i * 2 + 1), 'value'),
+        }),
+      },
+    }
+  }
+
+  let Root: Component<any> = {
+    name: 'Root',
+    components: {
+      Second0: secondLvl[0],
+      Second1: secondLvl[1],
+    },
+    state: { count: 0 },
+    interfaces: {
+      value: ({ interfaceOf }) => s => ({
+        Second0: interfaceOf('Second0', 'value'),
+        Second1: interfaceOf('Second1', 'value'),
+      }),
+    },
+  }
+
+  it('Should caches the untouched tree and recalculate the touched one', done => {
+    let calls = 0
+    let cachedLeaf0, cachedLeaf1, cachedLeaf5, cachedLeaf7, cachedThird4, cachedSecond1
+    let cachedThird0, cachedSecond0, cachedValue
+    run({
+      root: Root,
+      interfaces: {
+        value: valueHandler((v: any) => {
+          calls++
+          switch (calls) {
+            case 1:
+              cachedLeaf1 = v.Second0.Third0.Leaf1
+              cachedLeaf5 = v.Second0.Third0.Leaf5
+              cachedLeaf7 = v.Second0.Third0.Leaf7
+              cachedThird4 = v.Second0.Third4
+              cachedSecond1 = v.Second1
+              // --
+              cachedLeaf0 = v.Second0.Third0.Leaf0
+              cachedThird0 = v.Second0.Third0
+              cachedSecond0 = v.Second0
+              cachedValue = v
+              v._dispatch(computeEvent({}, v.Second0.Third0.Leaf0.inc))
+              break
+            case 2:
+              // caching works
+              expect(v.Second0.Third0.Leaf1 === cachedLeaf1).toEqual(true)
+              expect(v.Second0.Third0.Leaf5 === cachedLeaf5).toEqual(true)
+              expect(v.Second0.Third0.Leaf7 === cachedLeaf7).toEqual(true)
+              expect(v.Second0.Third4 === cachedThird4).toEqual(true)
+              expect(v.Second1 === cachedSecond1).toEqual(true)
+              // tree uncaching
+              expect(v.Second0.Third0.Leaf0 === cachedLeaf0).toEqual(false)
+              expect(v.Second0.Third0 === cachedThird0).toEqual(false)
+              expect(v.Second0 === cachedSecond0).toEqual(false)
+              expect(v === cachedValue).toEqual(false)
+              // update works
+              expect(v.Second0.Third0.Leaf0.count).toEqual(1)
+              done()
+              break
+          }
+        }),
+      },
+    })
+
   })
 
 })

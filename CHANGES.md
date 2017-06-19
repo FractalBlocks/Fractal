@@ -4,7 +4,7 @@
 
 # Next
 
-- Fix benchmark
+- Implement path updates (fixes bugs in chache implementation)
 
 WIP:
 
