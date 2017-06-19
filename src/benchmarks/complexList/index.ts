@@ -12,7 +12,7 @@ import * as root from './Root'
 const app = run({
   root,
   groups: {
-    style: styleHandler('', true),
+    style: styleHandler(''),
   },
   interfaces: {
     view: viewHandler('#app'),
@@ -22,7 +22,7 @@ const app = run({
     end = window.performance.now()
     results[i] = end - start
     i++
-    sim()
+    setTimeout(() => sim(), 0)
   },
 })
 
@@ -48,14 +48,15 @@ function simulateKeyEvent(el: HTMLElement, name, keyCode, cb) {
 }
 
 let results = []
+let resultsDisplayed = false
 let start, end
 let i = 0
-let sim = () => i < 2000 ? (() =>{
+let sim = () => i < 10000 ? (() =>{
   input.value = 'Hello guys!! ' + i
   simulateKeyEvent(input, 'keyup', 13, () => {
     start = window.performance.now()
   })
-})() : console.log(JSON.stringify(results))
+})() : resultsDisplayed ? 0 : (() => {console.log(JSON.stringify(results)); resultsDisplayed = true})()
 
 sim()
 
