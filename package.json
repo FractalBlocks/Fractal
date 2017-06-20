@@ -62,7 +62,7 @@
     "source-map-loader": "^0.1.6",
     "ts-helpers": "^1.1.2",
     "tslint": "^4.4.2",
-    "typescript": "^2.3.0-dev.20170423",
+    "typescript": "^2.5.0-dev.20170619",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.3.0",
     "worker-loader": "^0.7.1"
