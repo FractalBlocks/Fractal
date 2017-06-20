@@ -4,16 +4,16 @@
 
 # Next
 
-- Resize snabbdom module for bind the element size to the state
-
 WIP:
 
-- Integrate ResizeSensor for listening element size changes
 - Router
 - Router example
 
 ## Done
 
+- Size binding snabbdom module for bind the element size to the state
+- Integrate ResizeSensor for listening element size changes
+- Fix type of event and global listeners module for accepting arrays of InputData
 - Inject input helpers to component hooks
 
 # v2.8.0
