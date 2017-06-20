@@ -60,7 +60,7 @@ export class ResizeSensor {
     this.attachResizeEvent(<ExtHTMLElement> element, callback)
   }
 
-  attachResizeEvent(element: ExtHTMLElement, resized: { (res: any): void }) {
+  attachResizeEvent (element: ExtHTMLElement, resized: { (res: any): void }) {
     if (element.resizedAttached) {
       element.resizedAttached.add(resized)
       return
@@ -95,7 +95,7 @@ export class ResizeSensor {
     var lastWidth = element.offsetWidth
     var lastHeight = element.offsetHeight
 
-    var reset = function() {
+    var reset = function () {
       expandChild.style.width = '100000px'
       expandChild.style.height = '100000px'
 
@@ -106,9 +106,10 @@ export class ResizeSensor {
       shrink.scrollTop = 100000
     }
 
-    reset()
+    // setTimeout waits until rendering is done
+    setTimeout(() => reset(), 0)
 
-    var onResized = function() {
+    var onResized = function () {
       rafId = 0
 
       if (!dirty) return
@@ -121,19 +122,19 @@ export class ResizeSensor {
       }
     }
 
-    var onScroll = function() {
+    var onScroll = function () {
       newWidth = element.offsetWidth
       newHeight = element.offsetHeight
       dirty = newWidth != lastWidth || newHeight != lastHeight
 
       if (dirty && !rafId) {
-          rafId = requestAnimationFrame(onResized)
+        rafId = requestAnimationFrame(onResized)
       }
 
       reset()
     }
 
-    var addEvent = function(el, name, cb) {
+    var addEvent = function (el, name, cb) {
       if (el.attachEvent) {
         el.attachEvent('on' + name, cb)
       } else {
@@ -145,9 +146,9 @@ export class ResizeSensor {
     addEvent(shrink, 'scroll', onScroll)
   }
 
-  detach(ev) {
+  detach (ev) {
     let elem = this.element
-    if(elem.resizedAttached && typeof ev == "function"){
+    if(elem.resizedAttached && typeof ev == 'function') {
       elem.resizedAttached.remove(ev)
       if(elem.resizedAttached.length()) return
     }

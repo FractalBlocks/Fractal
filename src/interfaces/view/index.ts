@@ -3,9 +3,10 @@ import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
 import attributesModule from 'snabbdom/modules/attributes'
 import propsModule from 'snabbdom/modules/props'
+import styleModule from 'snabbdom/modules/style'
 import eventListenersModule from './eventListeners'
 import globalListenersModule from './globalListeners'
-import styleModule from 'snabbdom/modules/style'
+import sizeBindingModule from './sizeBinding'
 import { default as _h } from './h'
 import { VNode as _VNode } from './vnode'
 
@@ -26,9 +27,10 @@ export const viewHandler = selectorElm => (mod: ModuleAPI) => {
     classModule,
     attributesModule,
     propsModule,
+    styleModule,
     eventListenersModule(mod),
     globalListenersModule(mod, state),
-    styleModule,
+    sizeBindingModule(mod),
   ])
 
   function handler (vnode: VNode) {
