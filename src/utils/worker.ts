@@ -3,6 +3,7 @@ import {
   HandlerObject,
   EventData,
   ModuleAPI,
+  Context,
 } from '../core'
 
 declare var self: WorkerAPI
@@ -100,6 +101,10 @@ export interface WorkerModuleDef {
     (source, description): void
   }
   destroy? (mod: ModuleAPI): void
+  // not implemented yet
+  // hooks for inputs
+  beforeInput? (ctxIn: Context, inputName: string, data: any): void
+  afterInput? (ctxIn: Context, inputName: string, data: any): void
 }
 
 export interface WorkerModule {
