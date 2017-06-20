@@ -11,6 +11,8 @@ WIP:
 
 ## Done
 
+# v2.9.0
+
 - Size binding snabbdom module for bind the element size to the state
 - Integrate ResizeSensor for listening element size changes
 - Fix type of event and global listeners module for accepting arrays of InputData
