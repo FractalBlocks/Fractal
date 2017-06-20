@@ -37,7 +37,7 @@ const view: View<S> = ({ ctx, act }) => s => {
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
-    size: act('SetWidth', _, ['width']),
+    size: act('SetWidth', _, 'width'),
   }, [
     h('div', {
       class: {
