@@ -1,8 +1,8 @@
 import { Hooks } from 'snabbdom/hooks'
 import { AttachData } from 'snabbdom/helpers/attachto'
-import { VNodeStyle } from 'snabbdom/modules/style'
 import { On } from './eventListeners'
 import { OnGlobal } from './globalListeners'
+import { SizeBinding } from './sizeBinding'
 import { Attrs } from 'snabbdom/modules/attributes'
 import { Classes } from 'snabbdom/modules/class'
 import { Props } from 'snabbdom/modules/props'
@@ -24,10 +24,11 @@ export interface VNodeData {
     props?: Props
     attrs?: Attrs
     class?: Classes
-    style?: VNodeStyle
+    style?: any
     dataset?: Dataset
     on?: On
     global?: OnGlobal
+    size?: SizeBinding
     hero?: Hero
     attachData?: AttachData
     hook?: Hooks
@@ -35,7 +36,6 @@ export interface VNodeData {
     ns?: string
     fn?: () => VNode
     args?: Array<any>
-    [key: string]: any
 }
 
 export function vnode(sel: string | undefined,
