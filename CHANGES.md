@@ -11,6 +11,10 @@ WIP:
 
 ## Done
 
+# v2.9.2
+
+- Hotfix for v2.9.1
+
 # v2.9.1
 
 - Adapt style group handler for SSR and prerender
