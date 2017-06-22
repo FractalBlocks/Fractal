@@ -5,12 +5,15 @@ import { styleGroup } from '../utils/style'
 // insert styles in a DOM container at head
 
 export const styleHandler = (containerName?: string, debug = false) => (mod: ModuleAPI) => {
-  let container = document.createElement('style')
-  // named container
-  if (containerName !== '' && containerName !== undefined) {
-    container.id = containerName
+  let container
+  if (containerName === undefined) {
+    container = document.createElement('style')
+    // named container
+    if (containerName !== '' && containerName !== undefined) {
+      container.id = containerName
+    }
+    document.head.appendChild(container)
   }
-  document.head.appendChild(container)
   let instance: TypeStyle = createTypeStyle(container)
   let state: any = {
     container,
@@ -30,7 +33,9 @@ export const styleHandler = (containerName?: string, debug = false) => (mod: Mod
     },
     dispose: () => {
       state = {}
-      container.remove()
+      if (container) {
+        container.remove()
+      }
     },
   }
 }
