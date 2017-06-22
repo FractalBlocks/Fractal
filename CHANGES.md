@@ -11,6 +11,10 @@ WIP:
 
 ## Done
 
+# v2.9.1
+
+- Adapt style group handler for SSR and prerender
+
 # v2.9.0
 
 - Size binding snabbdom module for bind the element size to the state
