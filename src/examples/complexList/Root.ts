@@ -21,6 +21,8 @@ export const state = {
   items: {},
 }
 
+export const defs = { Item }
+
 export type S = typeof state
 
 export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => ({
