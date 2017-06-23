@@ -4,6 +4,8 @@
 
 # Next
 
+- Fix behaviur of hot-swaping with dynamic composition
+
 WIP:
 
 - Router
@@ -11,6 +13,10 @@ WIP:
 
 ## Done
 
+# v2.9.3
+
+- Make view interface handler universal (SSR & Prerendering)
+- Add cb to view interface handler
 - Fix style group handler implementation
 
 # v2.9.2
