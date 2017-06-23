@@ -13,6 +13,10 @@ WIP:
 
 ## Done
 
+# v2.9.4
+
+- Fix AOT
+
 # v2.9.3
 
 - Make view interface handler universal (SSR & Prerendering)
