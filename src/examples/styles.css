@@ -1,0 +1,17 @@
+/* Global styles */
+
+html, body {
+  box-sizing: border-box;
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+}
+#app {
+  width: 100%;
+  height: 100%;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* App styles (fonts and other globals) */
