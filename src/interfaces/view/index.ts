@@ -16,7 +16,7 @@ export type VNode = _VNode
 
 export type View<S> = Interface<VNode, S>
 
-export const viewHandler = selectorElm => (mod: ModuleAPI) => {
+export const viewHandler = (selectorElm, cb?: { (value: VNode): void }) => (mod: ModuleAPI) => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let state: { lastContainer: VNode | Element } = {
     lastContainer: undefined,
@@ -41,6 +41,12 @@ export const viewHandler = selectorElm => (mod: ModuleAPI) => {
   return {
     state,
     handle: (value: VNode) => {
+      if (document === undefined) {
+        if (cb) {
+          cb(value)
+        }
+        return
+      }
       if (!state.lastContainer) {
         let container = selector !== '' ? document.querySelector(selector) : selectorElm
         if (!container) {
@@ -51,6 +57,9 @@ export const viewHandler = selectorElm => (mod: ModuleAPI) => {
         handler(value)
       } else {
         handler(value)
+      }
+      if (cb) {
+        cb(value)
       }
     },
     dispose: () => {},
