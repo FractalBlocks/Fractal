@@ -29,6 +29,8 @@ We support use of:
 
 There are TODOs for short term:
 
+- Update examples for AOT
+- Document prerendering (AKA AOT compilation)
 - Document Cached interfaces, this is basically that interfaces are cached by default
 - Document interfaceOrder. This method is used to set the order of the initial evaluation of interfaces
 - Document global events listener selfPropagated option
