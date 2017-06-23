@@ -7,7 +7,7 @@ import { styleGroup } from '../utils/style'
 
 export const styleHandler = (containerName?: string, debug = false) => (mod: ModuleAPI) => {
   let container
-  if (document !== undefined) {
+  if (typeof window !== 'undefined') {
     container = document.createElement('style')
     // named container
     if (containerName !== '' && containerName !== undefined) {

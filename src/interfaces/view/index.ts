@@ -41,7 +41,7 @@ export const viewHandler = (selectorElm, cb?: { (value: VNode): void }) => (mod:
   return {
     state,
     handle: (value: VNode) => {
-      if (document === undefined) {
+      if (typeof window === 'undefined') {
         if (cb) {
           cb(value)
         }
