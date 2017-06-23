@@ -11,6 +11,8 @@ WIP:
 
 ## Done
 
+- Fix style group handler implementation
+
 # v2.9.2
 
 - Hotfix for v2.9.1
