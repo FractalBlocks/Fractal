@@ -9,3 +9,4 @@ export * from './handler'
 // other functions
 
 export * from '../utils'
+export * from '../prerender'
