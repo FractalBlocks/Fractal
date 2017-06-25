@@ -19,7 +19,8 @@
     "typings/index.d.ts"
   ],
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/**/*.spec.ts"
   ],
   "exclude": [
     "node_modules"

@@ -13,6 +13,10 @@ WIP:
 
 ## Done
 
+# v2.9.6
+
+- Fix, do not call init when hot-swap
+
 # v2.9.4
 
 - Fix AOT
