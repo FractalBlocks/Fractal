@@ -505,7 +505,7 @@ export function run (moduleDef: ModuleDef): Module {
     }
 
     // module lifecycle hook: init
-    if (moduleDef.beforeInit) {
+    if (moduleDef.beforeInit && !middleFn) {
       moduleDef.beforeInit(moduleAPI)
     }
 
@@ -568,7 +568,7 @@ export function run (moduleDef: ModuleDef): Module {
     }
 
     // module lifecycle hook: init
-    if (moduleDef.init) {
+    if (moduleDef.init && !middleFn) {
       moduleDef.init(moduleAPI)
     }
 
