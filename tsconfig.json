@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
+    "allowJs": true,
     "target": "es5",
     "outDir": "./",
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "declaration": true,
     "removeComments": false,
     "noUnusedLocals": true,
     "lib": ["dom", "es5", "scripthost"]
@@ -22,7 +22,6 @@
     "src/**/*.ts"
   ],
   "exclude": [
-    "src/prerender/index.ts",
     "node_modules"
   ],
   "awesomeTypescriptLoaderOptions": {

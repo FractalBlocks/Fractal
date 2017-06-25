@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
 - Update examples for AOT
 - Document prerendering (AKA AOT compilation)
 - Document Cached interfaces, this is basically that interfaces are cached by default

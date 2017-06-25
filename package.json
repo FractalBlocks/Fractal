@@ -16,8 +16,9 @@
     "core/",
     "groups/",
     "interfaces/",
-    "interfaces/view",
     "tasks/",
+    "prerender/",
+    "toHTML/",
     "typings/",
     "utils/",
     "LICENSE"
@@ -39,13 +40,19 @@
   "dependencies": {
     "deep-equal": "^1.0.1",
     "deepmerge": "^1.4.3",
+    "lodash.escape": "^4.0.1",
+    "lodash.forown": "^4.4.0",
+    "lodash.kebabcase": "^4.1.1",
+    "lodash.remove": "^4.7.0",
+    "lodash.uniq": "^4.5.0",
     "mori": "^0.3.2",
     "navigo": "^5.2.0",
+    "object-assign": "^4.1.1",
+    "parse-sel": "^1.0.0",
     "snabbdom": "^0.6.8",
     "typestyle": "^1.2.0"
   },
   "devDependencies": {
-    "snabbdom-to-html": "^3.2.0",
     "awesome-typescript-loader": "^3.0.3",
     "codecov": "^1.0.1",
     "cross-env": "^3.1.4",
