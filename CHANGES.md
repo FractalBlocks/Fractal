@@ -4,7 +4,7 @@
 
 # Next
 
-- Fix behaviour of hot-swaping with dynamic composition
+- Fix behaviour of hot-swaping with dynamic composition (replace defs)
 
 WIP:
 
