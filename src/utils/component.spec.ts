@@ -1,6 +1,5 @@
 import { Component, run, clone } from '../core'
 import {
-  action,
   props,
   setGroup,
   spaceOf,
@@ -9,31 +8,6 @@ import {
 } from './component'
 
 describe('Component helpers', () => {
-
-  describe('Generic action input', () => {
-
-    let actions = {
-      a1: x => x,
-    }
-    let actionFn = action(actions)
-
-    it('should accept an action name and a value as an array, in the case of a function string', () => {
-      expect(actionFn(['a1', 'someValue'])).toEqual('someValue')
-    })
-
-    it('should accept an action-value pair as first argument of an array and a value in the second', () => {
-      expect(actionFn([['a1', 10]])).toEqual(10)
-    })
-
-    it('should accept an action-contextValue pair as first argument and a fetch value in the second', () => {
-      expect(actionFn([['a1', 10], 7])).toEqual([10, 7])
-    })
-
-    it('should accept an action / undefined contextual value and return only the function parameter', () => {
-      expect(actionFn([['a1', undefined], 23])).toEqual(23)
-    })
-
-  })
 
   describe('setGroup function for setting a component group', () => {
 

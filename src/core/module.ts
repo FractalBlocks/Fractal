@@ -9,6 +9,7 @@ import {
   Components,
   Interfaces,
   CtxInterfaceIndex,
+  Actions,
 } from './core'
 import {
   HandlerInterface,
@@ -173,6 +174,10 @@ function _nest (ctx: Context, name: Identifier, component: Component<any>, isSta
 
   if (component.inputs) {
     ctx.components[id].inputs = component.inputs(makeInputHelpers(childCtx))
+    // action helper enabled by default
+    if (component.actions) {
+      ctx.components[id].inputs['action'] = action(component.actions)
+    }
   }
 
   // composition
@@ -612,6 +617,25 @@ export function run (moduleDef: ModuleDef): Module {
     moduleAPI,
     ctx,
   }
+}
+
+// generic action input
+export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any> => {
+  let name
+  let value
+  if (arg1 instanceof Array) {
+    name = arg1[0]
+    value = arg1[1]
+    if (arg2 !== undefined) {
+      // add fetch value
+      // TODO: test it!!
+      value = (value !== undefined) ? [value, arg2]: arg2
+    }
+  } else {
+    name = arg1
+    value = arg2
+  }
+  return actions[name](value)
 }
 
 export function clone (o) {

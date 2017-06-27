@@ -1,6 +1,4 @@
 import {
-  Actions,
-  Update,
   Component,
   Context,
   Group,
@@ -11,25 +9,6 @@ import {
 } from '../core'
 
 // set of helpers for building components
-
-// generic action input
-export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any> => {
-  let name
-  let value
-  if (arg1 instanceof Array) {
-    name = arg1[0]
-    value = arg1[1]
-    if (arg2 !== undefined) {
-      // add fetch value
-      // TODO: test it!!
-      value = (value !== undefined) ? [value, arg2]: arg2
-    }
-  } else {
-    name = arg1
-    value = arg2
-  }
-  return actions[name](value)
-}
 
 // send a message to an input of a component from outside a Module
 /* istanbul ignore next */

@@ -5,7 +5,6 @@
 # Next
 
 - Fix behaviour of hot-swaping with dynamic composition (replace defs)
-- Include action input helper by default
 
 WIP:
 
@@ -13,6 +12,8 @@ WIP:
 - Router example
 
 ## Done
+
+- Include action input helper by default
 
 # v2.9.6
 
