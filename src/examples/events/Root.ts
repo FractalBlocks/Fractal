@@ -1,4 +1,4 @@
-import { Interfaces, StyleGroup, absoluteCenter, Inputs, action, Actions, _ } from '../../core'
+import { Interfaces, StyleGroup, absoluteCenter, Actions, _ } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const name = 'Main'
@@ -15,10 +15,6 @@ export const state = {
 }
 
 export type S = typeof state
-
-export const inputs: Inputs<S> = () => ({
-  action: action(actions),
-})
 
 export const actions: Actions<S> = {
   ToggleContainer: () => s => {

@@ -4,7 +4,6 @@ import {
   clone,
   Interfaces,
   assoc,
-  action,
   props,
   StyleGroup,
   clickable,
@@ -26,7 +25,6 @@ export const defs = { Item }
 export type S = typeof state
 
 export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => ({
-  action: action(actions),
   inputKeyup: ([idx, [keyCode, text]]) => {
     if (keyCode === 13 && text !== '') {
       nest(idx, props({ text })(clone(Item)))

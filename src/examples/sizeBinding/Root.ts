@@ -1,9 +1,7 @@
 import {
   Actions,
-  Inputs,
   Interfaces,
   StyleGroup,
-  action,
   assoc,
   _,
   absoluteCenter,
@@ -18,10 +16,6 @@ export const state = {
 }
 
 export type S = typeof state
-
-export const inputs: Inputs<S> = ctx => ({
-  action: action(actions),
-})
 
 export const actions: Actions<S> = {
   Toggle: () => s => {

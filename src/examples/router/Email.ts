@@ -1,4 +1,4 @@
-import { Actions, Inputs, Interfaces, action, StyleGroup, clickable } from '../../core'
+import { Actions, Inputs, Interfaces, StyleGroup, clickable } from '../../core'
 import { View, h } from '../../interfaces/view'
 import { palette } from './constants'
 
@@ -15,7 +15,6 @@ export const state = {
 export type S = typeof state
 
 export const inputs: Inputs<S> = ({ ctx }) => ({
-  action: action(actions),
   back: () => {},
 })
 

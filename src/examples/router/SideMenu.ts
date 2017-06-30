@@ -12,8 +12,7 @@ export const inputs: Inputs<S> = ctx => ({
   selected: () => {},
 })
 
-export const actions: Actions<S> = {
-}
+export const actions: Actions<S> = {}
 
 const view: View<S> = ({ ctx, ev }) => s => {
   let style = ctx.groups.style

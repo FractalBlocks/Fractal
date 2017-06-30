@@ -4,7 +4,6 @@ import {
   Interfaces,
   Components,
   Hook,
-  action,
   StyleGroup,
   _,
 } from '../../core'
@@ -43,7 +42,6 @@ export const init: Hook = ({ toChild }) => {
 }
 
 export const inputs: Inputs<S> = ({ ctx, toChild }) => ({
-  action: action(actions),
   $EmailList_select: emailId => {
     let email = emailDB[emailId] !== undefined
       ? emailDB[emailId]

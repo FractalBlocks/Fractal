@@ -1,4 +1,4 @@
-import { Actions, Inputs, Interfaces, action, StyleGroup, _ } from '../../core'
+import { Actions, Inputs, Interfaces, StyleGroup, _ } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const name = 'Item'
@@ -11,7 +11,6 @@ export const state = {
 export type S = typeof state
 
 export const inputs: Inputs<S> = ({ ctx }) => ({
-  action: action(actions),
   remove: () => {},
 })
 

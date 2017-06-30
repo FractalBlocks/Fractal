@@ -1,4 +1,4 @@
-import { Actions, Inputs, _, Interfaces, action, StyleGroup } from '../../core'
+import { Actions, Inputs, _, Interfaces, StyleGroup } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const name = 'Root'
@@ -11,7 +11,6 @@ export const state = {
 export type S = typeof state
 
 export const inputs: Inputs<S> = ctx => ({
-  action: action(actions),
   inputKeyup: ([keyCode, text]) =>
     keyCode === 13 && text !== ''
     ? [
