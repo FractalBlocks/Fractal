@@ -13,6 +13,10 @@ WIP:
 
 ## Done
 
+# v2.10.1
+
+- Hotfix to include type definitions in compiled code
+
 # v2.10.0
 
 - Add CSS class to style helpers
