@@ -2,6 +2,8 @@ import { types, getStyles as _getStyles } from 'typestyle'
 import { TypeStyle } from 'typestyle/lib/internal/typestyle'
 import { deepmerge } from './fun'
 
+export type CSS = types.NestedCSSProperties
+
 export const getStyles = _getStyles
 
 export interface StyleClasses {
@@ -10,8 +12,8 @@ export interface StyleClasses {
 }
 
 export interface StyleGroup {
-  base: types.NestedCSSProperties
-  [className: string]: types.NestedCSSProperties
+  base: CSS
+  [className: string]: CSS
 }
 
 export interface ComponentGroups {
@@ -66,7 +68,7 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
 }
 
 /* istanbul ignore next */
-export const placeholderColor = (color: string): types.NestedCSSProperties => ({
+export const placeholderColor = (color: string): CSS => ({
   $nest: {
     '&::-webkit-input-placeholder': { /* Chrome/Opera/Safari */
       $unique: true,
@@ -83,19 +85,19 @@ export const placeholderColor = (color: string): types.NestedCSSProperties => ({
   },
 })
 
-export const absoluteCenter: types.NestedCSSProperties = {
+export const absoluteCenter: CSS = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
 }
 
-export const clickable: types.NestedCSSProperties = {
+export const clickable: CSS = {
   cursor: 'pointer',
   userSelect: 'none',
   '-moz-user-select': 'none',
 }
 
-export const obfuscator: types.NestedCSSProperties = {
+export const obfuscator: CSS = {
   position: 'absolute',
   top: '0px',
   left: '0px',
