@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "allowJs": true,
     "target": "es5",
     "outDir": "./",
+    "declaration": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
