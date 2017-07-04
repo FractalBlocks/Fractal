@@ -9,4 +9,4 @@ var toHTML = init([
   modules.style
 ])
 
-module.exports = toHTML
+export default toHTML
