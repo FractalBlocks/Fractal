@@ -13,6 +13,8 @@ WIP:
 
 ## Done
 
+# v2.10.0
+
 - Add CSS class to style helpers
 - Include action input helper by default
 
