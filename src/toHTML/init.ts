@@ -8,7 +8,7 @@ module.exports = function init (modules) {
     var result = []
     var attributes = new Map([
       // These can be overwritten because that’s what happens in snabbdom
-      ['id', node.id],
+      <any> ['id', node.id],
       ['class', node.className]
     ])
 
