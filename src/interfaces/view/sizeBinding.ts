@@ -62,14 +62,9 @@ export const sizeBindingModule = (mod: ModuleAPI): Module => {
     if (size) {
       // reuse existing listener or create new
       var resizeListener = (vnode as any).resizeListener = (oldVnode as any).listener || createListener()
+      ;(vnode as any).resizeSensor = (oldVnode as any).listener || new ResizeSensor(elm, resizeListener)
       // update vnode for listener
       resizeListener.vnode = vnode
-
-      // if element changed or added we add all needed listeners unconditionally
-      if (!oldSize) {
-        // add listener if element was changed or new listeners added
-        (vnode as any).resizeSensor = new ResizeSensor(elm, resizeListener)
-      }
     }
   }
 
