@@ -13,6 +13,10 @@ WIP:
 
 ## Done
 
+# v2.10.2
+
+- Fix size binding interface
+
 # v2.10.1
 
 - Hotfix to include type definitions in compiled code
