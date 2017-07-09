@@ -4,7 +4,7 @@
 
 # Next
 
-- Fix behaviour of hot-swaping with dynamic composition (replace defs)
+- Add async inputs support
 
 WIP:
 
