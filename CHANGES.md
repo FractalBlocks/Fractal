@@ -5,6 +5,7 @@
 # Next
 
 - Add async inputs support
+- Support for AOT and fix example
 
 WIP:
 
