@@ -14,6 +14,10 @@ WIP:
 
 ## Done
 
+# v2.10.3
+
+- Hotfix, do not call init on hot-swap
+
 # v2.10.2
 
 - Fix size binding interface
