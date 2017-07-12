@@ -158,6 +158,8 @@ export interface Context {
     // and only used for initialization for nest function and notifyInterfaceHandlers
     initialized: boolean
   },
+  // delegated flag
+  hotSwap: boolean
   // root context delegation
   rootCtx: Context
   // input hooks delegation

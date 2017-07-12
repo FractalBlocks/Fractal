@@ -96,6 +96,7 @@ export function createContext (ctx: Context, name: Identifier): Context {
     // delegation
     rootCtx: ctx.rootCtx,
     global: ctx.global,
+    hotSwap: ctx.hotSwap,
     components: ctx.components,
     groupHandlers: ctx.groupHandlers,
     interfaceHandlers: ctx.interfaceHandlers,
@@ -121,7 +122,9 @@ export const nest = (ctx: Context) => (name, component, isStatic = false) => {
   let childCtx = _nest(ctx, name, component, isStatic)
 
   // init lifecycle hooks: init all descendant components
-  initAll(childCtx)
+  if (!ctx.hotSwap) {
+    initAll(childCtx)
+  }
 
   childCtx.global.initialized = true
 
@@ -454,6 +457,7 @@ export function run (moduleDef: ModuleDef): Module {
         global: {
           initialized: false,
         },
+        hotSwap: false,
         // component index
         components: {},
         groupHandlers: {},
@@ -529,6 +533,10 @@ export function run (moduleDef: ModuleDef): Module {
           }
         }
       }
+    }
+
+    if (middleFn) {
+      ctx.hotSwap = true
     }
 
     // merges main component and ctx.id now contains it name
