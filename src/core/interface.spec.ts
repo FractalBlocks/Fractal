@@ -85,7 +85,7 @@ describe('Interface functions and helpers', () => {
 
   })
 
-    describe('vw function sugar for components', () => {
+  describe('vw function sugar for components', () => {
     let child: Component<any> = {
       name: 'Child',
       state: {
