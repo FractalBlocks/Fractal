@@ -5,7 +5,8 @@
 # Next
 
 - Add async inputs support
-- Support for AOT and fix example
+- Add server side rendering helpers
+- Add AOT helpers
 
 WIP:
 
