@@ -54,8 +54,12 @@ export interface InputIndex<S> {
 }
 
 export interface Input<S> {
-  (data?: any): Update<S> | Task | Executable<S>[] | void
+  (data?: any): InputResult<S>
 }
+
+export type InputResult<S> = GenericExecutable<S> | Promise<GenericExecutable<S>>
+
+export type GenericExecutable<S> = Update<S> | Task | Executable<S>[] | void
 
 export interface Action<S> {
   (data?: any): Update<S>

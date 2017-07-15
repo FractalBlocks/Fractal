@@ -5,11 +5,11 @@ import {
   Context,
   ComponentSpaceIndex,
   EventData,
-  Executable,
   Components,
   Interfaces,
   CtxInterfaceIndex,
   Actions,
+  InputResult,
 } from './core'
 import {
   HandlerInterface,
@@ -344,11 +344,22 @@ export const toIt = (ctx: Context): CtxToIt => {
 }
 
 // execute an executable in a context, executable parameter should not be undefined
-export function execute (ctx: Context, executable: void | Executable<any> | Executable<any>[]) {
+export function execute (ctx: Context, executable: InputResult<any>) {
   let id = ctx.id
   let componentSpace = ctx.components[id]
 
-  if (typeof executable === 'function') {
+  if (executable instanceof Promise) {
+    executable
+      .then(result => {
+        execute(ctx, result)
+      })
+      .catch(() => {
+        ctx.error(
+          'execute - async',
+          `Error in async input of component '${componentSpace.def.name}' from space '${id}'`
+        )
+      })
+  } else if (typeof executable === 'function') {
     // single update
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
     /* istanbul ignore else */
