@@ -4,16 +4,18 @@
 
 # Next
 
-- Add async inputs support
+- Add async support for toIt, toAct and toChild
 - Add server side rendering helpers
 - Add AOT helpers
-
-WIP:
-
 - Router
 - Router example
 
 ## Done
+
+- Add async inputs support
+
+# v2.11
+
 
 # v2.10.3
 
