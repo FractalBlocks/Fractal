@@ -41,26 +41,26 @@ let actions = {
 }
 
 let inputs: Inputs<S> = ({ ctx }) => ({
-  set: (n: number) => actions.Set(n),
-  setExtra: ([value, extra]) => actions.Set(value + extra),
-  toParent: () => {},
-  $child1_toParent: () => actions.Set(17), // child input detection
-  $toParentGlobal: () => {},
-  $$Child_toParentGlobal: () => actions.Set(21), // child input detection
-  inc: () => actions.Inc(),
-  action: ([name, value]) => actions[name](value), // generic action input
-  dispatch: () => {
+  set: async (n: number) => actions.Set(n),
+  setExtra: async ([value, extra]) => actions.Set(value + extra),
+  toParent: async () => {},
+  $child1_toParent: async () => actions.Set(17), // child input detection
+  $toParentGlobal: async () => {},
+  $$Child_toParentGlobal: async () => actions.Set(21), // child input detection
+  inc: async () => actions.Inc(),
+  action: async ([name, value]) => actions[name](value), // generic action input
+  dispatch: async () => {
     dispatch(ctx, computeEvent({}, _ev(ctx)('inc')))
   },
-  task: (): Task => ['log', { info: 'info', cb: _ev(ctx)('inc') }],
-  wrongTask: (): Task => ['wrongTask', {}],
-  executableListWrong: (): Executable<S>[] => [
+  task: async (): Promise<Task> => ['log', { info: 'info', cb: _ev(ctx)('inc') }],
+  wrongTask: async (): Promise<Task> => ['wrongTask', {}],
+  executableListWrong: async (): Promise<Executable<S>[]> => [
     ['wrongTask2', {}],
   ],
-  executableListTask: (): Executable<S>[] => [
+  executableListTask: async (): Promise<Executable<S>[]> => [
     ['log', { info: 'info2', cb: _ev(ctx)('inc') }],
   ],
-  executableListAction: (): Executable<S>[] => [
+  executableListAction: async (): Promise<Executable<S>[]> => [
     actions.Inc(),
   ],
 })
@@ -552,9 +552,9 @@ describe('One Component + module functionality', function () {
     value._dispatch(value.task)
   })
 
-  it('should log an error when try to dispatch an task that has no task handler', () => {
+  it('should log an error when try to dispatch an task that has no task handler', async () => {
     valueFn = undefined
-    value._dispatch(value.wrongTask)
+    await value._dispatch(value.wrongTask)
     expect(lastLog).toEqual([
       'execute',
       `there are no task handler for 'wrongTask' in component 'Main' from space 'Main'`,
@@ -563,9 +563,9 @@ describe('One Component + module functionality', function () {
 
   // Executable lists
 
-  it('should dispatch an error if try to dispatch an executable list with a task with no handler', () => {
+  it('should dispatch an error if try to dispatch an executable list with a task with no handler', async () => {
     valueFn = undefined
-    value._dispatch(value.executableListWrong)
+    await value._dispatch(value.executableListWrong)
     expect(lastLog).toEqual([
       'execute',
       `there are no task handler for 'wrongTask2' in component 'Main' from space 'Main'`,
@@ -615,10 +615,9 @@ describe('toIt core function for executing inputs', () => {
       data: 10,
     },
     inputs: () => ({
-      input: data => {
+      input: async data => {
         rootData = data
       },
-      set: actions.Set,
     }),
     actions,
     interfaces: {
@@ -639,22 +638,10 @@ describe('toIt core function for executing inputs', () => {
     },
   })
 
-  it ('toIt should send a message to an input sync', () => {
+  it ('toIt should send a message to an input sync', async () => {
     let data = 129
-    toIt(app.ctx.components['Root'].ctx)('input', data, false, true)
+    await toIt(app.ctx.components['Root'].ctx)('input', data, true)
     expect(rootData).toEqual(data)
-  })
-
-  it ('toIt should send a message to an input async', done => {
-    let data = 127
-    let value
-    valueCb = v => {
-      value = v.count
-      expect(value).toEqual(data)
-      done()
-    }
-    toIt(app.ctx.components['Root'].ctx)('set', data, true, true)
-    expect(value).toEqual(undefined)
   })
 
 })
@@ -850,7 +837,7 @@ describe('Component composition', () => {
         data: 10,
       },
       inputs: ctx => ({
-        childInput: data => {
+        childInput: async data => {
           childData = data
         },
       }),
@@ -905,7 +892,7 @@ describe('Component composition', () => {
         name: 'CompName',
         state: {},
         inputs: ctx => ({
-          childInput: x => {},
+          childInput: async x => {},
         }),
         actions: {},
         interfaces: {},
@@ -938,7 +925,7 @@ describe('Component composition', () => {
       const app = buildApp(
         { simpleCount: 0 },
         () => ({
-          $SpaceName_childInput: x => actions.Set(['simpleCount', x]),
+          $SpaceName_childInput: async x => actions.Set(['simpleCount', x]),
         }),
         () => s => ({
           simpleCount: s.simpleCount,
@@ -960,7 +947,7 @@ describe('Component composition', () => {
       const app = buildApp(
         { dynamicCount: 0 },
         ctx => ({
-          $$CompName_childInput: x => actions.Set(['dynamicCount', x]),
+          $$CompName_childInput: async x => actions.Set(['dynamicCount', x]),
         }),
         () => s => ({
           dynamicCount: s.dynamicCount,
@@ -982,7 +969,7 @@ describe('Component composition', () => {
       const app = buildApp(
         { generalCount: 0 },
         ctx => ({
-          $_childInput: x => actions.Set(['generalCount', x]),
+          $_childInput: async x => actions.Set(['generalCount', x]),
         }),
         () => s => ({
           generalCount: s.generalCount,
@@ -997,20 +984,6 @@ describe('Component composition', () => {
       )
       toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
     })
-
-    // it('propagation sequence: simple, dynamic and general', done => {
-    //   propagationSequence = []
-    //   let data = 37
-    //   let calls = 0
-    //   valueCb = value => {
-    //     calls++
-    //     if (calls === 3) {
-    //       expect(propagationSequence).toEqual(['simple', 'dynamic', 'general'])
-    //       done()
-    //     }
-    //   }
-    //   toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
-    // })
 
   })
 
@@ -1097,8 +1070,8 @@ describe('Component composition', () => {
 describe('Lifecycle hooks', () => {
   let disposeLog = []
 
-  let init = ({ ctx }) => {
-    toIt(ctx)('inc')
+  let init = async ({ ctx }) => {
+    await toIt(ctx)('inc')
   }
   let destroy = ({ ctx }) => {
     let parts = ctx.id.split('$')
@@ -1155,19 +1128,19 @@ describe('Lifecycle hooks', () => {
     }
   }
 
-  let value
-
-  it('should call init in all component tree when initialize the module', () => {
+  it('should call init in all component tree when initialize the module', done => {
     app = run({
       root: main,
       interfaces: {
         value: valueHandler(onValue),
       },
     })
-    value = lastValue
-    expect(value.childValue1.content).toBe(1)
-    expect(value.childValue2.content).toBe(1)
-    expect(value.childValue3.content).toBe(1)
+    valueFn = value => {
+      expect(value.childValue1.content).toBe(1)
+      expect(value.childValue2.content).toBe(1)
+      expect(value.childValue3.content).toBe(1)
+      done()
+    }
   })
 
   it('should call destroy in all component tree when dispose the module', () => {
@@ -1200,7 +1173,7 @@ describe('Hot swapping', () => {
     },
   }
   let inputs2 = ({ ctx }) => ({
-    inc: () => actions2.Inc(),
+    inc: async () => actions2.Inc(),
   })
   let mainValueV1: ValueInterface<any> =
     ({ ctx }) => s => ({
@@ -1348,7 +1321,7 @@ describe('Interface tree updates, the way we caches all the tree except the touc
       name: 'Leaf' + i,
       state: { count: 0 },
       inputs: () => ({
-        inc: leafActions.Inc,
+        inc: async () => leafActions.Inc(),
       }),
       actions: leafActions,
       interfaces: {

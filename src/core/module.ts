@@ -9,7 +9,7 @@ import {
   Interfaces,
   CtxInterfaceIndex,
   Actions,
-  InputResult,
+  GenericExecutable,
 } from './core'
 import {
   HandlerInterface,
@@ -64,9 +64,9 @@ export interface Module {
 
 // API from module to handlers
 export interface ModuleAPI {
-  dispatch (eventData: EventData): void
+  dispatch (eventData: EventData): Promise<void>
   dispose (): void
-  reattach (comp: Component<any>, middleFn?: MiddleFn): void
+  reattach (comp: Component<any>, middleFn?: MiddleFn): Promise<void>
   nest: CtxNest
   unnest: CtxUnnest
   nestAll: CtxNestAll
@@ -109,21 +109,21 @@ export function createContext (ctx: Context, name: Identifier): Context {
 }
 
 export interface CtxNest {
-  (name: Identifier, component: Component<any>, isStatic?: boolean): Context | void
+  (name: Identifier, component: Component<any>, isStatic?: boolean): Promise<Context>
 }
 
 // add a component to the component index
-export const nest = (ctx: Context) => (name, component, isStatic = false) => {
+export const nest = (ctx: Context): CtxNest => async (name, component, isStatic = false) => {
   // create the global object for initialization
   ctx.global = {
     initialized: false, // disable notifyInterfaceHandlers temporarily
   }
 
-  let childCtx = _nest(ctx, name, component, isStatic)
+  let childCtx = await _nest(ctx, name, component, isStatic)
 
   // init lifecycle hooks: init all descendant components
   if (!ctx.hotSwap) {
-    initAll(childCtx)
+    await initAll(childCtx)
   }
 
   childCtx.global.initialized = true
@@ -132,19 +132,19 @@ export const nest = (ctx: Context) => (name, component, isStatic = false) => {
 }
 
 // init all descendant components
-function initAll (ctx: Context) {
+async function initAll (ctx: Context) {
   let space = ctx.components[ctx.id]
   if (space.def.init) {
-    space.def.init(makeInputHelpers(ctx))
+    await space.def.init(makeInputHelpers(ctx))
   }
   let childName
   for (childName in space.components) {
-    initAll(ctx.components[ctx.id + '$' + childName].ctx)
+    await initAll(ctx.components[ctx.id + '$' + childName].ctx)
   }
 }
 
 /* istanbul ignore next */
-function _nest (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Context {
+async function _nest (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Promise<Context> {
   // namespaced name if is a child
   let id = ctx.id === '' ? name : ctx.id + '$' + name
   if (ctx.components[id]) {
@@ -187,7 +187,7 @@ function _nest (ctx: Context, name: Identifier, component: Component<any>, isSta
 
   // composition
   if (component.components) {
-    nestAll(childCtx)(component.components, isStatic)
+    await nestAll(childCtx)(component.components, isStatic)
   }
 
   if (component.groups) {
@@ -224,15 +224,15 @@ function handleGroups (ctx: Context, component: Component<any>) {
 }
 
 export interface CtxNestAll {
-  (components: Components, isStatic?: boolean): void
+  (components: Components, isStatic?: boolean): Promise<void>
 }
 
 // add many components to the component index
 /* istanbul ignore next */
-export const nestAll = (ctx: Context): CtxNestAll => (components, isStatic = false) => {
+export const nestAll = (ctx: Context): CtxNestAll => async (components, isStatic = false) => {
   let name
   for (name in components) {
-    _nest(ctx, name, components[name], isStatic)
+    await _nest(ctx, name, components[name], isStatic)
   }
 }
 
@@ -276,7 +276,7 @@ export const unnestAll = (ctx: Context): CtxUnnestAll => components => {
   }
 }
 
-export function propagate (ctx: Context, inputName: string, data: any) {
+export async function propagate (ctx: Context, inputName: string, data: any) {
   // notifies parent if name starts with $
   let id = ctx.id
   let idParts = (id + '').split('$')
@@ -289,30 +289,30 @@ export function propagate (ctx: Context, inputName: string, data: any) {
     parentInputName = `$${componentSpace.ctx.name}_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      toIt(parentSpace.ctx)(parentInputName, data)
+      await toIt(parentSpace.ctx)(parentInputName, data)
     }
     parentInputName = `$$${componentSpace.def.name}_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data])
+      await toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data])
     }
     parentInputName = `$_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data, componentSpace.def.name])
+      await toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data, componentSpace.def.name])
     }
   }
 }
 
 export interface CtxToIt {
-  (inputName: string, data?, isAsync?: boolean, isPropagated?: boolean): void
+  (inputName: string, data?, isPropagated?: boolean): Promise<void>
 }
 
 // send a message to an input of a component from itself
 export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
-  function toItSync (inputName, data, isPropagated) {
+  return async (inputName, data, isPropagated) => {
     let input = componentSpace.inputs[inputName]
     if (input === undefined) {
       ctx.error(
@@ -325,41 +325,30 @@ export const toIt = (ctx: Context): CtxToIt => {
     /* istanbul ignore else */
     if (<any> input !== 'nothing') {
       // call the input
-      let executable = input(data)
-
-      if (executable !== undefined) {
+      try {
+        let executable = await input(data)
         execute(ctx, executable)
-      }
-    }
-    /* istanbul ignore else */
-    if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
-      propagate(ctx, inputName, data)
-    }
-    ctx.afterInput(ctx, inputName, data)
-  }
-  return (inputName, data, isAsync = false, isPropagated = true) =>
-    isAsync
-    ? setTimeout(() => toItSync(inputName, data, isPropagated), 0)
-    : toItSync(inputName, data, isPropagated)
-}
-
-// execute an executable in a context, executable parameter should not be undefined
-export function execute (ctx: Context, executable: InputResult<any>) {
-  let id = ctx.id
-  let componentSpace = ctx.components[id]
-
-  if (executable instanceof Promise) {
-    executable
-      .then(result => {
-        execute(ctx, result)
-      })
-      .catch(() => {
+        /* istanbul ignore else */
+        if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
+          await propagate(ctx, inputName, data)
+        }
+        await ctx.afterInput(ctx, inputName, data)
+      } catch (err) {
         ctx.error(
           'execute - async',
           `Error in async input of component '${componentSpace.def.name}' from space '${id}'`
         )
-      })
-  } else if (typeof executable === 'function') {
+      }
+    }
+  }
+}
+
+// execute an executable in a context, executable parameter should not be undefined
+export function execute (ctx: Context, executable: GenericExecutable<any>) {
+  let id = ctx.id
+  let componentSpace = ctx.components[id]
+
+  if (typeof executable === 'function') {
     // single update
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
     /* istanbul ignore else */
@@ -445,7 +434,7 @@ export function notifyInterfaceHandlers (ctx: Context) {
 }
 
 // function for running a root component
-export function run (moduleDef: ModuleDef): Module {
+export async function run (moduleDef: ModuleDef): Promise<Module> {
   // internal module state
   // root component
   let component: Component<any>
@@ -454,7 +443,7 @@ export function run (moduleDef: ModuleDef): Module {
   let ctx: Context
 
   // attach root component
-  function attach (comp?: Component<any>, lastComponents?: ComponentSpaceIndex, middleFn?: MiddleFn) {
+  async function attach (comp?: Component<any>, lastComponents?: ComponentSpaceIndex, middleFn?: MiddleFn) {
     // root component, take account of hot swapping
     component = comp ? comp : moduleDef.root
     let rootName = component.name
@@ -551,7 +540,7 @@ export function run (moduleDef: ModuleDef): Module {
     }
 
     // merges main component and ctx.id now contains it name
-    ctx = nest(ctx)(component.name, component, true)
+    ctx = await nest(ctx)(component.name, component, true)
     let rootSpace = ctx.components[ctx.id]
 
     // middle function for hot-swapping
@@ -600,7 +589,7 @@ export function run (moduleDef: ModuleDef): Module {
 
   }
 
-  attach(undefined)
+  await attach(undefined)
 
   function dispose () {
     if (moduleDef.destroy) {
@@ -620,10 +609,10 @@ export function run (moduleDef: ModuleDef): Module {
     this.isDisposed = true
   }
 
-  function reattach (comp: Component<any>, middleFn?: MiddleFn) {
+  async function reattach (comp: Component<any>, middleFn?: MiddleFn) {
     let lastComponents = ctx.components
     ctx.components = {}
-    attach(comp, lastComponents, middleFn)
+    await attach(comp, lastComponents, middleFn)
   }
 
   return {
@@ -641,7 +630,7 @@ export function run (moduleDef: ModuleDef): Module {
 }
 
 // generic action input
-export const action = (actions: Actions<any>) => ([arg1, arg2]: any): Update<any> => {
+export const action = (actions: Actions<any>) => async ([arg1, arg2]: any): Promise<Update<any>> => {
   let name
   let value
   if (arg1 instanceof Array) {
