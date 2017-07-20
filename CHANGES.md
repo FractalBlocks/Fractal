@@ -4,6 +4,7 @@
 
 # Next
 
+- Inputs are now async functions
 - Add async support for toIt, toAct and toChild
 - Add server side rendering helpers
 - Add AOT helpers
@@ -12,10 +13,8 @@
 
 ## Done
 
+- toIt, toAct and toChild are async by default. Async param is removed (Breaking change)
 - Add async inputs support
-
-# v2.11
-
 
 # v2.10.3
 

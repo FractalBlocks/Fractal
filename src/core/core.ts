@@ -57,7 +57,7 @@ export interface Input<S> {
   (data?: any): InputResult<S>
 }
 
-export type InputResult<S> = GenericExecutable<S> | Promise<GenericExecutable<S>>
+export type InputResult<S> = Promise<GenericExecutable<S>>
 
 export type GenericExecutable<S> = Update<S> | Task | Executable<S>[] | void
 

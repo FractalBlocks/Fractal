@@ -152,7 +152,7 @@ export function computeEvent(event: any, iData: InputData): EventData {
 // dispatch an input based on eventData to the respective component
 /* istanbul ignore next */
 // TODO: optimize via currification
-export const dispatch = (ctxIn: Context, eventData: EventData, isPropagated = true) => {
+export const dispatch = async (ctxIn: Context, eventData: EventData, isPropagated = true) => {
   let id = eventData[0] + ''
   // root component
   let ctx = ctxIn.components[(id + '').split('$')[0]].ctx
@@ -167,5 +167,5 @@ export const dispatch = (ctxIn: Context, eventData: EventData, isPropagated = tr
     : eventData[4] === 'context'
     ? eventData[2] // is only context
     : eventData[3] // is only event data
-  toIt(componentSpace.ctx)(inputName, data)
+  await toIt(componentSpace.ctx)(inputName, data)
 }

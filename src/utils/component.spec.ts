@@ -38,7 +38,7 @@ describe('Component helpers', () => {
 
   })
 
-  describe('send a message from outside the app', () => {
+  describe('send a message from outside the app', async () => {
 
     let childData = undefined
 
@@ -49,7 +49,7 @@ describe('Component helpers', () => {
         data: 10,
       },
       inputs: ctx => ({
-        childInput: data => {
+        childInput: async data => {
           childData = data
         },
       }),
@@ -66,14 +66,14 @@ describe('Component helpers', () => {
       actions: {},
       interfaces: {},
     }
-    let app = run({
+    let app = await run({
       root,
       interfaces: {},
     })
 
-    it ('sendMsg should send a message to a component from outside the module correctly', () => {
+    it ('sendMsg should send a message to a component from outside the module correctly', async () => {
       let data = 119
-      sendMsg(app, 'MyComp$Child', 'childInput', data)
+      await sendMsg(app, 'MyComp$Child', 'childInput', data)
       expect(childData).toEqual(data)
     })
 

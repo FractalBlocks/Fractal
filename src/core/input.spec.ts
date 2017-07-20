@@ -54,7 +54,7 @@ describe('Input functions and helpers', () => {
         data: 10,
       },
       inputs: ctx => ({
-        childInput: data => {
+        childInput: async data => {
           childData = data
         },
       }),
@@ -120,10 +120,10 @@ describe('Input functions and helpers', () => {
       interfaces: {},
     })
 
-    it('should call input with the action name and data', () => {
-      toAct(app.ctx.components.MyComp.ctx)('Name', 'data1')
+    it('should call input with the action name and data', async () => {
+      await toAct(app.ctx.components.MyComp.ctx)('Name', 'data1')
       expect(actionData).toEqual('data1')
-      toAct(app.ctx.components.MyComp.ctx)('Name', 'data2', false, true)
+      await toAct(app.ctx.components.MyComp.ctx)('Name', 'data2', true)
       expect(actionData).toEqual('data2')
     })
 
