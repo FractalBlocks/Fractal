@@ -175,12 +175,12 @@ async function _nest (ctx: Context, name: Identifier, component: Component<any>,
     def: component,
   }
 
+  if (component.inputs) {
+    ctx.components[id].inputs = component.inputs(makeInputHelpers(childCtx))
+  } else {
+    ctx.components[id].inputs = {}
+  }
   if (component.actions) {
-    if (component.inputs) {
-      ctx.components[id].inputs = component.inputs(makeInputHelpers(childCtx))
-    } else {
-      ctx.components[id].inputs = {}
-    }
     // action helper enabled by default
     ctx.components[id].inputs['action'] = action(component.actions)
   }
@@ -323,7 +323,7 @@ export const toIt = (ctx: Context): CtxToIt => {
     }
     ctx.beforeInput(ctx, inputName, data)
     /* istanbul ignore else */
-    if (<any> input !== 'nothing') {
+    if (<any> input !== 'nothing' && input) {
       // call the input
       try {
         let executable = await input(data)

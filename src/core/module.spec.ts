@@ -693,7 +693,7 @@ describe('interfaceOrder property of module definition for ordering initial eval
 
 })
 
-describe('Component composition', () => {
+describe('Component composition', async () => {
 
   // Managed composition
 
@@ -764,16 +764,17 @@ describe('Component composition', () => {
     dispose: () => 0,
   })
 
-  it('should nest child components', async () => {
-    app = await run({
-      root: main,
-      groups: {
-        value: groupHandler(),
-      },
-      interfaces: {
-        value: valueHandler(onValue),
-      }
-    })
+  app = await run({
+    root: main,
+    groups: {
+      value: groupHandler(),
+    },
+    interfaces: {
+      value: valueHandler(onValue),
+    }
+  })
+
+  it('should nest child components', () => {
     expect(app.ctx.components['Main$child1']).toBeDefined()
     expect(app.ctx.components['Main$child2']).toBeDefined()
     expect(app.ctx.components['Main$child3']).toBeDefined()
@@ -790,9 +791,9 @@ describe('Component composition', () => {
     expect(app.ctx.components['Main$child3'].ctx.groups['value']).toEqual('ChildValueGroupF1')
   })
 
-  it('should log an error when module does not have group handler for a certain group from a component', () => {
+  it('should log an error when module does not have group handler for a certain group from a component', async () => {
     let log
-    run({
+    await run({
       root: main,
       groups: {
         wrong: groupHandler(),
@@ -828,56 +829,61 @@ describe('Component composition', () => {
     value._dispatch(value.childValue1.dispatch)
   })
 
-  describe('toChild function', async () => {
-    let childData
-    let Child: Component<any> = {
-      name: 'Child',
-      state: {
-        count: 0,
-        data: 10,
-      },
-      inputs: ctx => ({
-        childInput: async data => {
-          childData = data
+  describe('toChild function', () => {
+    async function setup () {
+      let childDataObj  = { value: 0, error: [] }
+      let Child: Component<any> = {
+        name: 'Child',
+        state: {
+          count: 0,
+          data: 10,
         },
-      }),
-      actions: {},
-      interfaces: {},
+        inputs: ctx => ({
+          childInput: async data => {
+            childDataObj.value = data
+          },
+        }),
+        actions: {},
+        interfaces: {},
+      }
+      let root: Component<any> = {
+        name: 'Root',
+        components: {
+          Child,
+        },
+        state: {},
+        inputs: ctx => ({}),
+        actions: {},
+        interfaces: {},
+      }
+      let app = await run({
+        root,
+        interfaces: {},
+        error: (source, description) => childDataObj.error = [source, description],
+      })
+      return { app, childDataObj }
     }
-    let root: Component<any> = {
-      name: 'Root',
-      components: {
-        Child,
-      },
-      state: {},
-      inputs: ctx => ({}),
-      actions: {},
-      interfaces: {},
-    }
-    let error
-    let app = await run({
-      root,
-      interfaces: {},
-      error: (source, description) => error = [source, description],
-    })
 
     it ('should send a message to a child component from the parent correctly', async () => {
+      let { app, childDataObj } = await setup()
       let data1 = 129
       let data2 = 129
       await toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data1)
-      expect(childData).toEqual(data1)
+      expect(childDataObj.value).toEqual(data1)
       await toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data2, false, true)
-      expect(childData).toEqual(data2)
+      expect(childDataObj.value).toEqual(data2)
     })
 
     it ('should send an undefined message to a child component from the parent correctly', async () => {
+      let { app, childDataObj } = await setup()
       await toChild(app.ctx.components['Root'].ctx)('Child', 'childInput')
-      expect(childData).toEqual(undefined)
+      expect(childDataObj.value).toEqual(undefined)
     })
 
     it ('should log an error when there is no child', async () => {
+      let { app, childDataObj } = await setup()
       await toChild(app.ctx.components['Root'].ctx)('Wrong', 'childInput')
-      expect(error).toEqual(['toChild', `there are no child 'Wrong' in space 'Root'`])
+      expect(childDataObj.error).toEqual(['toChild', `there are no child 'Wrong' in space 'Root'`])
     })
 
   })
@@ -1023,34 +1029,52 @@ describe('Component composition', () => {
         value: valueHandler(() => 0),
       },
     })
-    app.moduleAPI.nest('mainChild', main)
+    await app.moduleAPI.nest('mainChild', main)
     expect(app.ctx.components['Main$mainChild']).toBeDefined()
     expect(app.ctx.components['Main$mainChild$child1']).toBeDefined()
     expect(app.ctx.components['Main$mainChild$child2']).toBeDefined()
     expect(app.ctx.components['Main$mainChild$child3']).toBeDefined()
   })
 
-  it('module API nestAll should nest many components', () => {
-    app.moduleAPI.nestAll({
-      fancyChild1: child,
-      fancyChild2: child,
-      fancyChild3: child,
+  it('module API nestAll should nest many components', async () => {
+    app = await run({
+      root: main,
+      groups: {
+        value: emptyHandler,
+      },
+      interfaces: {
+        value: valueHandler(() => 0),
+      },
+    })
+    await app.moduleAPI.nestAll({
+      fancyChild1: main,
+      fancyChild2: main,
+      fancyChild3: main,
     })
     expect(app.ctx.components['Main$fancyChild1']).toBeDefined()
     expect(app.ctx.components['Main$fancyChild2']).toBeDefined()
     expect(app.ctx.components['Main$fancyChild3']).toBeDefined()
   })
 
-  it('module API unnest should unnest a component tree', () => {
-    app.moduleAPI.unnest('mainChild')
-    expect(app.ctx.components['Main$mainChild']).toBeUndefined()
-    expect(app.ctx.components['Main$mainChild$child1']).toBeUndefined()
-    expect(app.ctx.components['Main$mainChild$child2']).toBeUndefined()
-    expect(app.ctx.components['Main$mainChild$child3']).toBeUndefined()
+  it('module API unnest should unnest a component tree', async () => {
+    let app = await run({
+      root: main,
+      groups: {
+        value: emptyHandler,
+      },
+      interfaces: {
+        value: valueHandler(() => 0),
+      },
+    })
+    app.moduleAPI.unnest('Main')
+    expect(app.ctx.components['Main']).toBeUndefined()
+    expect(app.ctx.components['Main$child1']).toBeUndefined()
+    expect(app.ctx.components['Main$child2']).toBeUndefined()
+    expect(app.ctx.components['Main$child3']).toBeUndefined()
   })
 
-  it('module API unnestAll should unnest many components', () => {
-    app.moduleAPI.nestAll({
+  it('module API unnestAll should unnest many components', async () => {
+    await app.moduleAPI.nestAll({
       fancyChild1: child,
       fancyChild2: child,
       fancyChild3: child,
@@ -1129,21 +1153,25 @@ describe('Lifecycle hooks', () => {
   }
 
   it('should call init in all component tree when initialize the module', async (done) => {
-    app = await run({
-      root: main,
-      interfaces: {
-        value: valueHandler(onValue),
-      },
-    })
     valueFn = value => {
       expect(value.childValue1.content).toBe(1)
       expect(value.childValue2.content).toBe(1)
       expect(value.childValue3.content).toBe(1)
       done()
     }
+    app = await run({
+      root: main,
+      interfaces: {
+        value: valueHandler(onValue),
+      },
+    })
   })
 
-  it('should call destroy in all component tree when dispose the module', () => {
+  it('should call destroy in all component tree when dispose the module', async () => {
+    app = await run({
+      root: main,
+      interfaces: {},
+    })
     app.moduleAPI.dispose()
     expect(disposeLog).toEqual(['child1', 'child2', 'child3', 'Main'])
   })
@@ -1245,7 +1273,7 @@ describe('Hot swapping', () => {
         value: valueHandler(onValue),
       },
     })
-    app.moduleAPI.reattach(mainV2)
+    await app.moduleAPI.reattach(mainV2)
     value = lastValue
     expect(value.content).toBe('Fractal is awesome V2!! 0 :D')
     expect(value.childValue1.content).toBe(0)
@@ -1438,20 +1466,20 @@ describe('Generic action input', () => {
   }
   let actionFn = action(actions)
 
-  it('should accept an action name and a value as an array, in the case of a function string', () => {
-    expect(actionFn(['a1', 'someValue'])).toEqual('someValue')
+  it('should accept an action name and a value as an array, in the case of a function string', async () => {
+    expect(await actionFn(['a1', 'someValue'])).toEqual('someValue')
   })
 
-  it('should accept an action-value pair as first argument of an array and a value in the second', () => {
-    expect(actionFn([['a1', 10]])).toEqual(10)
+  it('should accept an action-value pair as first argument of an array and a value in the second', async () => {
+    expect(await actionFn([['a1', 10]])).toEqual(10)
   })
 
-  it('should accept an action-contextValue pair as first argument and a fetch value in the second', () => {
-    expect(actionFn([['a1', 10], 7])).toEqual([10, 7])
+  it('should accept an action-contextValue pair as first argument and a fetch value in the second', async () => {
+    expect(await actionFn([['a1', 10], 7])).toEqual([10, 7])
   })
 
-  it('should accept an action / undefined contextual value and return only the function parameter', () => {
-    expect(actionFn([['a1', undefined], 23])).toEqual(23)
+  it('should accept an action / undefined contextual value and return only the function parameter', async () => {
+    expect(await actionFn([['a1', undefined], 23])).toEqual(23)
   })
 
 })

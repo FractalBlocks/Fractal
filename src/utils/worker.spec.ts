@@ -16,7 +16,7 @@ import {
 } from './worker'
 import { valueHandler, ValueInterface } from '../interfaces/value'
 
-describe('Utilities for running fractal inside workers', () => {
+describe('Utilities for running fractal inside workers', async () => {
 
   let name = 'Main'
 
@@ -28,10 +28,10 @@ describe('Utilities for running fractal inside workers', () => {
   }
 
   let inputs: Inputs<number> = ({ ctx, ev }) => ({
-    set: (n: number) => actions.Set(n),
-    inc: () => actions.Inc(),
-    task: (): Task => ['log', { info: 'info', cb: ev('inc') }],
-    wrongTask: (): Task => ['wrongTask', {}],
+    set: async (n: number) => actions.Set(n),
+    inc: async () => actions.Inc(),
+    task: async (): Promise<Task> => ['log', { info: 'info', cb: ev('inc') }],
+    wrongTask: async (): Promise<Task> => ['wrongTask', {}],
   })
 
   let childValue: ValueInterface<any> =
@@ -151,7 +151,7 @@ describe('Utilities for running fractal inside workers', () => {
   })
 
   let disposeFn
-  let workerModule = run({
+  let workerModule = await run({
     root,
     beforeInit: mod => {
       workerListener(mod, workerAPI)
@@ -175,7 +175,7 @@ describe('Utilities for running fractal inside workers', () => {
     error: workerLog('error', workerAPI),
   })
 
-  function setup (valueFn, logFn?) {
+  async function setup (valueFn, logFn?) {
     // emulate worker thread API to main
     let workerAPI: WorkerAPI = {
       postMessage: data => mainAPI.onmessage({ data }),
@@ -234,7 +234,7 @@ describe('Utilities for running fractal inside workers', () => {
     })
 
     let disposeFn
-    let workerModule = run({
+    let workerModule = await run({
       root,
       beforeInit: mod => {
         workerListener(mod, workerAPI)

@@ -4,7 +4,7 @@ import { mergeStates } from './reattach'
 
 describe('Hot swaping functionality', () => {
 
-  function setup (root: Component<any>, interfaceCb, groupCb?, logCb?): Module {
+  function setup (root: Component<any>, interfaceCb, groupCb?, logCb?): Promise<Module> {
     return run({
       root,
       groups: {
@@ -102,9 +102,9 @@ describe('Hot swaping functionality', () => {
     },
   }
 
-  it('should nest components', done => {
+  it('should nest components', async (done) => {
     let count = 0
-    let app = setup(Comp, () => 0, group => {
+    let app = await setup(Comp, () => 0, group => {
       if (group[1] === 'childV2') {
         if (count === 1) {
           expect(group[0]).toEqual('Main$0')
@@ -120,7 +120,7 @@ describe('Hot swaping functionality', () => {
     app.moduleAPI.reattach(CompV2, mergeStates)
   })
 
-  it('should dispatch an error when dynamic component dont references (refs) child components', done => {
+  it('should dispatch an error when dynamic component dont references (refs) child components', async (done) => {
     let Child: Component<any> = {
       name: 'Child',
       components: {
@@ -148,7 +148,7 @@ describe('Hot swaping functionality', () => {
         value: () => s => ({ value: '12345' }),
       },
     }
-    let app = setup(Comp, () => 0, () => 0, (source, description) => {
+    let app = await setup(Comp, () => 0, () => 0, (source, description) => {
       expect([source, description]).toEqual([
         'mergeStates',
         'there are no dynamic component definition of SubChild (defs) in Main$0'

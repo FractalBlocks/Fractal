@@ -85,7 +85,7 @@ describe('Interface functions and helpers', () => {
 
   })
 
-  describe('vw function sugar for components', () => {
+  describe('vw function sugar for components', async () => {
     let child: Component<any> = {
       name: 'Child',
       state: {
@@ -109,7 +109,7 @@ describe('Interface functions and helpers', () => {
       actions: {},
       interfaces: {},
     }
-    let app = run({
+    let app = await run({
       root: comp,
       interfaces: {},
     })
