@@ -312,7 +312,7 @@ export interface CtxToIt {
 export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
-  return async (inputName, data, isPropagated) => {
+  return async (inputName, data, isPropagated = true) => {
     let input = componentSpace.inputs[inputName]
     if (input === undefined) {
       ctx.error(

@@ -167,5 +167,5 @@ export const dispatch = async (ctxIn: Context, eventData: EventData, isPropagate
     : eventData[4] === 'context'
     ? eventData[2] // is only context
     : eventData[3] // is only event data
-  await toIt(componentSpace.ctx)(inputName, data)
+  await toIt(componentSpace.ctx)(inputName, data, isPropagated)
 }

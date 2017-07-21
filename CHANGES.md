@@ -13,6 +13,7 @@
 
 ## Done
 
+- Add full async support (WIP)
 - toIt, toAct and toChild are async by default. Async param is removed (Breaking change)
 - Add async inputs support
 

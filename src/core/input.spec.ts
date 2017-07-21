@@ -45,7 +45,7 @@ describe('Input functions and helpers', () => {
 
   })
 
-  describe('toChild function', () => {
+  describe('toChild function', async () => {
     let childData
     let Child: Component<any> = {
       name: 'Child',
@@ -72,7 +72,7 @@ describe('Input functions and helpers', () => {
       interfaces: {},
     }
     let error
-    let app = run({
+    let app = await run({
       root,
       interfaces: {},
       error: (source, description) => error = [source, description],
@@ -100,7 +100,7 @@ describe('Input functions and helpers', () => {
   })
 
 
-  describe('Generic action self call', () => {
+  describe('Generic action self call', async () => {
     let actionData
     let root: Component<any> = {
       name: 'MyComp',
@@ -115,7 +115,7 @@ describe('Input functions and helpers', () => {
       },
       interfaces: {},
     }
-    let app = run({
+    let app = await run({
       root,
       interfaces: {},
     })

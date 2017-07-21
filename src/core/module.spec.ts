@@ -196,7 +196,7 @@ describe('Context functions', function () {
 
 })
 
-describe('One Component + module functionality', function () {
+describe('One Component + module functionality', async () => {
 
   let valueFn
   let lastValue
@@ -223,7 +223,7 @@ describe('One Component + module functionality', function () {
   let initialized = false
   let disposed = false
 
-  let app = run({
+  let app = await run({
     root,
     beforeInit: () => {
       beforeInitCalled = true
@@ -257,7 +257,7 @@ describe('One Component + module functionality', function () {
     expect(initialized).toBe(true)
   })
 
-  it('should clone the state when nest a component if is an object', () => {
+  it('should clone the state when nest a component if is an object', async () => {
     let root: Component<any> = {
       name,
       state: {},
@@ -267,7 +267,7 @@ describe('One Component + module functionality', function () {
         value: childValue,
       },
     }
-    let app = run({
+    let app = await run({
       root,
       interfaces: {
         value: emptyHandler,
@@ -276,7 +276,7 @@ describe('One Component + module functionality', function () {
     expect(app.ctx.components['Main'].state === root.state).toBeFalsy()
   })
 
-  it('a component should work with no inputs', () => {
+  it('a component should work with no inputs', async () => {
     let root: Component<any> = {
       name,
       state: {},
@@ -284,7 +284,7 @@ describe('One Component + module functionality', function () {
         value: childValue,
       },
     }
-    let app = run({
+    let app = await run({
       root,
       interfaces: {
         value: emptyHandler,
@@ -293,9 +293,9 @@ describe('One Component + module functionality', function () {
     expect(app).toBeDefined()
   })
 
-  it('should log an error and notify error callback when module dont have an InterfaceHandler', () => {
+  it('should log an error and notify error callback when module dont have an InterfaceHandler', async () => {
     let lastLog
-    run({
+    await run({
       root,
       interfaces: {},
       warn: (source, description) => lastLog = [source, description],
@@ -307,9 +307,9 @@ describe('One Component + module functionality', function () {
     ])
   })
 
-  it('should log an error when call notifyInterfaceHandlers and one handler is missing', () => {
+  it('should log an error when call notifyInterfaceHandlers and one handler is missing', async () => {
     let lastLog
-    let app = run({
+    let app = await run({
       root,
       interfaces: {},
       warn: (source, description) => lastLog = [source, description],
@@ -461,7 +461,7 @@ describe('One Component + module functionality', function () {
     expect(lastLog).toEqual(error)
   })
 
-  it('should execute beforeInput before dispatch an input', done => {
+  it('should execute beforeInput before dispatch an input',async (done) => {
     let valueFn
     let lastValue
     function onValue(val) {
@@ -471,7 +471,7 @@ describe('One Component + module functionality', function () {
       }
     }
 
-    let app = run({
+    let app = await run({
       root,
       interfaces: {
         value: valueHandler(onValue),
@@ -489,7 +489,7 @@ describe('One Component + module functionality', function () {
 
   })
 
-  it('should execute afterInput before dispatch an input', done => {
+  it('should execute afterInput before dispatch an input', async (done) => {
     let valueFn
     let lastValue
     function onValue(val) {
@@ -499,7 +499,7 @@ describe('One Component + module functionality', function () {
       }
     }
 
-    let app = run({
+    let app = await run({
       root,
       interfaces: {
         value: valueHandler(onValue),
@@ -603,7 +603,7 @@ describe('One Component + module functionality', function () {
 })
 
 
-describe('toIt core function for executing inputs', () => {
+describe('toIt core function for executing inputs', async () => {
   let rootData
   const actions = {
     Set: assoc('count'),
@@ -627,7 +627,7 @@ describe('toIt core function for executing inputs', () => {
     },
   }
   let valueCb
-  let app = run({
+  let app = await run({
     root,
     interfaces: {
       value: valueHandler(v => {
@@ -764,8 +764,8 @@ describe('Component composition', () => {
     dispose: () => 0,
   })
 
-  it('should nest child components', () => {
-    app = run({
+  it('should nest child components', async () => {
+    app = await run({
       root: main,
       groups: {
         value: groupHandler(),
@@ -828,7 +828,7 @@ describe('Component composition', () => {
     value._dispatch(value.childValue1.dispatch)
   })
 
-  describe('toChild function', () => {
+  describe('toChild function', async () => {
     let childData
     let Child: Component<any> = {
       name: 'Child',
@@ -855,28 +855,28 @@ describe('Component composition', () => {
       interfaces: {},
     }
     let error
-    let app = run({
+    let app = await run({
       root,
       interfaces: {},
       error: (source, description) => error = [source, description],
     })
 
-    it ('should send a message to a child component from the parent correctly', () => {
+    it ('should send a message to a child component from the parent correctly', async () => {
       let data1 = 129
       let data2 = 129
-      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data1)
+      await toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data1)
       expect(childData).toEqual(data1)
-      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data2, false, true)
+      await toChild(app.ctx.components['Root'].ctx)('Child', 'childInput', data2, false, true)
       expect(childData).toEqual(data2)
     })
 
-    it ('should send an undefined message to a child component from the parent correctly', () => {
-      toChild(app.ctx.components['Root'].ctx)('Child', 'childInput')
+    it ('should send an undefined message to a child component from the parent correctly', async () => {
+      await toChild(app.ctx.components['Root'].ctx)('Child', 'childInput')
       expect(childData).toEqual(undefined)
     })
 
-    it ('should log an error when there is no child', () => {
-      toChild(app.ctx.components['Root'].ctx)('Wrong', 'childInput')
+    it ('should log an error when there is no child', async () => {
+      await toChild(app.ctx.components['Root'].ctx)('Wrong', 'childInput')
       expect(error).toEqual(['toChild', `there are no child 'Wrong' in space 'Root'`])
     })
 
@@ -919,10 +919,10 @@ describe('Component composition', () => {
       })
     }
 
-    it('simple propagation: parent should react to childInput when have an input called $SpaceName_childInput', done => {
+    it('simple propagation: parent should react to childInput when have an input called $SpaceName_childInput', async (done) => {
       let data = 17
       let calls = 0
-      const app = buildApp(
+      const app = await buildApp(
         { simpleCount: 0 },
         () => ({
           $SpaceName_childInput: async x => actions.Set(['simpleCount', x]),
@@ -941,10 +941,10 @@ describe('Component composition', () => {
       toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
     })
 
-    it('dynamic propagation: parent should react to childInput when have an input called $$CompName_childInput', done => {
+    it('dynamic propagation: parent should react to childInput when have an input called $$CompName_childInput', async (done) => {
       let data = 23
       let calls = 0
-      const app = buildApp(
+      const app = await buildApp(
         { dynamicCount: 0 },
         ctx => ({
           $$CompName_childInput: async x => actions.Set(['dynamicCount', x]),
@@ -963,10 +963,10 @@ describe('Component composition', () => {
       toIt(app.ctx.components.Root$SpaceName.ctx)('childInput', data)
     })
 
-    it('general propagation: parent should react to childInput when have an input called $_childInput', done => {
+    it('general propagation: parent should react to childInput when have an input called $_childInput', async (done) => {
       let data = 31
       let calls = 0
-      const app = buildApp(
+      const app = await buildApp(
         { generalCount: 0 },
         ctx => ({
           $_childInput: async x => actions.Set(['generalCount', x]),
@@ -992,9 +992,9 @@ describe('Component composition', () => {
     expect(Object.keys(app.ctx.components).length).toEqual(0)
   })
 
-  it('should log an error when unnest an inexistent component', () => {
+  it('should log an error when unnest an inexistent component', async () => {
     let lastLog
-    app = run({
+    app = await run({
       root: main,
       groups: {
         value: emptyHandler,
@@ -1013,8 +1013,8 @@ describe('Component composition', () => {
 
   // module API
 
-  it('module API nest should nest a component', () => {
-    app = run({
+  it('module API nest should nest a component', async () => {
+    app = await run({
       root: main,
       groups: {
         value: emptyHandler,
@@ -1128,8 +1128,8 @@ describe('Lifecycle hooks', () => {
     }
   }
 
-  it('should call init in all component tree when initialize the module', done => {
-    app = run({
+  it('should call init in all component tree when initialize the module', async (done) => {
+    app = await run({
       root: main,
       interfaces: {
         value: valueHandler(onValue),
@@ -1238,8 +1238,8 @@ describe('Hot swapping', () => {
 
   let value
 
-  it('should reattach root component', () => {
-    app = run({
+  it('should reattach root component', async () => {
+    app = await run({
       root: mainV1,
       interfaces: {
         value: valueHandler(onValue),
@@ -1253,9 +1253,9 @@ describe('Hot swapping', () => {
     expect(value.childValue3.content).toBe(0)
   })
 
-  it('should reattach root component merging the states using deep merge', done => {
+  it('should reattach root component merging the states using deep merge', async (done) => {
     let calls = 0
-    app = run({
+    app = await run({
       root: mainV1,
       interfaces: {
         value: valueHandler((v: any) => {
