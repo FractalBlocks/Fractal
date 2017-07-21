@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Fix size binding example
 - Fix behaviour of hot-swaping with dynamic composition (replace defs)
 - Document sizeBinding
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
