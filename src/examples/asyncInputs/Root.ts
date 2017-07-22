@@ -8,6 +8,8 @@ import {
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
+const wait = ms => new Promise((resolve) => setTimeout(() => resolve(), ms))
+
 export const name = 'Root'
 
 export const state = {
@@ -22,10 +24,19 @@ export const inputs: Inputs<S> = ({ stateOf, toIt, toAct }) => ({
     if (s.count > 0) {
       return actions.Set(0)
     }
-    await new Promise((resolve) => {
-      setTimeout(() => resolve(), 10000)
-    })
+    await wait(2000)
+    await toAct('Inc')
+    await wait(2000)
+    await toAct('Set', 14)
+    await toIt('second')
+    await wait(2000)
     toAct('Inc')
+  },
+  second: async () => {
+    await wait(2000)
+    toAct('Set', 21)
+    await wait(2000)
+    toAct('Set', 31)
   },
 })
 

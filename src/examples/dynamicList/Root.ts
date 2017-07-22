@@ -11,7 +11,7 @@ export const state = {
 export type S = typeof state
 
 export const inputs: Inputs<S> = ctx => ({
-  inputKeyup: ([keyCode, text]) =>
+  inputKeyup: async ([keyCode, text]) =>
     keyCode === 13 && text !== ''
     ? [
       actions.SetText(''),

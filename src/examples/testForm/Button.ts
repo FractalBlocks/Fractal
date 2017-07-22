@@ -8,10 +8,10 @@ export const state = ''
 export type S = string
 
 export const inputs: Inputs<S> = ({ ctx, toIt }) => ({
-  click: () => {},
-  keypress: which => {
+  click: async () => {},
+  keypress: async which => {
     if (which === 13) {
-      toIt('click')
+      await toIt('click')
     }
   },
 })

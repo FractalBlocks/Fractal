@@ -9,12 +9,18 @@ declare const ENV: any
 
 let DEV = ENV === 'development'
 
-const app = runModule(root, DEV)
+;(async () => {
 
-// Hot reload - DEV ONLY
-if (module.hot) {
-  module.hot.accept('./Root', () => {
-    let m = require('./Root')
-    app.moduleAPI.reattach(m, mergeStates)
-  })
-}
+  const app = await runModule(root, DEV)
+
+  // Hot reload - DEV ONLY
+  if (module.hot) {
+    module.hot.accept('./Root', () => {
+      let m = require('./Root')
+      app.moduleAPI.reattach(m, mergeStates)
+    })
+  }
+
+})()
+
+

@@ -9,7 +9,7 @@ export const state = 'Received'
 export type S = string
 
 export const inputs: Inputs<S> = ctx => ({
-  selected: () => {},
+  selected: async () => {},
 })
 
 export const actions: Actions<S> = {}

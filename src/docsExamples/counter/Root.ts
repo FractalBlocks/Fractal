@@ -8,8 +8,8 @@ export let state = 0
 export type S = number
 
 export const inputs: Inputs<S> = () => ({
-  inc: actions.Inc,
-  dec: actions.Dec,
+  inc: async () => actions.Inc(),
+  dec: async () => actions.Dec(),
 })
 
 export const actions: Actions<S> = {

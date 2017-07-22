@@ -8,7 +8,7 @@ import {
 import { viewHandler } from '../../interfaces/view'
 import { styleHandler } from '../../groups/style'
 
-export const runModule = (root: Component<any>, DEV = false): Module => run({
+export const runModule = (root: Component<any>, DEV = false): Promise<Module> => run({
   root,
   groups: {
     style: styleHandler('', DEV),

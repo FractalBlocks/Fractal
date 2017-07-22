@@ -75,7 +75,7 @@ export const state: S = {
 }
 
 export const inputs: Inputs<S> = ({ ctx, stateOf, toChild }) => ({
-  $TestBtn_click: () => {
+  $TestBtn_click: async () => {
     let result = Object.keys(questions).map((q, idx) => {
       let isCorrect = stateOf(q).value === answers[idx]
       toChild(q, 'action', ['SetError', !isCorrect])
@@ -83,7 +83,7 @@ export const inputs: Inputs<S> = ({ ctx, stateOf, toChild }) => ({
     }).reduce((a, r) => a && r, true)
     return actions.SetCorrect(result)
   },
-  $ClearBtn_click: () => {
+  $ClearBtn_click: async () => {
     Object.keys(questions).forEach(
       i => {
         toChild(i, 'action', ['SetValue', ''])

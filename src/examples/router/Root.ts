@@ -42,19 +42,19 @@ export const init: Hook = ({ toChild }) => {
 }
 
 export const inputs: Inputs<S> = ({ ctx, toChild }) => ({
-  $EmailList_select: emailId => {
+  $EmailList_select: async emailId => {
     let email = emailDB[emailId] !== undefined
       ? emailDB[emailId]
       : { title: 'Not Found', content: 'Email Not Found', sender: 'Sparky the invisible man', date: 'unknown' }
-    toChild('Email', 'action', ['Set', email])
+    await toChild('Email', 'action', ['Set', email])
     return actions.SetView(['Email', emailId])
   },
-  $Email_back: () => {
+  $Email_back: async () => {
     return actions.SetView(['EmailList', ''])
   },
 })
 
-const actions: Actions<S> = {
+export const actions: Actions<S> = {
   SetView: ([value, id]) => s => {
     s.view = value
     s.emailId = id !== undefined ? id : s.emailId

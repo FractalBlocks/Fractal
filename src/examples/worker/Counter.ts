@@ -9,6 +9,11 @@ export const state = {
 
 export type S = typeof state
 
+export const inputs: Inputs<S> = ctx => ({
+  set: async (n: number) => actions.Set(n),
+  inc: async () => actions.Inc(),
+})
+
 export const actions: Actions<S> = {
   Set: (count: number) => state => {
     state.count = count
@@ -19,11 +24,6 @@ export const actions: Actions<S> = {
     return state
   },
 }
-
-export const inputs: Inputs<S> = ctx => ({
-  set: (n: number) => actions.Set(n),
-  inc: () => actions.Inc(),
-})
 
 let view: View<S> = ({ ctx,  ev }) => s => {
   let style = ctx.groups['style']

@@ -7,24 +7,26 @@ import {
 import { viewHandler } from '../../interfaces/view'
 import { styleHandler } from '../../groups/style'
 
-import * as root from './App'
+import * as root from './Root'
 
-let app = run({
-  root,
-  groups: {
-    style: styleHandler('', true),
-  },
-  interfaces: {
-    view: viewHandler('#app'),
-  },
-  // DEV ONLY (you can handle it manually)
-  ...logFns,
-})
-
-// Hot reload - DEV ONLY
-if (module.hot) {
-  module.hot.accept('./App', () => {
-    let m = require('./App')
-    app.moduleAPI.reattach(m, mergeStates)
+;(async () => {
+  let app = await run({
+    root,
+    groups: {
+      style: styleHandler('', true),
+    },
+    interfaces: {
+      view: viewHandler('#app'),
+    },
+    // DEV ONLY (you can handle it manually)
+    ...logFns,
   })
-}
+
+  // Hot reload - DEV ONLY
+  if (module.hot) {
+    module.hot.accept('./Root', () => {
+      let m = require('./Root')
+      app.moduleAPI.reattach(m, mergeStates)
+    })
+  }
+})()

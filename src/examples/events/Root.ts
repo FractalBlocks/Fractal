@@ -106,8 +106,8 @@ let style: StyleGroup = {
     },
   },
   container: {
-    width: '670px',
-    height: '670px',
+    width: '780px',
+    height: '780px',
     ...absoluteCenter,
     flexWrap: 'wrap',
     alignContent: 'center',

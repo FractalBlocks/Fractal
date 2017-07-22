@@ -8,8 +8,8 @@ export const state = 0
 export type S = number
 
 export const inputs: Inputs<S> = ctx => ({
-  set: (n: number) => actions.Set(n),
-  inc: () => actions.Inc(),
+  set: async (n: number) => actions.Set(n),
+  inc: async () => actions.Inc(),
 })
 
 export const actions: Actions<S> = {

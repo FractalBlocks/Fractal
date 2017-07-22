@@ -9,15 +9,15 @@ export const state: any = hashMap<string, string>(
   'count', 0,
 )
 
+export const  inputs: Inputs<any> = ctx => ({
+  set: async n => actions.Set(n),
+  inc: async () => actions.Inc(),
+})
+
 export const  actions: Actions<any> = {
   Set: (count: number) => evolve('count', () => count),
   Inc: () => evolve('count', x => x + 1),
 }
-
-export const  inputs: Inputs<any> = ctx => ({
-  set: n => actions.Set(n),
-  inc: () => actions.Inc(),
-})
 
 let view: View<any> = ({ ctx, ev }) => s => {
   let style = ctx.groups['style']

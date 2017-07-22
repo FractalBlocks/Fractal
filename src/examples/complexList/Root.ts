@@ -25,9 +25,9 @@ export const defs = { Item }
 export type S = typeof state
 
 export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => ({
-  inputKeyup: ([idx, [keyCode, text]]) => {
+  inputKeyup: async ([idx, [keyCode, text]]) => {
     if (keyCode === 13 && text !== '') {
-      nest(idx, props({ text })(clone(Item)))
+      await nest(idx, props({ text })(clone(Item)))
       return [
         actions.SetText(''),
         actions.New(),
@@ -36,23 +36,23 @@ export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => (
       return actions.SetText(text)
     }
   },
-  setCheckAll: (checked: boolean) => {
+  setCheckAll: async (checked: boolean) => {
     let items = stateOf().items
     let key
     for (key in items) {
-      toChild(key, 'action', ['SetChecked', checked])
+      await toChild(key, 'action', ['SetChecked', checked])
     }
   },
-  removeChecked: () => {
+  removeChecked: async () => {
     let items = stateOf().items
     let key
     for (key in items) {
       if (stateOf(key).checked) {
-        toIt('$$Item_remove', [key])
+        await toIt('$$Item_remove', [key])
       }
     }
   },
-  $$Item_remove: ([idx]) => {
+  $$Item_remove: async ([idx]) => {
     unnest(idx)
     return actions.Remove(idx)
   },

@@ -15,7 +15,7 @@ export const state = {
 export type S = typeof state
 
 export const inputs: Inputs<S> = ({ ctx }) => ({
-  back: () => {},
+  back: async () => {},
 })
 
 export const actions: Actions<S> = {
