@@ -17,13 +17,50 @@ export interface WorkerEvent {
   data: any
 }
 
-export const workerHandler = (type: 'interface' | 'task' | 'group', name: string, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
+export interface SyncQueue {
+  queue: Waiter[]
+  addWaiter(Waiter): void
+  next(data): void
+}
+
+export interface Waiter {
+  (data): boolean
+}
+
+/* istanbul ignore next */
+export function makeSyncQueue (): SyncQueue {
+  let queue: Waiter[] = []
+  return {
+    queue,
+    addWaiter (waiter) {
+      queue.push(waiter)
+    },
+    next (data) {
+      if (queue[0] && queue[0](data)) {
+        queue.shift()
+      }
+    },
+  }
+}
+
+/* istanbul ignore next */
+export const workerHandler = (type: 'interface' | 'task' | 'group', name: string, syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
   /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
   return {
     state: undefined,
-    handle: value => {
+    handle: async value => {
       _self.postMessage([type, name, 'handle', value])
+      if (type === 'group') {
+        return new Promise<any>((resolve) => {
+          syncQueue.addWaiter(data => {
+            if (data[0] === 'setGroup') {
+              resolve()
+              return true
+            }
+          })
+        })
+      }
     },
     dispose: () => {
       _self.postMessage([type, name, 'dispose'])
@@ -31,6 +68,7 @@ export const workerHandler = (type: 'interface' | 'task' | 'group', name: string
   }
 }
 
+/* istanbul ignore next */
 export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
   /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
@@ -40,7 +78,8 @@ export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
 }
 
 // receives messages from runWorker
-export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
+/* istanbul ignore next */
+export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
   /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
   // allows to dispatch inputs from the main thread
@@ -84,6 +123,7 @@ export const workerListener = (mod: ModuleAPI, workerAPI?: WorkerAPI) => {
       default:
         mod.error('workerListener', `unknown message type recived from worker: ${data.join(', ')}`)
     }
+    syncQueue.next(data)
   }
 }
 
@@ -123,7 +163,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   let interfaceObjects: { [name: string]: HandlerObject } = {}
 
   /* istanbul ignore next */
-  let reattach = comp => {
+  let reattach = async comp => {
     def.error('reattach', 'unimplemented method')
   }
 
@@ -131,13 +171,13 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   /* istanbul ignore next */
   let moduleAPI: ModuleAPI = {
     // dispatch function type used for handlers
-    dispatch: (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
+    dispatch: async (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
     dispose,
     reattach,
     // nest a component to the component index
-    nest: (name, component, isStatic = false) => worker.postMessage(['nest', name, component]),
+    nest: async (name, component, isStatic = false): Promise<any> => worker.postMessage(['nest', name, component]),
     // nest many components to the component index
-    nestAll: (components, isStatic = false) => worker.postMessage(['nestAll', components]),
+    nestAll: async (components, isStatic = false) => worker.postMessage(['nestAll', components]),
     // unnest a component to the component index
     unnest: (name: string) => worker.postMessage(['unnest', name]),
     // unnest many components to the component index
@@ -166,13 +206,15 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     }
   }
 
-  worker.onmessage = ev => {
+  // TODO: reverse message sintax
+  /* istanbul ignore next */
+  worker.onmessage = async ev => {
     let data = ev.data
     switch (data[0]) {
       case 'interface':
         /* istanbul ignore else */
         if (data[2] === 'handle') {
-          interfaceObjects[data[1]].handle(data[3])
+          await interfaceObjects[data[1]].handle(data[3])
           /* istanbul ignore next */
           break
         }
@@ -185,20 +227,20 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
       case 'task':
         /* istanbul ignore else */
         if (data[2] === 'handle') {
-          taskObjects[data[1]].handle(data[3])
+          await taskObjects[data[1]].handle(data[3])
           /* istanbul ignore next */
           break
         }
         /* istanbul ignore else */
         if (data[2] === 'dispose') {
-          taskObjects[data[1]].dispose()
+          await taskObjects[data[1]].dispose()
           /* istanbul ignore next */
           break
         }
       case 'group':
         /* istanbul ignore else */
         if (data[2] === 'handle') {
-          groupObjects[data[1]].handle(data[3])
+          await groupObjects[data[1]].handle(data[3])
           /* istanbul ignore next */
           break
         }
@@ -228,6 +270,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     }
   }
 
+  /* istanbul ignore next */
   function dispose () {
     worker.postMessage(['dispose'])
   }

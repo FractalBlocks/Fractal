@@ -244,6 +244,7 @@ export interface CtxUnnest {
 export const unnest = (ctx: Context): CtxUnnest => name => {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
+  /* istanbul ignore next */
   if (!componentSpace) {
     return ctx.error('unnest', `there is no component with name '${name}' at component '${ctx.id}'`)
   }
