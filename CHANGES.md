@@ -10,6 +10,8 @@
 
 ## Done
 
+# v3.0.0
+
 - Worker support fixed!
 - Handlers are now async
 - Add full async support (WIP)
