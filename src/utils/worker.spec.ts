@@ -13,6 +13,7 @@ import {
   workerHandler,
   workerLog,
   workerListener,
+  makeSyncQueue,
 } from './worker'
 import { valueHandler, ValueInterface } from '../interfaces/value'
 
@@ -59,7 +60,7 @@ describe('Utilities for running fractal inside workers', async () => {
   // empty handler helper
   let emptyHandler: HandlerInterface = mod => ({
     state: undefined,
-    handle: () => {},
+    handle: async () => {},
     dispose: () => {},
   })
 
@@ -77,7 +78,7 @@ describe('Utilities for running fractal inside workers', async () => {
   let disposeGroupFn
   let groupHandler: Handler = () => mod => ({
     state: undefined,
-    handle: ([id, group]) => {
+    handle: async ([id, group]) => {
       if (groupFn) {
         mod.setGroup(id, 'group', group)
         groupFn(group)
@@ -111,7 +112,7 @@ describe('Utilities for running fractal inside workers', async () => {
 
   let logTask: Handler = log => mod => ({
     state: undefined,
-    handle: (data: {info: any, cb: EventData}) => {
+    handle: async (data: {info: any, cb: EventData}) => {
       log.push(data.info)
       mod.dispatch(data.cb)
     },
@@ -125,7 +126,7 @@ describe('Utilities for running fractal inside workers', async () => {
   let disposeValue2Fn
   let value2Handler: Handler = log => mod => ({
     state: undefined,
-    handle: data => {
+    handle: async data => {
     },
     dispose: () => {
       if (disposeValue2Fn) {
@@ -151,10 +152,11 @@ describe('Utilities for running fractal inside workers', async () => {
   })
 
   let disposeFn
+  let syncQueue = makeSyncQueue()
   let workerModule = await run({
     root,
     beforeInit: mod => {
-      workerListener(mod, workerAPI)
+      workerListener(syncQueue, workerAPI)(mod)
     },
     destroy: () => {
       if (disposeFn) {
@@ -162,14 +164,14 @@ describe('Utilities for running fractal inside workers', async () => {
       }
     },
     groups: {
-      group: workerHandler('group', 'group', workerAPI),
+      group: workerHandler('group', 'group', syncQueue, workerAPI),
     },
     tasks: {
-      log: workerHandler('task', 'log', workerAPI),
+      log: workerHandler('task', 'log', syncQueue, workerAPI),
     },
     interfaces: {
-      value: workerHandler('interface', 'value', workerAPI),
-      value2: workerHandler('interface', 'value2', workerAPI),
+      value: workerHandler('interface', 'value', syncQueue, workerAPI),
+      value2: workerHandler('interface', 'value2', syncQueue, workerAPI),
     },
     warn: workerLog('warn', workerAPI),
     error: workerLog('error', workerAPI),
@@ -188,7 +190,7 @@ describe('Utilities for running fractal inside workers', async () => {
     let disposeGroupFn
     let groupHandler: Handler = () => mod => ({
       state: undefined,
-      handle: ([id, group]) => {
+      handle: async ([id, group]) => {
         if (groupFn) {
           mod.setGroup(id, 'group', group)
           groupFn(group)
@@ -206,7 +208,7 @@ describe('Utilities for running fractal inside workers', async () => {
 
     let logTask: Handler = log => mod => ({
       state: undefined,
-      handle: (data: {info: any, cb: EventData}) => {
+      handle: async (data: {info: any, cb: EventData}) => {
         log.push(data.info)
         mod.dispatch(data.cb)
       },
@@ -234,10 +236,11 @@ describe('Utilities for running fractal inside workers', async () => {
     })
 
     let disposeFn
+    let syncQueue = makeSyncQueue()
     let workerModule = await run({
       root,
       beforeInit: mod => {
-        workerListener(mod, workerAPI)
+        workerListener(syncQueue, workerAPI)(mod)
       },
       destroy: () => {
         if (disposeFn) {
@@ -245,14 +248,14 @@ describe('Utilities for running fractal inside workers', async () => {
         }
       },
       groups: {
-        group: workerHandler('group', 'group', workerAPI),
+        group: workerHandler('group', 'group', syncQueue, workerAPI),
       },
       tasks: {
-        log: workerHandler('task', 'log', workerAPI),
+        log: workerHandler('task', 'log', syncQueue, workerAPI),
       },
       interfaces: {
-        value: workerHandler('interface', 'value', workerAPI),
-        value2: workerHandler('interface', 'value2', workerAPI),
+        value: workerHandler('interface', 'value', syncQueue, workerAPI),
+        value2: workerHandler('interface', 'value2', syncQueue, workerAPI),
       },
       warn: workerLog('warn', workerAPI),
       error: workerLog('error', workerAPI),
@@ -269,10 +272,11 @@ describe('Utilities for running fractal inside workers', async () => {
       expect(group).toBe('MainGroup')
       done()
     }
+    let syncQueue = makeSyncQueue()
     run({
       root,
       beforeInit: mod => {
-        workerListener(mod, workerAPI)
+        workerListener(syncQueue, workerAPI)(mod)
       },
       destroy: () => {
         if (disposeFn) {
@@ -280,14 +284,14 @@ describe('Utilities for running fractal inside workers', async () => {
         }
       },
       groups: {
-        group: workerHandler('group', 'group', workerAPI),
+        group: workerHandler('group', 'group', syncQueue, workerAPI),
       },
       tasks: {
-        log: workerHandler('task', 'log', workerAPI),
+        log: workerHandler('task', 'log', syncQueue, workerAPI),
       },
       interfaces: {
-        value: workerHandler('interface', 'value', workerAPI),
-        value2: workerHandler('interface', 'value2', workerAPI),
+        value: workerHandler('interface', 'value', syncQueue, workerAPI),
+        value2: workerHandler('interface', 'value2', syncQueue, workerAPI),
       },
       warn: workerLog('warn', workerAPI),
       error: workerLog('error', workerAPI),
@@ -424,7 +428,7 @@ describe('Utilities for running fractal inside workers', async () => {
     workerModule.interfaceHandlers['value2'].dispose()
   })
 
-  it('should call destroy hook when dispose a module and dispose it', done => {
+  it('should call destroy hook when dispose a module and dispose it', async (done) => {
     let worker = runWorker({
       worker: mainAPI,
       groups: {
@@ -446,23 +450,25 @@ describe('Utilities for running fractal inside workers', async () => {
 
     let disposeFn
 
-    run({
+    let syncQueue = makeSyncQueue()
+
+    await run({
       root,
-      beforeInit: mod => workerListener(mod, workerAPI),
+      beforeInit: mod => workerListener(syncQueue, workerAPI)(mod),
       destroy: () => {
         if (disposeFn) {
           disposeFn()
         }
       },
       groups: {
-        group: workerHandler('group', 'group', workerAPI),
+        group: workerHandler('group', 'group', syncQueue, workerAPI),
       },
       tasks: {
-        log: workerHandler('task', 'log', workerAPI),
+        log: workerHandler('task', 'log', syncQueue, workerAPI),
       },
       interfaces: {
-        value: workerHandler('interface', 'value', workerAPI),
-        value2: workerHandler('interface', 'value2', workerAPI),
+        value: workerHandler('interface', 'value', syncQueue, workerAPI),
+        value2: workerHandler('interface', 'value2', syncQueue, workerAPI),
       },
       warn: workerLog('warn', workerAPI),
       error: workerLog('error', workerAPI),

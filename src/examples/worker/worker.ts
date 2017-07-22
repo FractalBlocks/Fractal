@@ -1,24 +1,27 @@
-import { run, workerHandler, workerLog, workerListener } from '../../core'
+import { run, workerHandler, workerLog, workerListener, makeSyncQueue } from '../../core'
 
 import * as root from './App'
 
-let app = run({
-  root,
-  beforeInit: workerListener,
-  groups: {
-    style: workerHandler('group', 'style'),
-  },
-  interfaces: {
-    view: workerHandler('interface', 'view'),
-  },
-  warn: workerLog('warn'),
-  error: workerLog('error'),
-})
-
-// Hot reload - doesnt work in a worker for now
-if (module.hot) {
-  module.hot.accept('./App', () => {
-    let m = require('./App')
-    app.moduleAPI.reattach(m)
+;(async () => {
+  let syncQueue = makeSyncQueue()
+  let app = await run({
+    root,
+    beforeInit: workerListener(syncQueue),
+    groups: {
+      style: workerHandler('group', 'style', syncQueue),
+    },
+    interfaces: {
+      view: workerHandler('interface', 'view', syncQueue),
+    },
+    warn: workerLog('warn'),
+    error: workerLog('error'),
   })
-}
+
+  // Hot reload - doesnt work in a worker for now
+  if (module.hot) {
+    module.hot.accept('./App', () => {
+      let m = require('./App')
+      app.moduleAPI.reattach(m)
+    })
+  }
+})()
