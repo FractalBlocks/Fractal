@@ -192,7 +192,7 @@ async function _nest (ctx: Context, name: Identifier, component: Component<any>,
 
   if (component.groups) {
     // Groups are handled automatically only when comoponent are initialized
-    handleGroups(childCtx, component)
+    await handleGroups(childCtx, component)
   }
 
   return childCtx
@@ -207,13 +207,13 @@ function _makeInterfaces (ctx: Context, interfaces: Interfaces): CtxInterfaceInd
   return index
 }
 
-function handleGroups (ctx: Context, component: Component<any>) {
+async function handleGroups (ctx: Context, component: Component<any>) {
   let space: HandlerObject
   let name
   for (name in component.groups) {
     space = ctx.groupHandlers[name]
     if (space) {
-      space.handle([ctx.id, component.groups[name]])
+      await space.handle([ctx.id, component.groups[name]])
     } else {
       ctx.error(
         'nest',
@@ -309,6 +309,8 @@ export interface CtxToIt {
 }
 
 // send a message to an input of a component from itself
+// There area a weird behaviuor in istanbul coverage
+/* istanbul ignore next */
 export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
@@ -322,8 +324,7 @@ export const toIt = (ctx: Context): CtxToIt => {
       return
     }
     ctx.beforeInput(ctx, inputName, data)
-    /* istanbul ignore else */
-    if (<any> input !== 'nothing' && input) {
+    if (input && (input as any) !== 'nothing') {
       // call the input
       try {
         let executable = await input(data)
@@ -465,16 +466,19 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         interfaceHandlers: {},
         // error and warning handling
         beforeInput: (ctxIn, inputName, data) => {
+          /* istanbul ignore else */
           if (moduleDef.beforeInput) {
             moduleDef.beforeInput(ctxIn, inputName, data)
           }
         },
         afterInput: (ctxIn, inputName, data) => {
+          /* istanbul ignore else */
           if (moduleDef.afterInput) {
             moduleDef.afterInput(ctxIn, inputName, data)
           }
         },
         warn: (source, description) => {
+          /* istanbul ignore else */
           if (moduleDef.warn) {
             moduleDef.warn(source, description)
           }
@@ -529,7 +533,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         if (handlers) {
           let name
           for (name in handlers) {
-            ctx[handlerTypes[c] + 'Handlers'][name] = handlers[name](moduleAPI)
+            ctx[handlerTypes[c] + 'Handlers'][name] = await handlers[name](moduleAPI)
           }
         }
       }
@@ -549,7 +553,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       let id
       for (id in ctx.components) {
         if (!ctx.components[id].isStatic) {
-          handleGroups(ctx.components[id].ctx, ctx.components[id].def)
+          await handleGroups(ctx.components[id].ctx, ctx.components[id].def)
         }
       }
     }

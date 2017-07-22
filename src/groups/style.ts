@@ -23,7 +23,7 @@ export const styleHandler = (containerName?: string, debug = false) => (mod: Mod
   let name, parts, style
   return {
     state,
-    handle: ([id, styleObj]) => {
+    handle: async ([id, styleObj]) => {
       if (debug) {
         parts = id.split('$')
         name = parts[parts.length - 1]

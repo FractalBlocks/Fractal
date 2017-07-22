@@ -4,15 +4,14 @@
 
 # Next
 
-- Inputs are now async functions
-- Add async support for toIt, toAct and toChild
 - Add server side rendering helpers
 - Add AOT helpers
-- Router
-- Router example
+- Router helpers
 
 ## Done
 
+- Worker support fixed!
+- Handlers are now async
 - Add full async support (WIP)
 - toIt, toAct and toChild are async by default. Async param is removed (Breaking change)
 - Add async inputs support

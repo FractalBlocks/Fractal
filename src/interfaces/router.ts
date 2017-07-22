@@ -8,7 +8,7 @@ export const routesHandler: Handler = () => ctx => {
   var isFirst = true
   var currentURL = '/'
 
-  function handle (value) {
+  async function handle (value) {
     if (router) {
       router.destroy()
     }

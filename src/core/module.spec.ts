@@ -103,7 +103,7 @@ let root: Component<S> = {
 
 let emptyHandler: HandlerInterface = mod => ({
   state: undefined,
-  handle: () => {},
+  handle: async () => {},
   dispose: () => {},
 })
 
@@ -211,7 +211,7 @@ describe('One Component + module functionality', async () => {
 
   let logTask: Handler = log => mod => ({
     state: undefined,
-    handle: (data: {info: any, cb: EventData}) => {
+    handle: async (data: {info: any, cb: EventData}) => {
       log.push(data.info)
       mod.dispatch(data.cb)
     },
@@ -756,7 +756,7 @@ describe('Component composition', async () => {
   let groupLog = []
   let groupHandler: Handler = () => mod => ({
     state: undefined,
-    handle: ([id, group]) => {
+    handle: async ([id, group]) => {
       lastGroup = group
       groupLog.push(group)
       mod.setGroup(id, 'value', group + 'F1')
@@ -1020,7 +1020,7 @@ describe('Component composition', async () => {
   // module API
 
   it('module API nest should nest a component', async () => {
-    app = await run({
+    let app = await run({
       root: main,
       groups: {
         value: emptyHandler,
@@ -1037,7 +1037,7 @@ describe('Component composition', async () => {
   })
 
   it('module API nestAll should nest many components', async () => {
-    app = await run({
+    let app = await run({
       root: main,
       groups: {
         value: emptyHandler,
@@ -1066,11 +1066,12 @@ describe('Component composition', async () => {
         value: valueHandler(() => 0),
       },
     })
-    app.moduleAPI.unnest('Main')
-    expect(app.ctx.components['Main']).toBeUndefined()
-    expect(app.ctx.components['Main$child1']).toBeUndefined()
-    expect(app.ctx.components['Main$child2']).toBeUndefined()
-    expect(app.ctx.components['Main$child3']).toBeUndefined()
+    await nest(app.ctx)('ChildPilar', main)
+    app.moduleAPI.unnest('ChildPilar')
+    expect(app.ctx.components['Main$ChildPilar']).toBeUndefined()
+    expect(app.ctx.components['Main$ChildPilar$child1']).toBeUndefined()
+    expect(app.ctx.components['Main$ChildPilar$child2']).toBeUndefined()
+    expect(app.ctx.components['Main$ChildPilar$child3']).toBeUndefined()
   })
 
   it('module API unnestAll should unnest many components', async () => {

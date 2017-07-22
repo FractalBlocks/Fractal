@@ -13,7 +13,7 @@ export type ValueInterface<S> = Interface<HandlerMsg, S>
 export const valueHandler = (cb: (evRes: ValueResponse) => void) => (mod: ModuleAPI) => {
   return {
     state: undefined,
-    handle(driverMsg) {
+    async handle(driverMsg) {
       driverMsg['_dispatch'] = eventData => {
         mod.dispatch(eventData)
       }

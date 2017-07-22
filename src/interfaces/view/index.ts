@@ -40,7 +40,7 @@ export const viewHandler = (selectorElm, cb?: { (value: VNode): void }) => (mod:
 
   return {
     state,
-    handle: (value: VNode) => {
+    handle: async (value: VNode) => {
       if (typeof window === 'undefined') {
         if (cb) {
           cb(value)

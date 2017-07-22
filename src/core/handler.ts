@@ -19,7 +19,7 @@ export interface HandlerObject {
 }
 
 export interface HandlerFunction {
-  (value: HandlerMsg): void
+  (value: HandlerMsg): Promise<void>
 }
 
 export type HandlerMsg = any
