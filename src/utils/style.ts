@@ -1,6 +1,8 @@
 import { types, getStyles as _getStyles } from 'typestyle'
 import { TypeStyle } from 'typestyle/lib/internal/typestyle'
 import { deepmerge } from './fun'
+import { h } from '../interfaces/view/index'
+import { VNode } from '../interfaces/view/vnode'
 
 export type CSS = types.NestedCSSProperties
 
@@ -106,3 +108,8 @@ export const obfuscator: CSS = {
   backgroundColor: 'rgba(0,0,0,0.5)',
   display: 'none',
 }
+
+/* istanbul ignore next */
+export const iconView = (iconName, options = {}): VNode => h('svg', deepmerge({class: {['svg_' + iconName]: true}}, options), [
+  h('use', {attrs: { 'xlink:href': 'assets/icons-bundle.min.svg#' + iconName }}),
+])
