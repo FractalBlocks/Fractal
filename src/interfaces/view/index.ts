@@ -8,14 +8,13 @@ import eventListenersModule from './eventListeners'
 import globalListenersModule from './globalListeners'
 import sizeBindingModule from './sizeBinding'
 import { default as _h } from './h'
-import { VNode as _VNode } from './vnode'
+import { VNode } from './vnode'
 
 export const h = _h
 
-export type VNode = _VNode
-
 export type View<S> = Interface<VNode, S>
 
+/* istanbul ignore next */
 export const viewHandler = (selectorElm, cb?: { (value: VNode): void }) => (mod: ModuleAPI) => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let state: { lastContainer: VNode | Element } = {

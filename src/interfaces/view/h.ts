@@ -1,8 +1,11 @@
 // Copied from snabbdom
 // Commit: https://github.com/snabbdom/snabbdom/commit/c5d513dfd90fca1188e63cf8abac5cc3eb06bdcf
-import {vnode, VNode, VNodeData} from './vnode';
-import * as is from './is';
+import {vnode, VNode as _VNode, VNodeData} from './vnode'
+import * as is from './is'
 
+export type VNode = _VNode
+
+/* istanbul ignore next */
 function addNS(data: any, children: Array<VNode> | undefined, sel: string | undefined): void {
   data.ns = 'http://www.w3.org/2000/svg';
   if (sel !== 'foreignObject' && children !== undefined) {
@@ -15,6 +18,7 @@ function addNS(data: any, children: Array<VNode> | undefined, sel: string | unde
   }
 }
 
+/* istanbul ignore next */
 export function h(sel: string): VNode;
 export function h(sel: string, data: VNodeData): VNode;
 export function h(sel: string, text: string): VNode;

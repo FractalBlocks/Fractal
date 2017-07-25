@@ -38,6 +38,7 @@ export interface VNodeData {
     args?: Array<any>
 }
 
+/* istanbul ignore next */
 export function vnode(sel: string | undefined,
                       data: any | undefined,
                       children: Array<VNode | string> | undefined,

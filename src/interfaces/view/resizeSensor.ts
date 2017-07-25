@@ -13,6 +13,7 @@ export interface ExtHTMLElement extends HTMLElement {
   resizeSensor: HTMLElement
 }
 
+/* istanbul ignore next */
 export class EventQueue {
 
   q: Array<EventListener>
@@ -49,6 +50,7 @@ export class EventQueue {
 /**
  * Class for dimension change detection.
  */
+/* istanbul ignore next */
 export class ResizeSensor {
 
   element: ExtHTMLElement

@@ -1,4 +1,5 @@
 
+/* istanbul ignore next */
 export const isDescendant = (parent, child) => {
   var node = child.parentNode
   while (node != null) {
