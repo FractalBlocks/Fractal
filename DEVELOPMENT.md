@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Add coverage to view functions
 - Document sizeBinding
 - Fix size binding example
 - Fix behaviour of hot-swaping with dynamic composition (replace defs)
