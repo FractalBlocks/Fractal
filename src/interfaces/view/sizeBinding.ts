@@ -5,6 +5,9 @@ import { ResizeSensor } from './resizeSensor'
 
 export type SizeBinding = InputData | InputData[] | 'ignore'
 
+// TODO: CRITICAL, improve performance or deprecate this way in favor of task size evaluator
+
+/* istanbul ignore next */
 export const sizeBindingModule = (mod: ModuleAPI): Module => {
 
   function invokeHandler (evHandler: SizeBinding, vnode: VNode, eventData) {

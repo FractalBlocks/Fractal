@@ -31,7 +31,7 @@ There are TODOs for short term:
 
 - Add coverage to view functions
 - Document sizeBinding
-- Fix size binding example
+- Add task size evaluator and deprecate sizeBinding
 - Fix behaviour of hot-swaping with dynamic composition (replace defs)
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
 - Update examples for AOT
