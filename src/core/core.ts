@@ -1,6 +1,7 @@
 import { HandlerMsg, HandlerObject } from './handler'
 import { InterfaceHelpers } from './interface'
 import { InputHelpers } from './input'
+import { Module } from './module'
 
 export type Identifier = number | string
 
@@ -200,3 +201,7 @@ export interface ComponentSpace {
 }
 
 export type Executable<S> = Update<S> | Task
+
+export interface RunModule {
+  (root: Component<any>, DEV: boolean, viewCb?): Promise<Module>
+}
