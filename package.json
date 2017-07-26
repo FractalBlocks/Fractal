@@ -1,6 +1,6 @@
 {
   "name": "fractal-core",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "A minimalist and well crafted app, content or component is our conviction",
   "main": "core/index.js",
   "typings": "core/index.d.ts",
