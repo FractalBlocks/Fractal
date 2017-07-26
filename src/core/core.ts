@@ -162,6 +162,8 @@ export interface Context {
     // global is scoped by it's creation in nest function
     // and only used for initialization for nest function and notifyInterfaceHandlers
     initialized: boolean
+    // flag for manually disable rendering workflow, useful in SSR for performance
+    render: boolean
   },
   // delegated flag
   hotSwap: boolean

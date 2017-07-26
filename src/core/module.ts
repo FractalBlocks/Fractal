@@ -117,6 +117,7 @@ export const nest = (ctx: Context): CtxNest => async (name, component, isStatic 
   // create the global object for initialization
   ctx.global = {
     initialized: false, // disable notifyInterfaceHandlers temporarily
+    render: true,
   }
 
   let childCtx = await _nest(ctx, name, component, isStatic)
@@ -354,7 +355,7 @@ export function execute (ctx: Context, executable: GenericExecutable<any>) {
     // single update
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
     /* istanbul ignore else */
-    if (ctx.global.initialized) {
+    if (ctx.global.initialized && ctx.global.render) {
       calcAndNotifyInterfaces(ctx) // root context
     }
   } else {
@@ -378,7 +379,7 @@ export function execute (ctx: Context, executable: GenericExecutable<any>) {
               // perform the update
               componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
               /* istanbul ignore else */
-              if (ctx.global.initialized) {
+              if (ctx.global.initialized && ctx.global.render) {
                 calcAndNotifyInterfaces(ctx) // root context
               }
             } else {
@@ -458,6 +459,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         groups: {},
         global: {
           initialized: false,
+          render: true,
         },
         hotSwap: false,
         // component index
