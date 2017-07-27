@@ -10,6 +10,8 @@
 
 ## Done
 
+- Add render global flag for SSR performance
+
 # v3.0.0
 
 - Worker support fixed!
