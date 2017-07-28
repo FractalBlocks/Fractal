@@ -10,6 +10,9 @@
 
 ## Done
 
+- Input errors are delegated to caller functions
+- Fix: action input helper can be overwritten by the component
+
 # v3.0.6
 
 - Inputs can be norma functions not only async
