@@ -10,6 +10,8 @@
 
 ## Done
 
+## v3.0.7
+
 - Input errors are delegated to caller functions
 - Fix: action input helper can be overwritten by the component
 
