@@ -20,8 +20,7 @@ import { makeInputHelpers } from './input'
 
 export interface ModuleDef {
   root: Component<any>
-  log?: boolean
-  logAll?: boolean
+  render?: boolean // initial render flag
   groups?: HandlerInterfaceIndex
   tasks?: HandlerInterfaceIndex
   interfaces: HandlerInterfaceIndex
@@ -459,7 +458,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         groups: {},
         global: {
           initialized: false,
-          render: true,
+          render: moduleDef.render,
         },
         hotSwap: false,
         // component index
