@@ -10,6 +10,11 @@
 
 ## Done
 
+# v3.0.5
+
+- Add render global flag to module options
+- Remove log unused stuff
+
 ## v3.0.4
 
 - Add render global flag for SSR performance
