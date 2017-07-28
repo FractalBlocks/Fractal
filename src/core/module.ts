@@ -180,7 +180,7 @@ async function _nest (ctx: Context, name: Identifier, component: Component<any>,
   } else {
     ctx.components[id].inputs = {}
   }
-  if (component.actions) {
+  if (component.actions && !ctx.components[id].inputs['action']) {
     // action helper enabled by default
     ctx.components[id].inputs['action'] = action(component.actions)
   }
@@ -327,8 +327,8 @@ export const toIt = (ctx: Context): CtxToIt => {
     ctx.beforeInput(ctx, inputName, data)
     if (input && (input as any) !== 'nothing') {
       // call the input
+      let executable = await input(data)
       try {
-        let executable = await input(data)
         execute(ctx, executable)
         /* istanbul ignore else */
         if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
