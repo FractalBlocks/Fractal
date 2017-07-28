@@ -7,24 +7,24 @@ export type VNode = _VNode
 
 /* istanbul ignore next */
 function addNS(data: any, children: Array<VNode> | undefined, sel: string | undefined): void {
-  data.ns = 'http://www.w3.org/2000/svg';
+  data.ns = 'http://www.w3.org/2000/svg'
   if (sel !== 'foreignObject' && children !== undefined) {
     for (let i = 0; i < children.length; ++i) {
-      let childData = children[i].data;
+      let childData = children[i].data
       if (childData !== undefined) {
-        addNS(childData, (children[i] as VNode).children as Array<VNode>, children[i].sel);
+        addNS(childData, (children[i] as VNode).children as Array<VNode>, children[i].sel)
       }
     }
   }
 }
 
-/* istanbul ignore next */
 export function h(sel: string): VNode;
 export function h(sel: string, data: VNodeData): VNode;
 export function h(sel: string, text: string): VNode;
 export function h(sel: string, data: VNodeData, text: string): VNode;
 export function h(sel: string, data: VNodeData, children: Array<VNode | undefined | null>): VNode;
 export function h(sel: string, children: Array<VNode | undefined | null>): VNode;
+/* istanbul ignore next */
 export function h(sel: any, b?: any, c?: any): VNode {
   var data: VNodeData = {}, children: any, text: any, i: number;
   if (c !== undefined) {
@@ -47,8 +47,9 @@ export function h(sel: any, b?: any, c?: any): VNode {
     sel[0] === 's' && sel[1] === 'v' && sel[2] === 'g' &&
     (sel.length === 3 || sel[3] === '.' || sel[3] === '#')
   ) {
-    addNS(data, children, sel);
+    addNS(data, children, sel)
   }
-  return vnode(sel, data, children, text, undefined);
-};
-export default h;
+  return vnode(sel, data, children, text, undefined)
+}
+
+export default h
