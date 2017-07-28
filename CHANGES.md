@@ -10,6 +10,10 @@
 
 ## Done
 
+# v3.0.6
+
+- Inputs can be norma functions not only async
+
 # v3.0.5
 
 - Add render global flag to module options
