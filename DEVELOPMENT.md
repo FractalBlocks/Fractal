@@ -29,15 +29,15 @@ We support use of:
 
 There are TODOs for short term:
 
-- Add coverage to view functions
-- Document sizeBinding
-- Add task size evaluator and deprecate sizeBinding
-- Fix behaviour of hot-swaping with dynamic composition (replace defs)
-- Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
 - Update examples for AOT
-- Document prerendering (AKA AOT compilation)
+- Document prerendering (AOT) and SSR
+- Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
+- Add task size evaluator and deprecate sizeBinding
+- Document sizeBinding
+- Fix behaviour of hot-swaping with dynamic composition (replace defs)
 - Document Cached interfaces, this is basically that interfaces are cached by default
 - Document interfaceOrder. This method is used to set the order of the initial evaluation of interfaces
+- Add coverage to view functions
 - Document global events listener selfPropagated option
 - Document that global and normal event listeners do not handle events that are prevented ( default: false ) and there are a listenPrevented option to reverse this behaviour
 - Document that we don't support stop propagation of DOM events as a design choice because of [this article](https://css-tricks.com/dangers-stopping-event-propagation/)
