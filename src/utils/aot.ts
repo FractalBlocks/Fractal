@@ -7,7 +7,7 @@ export interface PrerenderOptions {
   runModule: RunModule
   encoding: string
   outputFile: string
-  htmlFiles: string
+  htmlFile: string
   cssFile: string
   isStatic?: boolean // is isS this means there are no need of JS at all
   bundlePath?: string,

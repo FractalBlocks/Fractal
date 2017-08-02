@@ -4,11 +4,14 @@
 
 ## Next
 
-- Add server side rendering helpers
-- Add AOT helpers
 - Router helpers
 
 ## Done
+
+## v3.1.0 (Soon ...)
+
+- Add AOT helpers
+- Add server side rendering helpers
 
 ## v3.0.7
 
