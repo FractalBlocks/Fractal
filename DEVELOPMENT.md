@@ -29,7 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
-- Update examples for AOT
+- Make an AOT, SSR, code splitting full example
 - Document prerendering (AOT) and SSR
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
 - Add task size evaluator and deprecate sizeBinding
