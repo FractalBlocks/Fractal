@@ -8,10 +8,11 @@
 
 ## Done
 
-## v3.1.0 (Soon ...)
+## v3.1.0
 
 - Add AOT helpers
 - Add server side rendering helpers
+- Fix error message
 
 ## v3.0.7
 
