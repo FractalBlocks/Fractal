@@ -5,7 +5,7 @@ import { styleGroup } from '../utils/style'
 
 // insert styles in a DOM container at head
 
-export const styleHandler = (containerName?: string, debug = false) => (mod: ModuleAPI) => {
+export const styleHandler = (containerName?: string, debug = false, groupName = 'style') => (mod: ModuleAPI) => {
   let container
   if (typeof window !== 'undefined') {
     container = document.createElement('style')
@@ -30,7 +30,7 @@ export const styleHandler = (containerName?: string, debug = false) => (mod: Mod
       }
       style = styleGroup(instance, styleObj, name)
       instance.forceRenderStyles()
-      mod.setGroup(id, 'style', style)
+      mod.setGroup(id, groupName, style)
     },
     dispose: () => {
       state = {}
