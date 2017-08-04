@@ -337,8 +337,8 @@ export const toIt = (ctx: Context): CtxToIt => {
         await ctx.afterInput(ctx, inputName, data)
       } catch (err) {
         ctx.error(
-          'execute - async',
-          `Error in async input of component '${componentSpace.def.name}' from space '${id}'`
+          'execute input',
+          `Error in input '${inputName}' of component '${componentSpace.def.name}' from space '${id}'`
         )
       }
     }
