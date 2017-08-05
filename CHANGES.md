@@ -8,6 +8,10 @@
 
 ## Done
 
+## v3.1.1
+
+- Fix coupled group name in style group handler
+
 ## v3.1.0
 
 - Add AOT helpers
