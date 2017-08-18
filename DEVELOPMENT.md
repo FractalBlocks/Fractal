@@ -32,8 +32,7 @@ There are TODOs for short term:
 - Make an AOT, SSR, code splitting full example
 - Document prerendering (AOT) and SSR
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
-- Add task size evaluator and deprecate sizeBinding
-- Document sizeBinding
+- Document sizeTask
 - Fix behaviour of hot-swaping with dynamic composition (replace defs)
 - Document Cached interfaces, this is basically that interfaces are cached by default
 - Document interfaceOrder. This method is used to set the order of the initial evaluation of interfaces

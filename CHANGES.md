@@ -8,6 +8,11 @@
 
 ## Done
 
+## v3.1.2
+
+- Add sizeTask
+- Add act helper to input helpers
+
 ## v3.1.1
 
 - Fix coupled group name in style group handler
