@@ -3,9 +3,9 @@ import {
   // DEV
   logFns,
   mergeStates,
-  computeEvent,
 } from '../../core'
 import { viewHandler } from '../../interfaces/view'
+import { sizeHandler } from '../../tasks/size'
 import { styleHandler } from '../../groups/style'
 
 import * as root from './Root'
@@ -21,20 +21,7 @@ let DEV = ENV === 'development'
       style: styleHandler('app-style', DEV),
     },
     tasks: {
-      size: mod => ({
-        state: undefined,
-        handle: async ([selector, prop, cb]) => {
-          let elements: HTMLElement[] = document.querySelectorAll(selector)
-          let propValues = []
-          for (let i = 0, len = elements.length; i < len; i++) {
-            let element = elements[i]
-            let bbox = element.getBoundingClientRect()
-            propValues.push(bbox[prop])
-          }
-          mod.dispatch(computeEvent(propValues, cb))
-        },
-        dispose: () => {},
-      }),
+      size: sizeHandler(),
     },
     interfaces: {
       view: viewHandler('#app'),

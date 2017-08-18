@@ -19,11 +19,15 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs<S> = ({ ctx, act, toIt }) => ({
+export const inputs: Inputs<S> = ({ ctx, ev, toAct, toIt }) => ({
   toggle: async () => <Task> [
     'size',
-    ['.' + ctx.groups.style.bar, 'width', act('SetWidth', _, '*')],
+    ['.' + ctx.groups.style.base, 'width', ev('setWidthToggle', _, '*')],
   ],
+  setWidthToggle: async width => {
+    await toAct('SetWidth', width)
+    await toAct('Toggle')
+  },
 })
 
 export const actions: Actions<S> = {
