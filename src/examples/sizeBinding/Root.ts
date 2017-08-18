@@ -3,8 +3,8 @@ import {
   Interfaces,
   StyleGroup,
   assoc,
-  _,
   absoluteCenter,
+  _,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
