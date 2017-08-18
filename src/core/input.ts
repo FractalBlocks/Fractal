@@ -1,5 +1,5 @@
 import { Context } from './core'
-import { CtxEv, _ev } from './interface'
+import { CtxEv, _ev, CtxAct, _act } from './interface'
 import {
   toIt,
   CtxToIt,
@@ -16,6 +16,7 @@ import {
 export interface InputHelpers {
   ctx: Context
   ev: CtxEv
+  act: CtxAct
   stateOf: CtxStateOf
   toIt: CtxToIt
   toChild: CtxToChild
@@ -29,6 +30,7 @@ export interface InputHelpers {
 export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   ctx,
   ev: _ev(ctx),
+  act: _act(ctx),
   stateOf: _stateOf(ctx),
   toIt: toIt(ctx),
   toChild: toChild(ctx),
