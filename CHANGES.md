@@ -5,6 +5,8 @@
 ## Next
 
 - Router helpers
+- Add task input helper
+- Executables returned directly from an input should be awaited after input finishes (Verify)
 
 ## Done
 
