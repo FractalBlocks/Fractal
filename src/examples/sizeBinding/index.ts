@@ -28,8 +28,8 @@ let DEV = ENV === 'development'
   // Hot reload - DEV ONLY
   if (module.hot) {
     module.hot.accept('./Root', () => {
-      let m = require('./Root')
-      app.moduleAPI.reattach(<any> m, mergeStates)
+      let m = <any> require('./Root')
+      app.moduleAPI.reattach(m, mergeStates)
     })
   }
 })()

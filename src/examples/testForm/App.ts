@@ -8,6 +8,8 @@ import {
   styles,
   StyleGroup,
   pipe,
+  compGroup,
+  Components,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
@@ -21,7 +23,7 @@ let questions = [
   'the secret of life?',
   'what is the best tool for Web Dev?',
   '2 * 2?',
-]
+].map((q, idx) => [idx + '', q])
 
 let answers = [
   '2',
@@ -36,10 +38,6 @@ let TextField = styles({
     margin: '15px',
   },
 })(clone(TextFieldBase))
-
-let questionCmp = <any> questions.map(
-  q => props({ placeholder: q })(clone(TextField))
-)
 
 let TestBtn = props('Test')(clone(ButtonBase))
 
@@ -60,8 +58,8 @@ let ClearBtn = pipe(
   props('Clear'),
 )(clone(ButtonBase))
 
-export const components = {
-  ...questionCmp,
+export const components: Components = {
+  ...compGroup('Form', questions, q => props({ placeholder: q })(clone(TextField))),
   TestBtn,
   ClearBtn,
 }
@@ -74,22 +72,19 @@ export const state: S = {
   correct: 'unknown',
 }
 
-export const inputs: Inputs<S> = ({ ctx, stateOf, toChild }) => ({
+export const inputs: Inputs<S> = ({ ctx, stateOf, toChild, comps }) => ({
   $TestBtn_click: async () => {
-    let result = Object.keys(questions).map((q, idx) => {
-      let isCorrect = stateOf(q).value === answers[idx]
-      toChild(q, 'action', ['SetError', !isCorrect])
+    let results = comps('Form').getState('value')
+    let result = Object.keys(results).map(name => {
+      name = <any> parseInt(name)
+      let isCorrect = results[name] === answers[name]
+      toChild('Form_' + name, 'action', ['SetError', !isCorrect])
       return isCorrect
     }).reduce((a, r) => a && r, true)
     return actions.SetCorrect(result)
   },
   $ClearBtn_click: async () => {
-    Object.keys(questions).forEach(
-      i => {
-        toChild(i, 'action', ['SetValue', ''])
-        toChild(i, 'action', ['SetError', false])
-      }
-    )
+    comps('Form').broadcast('action', ['Reset'])
     return actions.Clear()
   },
 })
@@ -102,7 +97,7 @@ export const actions: Actions<S> = {
   Clear: () => assoc('correct')('unknown'),
 }
 
-let view: View<S> = ({ ctx, vw }) => s => {
+let view: View<S> = ({ ctx, vw, vws }) => s => {
   let style = ctx.groups['style']
   return h('div', {
     key: name,
@@ -113,10 +108,7 @@ let view: View<S> = ({ ctx, vw }) => s => {
     }, [
       h('div', {
         class: { [style.questions]: true },
-      }, Object.keys(questionCmp).map(
-          i => vw(i)
-        ),
-      ),
+      }, vws('Form')),
       h('p', {
         class: {
           [style.testText]: true,

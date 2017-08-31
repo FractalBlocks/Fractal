@@ -26,7 +26,7 @@ import * as root from './App'
   // Hot reload - DEV ONLY
   if (module.hot) {
     module.hot.accept('./App', () => {
-      let m = require('./App')
+      let m = <any> require('./App')
       app.moduleAPI.reattach(m, mergeStates)
     })
   }

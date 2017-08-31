@@ -19,6 +19,11 @@ export const state = {
 export type S = typeof state
 
 export const actions: Actions<S> = {
+  Reset: () => s => {
+    s.error = state.error
+    s.value = state.value
+    return s
+  },
   SetError: (error: boolean) => s => {
     s.error = error
     return s
