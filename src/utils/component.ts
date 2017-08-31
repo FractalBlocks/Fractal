@@ -47,3 +47,10 @@ export function styles (style: StyleGroup) {
     return comp
   }
 }
+
+export const compGroup = (groupName: string, arr: any[][], fn: any) => arr.reduce(
+  (comps, c) => {
+    comps[groupName + '_' + c[0]] = fn(c[1])
+    return comps
+  }
+, {})

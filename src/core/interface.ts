@@ -8,7 +8,7 @@ import {
   HandlerMsg,
 } from './handler'
 import { toIt } from './module'
-import { _stateOf, CtxStateOf } from './input'
+import { _stateOf, CtxStateOf, _componentHelpers } from './input'
 
 export interface InterfaceHelpers {
   ctx: Context
@@ -17,6 +17,7 @@ export interface InterfaceHelpers {
   ev: CtxEv
   act: CtxAct
   vw: CtxVw
+  vws: CtxVws
 }
 
 export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
@@ -26,6 +27,7 @@ export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
   ev: _ev(ctx),
   act: _act(ctx),
   vw: _vw(ctx),
+  vws: _vws(ctx),
 })
 
 export interface CtxInterfaceOf {
@@ -73,10 +75,28 @@ export interface CtxVw {
   (componentName: string): HandlerMsg
 }
 
-// extract view interface, sintax sugar
+// extract component view interface, sintax sugar
 export const _vw = (ctx: Context): CtxVw => {
   let _interfaceOfCtx = _interfaceOf(ctx)
   return componentName => _interfaceOfCtx(componentName, 'view')
+}
+
+export interface CtxVws {
+  (groupName: string): HandlerMsg[]
+}
+
+// extract view interfaces from a component group
+export const _vws = (ctx: Context): CtxVws => {
+  let _interfaceOfCtx = _interfaceOf(ctx)
+  let comps = _componentHelpers(ctx)
+  return groupName => {
+    let views = []
+    let componentNames = comps(groupName).getNames()
+    for (let i = 0, len = componentNames.length; i < len; i++) {
+      views.push(_interfaceOfCtx(componentNames[i], 'view'))
+    }
+    return views
+  }
 }
 
 export interface CtxEv {

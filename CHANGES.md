@@ -6,9 +6,12 @@
 
 - Router helpers
 - Add task input helper
-- Executables returned directly from an input should be awaited after input finishes (Verify)
 
 ## Done
+
+## v3.2.0
+
+- Add 'compGroup', 'comps' and 'vws' helpers
 
 ## v3.1.2
 

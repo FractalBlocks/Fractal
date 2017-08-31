@@ -25,6 +25,7 @@ export interface InputHelpers {
   unnest: CtxUnnest
   nestAll: CtxNestAll
   unnestAll: CtxUnnestAll
+  comps: CtxComponentHelpers
 }
 
 export const makeInputHelpers = (ctx: Context): InputHelpers => ({
@@ -39,6 +40,7 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   unnest: unnest(ctx),
   nestAll: nestAll(ctx),
   unnestAll: unnestAll(ctx),
+  comps: _componentHelpers(ctx),
 })
 
 export interface CtxStateOf {
@@ -93,4 +95,66 @@ export const toAct = (ctx: Context): CtxToAct => {
   let _toIt = toIt(ctx)
   return (actionName, data, isPropagated = true) =>
     _toIt('action', [actionName, data], isPropagated)
+}
+
+
+// --- Child components helpers: build functions for traversing components and broadcasting messages to them
+
+export interface Instruction extends Array<any> {
+  0: string // component name
+  1: string // input
+  2: any // data
+}
+
+export interface ComponentHelpers {
+  getState (key: string, options?: {
+    exceptions?: string[]
+    nameFn? (name: string): string
+  }): any
+  executeAll (insts: Instruction[]): void
+  broadcast (inputName: string, data?: any)
+  getNames (): string[]
+}
+
+export interface CtxComponentHelpers {
+  (groupName: string): ComponentHelpers
+}
+
+export const getName = (name: string) => name.split('_')[1]
+
+export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
+  let _toChild = toChild(ctx)
+  let stateOf = _stateOf(ctx)
+  return groupName => {
+    let componentNames = Object.keys(ctx.components[ctx.id].components)
+      .filter(name => name.split('_')[0] === groupName)
+    return {
+      getState (key: string, options): any {
+        let obj = {}
+        let name
+        let exceptions = options && options.exceptions
+        let nameFn = options && options.nameFn
+        for (let i = 0, len = componentNames.length; i < len; i++) {
+          if (exceptions && exceptions.indexOf(componentNames[i]) === -1 || !exceptions) {
+            name = nameFn ? nameFn(componentNames[i]) : componentNames[i]
+            obj[getName(name)] = stateOf(componentNames[i])[key]
+          }
+        }
+        return obj
+      },
+      executeAll (insts) {
+        for (let i = 0, inst; inst = insts[i]; i++) {
+          _toChild(inst[0], inst[1], inst[2])
+        }
+      },
+      broadcast (inputName, data) {
+        for (let i = 0, name; name = componentNames[i]; i++) {
+          _toChild(name, inputName, data)
+        }
+      },
+      getNames() {
+        return componentNames
+      }
+    }
+  }
 }
