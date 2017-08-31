@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Add coverage for latets helpers: compGroup, comps and vws
 - Make an AOT, SSR, code splitting full example
 - Document prerendering (AOT) and SSR
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
