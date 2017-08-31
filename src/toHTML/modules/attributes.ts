@@ -1,6 +1,6 @@
 
-var forOwn = require('lodash.forown')
-var escape = require('lodash.escape')
+import forOwn = require('lodash.forown')
+import escape = require('lodash.escape')
 
 // data.attrs
 

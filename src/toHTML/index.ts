@@ -1,6 +1,6 @@
 
-var init = require('./init')
-var modules = require('./modules')
+import { init } from './init'
+import modules from './modules'
 
 var toHTML = init([
   modules.attributes,

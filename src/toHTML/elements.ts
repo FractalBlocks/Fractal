@@ -1,7 +1,7 @@
 
 // All SVG children elements, not in this list, should self-close
 
-exports.CONTAINER = {
+export const CONTAINER = {
   // http://www.w3.org/TR/SVG/intro.html#TermContainerElement
   'a': true,
   'defs': true,
@@ -24,7 +24,7 @@ exports.CONTAINER = {
 
 // http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
 
-exports.VOID = {
+export const VOID = {
   area: true,
   base: true,
   br: true,

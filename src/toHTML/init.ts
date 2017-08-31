@@ -1,9 +1,9 @@
 
-var parseSelector = require('parse-sel')
-var VOID_ELEMENTS = require('./elements').VOID
-var CONTAINER_ELEMENTS = require('./elements').CONTAINER
+import parseSelector = require('parse-sel')
+import { VOID as VOID_ELEMENTS } from './elements'
+import { CONTAINER as CONTAINER_ELEMENTS } from './elements'
 
-module.exports = function init (modules) {
+export function init (modules) {
   function parse (vnode, node) {
     var result = []
     var attributes = new Map([
