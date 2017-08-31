@@ -6,7 +6,7 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 
 ## How it works?
 
-- Fractal is minimal. Core logic is less than 700 lines of code and you can see how it works
+- Fractal is minimal, composable and extendible
 - Simple inter-component comunication via messages, you cant broadcast messages to all components and listen for them
 - Async operations made simple, all Fractal core make use of async functions, and you can use it inside components
 - Its clear and concise. All you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
