@@ -7,13 +7,14 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 ## How it works?
 
 - Fractal is minimal. Core logic is less than 700 lines of code and you can see how it works
+- Simple inter-component comunication via messages, you cant broadcast messages to all components and listen for them
 - Async operations made simple, all Fractal core make use of async functions, and you can use it inside components
+- Its clear and concise. All you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
 - You can serialize the whole side effects, this means you can run Fractal in a [Web Worker](https://github.com/FractalBlocks/Fractal/blob/master/src/examples/worker/index.ts), in a server via websockets or even in a remote browser via WebRTC :')
 - Gives you powerful patterns and composing tools that helps to build small and large apps
 - A clear and flexible architecture that scales
 - Easily integrable and embeddable by design
 - High code quality, we love that!! and we helps you to achive it in your proyect :heart:
-- Its clear and concise. All you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
 - The state is isolated, this mean it is serializable and you can hot-swap code updating the UI without reload the navigator
 - Excellent developer experience. We love to improve your experience
     - We have hot-swapping
