@@ -9,6 +9,10 @@
 
 ## Done
 
+## v3.2.1
+
+- Fix executeAll from comps helper
+
 ## v3.2.0
 
 - Add 'compGroup', 'comps' and 'vws' helpers
