@@ -144,7 +144,7 @@ export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
       },
       executeAll (insts) {
         for (let i = 0, inst; inst = insts[i]; i++) {
-          _toChild(inst[0], inst[1], inst[2])
+          _toChild(groupName + '_' + inst[0], inst[1], inst[2])
         }
       },
       broadcast (inputName, data) {
