@@ -35,6 +35,7 @@ There are TODOs for short term:
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
 - Document sizeTask
 - Fix behaviour of hot-swaping with dynamic composition (replace defs)
+- Evaluate if a component tree is more performant and take action about it
 - Document Cached interfaces, this is basically that interfaces are cached by default
 - Document interfaceOrder. This method is used to set the order of the initial evaluation of interfaces
 - Add coverage to view functions
