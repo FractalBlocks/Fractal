@@ -1,4 +1,4 @@
-import { Context } from './core'
+import { Context, InputResult } from './core'
 import { CtxEv, _ev, CtxAct, _act } from './interface'
 import {
   toIt,
@@ -21,6 +21,7 @@ export interface InputHelpers {
   toIt: CtxToIt
   toChild: CtxToChild
   toAct: CtxToAct
+  runIt: CtxRunIt
   nest: CtxNest
   unnest: CtxUnnest
   nestAll: CtxNestAll
@@ -36,6 +37,7 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   toIt: toIt(ctx),
   toChild: toChild(ctx),
   toAct: toAct(ctx),
+  runIt: runIt(ctx),
   nest: nest(ctx),
   unnest: unnest(ctx),
   nestAll: nestAll(ctx),
@@ -97,6 +99,16 @@ export const toAct = (ctx: Context): CtxToAct => {
     _toIt('action', [actionName, data], isPropagated)
 }
 
+export interface CtxRunIt {
+  (executables: InputResult<any>, isPropagated?: boolean): void
+}
+
+// generic action self caller
+export const runIt = (ctx: Context): CtxRunIt => {
+  let _toIt = toIt(ctx)
+  return (executables, isPropagated = true) =>
+    _toIt('return', executables, isPropagated)
+}
 
 // --- Child components helpers: build functions for traversing components and broadcasting messages to them
 

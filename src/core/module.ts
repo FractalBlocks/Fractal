@@ -180,9 +180,15 @@ async function _nest (ctx: Context, name: Identifier, component: Component<any>,
   } else {
     ctx.components[id].inputs = {}
   }
-  if (component.actions && !ctx.components[id].inputs['action']) {
-    // action helper enabled by default
-    ctx.components[id].inputs['action'] = action(component.actions)
+  if (component.actions) { // reserved inputs: _action and _return
+    if (!ctx.components[id].inputs['action']) {
+      // action helper enabled by default
+      ctx.components[id].inputs['action'] = action(component.actions)
+    }
+    if (!ctx.components[id].inputs['return']) {
+      // action helper enabled by default
+      ctx.components[id].inputs['return'] = x => x
+    }
   }
 
   // composition
