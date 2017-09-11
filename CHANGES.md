@@ -9,6 +9,10 @@
 
 ## Done
 
+## v3.3.0
+
+- Add runIt input helper and default return input to components
+
 ## v3.2.1
 
 - Fix executeAll from comps helper
