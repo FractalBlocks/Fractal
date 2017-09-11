@@ -148,8 +148,9 @@ export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
         let nameFn = options && options.nameFn
         for (let i = 0, len = componentNames.length; i < len; i++) {
           if (exceptions && exceptions.indexOf(componentNames[i]) === -1 || !exceptions) {
-            name = nameFn ? nameFn(componentNames[i]) : componentNames[i]
-            obj[getName(name)] = stateOf(componentNames[i])[key]
+            name = getName(componentNames[i])
+            name = nameFn ? nameFn(name) : name
+            obj[name] = stateOf(componentNames[i])[key]
           }
         }
         return obj
