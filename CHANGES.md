@@ -9,6 +9,10 @@
 
 ## Done
 
+## v3.3.1
+
+- Fix mistake in getState component helper, bad use of nameFn
+
 ## v3.3.0
 
 - Add runIt input helper and default return input to components
