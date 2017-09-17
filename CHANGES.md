@@ -9,6 +9,10 @@
 
 ## Done
 
+## v3.3.3
+
+- Fix async CtxInterface
+
 ## v3.3.2
 
 - CtxInterface can be an async function
