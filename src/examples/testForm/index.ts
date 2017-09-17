@@ -1,31 +1,20 @@
-import {
-  run,
-  // DEV
-  logFns,
-  mergeStates,
-} from '../../core'
-import { viewHandler } from '../../interfaces/view'
-import { styleHandler } from '../../groups/style'
+import { mergeStates } from '../../core'
+import { runModule } from './module'
 
-import * as root from './App'
+import * as root from './Root'
+
+declare const ENV: any
+
+let DEV = ENV === 'development'
 
 ;(async () => {
-  let app = await run({
-    root,
-    groups: {
-      style: styleHandler('', true),
-    },
-    interfaces: {
-      view: viewHandler('#app'),
-    },
-    // DEV ONLY (you can handle it manually)
-    ...logFns,
-  })
+
+  const app = await runModule(root, DEV)
 
   // Hot reload - DEV ONLY
   if (module.hot) {
-    module.hot.accept('./App', () => {
-      let m = <any> require('./App')
+    module.hot.accept('./Root', () => {
+      let m = <any> require('./Root')
       app.moduleAPI.reattach(m, mergeStates)
     })
   }

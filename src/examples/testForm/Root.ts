@@ -16,7 +16,7 @@ import { View, h } from '../../interfaces/view'
 import * as TextFieldBase from './TextField'
 import * as ButtonBase from './Button'
 
-export const name = 'Main'
+export const name = 'Root'
 
 let questions = [
   '1 + 1?',
@@ -99,6 +99,7 @@ export const actions: Actions<S> = {
 
 let view: View<S> = ({ ctx, vw, vws }) => s => {
   let style = ctx.groups['style']
+
   return h('div', {
     key: name,
     class: { [style.base]: true },
