@@ -352,7 +352,7 @@ export const toIt = (ctx: Context): CtxToIt => {
 }
 
 // execute an executable in a context, executable parameter should not be undefined
-export function execute (ctx: Context, executable: GenericExecutable<any>) {
+export async function execute (ctx: Context, executable: GenericExecutable<any>) {
   let id = ctx.id
   let componentSpace = ctx.components[id]
 
@@ -374,7 +374,7 @@ export function execute (ctx: Context, executable: GenericExecutable<any>) {
             `there are no task handler for '${executable[0]}' in component '${componentSpace.def.name}' from space '${id}'`
           )
         }
-        ctx.taskHandlers[executable[0]].handle(executable[1])
+        await ctx.taskHandlers[executable[0]].handle(executable[1])
       } else {
         /* istanbul ignore else */
         if (executable[0] instanceof Array || typeof executable[0] === 'function') {
@@ -415,8 +415,8 @@ export function calcAndNotifyInterfaces (ctx: Context) {
   let idParts = (ctx.id + '').split('$')
   idParts.pop()
   for (let name in space.interfaces) {
-    setTimeout(() => {
-      space.interfaceValues[name] = space.interfaces[name](space.state)
+    setTimeout(async () => {
+      space.interfaceValues[name] = await space.interfaces[name](space.state)
       // remove cache of parent component spaces
       let parts = idParts.slice(0)
       for (let i = parts.length - 1; i >=0 ; i--) {
@@ -588,7 +588,9 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         continue // interface evaluated yet
       }
       if (ctx.interfaceHandlers[name]) {
-        ctx.interfaceHandlers[name].handle(rootSpace.interfaces[name](ctx.components[rootName].state))
+        ctx.interfaceHandlers[name].handle(
+          await rootSpace.interfaces[name](ctx.components[rootName].state)
+        )
       } else {
         return errorNotHandler(name)
       }

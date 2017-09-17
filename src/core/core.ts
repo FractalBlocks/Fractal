@@ -123,7 +123,7 @@ export interface Interface<Type, S>{
 }
 
 export interface CtxInterface<Type, S> {
-  (state: S): Type
+  (state: S): Promise<Type> | Type
 }
 
 export interface CtxInterfaceIndex {

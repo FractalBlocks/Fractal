@@ -97,7 +97,7 @@ export const actions: Actions<S> = {
   Clear: () => assoc('correct')('unknown'),
 }
 
-let view: View<S> = ({ ctx, vw, vws }) => s => {
+let view: View<S> = ({ ctx, vw, vws }) => async s => {
   let style = ctx.groups['style']
 
   return h('div', {
