@@ -9,6 +9,10 @@
 
 ## Done
 
+## v3.3.2
+
+- CtxInterface can be an async function
+
 ## v3.3.1
 
 - Fix mistake in getState component helper, bad use of nameFn
