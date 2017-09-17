@@ -423,17 +423,17 @@ export function calcAndNotifyInterfaces (ctx: Context) {
         ctx.components[parts.join('$')].interfaceValues[name] = undefined
         parts.pop()
       }
-      notifyInterfaceHandlers(ctx)
+      await notifyInterfaceHandlers(ctx)
     }, 0)
   }
 }
 
 // permorms interface recalculation
-export function notifyInterfaceHandlers (ctx: Context) {
+export async function notifyInterfaceHandlers (ctx: Context) {
   let space = ctx.components[ctx.rootCtx.id]
   for (let name in space.interfaces) {
     if (ctx.interfaceHandlers[name]) {
-      ctx.interfaceHandlers[name].handle(space.interfaces[name](space.state))
+      ctx.interfaceHandlers[name].handle(await space.interfaces[name](space.state))
     } else {
       // This only can happen when this method is called for a context that is not the root
       ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.def.name}' from space '${ctx.id}'`)
