@@ -56,32 +56,32 @@ export function mergeStates (
     }
   }
 
-    for (let i = 0, ids = Object.keys(comps), len = ids.length; i < len; i++) {
-      // replace component in contexts of spaces
-      comps[ids[i]].ctx.components = comps
-      if (!comps[ids[i]].isStatic) {
-        // replace outdated defs of dynamic components
-        let idParts = ids[i].split('$')
-        // is not root?
-        /* istanbul ignore else */
-        if (idParts.length > 1) {
-          let parentId = idParts.slice(0, -1).join('$')
-          if (components[parentId]) {
-            if (components[parentId].def.defs && components[parentId].def.defs[comps[ids[i]].def.name]) {
-              comps[ids[i]].def = components[parentId].def.defs[comps[ids[i]].def.name]
-            } else {
-              ctx.error('mergeStates', `there are no dynamic component definition of ${comps[ids[i]].def.name} (defs) in ${parentId}`)
-            }
+  for (let i = 0, ids = Object.keys(comps), len = ids.length; i < len; i++) {
+    // replace component in contexts of spaces
+    comps[ids[i]].ctx.components = comps
+    if (!comps[ids[i]].isStatic) {
+      // replace outdated defs of dynamic components
+      let idParts = ids[i].split('$')
+      // is not root?
+      /* istanbul ignore else */
+      if (idParts.length > 1) {
+        let parentId = idParts.slice(0, -1).join('$')
+        if (components[parentId]) {
+          if (components[parentId].def.defs && components[parentId].def.defs[comps[ids[i]].def.name]) {
+            comps[ids[i]].def = components[parentId].def.defs[comps[ids[i]].def.name]
           } else {
-            if (comps[parentId].def.defs && comps[parentId].def.defs[comps[ids[i]].def.name]) {
-              comps[ids[i]].def = comps[parentId].def.defs[comps[ids[i]].def.name]
-            } else {
-              ctx.error('mergeStates', `there are no dynamic component definition of ${comps[ids[i]].def.name} (defs) in ${parentId}`)
-            }
+            ctx.error('mergeStates', `there are no dynamic component definition of ${comps[ids[i]].def.name} (defs) in ${parentId}`)
+          }
+        } else {
+          if (comps[parentId].def.defs && comps[parentId].def.defs[comps[ids[i]].def.name]) {
+            comps[ids[i]].def = comps[parentId].def.defs[comps[ids[i]].def.name]
+          } else {
+            ctx.error('mergeStates', `there are no dynamic component definition of ${comps[ids[i]].def.name} (defs) in ${parentId}`)
           }
         }
       }
     }
+  }
 
   return comps
 }
