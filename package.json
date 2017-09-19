@@ -40,7 +40,6 @@
   "dependencies": {
     "@types/core-js": "^0.9.43",
     "@types/node": "^8.0.26",
-    "css-loader": "^0.28.7",
     "deep-equal": "^1.0.1",
     "deepmerge": "^1.4.3",
     "lodash.escape": "^4.0.1",
@@ -59,6 +58,7 @@
     "awesome-typescript-loader": "^3.0.3",
     "codecov": "^1.0.1",
     "cross-env": "^3.1.4",
+    "css-loader": "^0.28.7",
     "html-webpack-plugin": "^2.26.0",
     "istanbul-instrumenter-loader": "^1.2.0",
     "jasmine": "^2.5.2",
@@ -71,6 +71,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.2",
     "source-map-loader": "^0.1.6",
+    "style-loader": "^0.18.2",
     "ts-helpers": "^1.1.2",
     "tslint": "^4.4.2",
     "typescript": "^2.5.0-dev.20170619",
