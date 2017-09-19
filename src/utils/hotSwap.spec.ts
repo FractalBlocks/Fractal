@@ -30,9 +30,6 @@ describe('Hot swaping functionality', () => {
 
   let Child: Component<any> = {
     name: 'Child',
-    defs: {
-      SubChild,
-    },
     components: {
       subChild: SubChild,
     },
@@ -46,9 +43,6 @@ describe('Hot swaping functionality', () => {
 
   let Comp: Component<any> = {
     name: 'Main',
-    defs: {
-      Child,
-    },
     components: {
       b1: Child,
     },
@@ -72,9 +66,6 @@ describe('Hot swaping functionality', () => {
 
   let ChildV2: Component<any> = {
     name: 'Child',
-    defs: {
-      SubChild: SubChildV2,
-    },
     components: {
       subChild: SubChildV2,
     },
@@ -88,9 +79,6 @@ describe('Hot swaping functionality', () => {
 
   let CompV2: Component<any> = {
     name: 'Main',
-    defs: {
-      Child: ChildV2,
-    },
     components: {
       b1: ChildV2,
     },
@@ -135,9 +123,6 @@ describe('Hot swaping functionality', () => {
     }
     let Comp: Component<any> = {
       name: 'Main',
-      defs: {
-        Child,
-      },
       components: {
         b1: Child,
       },
@@ -173,9 +158,6 @@ describe('Hot swaping functionality', () => {
 
     let CompV2: Component<any> = {
       name: 'Main',
-      defs: {
-        Child: ChildV2,
-      },
       components: {
         b1: ChildV2,
       },

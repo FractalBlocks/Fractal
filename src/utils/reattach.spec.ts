@@ -19,7 +19,7 @@ describe('mergeStates function should merge the states of the lastComponents and
   }
   ctx.rootCtx = ctx
 
-  function createCompIndex (state, defState, name = 'Main', defs = {}, isStatic = true): ComponentSpaceIndex {
+  function createCompIndex (state, defState, name = 'Main', isStatic = true): ComponentSpaceIndex {
     return {
       [name]: {
         ctx,
@@ -32,7 +32,6 @@ describe('mergeStates function should merge the states of the lastComponents and
         // component index for dynamic handling (new and dispose)
         def: {
           name,
-          defs,
           state: defState,
           inputs: ctx => ({}),
           actions: {},
@@ -138,8 +137,8 @@ describe('mergeStates function should merge the states of the lastComponents and
       list: {},
       count: 0,
     }
-    let dynamic = createCompIndex(state, state, 'Main$other', {}, false)
-    let components = createCompIndex(newState, state, 'Main', { 'Main$other': dynamic['Main$other'].def })
+    let dynamic = createCompIndex(state, state, 'Main$other', false)
+    let components = createCompIndex(newState, state, 'Main')
     let lastComponents = {
       ...createCompIndex(modifiedState, state, 'Main'),
       ...dynamic, // dynamic component
@@ -176,8 +175,8 @@ describe('mergeStates function should merge the states of the lastComponents and
       list: {},
       count: 0,
     }
-    let dynamic = createCompIndex(state, state, 'Main$other', {}, false)
-    let components = createCompIndex(newState, state, 'Main', {})
+    let dynamic = createCompIndex(state, state, 'Main$other', false)
+    let components = createCompIndex(newState, state, 'Main')
     let lastComponents = {
       ...createCompIndex(modifiedState, state, 'Main'),
       ...dynamic, // dynamic component

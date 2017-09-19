@@ -9,6 +9,8 @@
 
 ## Done
 
+- Remove defs from components
+
 ## v3.3.3
 
 - Fix async CtxInterface
