@@ -21,7 +21,7 @@ import * as root from './App'
   if (module.hot) {
     module.hot.accept('./App', () => {
       let m = <any> require('./App')
-      app.moduleAPI.reattach(m)
+      app.moduleAPI.reattach(m) // TODO: evaluate if mergeComponents works here
     })
   }
 })()

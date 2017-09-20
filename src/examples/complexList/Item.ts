@@ -44,7 +44,7 @@ const view: View<S> = ({ ctx, ev, act }) => s => {
       on: {
         click: ev('remove'),
       },
-    }, 'remove1'),
+    }, 'remove2'),
   ])
 }
 

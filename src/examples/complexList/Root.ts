@@ -20,11 +20,14 @@ export const state = {
   items: {},
 }
 
+// export const defs = { Item }
+
 export type S = typeof state
 
-export const inputs: Inputs<S> = ({ stateOf, toIt, toChild, nest, unnest }) => ({
+export const inputs: Inputs<S> = ({ ctx, stateOf, toIt, toChild, nest, unnest }) => ({
   inputKeyup: async ([idx, [keyCode, text]]) => {
     if (keyCode === 13 && text !== '') {
+      ctx.components[ctx.id].def.defs = { Item }
       await nest(idx, props({ text })(clone(Item)))
       return [
         actions.SetText(''),

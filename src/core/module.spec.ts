@@ -23,7 +23,7 @@ import {
   Actions,
   action,
 } from './index'
-import { mergeStates } from '../utils/reattach'
+import { mergeComponents } from '../utils/reattach'
 import { valueHandler, ValueInterface } from '../interfaces/value'
 import { toIt } from './module'
 
@@ -1296,7 +1296,7 @@ describe('Hot swapping', () => {
             case 2:
               expect(v.content).toBe(1)
               expect(v.content2).toBe(12)
-              app.moduleAPI.reattach(mainV2, mergeStates)
+              app.moduleAPI.reattach(mainV2, mergeComponents)
               break
             case 3:
               expect(v.content).toBe('Fractal is awesome V2!! 1 :D')

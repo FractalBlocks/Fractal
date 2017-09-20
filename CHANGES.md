@@ -9,7 +9,9 @@
 
 ## Done
 
-- Remove defs from components
+- Dynamic component defs are now automatic! (P)
+- mergeStates refactored renamed to mergeComponents - Minor breaking change
+- Refactor examples
 
 ## v3.3.3
 

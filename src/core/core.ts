@@ -14,6 +14,7 @@ export interface Component<S> {
   // composition
   components?: Components
   // general purpose groups, used for styles
+  defs?: Components
   groups?: {
     [name: string]: Group,
   },

@@ -2,7 +2,7 @@ import {
   run,
   // DEV
   logFns,
-  mergeStates,
+  mergeComponents,
 } from '../../core'
 import { viewHandler } from '../../interfaces/view'
 import { styleHandler } from '../../groups/style'
@@ -27,7 +27,7 @@ import * as root from './App'
   if (module.hot) {
     module.hot.accept('./App', () => {
       let m = <any> require('./App')
-      app.moduleAPI.reattach(m, mergeStates)
+      app.moduleAPI.reattach(m, mergeComponents)
     })
   }
 })()

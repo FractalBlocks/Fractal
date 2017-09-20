@@ -1,6 +1,6 @@
 import { Module, Component, run, nest } from '../core'
 import { valueHandler } from '../interfaces/value'
-import { mergeStates } from './reattach'
+import { mergeComponents } from './reattach'
 
 describe('Hot swaping functionality', () => {
 
@@ -105,7 +105,7 @@ describe('Hot swaping functionality', () => {
 
     nest(app.ctx)('0', Child)
 
-    app.moduleAPI.reattach(CompV2, mergeStates)
+    app.moduleAPI.reattach(CompV2, mergeComponents)
   })
 
   it('should dispatch an error when dynamic component dont references (refs) child components', async (done) => {
@@ -135,7 +135,7 @@ describe('Hot swaping functionality', () => {
     }
     let app = await setup(Comp, () => 0, () => 0, (source, description) => {
       expect([source, description]).toEqual([
-        'mergeStates',
+        'mergeComponents',
         'there are no dynamic component definition of SubChild (defs) in Main$0'
       ])
       done()
@@ -168,7 +168,7 @@ describe('Hot swaping functionality', () => {
         value: () => s => ({ value: 'V2' }),
       },
     }
-    app.moduleAPI.reattach(CompV2, mergeStates)
+    app.moduleAPI.reattach(CompV2, mergeComponents)
   })
 
 })

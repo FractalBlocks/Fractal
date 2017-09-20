@@ -1,4 +1,4 @@
-import { mergeStates } from '../../core'
+import { mergeComponents } from '../../core'
 import { runModule } from './module'
 
 import * as root from './Root'
@@ -15,7 +15,7 @@ let DEV = ENV === 'development'
   if (module.hot) {
     module.hot.accept('./Root', () => {
       let m = <any> require('./Root')
-      app.moduleAPI.reattach(m, mergeStates)
+      app.moduleAPI.reattach(m, mergeComponents)
     })
   }
 })()
