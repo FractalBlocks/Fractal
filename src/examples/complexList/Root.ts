@@ -7,6 +7,7 @@ import {
   props,
   StyleGroup,
   clickable,
+  Defs,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
@@ -14,20 +15,21 @@ import * as Item from './Item'
 
 export const name = 'Root'
 
+export const defs: Defs = () => ({
+  Item,
+})
+
 export const state = {
   text: '',
   numItems: 0,
   items: {},
 }
 
-// export const defs = { Item }
-
 export type S = typeof state
 
 export const inputs: Inputs<S> = ({ ctx, stateOf, toIt, toChild, nest, unnest }) => ({
   inputKeyup: async ([idx, [keyCode, text]]) => {
     if (keyCode === 13 && text !== '') {
-      ctx.components[ctx.id].def.defs = { Item }
       await nest(idx, props({ text })(clone(Item)))
       return [
         actions.SetText(''),

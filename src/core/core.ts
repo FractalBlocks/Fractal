@@ -13,8 +13,9 @@ export interface Component<S> {
   logAll?: boolean
   // composition
   components?: Components
+  // definitions for dynamic components
+  defs?: Defs
   // general purpose groups, used for styles
-  defs?: Components
   groups?: {
     [name: string]: Group,
   },
@@ -178,6 +179,10 @@ export interface Context {
   error: {
     (source: string, description: string): void
   },
+}
+
+export interface Defs {
+  (): Components
 }
 
 export interface ComponentSpaceIndex {

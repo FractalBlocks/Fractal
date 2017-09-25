@@ -52,7 +52,7 @@
     "object-assign": "^4.1.1",
     "parse-sel": "^1.0.0",
     "snabbdom": "^0.6.8",
-    "typestyle": "^1.2.0"
+    "typestyle": "^1.4.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.0.3",

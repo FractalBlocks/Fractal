@@ -1,4 +1,4 @@
-import { ComponentSpaceIndex, Context, ComponentSpace } from '../core'
+import { ComponentSpaceIndex, Context, ComponentSpace, nest } from '../core'
 import deepEqual = require('deep-equal')
 
 /* this function take an initial state, modified state and new state
@@ -38,8 +38,12 @@ export function mergeComponents (
     } else { // newComp not defined
       /* istanbul ignore else */
       if (!lastComp.isStatic) {
-        // add dynamic components
-        comps[ids[i]] = lastComp
+        let idParts = id.split('$')
+        let parentId = idParts.slice(0, -1).join('$')
+        if (components[parentId]) {
+          // add dynamic components
+          comps[ids[i]] = lastComp
+        }
       }
     }
   }
@@ -48,21 +52,16 @@ export function mergeComponents (
     // replace component in contexts of spaces
     comps[id].ctx.components = comps
     if (!comps[id].isStatic) {
-      // replace outdated defs of dynamic components
       let idParts = id.split('$')
-      // is not root?
-      /* istanbul ignore else */
-      if (idParts.length > 1) {
-        let parentId = idParts.slice(0, -1).join('$')
-        if (comps[parentId]) {
-          if (lastComponents[parentId] && lastComponents[parentId].def.defs && lastComponents[parentId].def.defs[comps[id].def.name]) {
-            let def = lastComponents[parentId].def.defs[comps[id].def.name]
-            comps[id].def = def
-            mergeStates(comps[id], def, lastComponents[id])
-          } else {
-            ctx.error('mergeStates', `there are no dynamic component definition of ${comps[id].def.name} (defs) in ${parentId}`)
-          }
+      let parentId = idParts.slice(0, -1).join('$')
+      if (components[parentId] && components[parentId].def.defs) {
+        let def = components[parentId].def.defs()[comps[id].def.name]
+        if (def) {
+          comps[id] = nest
+          mergeStates(comps[id], def, comps[id])
         }
+      } else {
+        ctx.error('mergeStates', `there are no dynamic component definition of ${comps[id].def.name} (defs) in ${parentId}`)
       }
     }
   }

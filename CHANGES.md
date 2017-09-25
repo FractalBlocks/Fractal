@@ -9,9 +9,14 @@
 
 ## Done
 
-- Dynamic component defs are now automatic! (P)
+- Fix hot-swaping of dynamic components (P)
+- Change components by a function for allowing dynamic hot-swaping (P)
+- Update TypeStyle dependency - performance boost
 - mergeStates refactored renamed to mergeComponents - Minor breaking change
 - Refactor examples
+
+## v3.3.4
+
 
 ## v3.3.3
 
