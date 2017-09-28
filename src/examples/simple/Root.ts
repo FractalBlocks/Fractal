@@ -34,7 +34,7 @@ const view: View<S> = ({ ctx, ev }) => s => {
       on: {
         click: ev('set', 0),
       },
-    }, 'reset'),
+    }, 'reset'),// Por que el reset?
   ])
 }
 
@@ -72,3 +72,34 @@ const style: StyleGroup = {
 }
 
 export const groups = { style }
+
+
+function tiempo (t) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve(1000), 5000)
+  })
+}
+async function traer () {
+  let p1 = await fetch("https://jsonplaceholder.typicode.com/users/1").then(res => res.json())
+  console.log(1)
+  let val = await tiempo(5000)
+  console.log(val)
+  await tiempo(5000)
+  let p2 = await fetch("https://jsonplaceholder.typicode.com/users/2").then(res => res.json())
+  return [p1,p2]
+}
+;(async x => {
+  let p1 = await fetch("https://jsonplaceholder.typicode.com/users/1").then(res => res.json())
+  console.log(1)
+  let val = await tiempo(5000)
+  console.log(val)
+  await tiempo(5000)
+  let p2 = await fetch("https://jsonplaceholder.typicode.com/users/2").then(res => res.json())
+  let p3 = await traer()
+  return [p1,p2,p3]
+})().then(x => console.log(x))
+
+
+
+
+
