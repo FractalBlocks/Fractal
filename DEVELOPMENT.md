@@ -31,6 +31,7 @@ There are TODOs for short term:
 
 - Implement component lifecycle
 - Document component lifecycle
+- Remove name from components (its Useless)
 - Add coverage for latets helpers: compGroup, comps and vws
 - Make an AOT, SSR, code splitting full example
 - Document prerendering (AOT) and SSR
