@@ -4,6 +4,9 @@
 
 ## Next
 
+- Add parentCtx helper
+- Document that the desired way is to have always an object state
+- Add Set generic action by default
 - Router helpers
 - Add task input helper
 

@@ -181,8 +181,8 @@ export interface Context {
   },
 }
 
-export interface Defs {
-  (): Components
+export interface Dynamic {
+  (state: any): Components
 }
 
 export interface ComponentSpaceIndex {

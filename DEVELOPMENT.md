@@ -29,6 +29,8 @@ We support use of:
 
 There are TODOs for short term:
 
+- Implement component lifecycle
+- Document component lifecycle
 - Add coverage for latets helpers: compGroup, comps and vws
 - Make an AOT, SSR, code splitting full example
 - Document prerendering (AOT) and SSR
