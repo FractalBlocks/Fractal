@@ -37,26 +37,26 @@ export interface CtxInterfaceOf {
 // gets an interface message from a certain component
 export const _interfaceOf = (ctx: Context) => (name: string, interfaceName) => {
   let id = `${ctx.id}$${name}`
-  let componentSpace = ctx.components[id]
-  if (!componentSpace) {
+  let compCtx = ctx.components[id]
+  if (!compCtx) {
     ctx.error('interfaceOf', `there are no component space '${id}'`)
     return {}
   }
-  if (!componentSpace.def.interfaces[interfaceName]) {
+  if (!compCtx.interfaces[interfaceName]) {
     ctx.error(
       'interfaceOf',
-      `there are no interface '${interfaceName}' in component '${componentSpace.def.name}' from space '${id}'`
+      `there are no interface '${interfaceName}' in component '${compCtx.name}' from space '${id}'`
     )
     return {}
   }
   // search in interface cache
-  let cache = componentSpace.interfaceValues[interfaceName]
+  let cache = compCtx.interfaceValues[interfaceName]
   if (cache) {
     return cache
   } else {
     // caches interface
-    componentSpace.interfaceValues[interfaceName] = componentSpace.interfaces[interfaceName](componentSpace.state)
-    return componentSpace.interfaceValues[interfaceName]
+    compCtx.interfaceValues[interfaceName] = compCtx.interfaces[interfaceName](compCtx.state)
+    return compCtx.interfaceValues[interfaceName]
   }
 }
 
@@ -175,9 +175,9 @@ export function computeEvent(event: any, iData: InputData): EventData {
 export const dispatch = async (ctxIn: Context, eventData: EventData, isPropagated = true) => {
   let id = eventData[0] + ''
   // root component
-  let ctx = ctxIn.components[(id + '').split('$')[0]].ctx
-  let componentSpace = ctx.components[id]
-  if (!componentSpace) {
+  let ctx = ctxIn.components[(id + '').split('$')[0]]
+  let compCtx = ctx.components[id]
+  if (!compCtx) {
     return ctx.error('dispatch', `there are no component space '${id}'`)
   }
   let inputName = eventData[1]
@@ -187,5 +187,5 @@ export const dispatch = async (ctxIn: Context, eventData: EventData, isPropagate
     : eventData[4] === 'context'
     ? eventData[2] // is only context
     : eventData[3] // is only event data
-  await toIt(componentSpace.ctx)(inputName, data, isPropagated)
+  await toIt(compCtx)(inputName, data, isPropagated)
 }

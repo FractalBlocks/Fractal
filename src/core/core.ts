@@ -141,8 +141,15 @@ export interface Context {
   interfaceHandlers: {
     [name: string]: HandlerObject
   }
+  // lock state for cosistency
+  stateLocked: boolean
+  // action queue
+  actionQueue: Update<any>[],
   // global flags delegation
   global: {
+    // record all actions
+    record: boolean
+    records: UpdateRecord[]
     // flag for manually disable rendering workflow, useful in SSR for performance
     render: boolean
   },
@@ -160,6 +167,11 @@ export interface Context {
   error: {
     (source: string, description: string): void
   },
+}
+
+export interface UpdateRecord {
+  id: string
+  update: Update<any>
 }
 
 export interface ContextIndex {

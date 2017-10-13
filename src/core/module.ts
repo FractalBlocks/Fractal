@@ -18,6 +18,7 @@ import { makeInputHelpers } from './input'
 
 export interface ModuleDef {
   root: Component<any>
+  record?: boolean
   render?: boolean // initial render flag
   groups?: HandlerInterfaceIndex
   tasks?: HandlerInterfaceIndex
@@ -63,7 +64,7 @@ export interface Module {
 export interface ModuleAPI {
   dispatch (eventData: EventData): Promise<void>
   dispose (): void
-  reattach (comp: Component<any>, middleFn?: MiddleFn): Promise<void>
+  reattach (comp: Component<any>, lastCtx?: Context, middleFn?: MiddleFn): Promise<void>
   nest: CtxNest
   unnest: CtxUnnest
   nestAll: CtxNestAll
@@ -76,8 +77,9 @@ export interface ModuleAPI {
 // MiddleFn is used for merge the states on hot-swaping (reattach)
 export interface MiddleFn {
   (
-    ctx: Context
-  ): Context
+    ctx: Context,
+    lastCtx: Context
+  ): void
 }
 
 export const handlerTypes = ['interface', 'task', 'group']
@@ -87,9 +89,11 @@ export interface CtxNest {
 }
 
 // add a component to the component index
-export const nest = (ctx: Context): CtxNest => async (name, component, isStatic = false) => {
+export const nest = (ctx: Context): CtxNest => async (name, component) => {
   // create the global object for initialization
   ctx.global = {
+    record: ctx.global.record,
+    records: ctx.global.records,
     render: true,
   }
   await _nest(ctx, name, component)
@@ -103,7 +107,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   component.state._nest = component.state._nest || {}
 
   ctx.components[id] = {
-    id: `${ctx.id}$${name}`, // the component id
+    id, // the component id
     name,
     groups: {},
     // delegation
@@ -118,6 +122,8 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     afterInput: ctx.afterInput,
     warn: ctx.warn,
     error: ctx.error,
+    actionQueue: [],
+    stateLocked: false,
     // if state is an object, it is cloned
     state: clone(component.state),
     inputs: {}, // input helpers needs to be initialized after ComponentSpace, because references
@@ -283,21 +289,17 @@ export const toIt = (ctx: Context): CtxToIt => {
     }
     if (ctx.beforeInput) await ctx.beforeInput(ctx, inputName, data)
     await input(data)
+    if (ctx.afterInput) await ctx.afterInput(ctx, inputName, data)
   }
 }
 
 // execute an executable in a context, executable parameter should not be undefined
 export async function execute (ctx: Context, executable: GenericExecutable<any>) {
   let id = ctx.id
-  let componentSpace = ctx.components[id]
+  let compCtx = ctx.components[id]
 
   if (typeof executable === 'function') {
-    // single update
-    componentSpace.state = (<Update<any>> executable)(componentSpace.state)
-    /* istanbul ignore else */
-    if (ctx.global.render) {
-      calcAndNotifyInterfaces(ctx) // root context
-    }
+    performUpdate(compCtx, executable)
   } else {
     /* istanbul ignore else */
     if (executable instanceof Array) {
@@ -306,7 +308,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
         if (!ctx.taskHandlers[executable[0]]) {
           return ctx.error(
             'execute',
-            `there are no task handler for '${executable[0]}' in component '${componentSpace.name}' from space '${id}'`
+            `there are no task handler for '${executable[0]}' in component '${compCtx.name}' from space '${id}'`
           )
         }
         await ctx.taskHandlers[executable[0]].handle(executable[1])
@@ -316,12 +318,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
           // list of updates and tasks
           for (let i = 0, len = executable.length; i < len; i++) {
             if (typeof executable[i] === 'function') { // is an update?
-              // perform the update
-              componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
-              /* istanbul ignore else */
-              if (ctx.global.render) {
-                calcAndNotifyInterfaces(ctx) // root context
-              }
+              performUpdate(compCtx, executable[i])
             } else {
                 /* istanbul ignore else */
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
@@ -329,7 +326,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
                 if (!ctx.taskHandlers[executable[i][0]]) {
                   return ctx.error(
                     'execute',
-                    `there are no task handler for '${executable[i][0]}' in component '${componentSpace.name}' from space '${id}'`
+                    `there are no task handler for '${executable[i][0]}' in component '${compCtx.name}' from space '${id}'`
                   )
                 }
                 ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
@@ -341,6 +338,26 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
       }
     }
     // the else branch never occurs because of Typecript check
+  }
+}
+
+export function performUpdate (compCtx: Context, update: Update<any>) {
+  if (compCtx.stateLocked) {
+    compCtx.actionQueue.push(update)
+  } else {
+    compCtx.stateLocked = true
+    compCtx.state = (<Update<any>> update)(compCtx.state)
+    if (compCtx.global.record) {
+      compCtx.global.records.push({ id: compCtx.id, update })
+    }
+    if (compCtx.global.render) {
+      calcAndNotifyInterfaces(compCtx) // root context
+    }
+    compCtx.stateLocked = false
+    let nextUpdate = compCtx.actionQueue.shift()
+    if (nextUpdate) {
+      performUpdate(compCtx, nextUpdate)
+    }
   }
 }
 
@@ -386,7 +403,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   let ctx: Context
 
   // attach root component
-  async function attach (comp?: Component<any>, middleFn?: MiddleFn) {
+  async function attach (comp: Component<any>, lastCtx?: Context, middleFn?: MiddleFn) {
     // root component, take account of hot swapping
     component = comp ? comp : moduleDef.root
     // if is hot swapping, do not recalculat context
@@ -396,14 +413,16 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       name: 'Root',
       groups: {},
       global: {
-        initialized: false,
-        render: moduleDef.render,
+        record: moduleDef.record || false,
+        records: [],
+        render: true,
       },
       hotSwap: false,
       // component index
       components: {},
       groupHandlers: {},
       taskHandlers: {},
+      interfaces: {},
       interfaceHandlers: {},
       // error and warning handling
       beforeInput: (ctxIn, inputName, data) => {
@@ -431,7 +450,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         }
       },
     }
-    ctx.rootCtx = ctx // nice right? :)
 
     // API for modules
     moduleAPI = {
@@ -480,13 +498,14 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       ctx.hotSwap = true
     }
 
-    // merges main component and ctx.id now contains it name
-    await nest(ctx)('Root', component, true)
-    let rootSpace = ctx.components[ctx.id]
+    // Root component
+    await _nest(ctx, 'Root', component)
+    ctx.rootCtx = ctx.components.Root
+    ctx.components.Root.rootCtx = ctx.rootCtx
 
     // middle function for hot-swapping
     if (middleFn) {
-      middleFn(ctx)
+      middleFn(ctx, lastCtx)
     }
 
     // pass initial value to each Interface Handler
@@ -500,19 +519,19 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     if (interfaceOrder) {
       for (let i = 0; name = interfaceOrder[i]; i++) {
         if (ctx.interfaceHandlers[name]) {
-          ctx.interfaceHandlers[name].handle(rootSpace.interfaces[name](ctx.components.Root.state))
+          ctx.interfaceHandlers[name].handle(ctx.rootCtx.interfaces[name](ctx.components.Root.state))
         } else {
           return errorNotHandler(name)
         }
       }
     }
-    for (name in rootSpace.interfaces) {
+    for (name in ctx.rootCtx.interfaces) {
       if (interfaceOrder && interfaceOrder.indexOf(name) !== -1) {
         continue // interface evaluated yet
       }
       if (ctx.interfaceHandlers[name]) {
         ctx.interfaceHandlers[name].handle(
-          await rootSpace.interfaces[name](ctx.components.Root.state)
+          await ctx.rootCtx.interfaces[name](ctx.components.Root.state)
         )
       } else {
         return errorNotHandler(name)
@@ -546,8 +565,8 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     this.isDisposed = true
   }
 
-  async function reattach (comp: Component<any>, middleFn?: MiddleFn) {
-    await attach(comp, middleFn)
+  async function reattach (comp: Component<any>, lastCtx: Context, middleFn: MiddleFn) {
+    await attach(comp, lastCtx, middleFn)
   }
 
   return {

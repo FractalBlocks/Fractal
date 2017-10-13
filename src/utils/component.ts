@@ -13,8 +13,8 @@ import {
 // send a message to an input of a component from outside a Module
 /* istanbul ignore next */
 export async function sendMsg (mod: Module, id: string, inputName: string, msg?, isPropagated = true) {
-  let ctx = mod.ctx
-  await toIt(ctx.components[id].ctx)(inputName, msg, isPropagated)
+  let ctx = mod.rootCtx
+  await toIt(ctx.components[id])(inputName, msg, isPropagated)
 }
 
 export function setGroup (name: string, group: Group) {

@@ -179,9 +179,9 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     // nest many components to the component index
     nestAll: async (components, isStatic = false) => worker.postMessage(['nestAll', components]),
     // unnest a component to the component index
-    unnest: (name: string) => worker.postMessage(['unnest', name]),
+    unnest: async (name: string) => worker.postMessage(['unnest', name]),
     // unnest many components to the component index
-    unnestAll: (components: string[]) => worker.postMessage(['unnestAll', components]),
+    unnestAll: async (components: string[]) => worker.postMessage(['unnestAll', components]),
     // delegated methods
     setGroup: (id, name, group) => worker.postMessage(['setGroup', id, name, group]),
     warn: def.warn,

@@ -1,17 +1,15 @@
 import {
   Actions,
   Inputs,
-  clone,
   Interfaces,
   assoc,
-  props,
   StyleGroup,
   clickable,
   _,
-} from '../../core'
-import { View, h } from '../../interfaces/view'
+} from '../core'
+import { View, h } from '../interfaces/view'
 
-import * as Item from './Item'
+// import * as Item from './Item'
 
 export const name = 'Root'
 
@@ -25,9 +23,9 @@ export type S = typeof state
 
 export const inputs: Inputs = ({ ctx, stateOf, toIt, toChild, nest, unnest }) => ({
   inputKeyup: async ([keyCode, text]) => {
-    let s: S = stateOf()
+    // let s: S = stateOf()
     if (keyCode === 13 && text !== '') {
-      await nest(s.numItems, props({ text })(clone(Item)))
+      // await nest(s.numItems, props({ text })(clone(Item)))
       return [
         actions.SetText(''),
         actions.New(),

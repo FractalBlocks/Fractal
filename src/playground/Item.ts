@@ -1,5 +1,5 @@
-import { Actions, Inputs, Interfaces, StyleGroup, _ } from '../../core'
-import { View, h } from '../../interfaces/view'
+import { Actions, Inputs, Interfaces, StyleGroup, _ } from '../core'
+import { View, h } from '../interfaces/view'
 
 export const name = 'Item'
 
@@ -10,7 +10,7 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs<S> = ({ ctx }) => ({
+export const inputs: Inputs = ({ ctx }) => ({
   remove: async () => {},
 })
 

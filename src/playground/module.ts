@@ -5,18 +5,18 @@ import {
   // DEV
   logFns,
   RunModule,
-} from '../../core'
-import { viewHandler } from '../../interfaces/view'
-import { styleHandler } from '../../groups/style'
+} from '../core'
+import { viewHandler } from '../interfaces/view'
+import { styleHandler } from '../groups/style'
 
 export const runModule: RunModule = (root: Component<any>, DEV = false): Promise<Module> => run({
   root,
+  record: DEV,
   groups: {
-    style: styleHandler('', true),
+    style: styleHandler('', DEV),
   },
   interfaces: {
     view: viewHandler('#app'),
   },
-  // DEV ONLY (you can handle it manually)
   ...logFns,
 })

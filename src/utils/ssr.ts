@@ -45,7 +45,7 @@ export const renderHTML = ({
       try {
         var app = await runModule(root, false, { render: false })
         await cb(app)
-        let view = app.ctx.components[root.name].interfaces['view'](app.ctx.components[root.name].state)
+        let view = app.rootCtx.components.Root.interfaces['view'](app.rootCtx.components.Root.state)
         let styleStr = (css || '') + app.groupHandlers['style'].state.instance.getStyles()
         html = html.replace('<!--##HTML##-->', toHTML(view))
         html = html.replace('<!--##STYLES##-->', '<style>' + styleStr + '</style>')
@@ -65,15 +65,15 @@ export const renderHTML = ({
         let components = {}
         let key
         let subkey
-        for (key in app.ctx.components) {
+        for (key in app.rootCtx.components) {
           if (componentNames && componentNames.indexOf(key) === -1) {
             continue
           }
           components[key] = {}
-          for (subkey in app.ctx.components[key]) {
+          for (subkey in app.rootCtx.components[key]) {
             if (['state', 'isStatic'].indexOf(subkey) !== -1) {
               // avoid cyclic structure
-              components[key][subkey] = app.ctx.components[key][subkey]
+              components[key][subkey] = app.rootCtx.components[key][subkey]
             }
           }
         }

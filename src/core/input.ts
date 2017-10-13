@@ -1,4 +1,4 @@
-import { Context, InputResult } from './core'
+import { Context } from './core'
 import { CtxEv, _ev, CtxAct, _act } from './interface'
 import {
   toIt,
@@ -78,9 +78,9 @@ export const toChild = (ctx: Context) => async (
   isPropagated = true
 ) => {
   let childId = ctx.id + '$' + name
-  let space = ctx.components[childId]
-  if (space) {
-    await toIt(space.ctx)(inputName, msg, isPropagated)
+  let compCtx = ctx.components[childId]
+  if (compCtx) {
+    await toIt(compCtx)(inputName, msg, isPropagated)
   } else {
     ctx.error('toChild', `there are no child '${name}' in space '${ctx.id}'`)
   }
@@ -100,7 +100,7 @@ export const toAct = (ctx: Context): CtxToAct => {
 }
 
 export interface CtxRunIt {
-  (executables: InputResult<any>, isPropagated?: boolean): void
+  (executables: Promise<void>, isPropagated?: boolean): void
 }
 
 // generic action self caller
