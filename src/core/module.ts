@@ -1,9 +1,7 @@
 import {
-  Identifier,
   Component,
   Update,
   Context,
-  ComponentSpaceIndex,
   EventData,
   Components,
   Interfaces,
@@ -58,7 +56,7 @@ export interface Module {
   // API to module
   moduleAPI: ModuleAPI
   // Root component context
-  ctx: Context
+  rootCtx: Context
 }
 
 // API from module to handlers
@@ -78,17 +76,33 @@ export interface ModuleAPI {
 // MiddleFn is used for merge the states on hot-swaping (reattach)
 export interface MiddleFn {
   (
-    ctx: Context,
-    components: ComponentSpaceIndex,
-    lastComponents: ComponentSpaceIndex
-  ): ComponentSpaceIndex
+    ctx: Context
+  ): Context
 }
 
 export const handlerTypes = ['interface', 'task', 'group']
 
-// create context for a component
-export function createContext (ctx: Context, name: Identifier): Context {
-  return {
+export interface CtxNest {
+  (name: string, component: Component<any>, isStatic?: boolean): void
+}
+
+// add a component to the component index
+export const nest = (ctx: Context): CtxNest => async (name, component, isStatic = false) => {
+  // create the global object for initialization
+  ctx.global = {
+    render: true,
+  }
+  await _nest(ctx, name, component)
+}
+
+/* istanbul ignore next */
+async function _nest (ctx: Context, name: string, component: Component<any>): Promise<Context> {
+  // namespaced name if is a child
+  let id = ctx.id === '' ? name : ctx.id + '$' + name
+  // state default
+  component.state._nest = component.state._nest || {}
+
+  ctx.components[id] = {
     id: `${ctx.id}$${name}`, // the component id
     name,
     groups: {},
@@ -104,96 +118,36 @@ export function createContext (ctx: Context, name: Identifier): Context {
     afterInput: ctx.afterInput,
     warn: ctx.warn,
     error: ctx.error,
-  }
-}
-
-export interface CtxNest {
-  (name: Identifier, component: Component<any>, isStatic?: boolean): Promise<Context>
-}
-
-// add a component to the component index
-export const nest = (ctx: Context): CtxNest => async (name, component, isStatic = false) => {
-  // create the global object for initialization
-  ctx.global = {
-    initialized: false, // disable notifyInterfaceHandlers temporarily
-    render: true,
-  }
-
-  let childCtx = await _nest(ctx, name, component, isStatic)
-
-  // init lifecycle hooks: init all descendant components
-  if (!ctx.hotSwap) {
-    await initAll(childCtx)
-  }
-
-  childCtx.global.initialized = true
-
-  return childCtx
-}
-
-// init all descendant components
-async function initAll (ctx: Context) {
-  let space = ctx.components[ctx.id]
-  if (space.def.init) {
-    await space.def.init(makeInputHelpers(ctx))
-  }
-  let childName
-  for (childName in space.components) {
-    await initAll(ctx.components[ctx.id + '$' + childName].ctx)
-  }
-}
-
-/* istanbul ignore next */
-async function _nest (ctx: Context, name: Identifier, component: Component<any>, isStatic = false): Promise<Context> {
-  // namespaced name if is a child
-  let id = ctx.id === '' ? name : ctx.id + '$' + name
-  if (ctx.components[id]) {
-    ctx.warn('nest', `component '${ctx.id}' has overwritten component space '${id}'`)
-  }
-
-  if (ctx.components[ctx.id] && !ctx.components[ctx.id].components[name]) {
-    ctx.components[ctx.id].components[name] = true
-  }
-
-  let childCtx
-  if (ctx.id === '') { // is root?
-    childCtx = ctx
-    ctx.id = name
-  } else {
-    childCtx = createContext(ctx, name)
-  }
-
-  ctx.components[id] = {
-    ctx: childCtx,
-    isStatic,
     // if state is an object, it is cloned
-    state: typeof component.state === 'object' ? clone(component.state) : component.state,
+    state: clone(component.state),
     inputs: {}, // input helpers needs to be initialized after ComponentSpace, because references
-    interfaces: _makeInterfaces(childCtx, component.interfaces),
+    interfaces: {},
     interfaceValues: {},
-    components: clone(component.components || {}),
-    def: component,
   }
+
+  let childCtx = ctx.components[id]
+
+  childCtx.interfaces = _makeInterfaces(childCtx, component.interfaces)
 
   if (component.inputs) {
-    ctx.components[id].inputs = component.inputs(makeInputHelpers(childCtx))
+    childCtx.inputs = component.inputs(makeInputHelpers(childCtx))
   } else {
-    ctx.components[id].inputs = {}
+    childCtx.inputs = {}
   }
   if (component.actions) { // reserved inputs: _action and _return
-    if (!ctx.components[id].inputs['action']) {
+    if (!childCtx.inputs['action']) {
       // action helper enabled by default
-      ctx.components[id].inputs['action'] = action(component.actions)
+      childCtx.inputs['action'] = action(childCtx, component.actions)
     }
-    if (!ctx.components[id].inputs['return']) {
+    if (!childCtx.inputs['return']) {
       // action helper enabled by default
-      ctx.components[id].inputs['return'] = x => x
+      childCtx.inputs['return'] = x => x
     }
   }
 
   // composition
-  if (component.components) {
-    await nestAll(childCtx)(component.components, isStatic)
+  if (Object.keys(component.state._nest).length > 0) {
+    await nestAll(childCtx)(component.state._nest)
   }
 
   if (component.groups) {
@@ -223,7 +177,7 @@ async function handleGroups (ctx: Context, component: Component<any>) {
     } else {
       ctx.error(
         'nest',
-        `module has no group handler for '${name}' of component '${component.name}' from space '${ctx.id}'`
+        `module has no group handler for '${name}' of component '${ctx.name}' from space '${ctx.id}'`
       )
     }
   }
@@ -238,48 +192,45 @@ export interface CtxNestAll {
 export const nestAll = (ctx: Context): CtxNestAll => async (components, isStatic = false) => {
   let name
   for (name in components) {
-    await _nest(ctx, name, components[name], isStatic)
+    await _nest(ctx, name, components[name])
   }
 }
 
 export interface CtxUnnest {
-  (name?:  string): void
+  (name?:  string): Promise<void>
 }
 
 // remove a component to the component index, if name is not defined dispose the root
-export const unnest = (ctx: Context): CtxUnnest => name => {
+export const unnest = (ctx: Context): CtxUnnest => async name => {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
   /* istanbul ignore next */
   if (!componentSpace) {
     return ctx.error('unnest', `there is no component with name '${name}' at component '${ctx.id}'`)
   }
-  if (name !== undefined) {
-    delete ctx.components[ctx.id].components[name]
-  }
   // decomposition
   let components = componentSpace.components
   /* istanbul ignore else */
   if (components) {
-    unnestAll(ctx.components[id].ctx)(Object.keys(components))
+    await unnestAll(componentSpace)(Object.keys(componentSpace.state._nest))
   }
-  // lifecycle hook: destroy
-  if (componentSpace.def.destroy) {
-    componentSpace.def.destroy(makeInputHelpers(ctx.components[id].ctx))
+  // lifecycle input: _destroy
+  if (componentSpace.inputs._destroy) {
+    await toIt(componentSpace)('_destroy')
   }
 
   delete ctx.components[id]
 }
 
 export interface CtxUnnestAll {
-  (components: string[]): void
+  (components: string[]): Promise<void>
 }
 
 // add many components to the component index
-export const unnestAll = (ctx: Context): CtxUnnestAll => components => {
+export const unnestAll = (ctx: Context): CtxUnnestAll => async components => {
   let _unnest = unnest(ctx)
   for (let i = 0, len = components.length; i < len; i++) {
-    _unnest(components[i])
+    await _unnest(components[i])
   }
 }
 
@@ -293,20 +244,20 @@ export async function propagate (ctx: Context, inputName: string, data: any) {
     let parentId = idParts.slice(0, -1).join('$')
     let parentSpace = ctx.components[parentId]
     let parentInputName
-    parentInputName = `$${componentSpace.ctx.name}_${inputName}`
+    parentInputName = `$${componentSpace.name}_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      await toIt(parentSpace.ctx)(parentInputName, data)
+      await toIt(parentSpace)(parentInputName, data)
     }
-    parentInputName = `$$${componentSpace.def.name}_${inputName}`
+    parentInputName = `$$${componentSpace.name.split('_')[0]}_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      await toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data])
+      await toIt(parentSpace)(parentInputName, [componentSpace.name, data])
     }
     parentInputName = `$_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      await toIt(parentSpace.ctx)(parentInputName, [componentSpace.ctx.name, data, componentSpace.def.name])
+      await toIt(parentSpace)(parentInputName, [componentSpace.name, data, componentSpace.name])
     }
   }
 }
@@ -326,28 +277,12 @@ export const toIt = (ctx: Context): CtxToIt => {
     if (input === undefined) {
       ctx.error(
         'execute',
-        `there are no input named '${inputName}' in component '${componentSpace.def.name}' from space '${id}'`
+        `there are no input named '${inputName}' in component '${componentSpace.name}' from space '${id}'`
       )
       return
     }
-    ctx.beforeInput(ctx, inputName, data)
-    if (input && (input as any) !== 'nothing') {
-      // call the input
-      let executable = await input(data)
-      try {
-        execute(ctx, executable)
-        /* istanbul ignore else */
-        if (isPropagated && ctx.components[id]) { // is propagated and component space still exist
-          await propagate(ctx, inputName, data)
-        }
-        await ctx.afterInput(ctx, inputName, data)
-      } catch (err) {
-        ctx.error(
-          'execute input',
-          `Error in input '${inputName}' of component '${componentSpace.def.name}' from space '${id}'`
-        )
-      }
-    }
+    if (ctx.beforeInput) await ctx.beforeInput(ctx, inputName, data)
+    await input(data)
   }
 }
 
@@ -360,7 +295,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
     // single update
     componentSpace.state = (<Update<any>> executable)(componentSpace.state)
     /* istanbul ignore else */
-    if (ctx.global.initialized && ctx.global.render) {
+    if (ctx.global.render) {
       calcAndNotifyInterfaces(ctx) // root context
     }
   } else {
@@ -371,7 +306,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
         if (!ctx.taskHandlers[executable[0]]) {
           return ctx.error(
             'execute',
-            `there are no task handler for '${executable[0]}' in component '${componentSpace.def.name}' from space '${id}'`
+            `there are no task handler for '${executable[0]}' in component '${componentSpace.name}' from space '${id}'`
           )
         }
         await ctx.taskHandlers[executable[0]].handle(executable[1])
@@ -384,7 +319,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
               // perform the update
               componentSpace.state = (<Update<any>> executable[i])(componentSpace.state)
               /* istanbul ignore else */
-              if (ctx.global.initialized && ctx.global.render) {
+              if (ctx.global.render) {
                 calcAndNotifyInterfaces(ctx) // root context
               }
             } else {
@@ -394,7 +329,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
                 if (!ctx.taskHandlers[executable[i][0]]) {
                   return ctx.error(
                     'execute',
-                    `there are no task handler for '${executable[i][0]}' in component '${componentSpace.def.name}' from space '${id}'`
+                    `there are no task handler for '${executable[i][0]}' in component '${componentSpace.name}' from space '${id}'`
                   )
                 }
                 ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
@@ -436,7 +371,7 @@ export async function notifyInterfaceHandlers (ctx: Context) {
       ctx.interfaceHandlers[name].handle(await space.interfaces[name](space.state))
     } else {
       // This only can happen when this method is called for a context that is not the root
-      ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.def.name}' from space '${ctx.id}'`)
+      ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.name}' from space '${ctx.id}'`)
     }
   }
 }
@@ -451,58 +386,52 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   let ctx: Context
 
   // attach root component
-  async function attach (comp?: Component<any>, lastComponents?: ComponentSpaceIndex, middleFn?: MiddleFn) {
+  async function attach (comp?: Component<any>, middleFn?: MiddleFn) {
     // root component, take account of hot swapping
     component = comp ? comp : moduleDef.root
-    let rootName = component.name
     // if is hot swapping, do not recalculat context
-    if (!lastComponents) {
-      // root context
-      ctx = <any> { // because of rootCtx delegation
-        id: '',
-        name: rootName,
-        groups: {},
-        global: {
-          initialized: false,
-          render: moduleDef.render,
-        },
-        hotSwap: false,
-        // component index
-        components: {},
-        groupHandlers: {},
-        taskHandlers: {},
-        interfaceHandlers: {},
-        // error and warning handling
-        beforeInput: (ctxIn, inputName, data) => {
-          /* istanbul ignore else */
-          if (moduleDef.beforeInput) {
-            moduleDef.beforeInput(ctxIn, inputName, data)
-          }
-        },
-        afterInput: (ctxIn, inputName, data) => {
-          /* istanbul ignore else */
-          if (moduleDef.afterInput) {
-            moduleDef.afterInput(ctxIn, inputName, data)
-          }
-        },
-        warn: (source, description) => {
-          /* istanbul ignore else */
-          if (moduleDef.warn) {
-            moduleDef.warn(source, description)
-          }
-        },
-        error: (source, description) => {
-          /* istanbul ignore else */
-          if (moduleDef.error) {
-            moduleDef.error(source, description)
-          }
-        },
-      }
-      ctx.rootCtx = ctx // nice right? :)
-    } else {
-      // hot swaping mode preserves root context, but restore id to '' because this way merge knows is root context
-      ctx.id = ''
+    // root context
+    ctx = <any> { // because of rootCtx delegation
+      id: '',
+      name: 'Root',
+      groups: {},
+      global: {
+        initialized: false,
+        render: moduleDef.render,
+      },
+      hotSwap: false,
+      // component index
+      components: {},
+      groupHandlers: {},
+      taskHandlers: {},
+      interfaceHandlers: {},
+      // error and warning handling
+      beforeInput: (ctxIn, inputName, data) => {
+        /* istanbul ignore else */
+        if (moduleDef.beforeInput) {
+          moduleDef.beforeInput(ctxIn, inputName, data)
+        }
+      },
+      afterInput: (ctxIn, inputName, data) => {
+        /* istanbul ignore else */
+        if (moduleDef.afterInput) {
+          moduleDef.afterInput(ctxIn, inputName, data)
+        }
+      },
+      warn: (source, description) => {
+        /* istanbul ignore else */
+        if (moduleDef.warn) {
+          moduleDef.warn(source, description)
+        }
+      },
+      error: (source, description) => {
+        /* istanbul ignore else */
+        if (moduleDef.error) {
+          moduleDef.error(source, description)
+        }
+      },
     }
+    ctx.rootCtx = ctx // nice right? :)
 
     // API for modules
     moduleAPI = {
@@ -520,7 +449,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       unnestAll: unnestAll(ctx),
       // set a space of a certain component
       setGroup: (id, name, space) => {
-        ctx.components[id].ctx.groups[name] = space
+        ctx.components[id].groups[name] = space
       },
       // delegated methods
       warn: ctx.warn,
@@ -533,7 +462,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     }
 
     // if is not hot swapping
-    if (!lastComponents) {
+    if (!middleFn) {
       // pass ModuleAPI to every Interface, Task and Space HandlerFunction
       let handlers: HandlerInterfaceIndex
       for (let c = 0, len = handlerTypes.length; c < len; c++) {
@@ -552,18 +481,12 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     }
 
     // merges main component and ctx.id now contains it name
-    ctx = await nest(ctx)(component.name, component, true)
+    await nest(ctx)('Root', component, true)
     let rootSpace = ctx.components[ctx.id]
 
     // middle function for hot-swapping
     if (middleFn) {
-      ctx.components = middleFn(ctx, ctx.components, lastComponents)
-      let id
-      for (id in ctx.components) {
-        if (!ctx.components[id].isStatic) {
-          await handleGroups(ctx.components[id].ctx, ctx.components[id].def)
-        }
-      }
+      middleFn(ctx)
     }
 
     // pass initial value to each Interface Handler
@@ -572,12 +495,12 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     let name
     let errorNotHandler = name => ctx.error(
       'InterfaceHandlers',
-      `'${rootName}' component has no interface called '${name}', missing interface handler`
+      `'$.Root' component has no interface called '${name}', missing interface handler`
     )
     if (interfaceOrder) {
       for (let i = 0; name = interfaceOrder[i]; i++) {
         if (ctx.interfaceHandlers[name]) {
-          ctx.interfaceHandlers[name].handle(rootSpace.interfaces[name](ctx.components[rootName].state))
+          ctx.interfaceHandlers[name].handle(rootSpace.interfaces[name](ctx.components.Root.state))
         } else {
           return errorNotHandler(name)
         }
@@ -589,7 +512,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       }
       if (ctx.interfaceHandlers[name]) {
         ctx.interfaceHandlers[name].handle(
-          await rootSpace.interfaces[name](ctx.components[rootName].state)
+          await rootSpace.interfaces[name](ctx.components.Root.state)
         )
       } else {
         return errorNotHandler(name)
@@ -624,9 +547,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   }
 
   async function reattach (comp: Component<any>, middleFn?: MiddleFn) {
-    let lastComponents = ctx.components
-    ctx.components = {}
-    await attach(comp, lastComponents, middleFn)
+    await attach(comp, middleFn)
   }
 
   return {
@@ -639,12 +560,12 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     taskHandlers: ctx.taskHandlers,
     // root context
     moduleAPI,
-    ctx,
+    rootCtx: ctx,
   }
 }
 
 // generic action input
-export const action = (actions: Actions<any>) => async ([arg1, arg2]: any): Promise<Update<any>> => {
+export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg2]: any): Promise<void> => {
   let name
   let value
   if (arg1 instanceof Array) {
@@ -659,7 +580,7 @@ export const action = (actions: Actions<any>) => async ([arg1, arg2]: any): Prom
     name = arg1
     value = arg2
   }
-  return actions[name](value)
+  execute(ctx, actions[name](value))
 }
 
 export function clone (o) {
@@ -667,7 +588,7 @@ export function clone (o) {
    out = Array.isArray(o) ? [] : {}
    for (key in o) {
        v = o[key]
-       out[key] = (typeof v === "object") ? clone (v) : v
+       out[key] = (typeof v === 'object') ? clone (v) : v
    }
    return out
 }

@@ -3,33 +3,19 @@ import { InterfaceHelpers } from './interface'
 import { InputHelpers } from './input'
 import { Module } from './module'
 
-export type Identifier = number | string
-
 export interface Component<S> {
-  // component name, used for debugging
-  name: Identifier
-  // log all
-  log?: boolean
-  logAll?: boolean
-  // composition
-  components?: Components
-  // definitions for dynamic components
-  defs?: Defs
-  // general purpose groups, used for styles
-  groups?: {
-    [name: string]: Group,
-  },
   // the changing stuff (AKA variables)
   state?: S
-  // dispatchers for actions and tasks
-  inputs?: Inputs<S>
+  // Inputs are dispatchers of actions and tasks
+  inputs?: Inputs
   // unique way to change the state
   actions?: Actions<S>
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
   interfaces: Interfaces
-  // lifecycle hooks: init, destroy
-  init? : Hook
-  destroy? : Hook
+  // general purpose groups, commonly used for styles
+  groups?: {
+    [name: string]: Group
+  }
 }
 
 export interface Components {
@@ -40,27 +26,19 @@ export interface Interfaces {
   [name: string]: Interface<any, any>
 }
 
-export interface Hook {
-  (helpers: InputHelpers): void
-}
-
 export type Group = any
 
-export interface Inputs<S> {
-  (helpers: InputHelpers): InputIndex<S>
+export interface Inputs {
+  (helpers: InputHelpers): InputIndex
 }
 
-export interface InputIndex<S> {
-  [name: string]: Input<S>
+export interface InputIndex {
+  [name: string]: Input
 }
 
-export interface Input<S> {
-  (data?: any): InputResult<S>
+export interface Input {
+  (data?: any): void
 }
-
-export type InputResult<S> = Promise<GenericExecutable<S>> | GenericExecutable<S>
-
-export type GenericExecutable<S> = Update<S> | Task | Executable<S>[] | void
 
 export interface Action<S> {
   (data?: any): Update<S>
@@ -82,7 +60,7 @@ export interface EventOptions {
   - 'other': which means, serialize the 'other' attribute of the event object
 */
 export interface InputData extends Array<any> {
-  0: Identifier // component index identifier
+  0: string // component index identifier
   1: string // input name
   2?: any // context parameter
   3?: any // a param function string / value is optional
@@ -91,7 +69,7 @@ export interface InputData extends Array<any> {
 
 // event data comes from an interface / task handler as a result of processing InputData - Comunications stuff
 export interface EventData extends Array<any> {
-  0: Identifier // component index identifier
+  0: string // component index identifier
   1: string // input name
   2?: any // context parameter from InputData (contextual)
   3?: any // data from an interface / task handler ( result of function or value )
@@ -139,15 +117,21 @@ export interface Task extends Array<any> {
 // describes an excecution context
 export interface Context {
   // name for that component in the index
-  id: Identifier
+  id: string
   // sintax sugar: the name is the last part of the id (e.g. the id is Main$child the name is child)
-  name: Identifier
+  name: string
+  state: { [name: string]: any }
+  inputs: InputIndex
+  interfaces: CtxInterfaceIndex
+  interfaceValues: { // caches interfaces
+    [name: string]: any
+  }
   // groups of the component (related to a component space)
   groups: {
     [name: string]: Group,
   },
   // global component index
-  components: ComponentSpaceIndex
+  components: ContextIndex
   groupHandlers: {
     [name: string]: HandlerObject
   }
@@ -159,9 +143,6 @@ export interface Context {
   }
   // global flags delegation
   global: {
-    // global is scoped by it's creation in nest function
-    // and only used for initialization for nest function and notifyInterfaceHandlers
-    initialized: boolean
     // flag for manually disable rendering workflow, useful in SSR for performance
     render: boolean
   },
@@ -181,32 +162,13 @@ export interface Context {
   },
 }
 
-export interface Dynamic {
-  (state: any): Components
-}
-
-export interface ComponentSpaceIndex {
-  [id: string]: ComponentSpace
-}
-
-// contextualized space in the component index
-export interface ComponentSpace {
-  ctx: Context
-  isStatic: boolean // Is statically composed?
-  state: any
-  inputs: InputIndex<any>
-  interfaces: CtxInterfaceIndex
-  interfaceValues: { // caches interfaces
-    [name: string]: any
-  }
-  // component index for dynamic handling (new and dispose)
-  components: {
-    [name: string]: true
-  }
-  def: Component<any>
+export interface ContextIndex {
+  [id: string]: Context
 }
 
 export type Executable<S> = Update<S> | Task
+
+export type GenericExecutable<S> = Update<S> | Task | Executable<any>[]
 
 export interface RunModule {
   (root: Component<any>, DEV: boolean, viewCb?): Promise<Module>

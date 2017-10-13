@@ -5,20 +5,27 @@
 ## Next
 
 - Add parentCtx helper
-- Document that the desired way is to have always an object state
 - Add Set generic action by default
 - Router helpers
 - Add task input helper
 
 ## Done
 
-- Fix hot-swaping of dynamic components (P)
-- Change components by a function for allowing dynamic hot-swaping (P)
+- Remove merge Contexts and Spaces = Context
+- Spaces are into _nest variable of parent
+- Add 'record' option to record all actions
+- Remove input returns
+
+---- Done -stagging
+
+- Actions ensures in-order execution
+- State always are an onject
 - Update TypeStyle dependency - performance boost
 - mergeStates refactored renamed to mergeComponents - Minor breaking change
 - Refactor examples
 
-## v3.3.4
+## v4.0 A whole refactor
+
 
 
 ## v3.3.3

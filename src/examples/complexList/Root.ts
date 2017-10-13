@@ -7,17 +7,13 @@ import {
   props,
   StyleGroup,
   clickable,
-  Defs,
+  _,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 import * as Item from './Item'
 
 export const name = 'Root'
-
-export const defs: Defs = () => ({
-  Item,
-})
 
 export const state = {
   text: '',
@@ -27,10 +23,11 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs<S> = ({ ctx, stateOf, toIt, toChild, nest, unnest }) => ({
-  inputKeyup: async ([idx, [keyCode, text]]) => {
+export const inputs: Inputs = ({ ctx, stateOf, toIt, toChild, nest, unnest }) => ({
+  inputKeyup: async ([keyCode, text]) => {
+    let s: S = stateOf()
     if (keyCode === 13 && text !== '') {
-      await nest(idx, props({ text })(clone(Item)))
+      await nest(s.numItems, props({ text })(clone(Item)))
       return [
         actions.SetText(''),
         actions.New(),
@@ -63,15 +60,6 @@ export const inputs: Inputs<S> = ({ ctx, stateOf, toIt, toChild, nest, unnest })
 
 export const actions: Actions<S> = {
   SetText: assoc('text'),
-  New: () => s => {
-    s.items[s.numItems] = s.numItems
-    s.numItems++
-    return s
-  },
-  Remove: idx => s => {
-    delete s.items[idx]
-    return s
-  },
 }
 
 const view: View<S> = ({ ctx, ev, vw }) => s => {
@@ -86,7 +74,7 @@ const view: View<S> = ({ ctx, ev, vw }) => s => {
       attrs: { placeholder: 'Type and hit enter' },
       props: { value: s.text },
       on: {
-        keyup: ev('inputKeyup', s.numItems, [
+        keyup: ev('inputKeyup', _, [
           ['keyCode'],
           ['target', 'value'],
         ]),

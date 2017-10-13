@@ -4,6 +4,8 @@
 # <img src="https://github.com/FractalBlocks/Fractal/blob/master/assets/FractalLogo.png">
 We believe in more than frameworks, we believe that minimalist and well crafted software will change the world. Lets build your ideas with elegance and simplicity with Fractal.
 
+(There is a whole reftor with a lot of improvements in progress, many tests temporary broken)
+
 ## How it works?
 
 - Fractal is minimal, composable and extendible
