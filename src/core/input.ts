@@ -96,7 +96,7 @@ export interface CtxToAct {
 export const toAct = (ctx: Context): CtxToAct => {
   let _toIt = toIt(ctx)
   return (actionName, data, isPropagated = true) =>
-    _toIt('action', [actionName, data], isPropagated)
+    _toIt('_action', [actionName, data], isPropagated)
 }
 
 export interface CtxRunIt {
@@ -107,7 +107,7 @@ export interface CtxRunIt {
 export const runIt = (ctx: Context): CtxRunIt => {
   let _toIt = toIt(ctx)
   return (executables, isPropagated = true) =>
-    _toIt('return', executables, isPropagated)
+    _toIt('_execute', executables, isPropagated)
 }
 
 // --- Child components helpers: build functions for traversing components and broadcasting messages to them

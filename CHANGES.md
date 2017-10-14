@@ -2,10 +2,8 @@
 
 ## Changes for Fractal core
 
-## Next
+## Whats next?
 
-- Add parentCtx helper
-- Add Set generic action by default
 - Router helpers
 - Add task input helper
 
@@ -13,16 +11,17 @@
 
 - Remove merge Contexts and Spaces = Context
 - Spaces are into _nest variable of parent
-- Add 'record' option to record all actions
 - Remove input returns
 
----- Done -stagging
+---- Done - stagging
 
+- Add Set generic action by default
+- Add _action and _execute inputs
+- Remove return and action
+- Add 'record' option to record all actions
 - Actions ensures in-order execution
 - State always are an onject
 - Update TypeStyle dependency - performance boost
-- mergeStates refactored renamed to mergeComponents - Minor breaking change
-- Refactor examples
 
 ## v4.0 A whole refactor
 

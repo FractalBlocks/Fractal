@@ -8,6 +8,7 @@ import {
   CtxInterfaceIndex,
   Actions,
   GenericExecutable,
+  Action,
 } from './core'
 import {
   HandlerInterface,
@@ -88,6 +89,7 @@ export interface CtxNest {
   (name: string, component: Component<any>, isStatic?: boolean): void
 }
 
+// Evaluate DEPRECATION
 // add a component to the component index
 export const nest = (ctx: Context): CtxNest => async (name, component) => {
   // create the global object for initialization
@@ -127,6 +129,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     // if state is an object, it is cloned
     state: clone(component.state),
     inputs: {}, // input helpers needs to be initialized after ComponentSpace, because references
+    actions: component.actions,
     interfaces: {},
     interfaceValues: {},
   }
@@ -141,13 +144,22 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     childCtx.inputs = {}
   }
   if (component.actions) { // reserved inputs: _action and _return
-    if (!childCtx.inputs['action']) {
+    if (!childCtx.inputs._action) {
       // action helper enabled by default
-      childCtx.inputs['action'] = action(childCtx, component.actions)
+      childCtx.inputs._action = action(childCtx, component.actions)
     }
-    if (!childCtx.inputs['return']) {
+    if (!childCtx.inputs._excecute) {
       // action helper enabled by default
-      childCtx.inputs['return'] = x => x
+      childCtx.inputs._excecute = executeInput(childCtx)
+    }
+    if (!childCtx.actions.Set) {
+      childCtx.actions.Set = SetAction
+    }
+    if (!childCtx.actions._add) {
+      childCtx.actions._add = _addAction
+    }
+    if (!childCtx.actions._remove) {
+      childCtx.actions._remove = _removeAction
     }
   }
 
@@ -341,22 +353,36 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
   }
 }
 
-export function performUpdate (compCtx: Context, update: Update<any>) {
+export async function performUpdate (compCtx: Context, update: Update<any>) {
   if (compCtx.stateLocked) {
     compCtx.actionQueue.push(update)
   } else {
+    let compNames
     compCtx.stateLocked = true
-    compCtx.state = (<Update<any>> update)(compCtx.state)
+    if ((update as any).compUpdate) {
+      compNames = Object.keys(compCtx.state._nest)
+    }
+    compCtx.state = update(compCtx.state)
+    compCtx.stateLocked = false
+    if ((update as any).compUpdate) {
+      let newCompNames = compNames = Object.keys(compCtx.state._nest)
+      let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
+      let removeNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
+      for (let i = 0, len = newNames.length; i < len; i++) {
+        await _nest(compCtx, newNames[i], compCtx.state._nest[newNames[i]])
+      }
+      for (let i = 0, len = removeNames.length; i < len; i++) {
+        await unnest(compCtx)(newNames[i])
+      }
+    }
     if (compCtx.global.record) {
       compCtx.global.records.push({ id: compCtx.id, update })
     }
     if (compCtx.global.render) {
       calcAndNotifyInterfaces(compCtx) // root context
     }
-    compCtx.stateLocked = false
-    let nextUpdate = compCtx.actionQueue.shift()
-    if (nextUpdate) {
-      performUpdate(compCtx, nextUpdate)
+    if (compCtx.actionQueue.length > 0) {
+      performUpdate(compCtx, compCtx.actionQueue.shift())
     }
   }
 }
@@ -601,6 +627,31 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
   }
   execute(ctx, actions[name](value))
 }
+
+// generic execute input
+export const executeInput = (ctx: Context) => async (executable: GenericExecutable<any>): Promise<void> => {
+  execute(ctx, executable)
+}
+
+// generic execute input
+export const SetAction: Action<any> = ([name, value]): any => s => {
+  s[name] = value
+  return s
+}
+
+export const _addAction: Action<any> = ([name, component]): any => s => {
+  s._nest[name] = component
+  return s
+}
+
+;(_addAction as any).compUpdate = true
+
+export const _removeAction: Action<any> = ([name, value]): any => s => {
+  delete s._nest[name]
+  return s
+}
+
+;(_removeAction as any).compUpdate = true
 
 export function clone (o) {
    var out, v, key

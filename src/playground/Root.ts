@@ -6,32 +6,33 @@ import {
   StyleGroup,
   clickable,
   _,
+  props,
 } from '../core'
 import { View, h } from '../interfaces/view'
 
-// import * as Item from './Item'
+import * as Item from './Item'
 
 export const name = 'Root'
 
 export const state = {
   text: '',
-  numItems: 0,
-  items: {},
+  itemsCount: 0,
+  _nest: {
+    Item: <any> props({ text: 'hola' })(Item),
+  },
 }
 
 export type S = typeof state
 
-export const inputs: Inputs = ({ ctx, stateOf, toIt, toChild, nest, unnest }) => ({
+export const inputs: Inputs = ({ ctx, stateOf, toIt, toChild, nest, unnest, toAct }) => ({
   inputKeyup: async ([keyCode, text]) => {
-    // let s: S = stateOf()
+    let s: S = stateOf()
     if (keyCode === 13 && text !== '') {
-      // await nest(s.numItems, props({ text })(clone(Item)))
-      return [
-        actions.SetText(''),
-        actions.New(),
-      ]
+      await toAct('SetText', '')
+      await toAct('Add')
+      await toAct('_add', [s.itemsCount, props({ text: 'hola ' + s.itemsCount })(Item)])
     } else {
-      return actions.SetText(text)
+      await toAct('SetText', text)
     }
   },
   setCheckAll: async (checked: boolean) => {
@@ -58,11 +59,15 @@ export const inputs: Inputs = ({ ctx, stateOf, toIt, toChild, nest, unnest }) =>
 
 export const actions: Actions<S> = {
   SetText: assoc('text'),
+  Add: () => s => {
+    s.itemsCount++
+    return s
+  },
 }
 
 const view: View<S> = ({ ctx, ev, vw }) => s => {
   let style = ctx.groups.style
-
+  console.log(ctx)
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
@@ -93,7 +98,7 @@ const view: View<S> = ({ ctx, ev, vw }) => s => {
       }, 'remove checked'),
     ]),
     h('ul', {class: { [style.list]: true }},
-      Object.keys(s.items).map(
+      Object.keys(s._nest).map(
         idx => vw(idx),
       )
     ),
