@@ -8,8 +8,9 @@ export const warn = (source: string, description: string) =>
   console.warn(`source: ${source}, description: ${description}`)
 
 /* istanbul ignore next */
-export const error = (source: string, description: string) =>
-  console.error(`source: ${source}, description: ${description}`)
+export const error = (source: string, description: string) => {
+  throw `source: ${source}, description: ${description}`
+}
 
 /* istanbul ignore next */
 export const beforeInput = (ctx, inputName, data) => {

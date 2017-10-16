@@ -16,7 +16,7 @@ let DEV = ENV === 'development'
   // setInterval(() => {
   //   app.moduleAPI.dispatch(['Root', 'inputKeyup', _, [13, 'asdasd'], 'fn'])
   // })
-
+  ;(window as any).app = app
   // Hot reload - DEV ONLY
   if (module.hot) {
     module.hot.accept('./Root', () => {

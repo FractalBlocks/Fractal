@@ -1,8 +1,6 @@
 import { Actions, Inputs, Interfaces, StyleGroup, _ } from '../core'
 import { View, h } from '../interfaces/view'
 
-export const name = 'Item'
-
 export const state = {
   checked: false,
   text: '',
@@ -44,7 +42,7 @@ const view: View<S> = ({ ctx, ev, act }) => s => {
       on: {
         click: ev('remove'),
       },
-    }, 'remove'),
+    }, 'removed'),
   ])
 }
 

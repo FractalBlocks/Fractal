@@ -107,6 +107,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   let id = ctx.id === '' ? name : ctx.id + '$' + name
   // state default
   component.state._nest = component.state._nest || {}
+  component.state._compCounter = 0
 
   ctx.components[id] = {
     id, // the component id
@@ -115,7 +116,6 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     // delegation
     rootCtx: ctx.rootCtx,
     global: ctx.global,
-    hotSwap: ctx.hotSwap,
     components: ctx.components,
     groupHandlers: ctx.groupHandlers,
     interfaceHandlers: ctx.interfaceHandlers,
@@ -154,9 +154,6 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     }
     if (!childCtx.actions.Set) {
       childCtx.actions.Set = SetAction
-    }
-    if (!childCtx.actions._add) {
-      childCtx.actions._add = _addAction
     }
     if (!childCtx.actions._remove) {
       childCtx.actions._remove = _removeAction
@@ -302,6 +299,9 @@ export const toIt = (ctx: Context): CtxToIt => {
     if (ctx.beforeInput) await ctx.beforeInput(ctx, inputName, data)
     await input(data)
     if (ctx.afterInput) await ctx.afterInput(ctx, inputName, data)
+    if (isPropagated) {
+      propagate(ctx, inputName, data)
+    }
   }
 }
 
@@ -365,18 +365,15 @@ export async function performUpdate (compCtx: Context, update: Update<any>) {
     compCtx.state = update(compCtx.state)
     compCtx.stateLocked = false
     if ((update as any).compUpdate) {
-      let newCompNames = compNames = Object.keys(compCtx.state._nest)
+      let newCompNames = Object.keys(compCtx.state._nest)
       let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
-      let removeNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
+      let removeNames = compNames.filter(n => newCompNames.indexOf(n) < 0)
       for (let i = 0, len = newNames.length; i < len; i++) {
         await _nest(compCtx, newNames[i], compCtx.state._nest[newNames[i]])
       }
       for (let i = 0, len = removeNames.length; i < len; i++) {
-        await unnest(compCtx)(newNames[i])
+        await unnest(compCtx)(removeNames[i])
       }
-    }
-    if (compCtx.global.record) {
-      compCtx.global.records.push({ id: compCtx.id, update })
     }
     if (compCtx.global.render) {
       calcAndNotifyInterfaces(compCtx) // root context
@@ -521,7 +518,10 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     }
 
     if (middleFn) {
-      ctx.hotSwap = true
+      ctx.interfaceHandlers = lastCtx.interfaceHandlers
+      ctx.taskHandlers = lastCtx.taskHandlers
+      ctx.groupHandlers = lastCtx.groupHandlers
+      // ctx.global = lastCtx.global
     }
 
     // Root component
@@ -531,7 +531,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
 
     // middle function for hot-swapping
     if (middleFn) {
-      middleFn(ctx, lastCtx)
+      await middleFn(ctx, lastCtx)
     }
 
     // pass initial value to each Interface Handler
@@ -626,6 +626,9 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
     value = arg2
   }
   execute(ctx, actions[name](value))
+  if (ctx.global.record) {
+    ctx.global.records.push({ id: ctx.id, actionName: name, value })
+  }
 }
 
 // generic execute input
@@ -639,19 +642,25 @@ export const SetAction: Action<any> = ([name, value]): any => s => {
   return s
 }
 
-export const _addAction: Action<any> = ([name, component]): any => s => {
-  s._nest[name] = component
-  return s
+export const AddComp: Action<any> = compFn => (compArgs): any => {
+  let update = s => {
+    let [name, component] = compFn(s._compCounter, compArgs)
+    s._nest[name] = component
+    s._compCounter++
+    return s
+  }
+  ;(update as any).compUpdate = true
+  return update
 }
 
-;(_addAction as any).compUpdate = true
-
-export const _removeAction: Action<any> = ([name, value]): any => s => {
-  delete s._nest[name]
-  return s
+export const _removeAction: Action<any> = (name): any => {
+  let update = s => {
+    delete s._nest[name]
+    return s
+  }
+  ;(update as any).compUpdate = true
+  return update
 }
-
-;(_removeAction as any).compUpdate = true
 
 export function clone (o) {
    var out, v, key

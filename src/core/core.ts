@@ -134,12 +134,10 @@ export interface Context {
   global: {
     // record all actions
     record: boolean
-    records: UpdateRecord[]
+    records: ActionRecord[]
     // flag for manually disable rendering workflow, useful in SSR for performance
     render: boolean
   },
-  // delegated flag
-  hotSwap: boolean
   // root context delegation
   rootCtx: Context
   // input hooks delegation
@@ -154,9 +152,10 @@ export interface Context {
   },
 }
 
-export interface UpdateRecord {
+export interface ActionRecord {
   id: string
-  update: Update<any>
+  actionName: string
+  value: any
 }
 
 export interface ContextIndex {

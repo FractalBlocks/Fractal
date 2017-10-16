@@ -138,7 +138,7 @@ export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
   let _toChild = toChild(ctx)
   let stateOf = _stateOf(ctx)
   return groupName => {
-    let componentNames = Object.keys(ctx.components[ctx.id].components)
+    let componentNames = Object.keys(ctx.components[ctx.id].state._nest)
       .filter(name => name.split('_')[0] === groupName)
     return {
       getState (key: string, options): any {

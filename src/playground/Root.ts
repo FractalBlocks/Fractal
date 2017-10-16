@@ -5,69 +5,56 @@ import {
   assoc,
   StyleGroup,
   clickable,
-  _,
+  AddComp,
   props,
+  clone,
+  _,
 } from '../core'
 import { View, h } from '../interfaces/view'
 
 import * as Item from './Item'
 
-export const name = 'Root'
-
 export const state = {
   text: '',
-  itemsCount: 0,
-  _nest: {
-    Item: <any> props({ text: 'hola' })(Item),
-  },
+  _nest: {},
 }
 
 export type S = typeof state
 
-export const inputs: Inputs = ({ ctx, stateOf, toIt, toChild, nest, unnest, toAct }) => ({
+export const inputs: Inputs = ({ ctx, stateOf, toIt, toChild, nest, unnest, toAct, comps }) => ({
   inputKeyup: async ([keyCode, text]) => {
-    let s: S = stateOf()
     if (keyCode === 13 && text !== '') {
       await toAct('SetText', '')
-      await toAct('Add')
-      await toAct('_add', [s.itemsCount, props({ text: 'hola ' + s.itemsCount })(Item)])
+      await toAct('Add', id => 'hola ' + id + ': ' + text)
     } else {
       await toAct('SetText', text)
     }
   },
   setCheckAll: async (checked: boolean) => {
-    let items = stateOf().items
-    let key
-    for (key in items) {
-      await toChild(key, 'action', ['SetChecked', checked])
-    }
+    comps('Item').broadcast('_action', ['SetChecked', checked])
   },
   removeChecked: async () => {
-    let items = stateOf().items
-    let key
-    for (key in items) {
-      if (stateOf(key).checked) {
-        await toIt('$$Item_remove', [key])
-      }
+    let names = comps('Item').getNames()
+    for (let i = 0, len = names.length; i < len; i++) {
+      await toIt('$$Item_remove', [names[i]])
     }
   },
   $$Item_remove: async ([idx]) => {
-    unnest(idx)
-    return actions.Remove(idx)
+    await toAct('_remove', idx)
   },
 })
 
 export const actions: Actions<S> = {
   SetText: assoc('text'),
-  Add: () => s => {
-    s.itemsCount++
-    return s
-  },
+  Add: AddComp((id, textFn) => [
+    'Item_' + id,
+    props({ text: textFn(id) })(clone(Item)),
+  ]),
 }
 
 const view: View<S> = ({ ctx, ev, vw }) => s => {
   let style = ctx.groups.style
-  console.log(ctx)
+
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
