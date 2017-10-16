@@ -22,7 +22,7 @@ export interface PrerenderOptions {
 
 export const prerender = ({ root, runModule, DEV, template, globalStyles, auxJS, cb }: PrerenderOptions): void => {
   let app = runModule(root, DEV, appView => {
-    let styleStr = (globalStyles || '') + app.groupHandlers['style'].state.instance.getStyles()
+    let styleStr = (globalStyles || '') + app.rootCtx.groupHandlers['style'].state.instance.getStyles()
     let html = template.replace('<!--##APP##-->', toHTML(appView))
     html = html.replace('<!--##STYLES##-->', '<style>' + styleStr + '</style>')
     html = auxJS ? html.replace('<!--##AUXJS##-->', '<script>' + auxJS + '</script>') : html

@@ -51,10 +51,6 @@ export interface HandlerObjectIndex {
 export interface Module {
   moduleDef: ModuleDef
   isDisposed: boolean
-  // related to internals
-  groupHandlers: HandlerObjectIndex
-  interfaceHandlers: HandlerObjectIndex
-  taskHandlers: HandlerObjectIndex
   // API to module
   moduleAPI: ModuleAPI
   // Root component context
@@ -92,12 +88,6 @@ export interface CtxNest {
 // Evaluate DEPRECATION
 // add a component to the component index
 export const nest = (ctx: Context): CtxNest => async (name, component) => {
-  // create the global object for initialization
-  ctx.global = {
-    record: ctx.global.record,
-    records: ctx.global.records,
-    render: true,
-  }
   await _nest(ctx, name, component)
 }
 
@@ -109,7 +99,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   component.state._nest = component.state._nest || {}
   component.state._compCounter = 0
 
-  ctx.components[id] = {
+  let childCtx = <any> {
     id, // the component id
     name,
     groups: {},
@@ -134,7 +124,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     interfaceValues: {},
   }
 
-  let childCtx = ctx.components[id]
+  ctx.components[id] =  childCtx
 
   childCtx.interfaces = _makeInterfaces(childCtx, component.interfaces)
 
@@ -521,18 +511,19 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       ctx.interfaceHandlers = lastCtx.interfaceHandlers
       ctx.taskHandlers = lastCtx.taskHandlers
       ctx.groupHandlers = lastCtx.groupHandlers
-      // ctx.global = lastCtx.global
     }
 
     // Root component
     await _nest(ctx, 'Root', component)
     ctx.rootCtx = ctx.components.Root
     ctx.components.Root.rootCtx = ctx.rootCtx
-
+    ctx = ctx.rootCtx
+    ;(window as any).lastCtx = ctx
     // middle function for hot-swapping
     if (middleFn) {
-      await middleFn(ctx, lastCtx)
+      await middleFn(ctx.rootCtx, lastCtx)
     }
+    ;(window as any).lastCtxM = ctx
 
     // pass initial value to each Interface Handler
     // -- interfaceOrder
@@ -599,10 +590,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     moduleDef,
     // reattach root component, used for hot swapping
     isDisposed: false,
-    // related to internals
-    groupHandlers: ctx.groupHandlers,
-    interfaceHandlers: ctx.interfaceHandlers,
-    taskHandlers: ctx.taskHandlers,
     // root context
     moduleAPI,
     rootCtx: ctx,
@@ -628,6 +615,7 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
   execute(ctx, actions[name](value))
   if (ctx.global.record) {
     ctx.global.records.push({ id: ctx.id, actionName: name, value })
+    ;(window as any).lastCtxAct = ctx
   }
 }
 

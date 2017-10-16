@@ -46,7 +46,7 @@ export const renderHTML = ({
         var app = await runModule(root, false, { render: false })
         await cb(app)
         let view = app.rootCtx.components.Root.interfaces['view'](app.rootCtx.components.Root.state)
-        let styleStr = (css || '') + app.groupHandlers['style'].state.instance.getStyles()
+        let styleStr = (css || '') + app.rootCtx.groupHandlers['style'].state.instance.getStyles()
         html = html.replace('<!--##HTML##-->', toHTML(view))
         html = html.replace('<!--##STYLES##-->', '<style>' + styleStr + '</style>')
         html = html.replace('<!--##ENCODING##-->', encoding || 'utf-8')
