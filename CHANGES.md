@@ -5,16 +5,15 @@
 ## Whats next?
 
 - Router helpers
-- Add task input helper
 
 ## Done
 
-- Remove merge Contexts and Spaces = Context
-- Spaces are into _nest variable of parent
+- Merge Contexts and Spaces into only Contexts
+- Components are into _nest variable of parent
 - Remove input returns
-
----- Done - stagging
-
+- Add AddComp helper for dynamic composing
+- Add _remove default action helper for dynamic composing
+- Remove name from components
 - Add Set generic action by default
 - Add _action and _execute inputs
 - Remove return and action
@@ -23,9 +22,9 @@
 - State always are an onject
 - Update TypeStyle dependency - performance boost
 
-## v4.0 A whole refactor
+## v4.0 A whole refactor (WIP)
 
-
+...
 
 ## v3.3.3
 

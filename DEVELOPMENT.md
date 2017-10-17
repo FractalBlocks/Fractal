@@ -32,7 +32,6 @@ There are TODOs for short term:
 - Simplify tests (would be reimplement it? most tests are disabled right now)
 - Implement component lifecycle
 - Document component lifecycle
-- Remove name from components (its Useless)
 - Add coverage for latets helpers: compGroup, comps and vws
 - Document prerendering (AOT) and SSR
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
