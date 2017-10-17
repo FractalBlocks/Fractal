@@ -21,7 +21,7 @@ let DEV = ENV === 'development'
   if (module.hot) {
     module.hot.accept('./Root', () => {
       let m = <any> require('./Root')
-      app.moduleAPI.reattach(m, app.rootCtx, hotSwap)
+      app.moduleAPI.attach(m, app.rootCtx, hotSwap)
     })
   }
 

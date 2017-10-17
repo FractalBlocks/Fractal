@@ -163,7 +163,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   let interfaceObjects: { [name: string]: HandlerObject } = {}
 
   /* istanbul ignore next */
-  let reattach = async comp => {
+  let attach = async comp => {
     def.error('reattach', 'unimplemented method')
   }
 
@@ -173,7 +173,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     // dispatch function type used for handlers
     dispatch: async (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
     dispose,
-    reattach,
+    attach,
     // nest a component to the component index
     nest: async (name, component, isStatic = false): Promise<any> => worker.postMessage(['nest', name, component]),
     // nest many components to the component index

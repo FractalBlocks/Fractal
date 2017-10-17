@@ -61,7 +61,7 @@ export interface Module {
 export interface ModuleAPI {
   dispatch (eventData: EventData): Promise<void>
   dispose (): void
-  reattach (comp: Component<any>, lastCtx?: Context, middleFn?: MiddleFn): Promise<void>
+  attach (comp: Component<any>, lastCtx?: Context, middleFn?: MiddleFn): Promise<void>
   nest: CtxNest
   unnest: CtxUnnest
   nestAll: CtxNestAll
@@ -469,7 +469,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       // dispatch function type used for handlers
       dispatch: (eventData: EventData) => dispatch(ctx, eventData),
       dispose,
-      reattach,
       // merge a component to the component index
       nest: nest(ctx),
       // merge many components to the component index
@@ -482,6 +481,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       setGroup: (id, name, space) => {
         ctx.components[id].groups[name] = space
       },
+      attach,
       // delegated methods
       warn: ctx.warn,
       error: ctx.error,
@@ -517,13 +517,10 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     await _nest(ctx, 'Root', component)
     ctx.rootCtx = ctx.components.Root
     ctx.components.Root.rootCtx = ctx.rootCtx
-    ctx = ctx.rootCtx
-    ;(window as any).lastCtx = ctx
     // middle function for hot-swapping
     if (middleFn) {
       await middleFn(ctx.rootCtx, lastCtx)
     }
-    ;(window as any).lastCtxM = ctx
 
     // pass initial value to each Interface Handler
     // -- interfaceOrder
@@ -580,10 +577,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     unnest(ctx)()
     ctx = undefined
     this.isDisposed = true
-  }
-
-  async function reattach (comp: Component<any>, lastCtx: Context, middleFn: MiddleFn) {
-    await attach(comp, lastCtx, middleFn)
   }
 
   return {
