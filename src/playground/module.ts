@@ -12,6 +12,7 @@ import { styleHandler } from '../groups/style'
 export const runModule: RunModule = (root: Component<any>, DEV = false): Promise<Module> => run({
   root,
   record: DEV,
+  log: DEV,
   groups: {
     style: styleHandler('', DEV),
   },

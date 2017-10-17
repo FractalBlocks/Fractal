@@ -435,7 +435,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         log: moduleDef.log || false,
         render: true,
       },
-      hotSwap: false,
       // component index
       components: {},
       groupHandlers: {},

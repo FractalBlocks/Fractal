@@ -136,7 +136,6 @@ export interface Context {
     record: boolean
     records: ActionRecord[]
     log: boolean
-    hotSwap: boolean // true while hot-swaping
     // flag for manually disable rendering workflow, useful in SSR for performance
     render: boolean
   },
