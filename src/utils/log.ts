@@ -1,7 +1,7 @@
 
 // side effects for log functionality
 
-import { clone, _stateOf } from '../core'
+import { clone, _stateOf, Context } from '../core'
 
 /* istanbul ignore next */
 export const warn = (source: string, description: string) =>
@@ -13,7 +13,8 @@ export const error = (source: string, description: string) => {
 }
 
 /* istanbul ignore next */
-export const beforeInput = (ctx, inputName, data) => {
+export const beforeInput = (ctx: Context, inputName, data) => {
+  if (!ctx.global.log) return
   let state = _stateOf(ctx)()
   if (typeof state === 'object') {
     state = clone(state)
@@ -33,7 +34,8 @@ export const beforeInput = (ctx, inputName, data) => {
 // color for actions (not yet implemented) #58C6F8
 
 /* istanbul ignore next */
-export const afterInput = (ctx, inputName, data) => {
+export const afterInput = (ctx: Context, inputName, data) => {
+  if (!ctx.global.log) return
   let state = _stateOf(ctx)()
   if (typeof state === 'object') {
     state = clone(state)

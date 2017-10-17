@@ -9,8 +9,8 @@ import {
   props,
   clone,
   _,
-} from '../core'
-import { View, h } from '../interfaces/view'
+} from '../../core'
+import { View, h } from '../../interfaces/view'
 
 import * as Item from './Item'
 

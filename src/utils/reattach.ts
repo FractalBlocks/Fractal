@@ -7,8 +7,12 @@ export const hotSwap: MiddleFn = async (ctx, lastCtx) => {
   ctx.global = lastCtx.global
   ctx.global.records = []
   let record: ActionRecord
+  let comp
   for (let i = 0, len = records.length; i < len; i++) {
     record = records[i]
-    await toAct(ctx.components[record.id])(record.actionName, record.value)
+    comp = ctx.components[record.id]
+    if (comp) {
+      await toAct(comp)(record.actionName, record.value)
+    }
   }
 }

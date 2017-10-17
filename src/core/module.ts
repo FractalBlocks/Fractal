@@ -20,6 +20,7 @@ import { makeInputHelpers } from './input'
 export interface ModuleDef {
   root: Component<any>
   record?: boolean
+  log?: boolean
   render?: boolean // initial render flag
   groups?: HandlerInterfaceIndex
   tasks?: HandlerInterfaceIndex
@@ -99,7 +100,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   component.state._nest = component.state._nest || {}
   component.state._compCounter = 0
 
-  let childCtx = <any> {
+  let childCtx: Context = <any> {
     id, // the component id
     name,
     groups: {},
@@ -151,9 +152,13 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   }
 
   // composition
-  if (Object.keys(component.state._nest).length > 0) {
-    await nestAll(childCtx)(component.state._nest)
+  if (Object.keys(childCtx.state._nest).length > 0) {
+    let components = childCtx.state._nest
+    for (name in components) {
+      await _nest(childCtx, name, components[name])
+    }
   }
+  childCtx.state._compNames = Object.keys(childCtx.state._nest)
 
   if (component.groups) {
     // Groups are handled automatically only when comoponent are initialized
@@ -347,14 +352,10 @@ export async function performUpdate (compCtx: Context, update: Update<any>) {
   if (compCtx.stateLocked) {
     compCtx.actionQueue.push(update)
   } else {
-    let compNames
     compCtx.stateLocked = true
-    if ((update as any).compUpdate) {
-      compNames = Object.keys(compCtx.state._nest)
-    }
     compCtx.state = update(compCtx.state)
-    compCtx.stateLocked = false
-    if ((update as any).compUpdate) {
+    if (compCtx.state._compUpdated) {
+      let compNames = compCtx.state._compNames
       let newCompNames = Object.keys(compCtx.state._nest)
       let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
       let removeNames = compNames.filter(n => newCompNames.indexOf(n) < 0)
@@ -364,7 +365,10 @@ export async function performUpdate (compCtx: Context, update: Update<any>) {
       for (let i = 0, len = removeNames.length; i < len; i++) {
         await unnest(compCtx)(removeNames[i])
       }
+      compCtx.state._compUpdate = false
+      compCtx.state._compNames = newCompNames
     }
+    compCtx.stateLocked = false
     if (compCtx.global.render) {
       calcAndNotifyInterfaces(compCtx) // root context
     }
@@ -428,6 +432,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       global: {
         record: moduleDef.record || false,
         records: [],
+        log: moduleDef.log || false,
         render: true,
       },
       hotSwap: false,
@@ -623,24 +628,18 @@ export const SetAction: Action<any> = ([name, value]): any => s => {
   return s
 }
 
-export const AddComp: Action<any> = compFn => (compArgs): any => {
-  let update = s => {
-    let [name, component] = compFn(s._compCounter, compArgs)
-    s._nest[name] = component
-    s._compCounter++
-    return s
-  }
-  ;(update as any).compUpdate = true
-  return update
+export const AddComp: Action<any> = compFn => (compArgs): any => s => {
+  let [name, component] = compFn(s._compCounter, compArgs)
+  s._nest[name] = component
+  s._compCounter++
+  s._compUpdated = true
+  return s
 }
 
-export const _removeAction: Action<any> = (name): any => {
-  let update = s => {
-    delete s._nest[name]
-    return s
-  }
-  ;(update as any).compUpdate = true
-  return update
+export const _removeAction: Action<any> = (name): any => s => {
+  delete s._nest[name]
+  s._compUpdated = true
+  return s
 }
 
 export function clone (o) {

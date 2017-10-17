@@ -12,7 +12,8 @@
 /docsExamples/
 coverage/
 reports/
-webpack-stats.json
+dist/
+.fusebox
 
 # npm stuff
 node_modules/

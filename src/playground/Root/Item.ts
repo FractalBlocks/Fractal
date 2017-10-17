@@ -1,5 +1,5 @@
-import { Actions, Inputs, Interfaces, StyleGroup, _ } from '../core'
-import { View, h } from '../interfaces/view'
+import { Actions, Inputs, Interfaces, StyleGroup, _ } from '../../core'
+import { View, h } from '../../interfaces/view'
 
 export const state = {
   checked: false,
@@ -42,7 +42,7 @@ const view: View<S> = ({ ctx, ev, act }) => s => {
       on: {
         click: ev('remove'),
       },
-    }, 'removed'),
+    }, 'remove'),
   ])
 }
 
