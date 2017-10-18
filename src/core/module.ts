@@ -62,7 +62,7 @@ export interface Module {
 export interface ModuleAPI {
   dispatch (eventData: EventData): Promise<void>
   dispose (): void
-  attach (comp: Component<any>, lastCtx?: Context, middleFn?: MiddleFn): Promise<void>
+  attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
   nest: CtxNest
   unnest: CtxUnnest
   nestAll: CtxNestAll
@@ -76,7 +76,7 @@ export interface ModuleAPI {
 export interface MiddleFn {
   (
     ctx: Context,
-    lastCtx: Context
+    app: Module
   ): void
 }
 
@@ -100,12 +100,11 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   component.state._nest = component.state._nest || {}
   component.state._compCounter = 0
 
-  let childCtx: Context = <any> {
+  let childCtx: Context = {
     id, // the component id
     name,
     groups: {},
     // delegation
-    rootCtx: ctx.rootCtx,
     global: ctx.global,
     components: ctx.components,
     groupHandlers: ctx.groupHandlers,
@@ -399,7 +398,7 @@ export function calcAndNotifyInterfaces (ctx: Context) {
 
 // permorms interface recalculation
 export async function notifyInterfaceHandlers (ctx: Context) {
-  let space = ctx.components[ctx.rootCtx.id]
+  let space = ctx.components[ctx.components.Root.id]
   for (let name in space.interfaces) {
     if (ctx.interfaceHandlers[name]) {
       ctx.interfaceHandlers[name].handle(await space.interfaces[name](space.state))
@@ -420,11 +419,11 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   let ctx: Context
 
   // attach root component
-  async function attach (comp: Component<any>, lastCtx?: Context, middleFn?: MiddleFn) {
+  async function attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module> {
     // root component, take account of hot swapping
     component = comp ? comp : moduleDef.root
     // if is hot swapping, do not recalculat context
-    // root context
+    // bootstrap context (level 0)
     ctx = <any> { // because of rootCtx delegation
       id: '',
       name: 'Root',
@@ -512,18 +511,18 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     }
 
     if (middleFn) {
-      ctx.interfaceHandlers = lastCtx.interfaceHandlers
-      ctx.taskHandlers = lastCtx.taskHandlers
-      ctx.groupHandlers = lastCtx.groupHandlers
+      ctx.interfaceHandlers = app.rootCtx.interfaceHandlers
+      ctx.taskHandlers = app.rootCtx.taskHandlers
+      ctx.groupHandlers = app.rootCtx.groupHandlers
     }
 
     // Root component
     await _nest(ctx, 'Root', component)
-    ctx.rootCtx = ctx.components.Root
-    ctx.components.Root.rootCtx = ctx.rootCtx
+    // Root context (level 1)
+    ctx.global.rootCtx = ctx.components.Root
     // middle function for hot-swapping
     if (middleFn) {
-      await middleFn(ctx.rootCtx, lastCtx)
+      await middleFn(ctx.global.rootCtx, app)
     }
 
     // pass initial value to each Interface Handler
@@ -534,25 +533,26 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       'InterfaceHandlers',
       `'$.Root' component has no interface called '${name}', missing interface handler`
     )
+    let rootCtx = ctx.global.rootCtx
     if (interfaceOrder) {
       for (let i = 0; name = interfaceOrder[i]; i++) {
         if (ctx.interfaceHandlers[name]) {
-          ctx.interfaceHandlers[name].handle(ctx.rootCtx.interfaces[name](ctx.components.Root.state))
+          ctx.interfaceHandlers[name].handle(rootCtx.interfaces[name](ctx.components.Root.state))
         } else {
-          return errorNotHandler(name)
+          return <any> errorNotHandler(name)
         }
       }
     }
-    for (name in ctx.rootCtx.interfaces) {
+    for (name in rootCtx.interfaces) {
       if (interfaceOrder && interfaceOrder.indexOf(name) !== -1) {
         continue // interface evaluated yet
       }
       if (ctx.interfaceHandlers[name]) {
         ctx.interfaceHandlers[name].handle(
-          await ctx.rootCtx.interfaces[name](ctx.components.Root.state)
+          await rootCtx.interfaces[name](ctx.components.Root.state)
         )
       } else {
-        return errorNotHandler(name)
+        return <any> errorNotHandler(name)
       }
     }
 
@@ -561,9 +561,16 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       moduleDef.init(moduleAPI)
     }
 
-  }
+    return {
+      moduleDef,
+      // reattach root component, used for hot swapping
+      isDisposed: false,
+      // root context
+      moduleAPI,
+      rootCtx: ctx.global.rootCtx,
+    }
 
-  await attach(undefined)
+  }
 
   function dispose () {
     if (moduleDef.destroy) {
@@ -583,14 +590,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     this.isDisposed = true
   }
 
-  return {
-    moduleDef,
-    // reattach root component, used for hot swapping
-    isDisposed: false,
-    // root context
-    moduleAPI,
-    rootCtx: ctx,
-  }
+  return await attach(undefined)
 }
 
 // generic action input

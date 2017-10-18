@@ -28,13 +28,16 @@ Sparky.task('init', () => {
       }),
     ],
   })
+
+
+
 })
 
 Sparky.task('production', () => {
   DEV = 'production'
 })
 
-Sparky.task('playground', ['init'], () => {
+Sparky.task('default', ['init'], () => {
   let playground = fuse
     .bundle('Root')
     .instructions('> src/playground/index.ts')

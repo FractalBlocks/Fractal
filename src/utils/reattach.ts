@@ -1,10 +1,9 @@
 import { ActionRecord } from '../core/core'
-import { MiddleFn } from '../core/module'
+import { MiddleFn, Module } from '../core/module'
 import { toAct } from '../core/input'
 
-export const hotSwap: MiddleFn = async (ctx, lastCtx) => {
-  let records = lastCtx.global.records
-  ctx.global = lastCtx.global
+export const hotSwap: MiddleFn = async (ctx, app: Module) => {
+  let records = app.rootCtx.global.records
   ctx.global.records = []
   ctx.global.render = false
   ctx.global.log = false
@@ -19,5 +18,5 @@ export const hotSwap: MiddleFn = async (ctx, lastCtx) => {
   }
   ctx.global.render = true
   ctx.global.log = true
-
+  app.rootCtx = ctx
 }

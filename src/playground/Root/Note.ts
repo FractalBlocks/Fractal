@@ -3,20 +3,12 @@ import {
   Inputs,
   Interfaces,
   StyleGroup,
-  clone,
 } from '../../core'
-import { View, h } from '../..//interfaces/view'
-
-import * as List from './List'
-import * as Note from './Note'
-
-export const name = 'Root'
+import { View, h } from '../../interfaces/view'
 
 export const state = {
-  _nest: {
-    List: clone(List),
-    Note: clone(Note),
-  },
+  title: '',
+  body: '',
 }
 
 export type S = typeof state
@@ -27,15 +19,15 @@ export const inputs: Inputs = ctx => ({
 export const actions: Actions<S> = {
 }
 
-const view: View<S> = ({ ctx, vw }) => s => {
+const view: View<S> = ({ ctx }) => s => {
   let style = ctx.groups.style
 
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
   }, [
-    vw('List'),
-    vw('Note'),
+    h('div', {class: { [style.title]: true }}, s.title),
+    h('div', {class: { [style.body]: true }}, s.body),
   ])
 }
 

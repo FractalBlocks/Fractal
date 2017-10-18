@@ -138,9 +138,9 @@ export interface Context {
     log: boolean
     // flag for manually disable rendering workflow, useful in SSR for performance
     render: boolean
+    // root context delegation
+    rootCtx: Context
   },
-  // root context delegation
-  rootCtx: Context
   // input hooks delegation
   beforeInput? (ctxIn: Context, inputName: string, data: any): void
   afterInput? (ctxIn: Context, inputName: string, data: any): void

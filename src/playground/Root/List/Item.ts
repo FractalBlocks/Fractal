@@ -1,15 +1,16 @@
-import { Actions, Inputs, Interfaces, StyleGroup, _ } from '../../core'
-import { View, h } from '../../interfaces/view'
+import { Actions, Inputs, Interfaces, StyleGroup, _, absoluteCenter } from '../../../core'
+import { View, h } from '../../../interfaces/view'
 
 export const state = {
   checked: false,
-  text: '',
+  title: '',
 }
 
 export type S = typeof state
 
 export const inputs: Inputs = ({ ctx }) => ({
   remove: async () => {},
+  select: async () => {},
 })
 
 export const actions: Actions<S> = {
@@ -36,13 +37,18 @@ const view: View<S> = ({ ctx, ev, act }) => s => {
         change: act('SetChecked', _, ['target', 'checked']),
       },
     }),
-    <any> s.text,
-    h('span', {
+    h('div', {
+      class: { [style.title]: true },
+      on: { click: ev('select') },
+    }, s.title),
+    h('div', {
       class: { [style.remove]: true },
       on: {
         click: ev('remove'),
       },
-    }, 'remove'),
+    }, [
+      h('div', {class: { [style.removeLine]: true }}),
+    ]),
   ])
 }
 
@@ -52,23 +58,34 @@ const style: StyleGroup = {
   base: {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '10px 10px 10px 20px',
+    alignItems: 'center',
     borderBottom: '1px solid #C1B8B8',
   },
   checkbox: {},
+  title: {
+    padding: '10px 5px',
+    cursor: 'pointer',
+  },
   remove: {
-    fontSize: '20px',
-    padding: '3px',
-    borderRadius: '4px',
-    color: 'white',
+    width: '24px',
+    height: '24px',
+    borderRadius: '50%',
     backgroundColor: '#DB4343',
     cursor: 'pointer',
     userSelect: 'none',
+    boxShadow: '1px 1px 0px 0px #3f3f3f',
+    ...absoluteCenter,
     $nest: {
       '&:hover': {
         backgroundColor: '#DE3030',
       },
     },
+  },
+  removeLine: {
+    width: 'calc(100% - 8px)',
+    height: '3px',
+    borderRadius: '1px',
+    backgroundColor: 'white',
   },
 }
 
