@@ -21,35 +21,38 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs = ({ ctx, stateOf, toIt, toChild, nest, unnest, toAct, comps }) => ({
+export const inputs: Inputs = F => ({
+  init: async () => {
+    await F.runIt(['db', ['getDB', _, F.act('Set')]])
+  },
   inputKeyup: async ([keyCode, text]) => {
     if (keyCode === 13 && text !== '') {
-      await toAct('SetText', '')
-      await toAct('Add', text)
+      await F.toAct('SetText', '')
+      await F.toAct('Add', text)
     } else {
-      await toAct('SetText', text)
+      await F.toAct('SetText', text)
     }
   },
   setCheckAll: async (checked: boolean) => {
-    comps('Item').broadcast('_action', ['SetChecked', checked])
+    F.comps('Item').broadcast('_action', ['SetChecked', checked])
   },
   removeChecked: async () => {
-    let names = comps('Item').getNames()
+    let names = F.comps('Item').getNames()
     for (let i = 0, len = names.length; i < len; i++) {
-      await toIt('$$Item_remove', [names[i]])
+      await F.toIt('$$Item_remove', [names[i]])
     }
   },
   $$Item_remove: async ([idx]) => {
-    await toAct('_remove', idx)
+    await F.toAct('_remove', idx)
   },
   $$Item_select: async ([idx]) => {
-    await toAct('SetSelected', idx)
+    await F.toIt('select', idx)
   },
+  select: async () => {},
 })
 
 export const actions: Actions<S> = {
   SetText: assoc('text'),
-  SetSelected: assoc('selected'),
   Add: AddComp((id, title) => [
     'Item_' + id,
     props({ title })(clone(Item)),

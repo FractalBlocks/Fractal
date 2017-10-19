@@ -21,21 +21,24 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs = ctx => ({
+export const inputs: Inputs = F => ({
+  $List_select: async item => {
+    await F.toChild('Note', '_action', 'setNote', item)
+  },
 })
 
 export const actions: Actions<S> = {
 }
 
-const view: View<S> = ({ ctx, vw }) => s => {
-  let style = ctx.groups.style
+const view: View<S> = F => s => {
+  let style = F.ctx.groups.style
 
   return h('div', {
-    key: ctx.name,
+    key: F.ctx.name,
     class: { [style.base]: true },
   }, [
-    vw('List'),
-    vw('Note'),
+    F.vw('List'),
+    F.vw('Note'),
   ])
 }
 

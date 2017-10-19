@@ -13,10 +13,15 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs = ctx => ({
+export const inputs: Inputs = () => ({
 })
 
 export const actions: Actions<S> = {
+  SetNote: ({ title, body }) => s => {
+    s.title = title
+    s.body = body
+    return s
+  },
 }
 
 const view: View<S> = ({ ctx }) => s => {
