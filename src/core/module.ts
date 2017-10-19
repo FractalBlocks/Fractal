@@ -138,9 +138,9 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
       // action helper enabled by default
       childCtx.inputs._action = action(childCtx, component.actions)
     }
-    if (!childCtx.inputs._excecute) {
+    if (!childCtx.inputs._execute) {
       // action helper enabled by default
-      childCtx.inputs._excecute = executeInput(childCtx)
+      childCtx.inputs._execute = executeInput(childCtx)
     }
     if (!childCtx.actions.Set) {
       childCtx.actions.Set = SetAction
