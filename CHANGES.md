@@ -8,6 +8,8 @@
 
 ## Done
 
+- Remove unused input helpers
+- init and destroy input are handled in the lifecycle
 - Merge Contexts and Spaces into only Contexts
 - Components are into _nest variable of parent
 - Remove input returns

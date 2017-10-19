@@ -1,16 +1,8 @@
-import { Context } from './core'
+import { Context, GenericExecutable } from './core'
 import { CtxEv, _ev, CtxAct, _act } from './interface'
 import {
   toIt,
   CtxToIt,
-  CtxNest,
-  CtxUnnestAll,
-  CtxNestAll,
-  CtxUnnest,
-  nest,
-  unnest,
-  nestAll,
-  unnestAll,
 } from './module'
 
 export interface InputHelpers {
@@ -22,10 +14,6 @@ export interface InputHelpers {
   toChild: CtxToChild
   toAct: CtxToAct
   runIt: CtxRunIt
-  nest: CtxNest
-  unnest: CtxUnnest
-  nestAll: CtxNestAll
-  unnestAll: CtxUnnestAll
   comps: CtxComponentHelpers
 }
 
@@ -38,10 +26,6 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   toChild: toChild(ctx),
   toAct: toAct(ctx),
   runIt: runIt(ctx),
-  nest: nest(ctx),
-  unnest: unnest(ctx),
-  nestAll: nestAll(ctx),
-  unnestAll: unnestAll(ctx),
   comps: _componentHelpers(ctx),
 })
 
@@ -100,13 +84,13 @@ export const toAct = (ctx: Context): CtxToAct => {
 }
 
 export interface CtxRunIt {
-  (executables: Promise<void>, isPropagated?: boolean): void
+  (executables: GenericExecutable<any>, isPropagated?: boolean): void
 }
 
 // generic action self caller
 export const runIt = (ctx: Context): CtxRunIt => {
   let _toIt = toIt(ctx)
-  return (executables, isPropagated = true) =>
+  return (executables: GenericExecutable<any>, isPropagated = true) =>
     _toIt('_execute', executables, isPropagated)
 }
 
