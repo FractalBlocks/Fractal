@@ -8,6 +8,8 @@
 
 ## Done
 
+- Fix lifecycle ordering
+- Add init and destroy lifecycle hooks
 - Remove unused input helpers
 - init and destroy input are handled in the lifecycle
 - Merge Contexts and Spaces into only Contexts

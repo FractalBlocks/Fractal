@@ -23,8 +23,19 @@ export const runModule: RunModule = (root: Component<any>, DEV = false): Promise
     db: mod => ({
       state: _,
       handle: async ([name, data, cb]) => {
-        let result = DB[name].apply(null, data)
-        mod.dispatch(computeEvent(result, cb))
+        let result
+        if (name === 'getItem') {
+          result = DB.getItem(data)
+        } else if (name === 'setItem') {
+          result = DB.setItem(data[0], data[1])
+        } else if (name === 'addItem') {
+          result = DB.addItem(data)
+        } else if (name === 'getDB') {
+          result = DB.getDB()
+        }
+        if (cb) {
+          await mod.dispatch(computeEvent(result, cb))
+        }
       },
       dispose: () => {},
     }),

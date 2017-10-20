@@ -11,11 +11,13 @@ import {
   _,
 } from '../../../core'
 import { View, h } from '../../../interfaces/view'
+import { Item as ItemType } from '../../db'
 
 import * as Item from './Item'
 
 export const state = {
   text: '',
+  items: <ItemType[]> [],
   _nest: {},
 }
 
@@ -23,15 +25,19 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   init: async () => {
-    await F.runIt(['db', ['getDB', _, F.act('Set')]])
+    await F.runIt(['db', ['getDB', _, F.act('SetItems', _, '*')]])
   },
   inputKeyup: async ([keyCode, text]) => {
     if (keyCode === 13 && text !== '') {
       await F.toAct('SetText', '')
-      await F.toAct('Add', text)
+      await F.toIt('add', text)
     } else {
       await F.toAct('SetText', text)
     }
+  },
+  add: async text => {
+    await F.toAct('Add', text)
+    await F.runIt(['db', ['addItem', { title: text, body: '' }]])
   },
   setCheckAll: async (checked: boolean) => {
     F.comps('Item').broadcast('_action', ['SetChecked', checked])
@@ -44,9 +50,11 @@ export const inputs: Inputs = F => ({
   },
   $$Item_remove: async ([idx]) => {
     await F.toAct('_remove', idx)
+    await F.runIt(['db', ['remove', idx]])
   },
   $$Item_select: async ([idx]) => {
-    await F.toIt('select', idx)
+    let s: S = F.stateOf()
+    await F.toIt('select', s.items[idx])
   },
   select: async () => {},
 })
@@ -57,6 +65,14 @@ export const actions: Actions<S> = {
     'Item_' + id,
     props({ title })(clone(Item)),
   ]),
+  SetItems: items => s => {
+    s.items = items
+    items.map(item => AddComp(id => [
+      'Item_' + id,
+      props({ title: item.title })(clone(Item)),
+    ])()(s))
+    return s
+  }
 }
 
 const view: View<S> = ({ ctx, ev, vw }) => s => {

@@ -14,8 +14,23 @@ if (value) {
 
 let memoryDB: Item[] = value
 
-export const getValue = (idx: number) => memoryDB[idx]
+const save = () => localStorage.setItem('memoryDB', JSON.stringify(memoryDB))
 
-export const setValue = (idx: number, value: Item) => memoryDB[idx] = value
+export const getItem = (idx: number) => memoryDB[idx]
+
+export const setItem = (idx: number, item: Item) => {
+  memoryDB[idx] = item
+  save()
+}
+
+export const addItem = (item: Item) => {
+  memoryDB.push(item)
+  save()
+}
+
+export const removeItem = (idx: number) => {
+  memoryDB.splice(idx, 1)
+  save()
+}
 
 export const getDB = () => memoryDB

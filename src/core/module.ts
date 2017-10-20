@@ -164,6 +164,10 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     await handleGroups(childCtx, component)
   }
 
+  if (childCtx.inputs.init) {
+    await childCtx.inputs.init()
+  }
+
   return childCtx
 }
 
@@ -223,11 +227,9 @@ export const unnest = (ctx: Context): CtxUnnest => async name => {
   if (components) {
     await unnestAll(componentSpace)(Object.keys(componentSpace.state._nest))
   }
-  // lifecycle input: _destroy
-  if (componentSpace.inputs._destroy) {
-    await toIt(componentSpace)('_destroy')
+  if (ctx.inputs.destroy) {
+    await ctx.inputs.destroy()
   }
-
   delete ctx.components[id]
 }
 
@@ -294,7 +296,7 @@ export const toIt = (ctx: Context): CtxToIt => {
     await input(data)
     if (ctx.afterInput) await ctx.afterInput(ctx, inputName, data)
     if (isPropagated) {
-      propagate(ctx, inputName, data)
+      await propagate(ctx, inputName, data)
     }
   }
 }
@@ -305,7 +307,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
   let compCtx = ctx.components[id]
 
   if (typeof executable === 'function') {
-    performUpdate(compCtx, executable)
+    await performUpdate(compCtx, executable)
   } else {
     /* istanbul ignore else */
     if (executable instanceof Array) {
@@ -324,7 +326,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
           // list of updates and tasks
           for (let i = 0, len = executable.length; i < len; i++) {
             if (typeof executable[i] === 'function') { // is an update?
-              performUpdate(compCtx, executable[i])
+              await performUpdate(compCtx, executable[i])
             } else {
                 /* istanbul ignore else */
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
@@ -347,13 +349,14 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
   }
 }
 
-export async function performUpdate (compCtx: Context, update: Update<any>) {
+export async function performUpdate (compCtx: Context, update: Update<any>): Promise<void> {
   if (compCtx.stateLocked) {
     compCtx.actionQueue.push(update)
   } else {
     compCtx.stateLocked = true
     compCtx.state = update(compCtx.state)
     if (compCtx.state._compUpdated) {
+      compCtx.global.render = false
       let compNames = compCtx.state._compNames
       let newCompNames = Object.keys(compCtx.state._nest)
       let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
@@ -366,13 +369,14 @@ export async function performUpdate (compCtx: Context, update: Update<any>) {
       }
       compCtx.state._compUpdate = false
       compCtx.state._compNames = newCompNames
+      compCtx.global.render = true
     }
     compCtx.stateLocked = false
     if (compCtx.global.render) {
       calcAndNotifyInterfaces(compCtx) // root context
     }
     if (compCtx.actionQueue.length > 0) {
-      performUpdate(compCtx, compCtx.actionQueue.shift())
+      await performUpdate(compCtx, compCtx.actionQueue.shift())
     }
   }
 }
@@ -517,9 +521,9 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     }
 
     // Root component
-    await _nest(ctx, 'Root', component)
+    let root = await _nest(ctx, 'Root', component)
     // Root context (level 1)
-    ctx.global.rootCtx = ctx.components.Root
+    ctx.global.rootCtx = root
     // middle function for hot-swapping
     if (middleFn) {
       await middleFn(ctx.global.rootCtx, app)
@@ -609,7 +613,7 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
     name = arg1
     value = arg2
   }
-  execute(ctx, actions[name](value))
+  await execute(ctx, actions[name](value))
   if (ctx.global.record) {
     ctx.global.records.push({ id: ctx.id, actionName: name, value })
     ;(window as any).lastCtxAct = ctx
@@ -618,7 +622,7 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
 
 // generic execute input
 export const executeInput = (ctx: Context) => async (executable: GenericExecutable<any>): Promise<void> => {
-  execute(ctx, executable)
+  await execute(ctx, executable)
 }
 
 // generic execute input
@@ -627,7 +631,7 @@ export const SetAction: Action<any> = ([name, value]): any => s => {
   return s
 }
 
-export const AddComp: Action<any> = compFn => (compArgs): any => s => {
+export const AddComp = (compFn): Action<any> => (compArgs?: any): any => s => {
   let [name, component] = compFn(s._compCounter, compArgs)
   s._nest[name] = component
   s._compCounter++

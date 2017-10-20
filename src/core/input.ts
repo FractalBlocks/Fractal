@@ -79,8 +79,8 @@ export interface CtxToAct {
 // generic action self caller
 export const toAct = (ctx: Context): CtxToAct => {
   let _toIt = toIt(ctx)
-  return (actionName, data, isPropagated = true) =>
-    _toIt('_action', [actionName, data], isPropagated)
+  return async (actionName, data, isPropagated = true) =>
+    await _toIt('_action', [actionName, data], isPropagated)
 }
 
 export interface CtxRunIt {
@@ -90,8 +90,8 @@ export interface CtxRunIt {
 // generic action self caller
 export const runIt = (ctx: Context): CtxRunIt => {
   let _toIt = toIt(ctx)
-  return (executables: GenericExecutable<any>, isPropagated = true) =>
-    _toIt('_execute', executables, isPropagated)
+  return async (executables: GenericExecutable<any>, isPropagated = true) =>
+    await _toIt('_execute', executables, isPropagated)
 }
 
 // --- Child components helpers: build functions for traversing components and broadcasting messages to them

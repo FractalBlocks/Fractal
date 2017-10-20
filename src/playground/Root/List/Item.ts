@@ -9,6 +9,8 @@ export const state = {
 export type S = typeof state
 
 export const inputs: Inputs = ({ ctx }) => ({
+  init: async () => console.log('Init ' + ctx.id),
+  destroy: async () => console.log('Destroy ' + ctx.id),
   remove: async () => {},
   select: async () => {},
 })
