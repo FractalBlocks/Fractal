@@ -23,6 +23,8 @@ export const state = {
 
 export type S = typeof state
 
+const getIdx = name => parseInt(name.split('_')[1])
+
 export const inputs: Inputs = F => ({
   init: async () => {
     await F.runIt(['db', ['getDB', _, F.act('SetItems', _, '*')]])
@@ -48,9 +50,9 @@ export const inputs: Inputs = F => ({
       await F.toIt('$$Item_remove', [names[i]])
     }
   },
-  $$Item_remove: async ([idx]) => {
-    await F.toAct('_remove', idx)
-    await F.runIt(['db', ['remove', idx]])
+  $$Item_remove: async ([name]) => {
+    await F.toAct('_remove', name)
+    await F.runIt(['db', ['remove', name]])
   },
   $$Item_select: async ([idx]) => {
     let s: S = F.stateOf()
@@ -65,6 +67,10 @@ export const actions: Actions<S> = {
     'Item_' + id,
     props({ title })(clone(Item)),
   ]),
+  SetItem: ([idx, title, body]) => s => {
+    s.items[idx] = { title, body }
+    return s
+  },
   SetItems: items => s => {
     s.items = items
     items.map(item => AddComp(id => [
@@ -72,7 +78,7 @@ export const actions: Actions<S> = {
       props({ title: item.title })(clone(Item)),
     ])()(s))
     return s
-  }
+  },
 }
 
 const view: View<S> = ({ ctx, ev, vw }) => s => {

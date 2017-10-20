@@ -5,8 +5,6 @@ import {
   // DEV
   logFns,
   RunModule,
-  _,
-  computeEvent,
 } from '../core'
 import { viewHandler } from '../interfaces/view'
 import { styleHandler } from '../groups/style'
@@ -20,25 +18,7 @@ export const runModule: RunModule = (root: Component<any>, DEV = false): Promise
     style: styleHandler('', DEV),
   },
   tasks: {
-    db: mod => ({
-      state: _,
-      handle: async ([name, data, cb]) => {
-        let result
-        if (name === 'getItem') {
-          result = DB.getItem(data)
-        } else if (name === 'setItem') {
-          result = DB.setItem(data[0], data[1])
-        } else if (name === 'addItem') {
-          result = DB.addItem(data)
-        } else if (name === 'getDB') {
-          result = DB.getDB()
-        }
-        if (cb) {
-          await mod.dispatch(computeEvent(result, cb))
-        }
-      },
-      dispose: () => {},
-    }),
+    db: DB.dbTask(),
   },
   interfaces: {
     view: viewHandler('#app'),

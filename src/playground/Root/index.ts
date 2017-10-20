@@ -4,6 +4,7 @@ import {
   Interfaces,
   StyleGroup,
   clone,
+  styles,
 } from '../../core'
 import { View, h } from '../..//interfaces/view'
 
@@ -13,9 +14,9 @@ import * as Note from './Note'
 export const name = 'Root'
 
 export const state = {
-  _nest: {
+  _nest: <any> {
     List: clone(List),
-    Note: clone(Note),
+    Note: styles({ base: { width: 'calc(100% - 400px)' }})(clone(Note)),
   },
 }
 
@@ -23,7 +24,11 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   $List_select: async item => {
-    await F.toChild('Note', '_action', 'setNote', item)
+    await F.toChild('Note', '_action', ['setNote', item])
+  },
+  $List_set: async ([name, value]) => {
+    let note = F.stateOf('Note')
+    await F.toChild('List', '_action', ['SetItem', [note.idx, note.title, note.body]])
   },
 })
 
@@ -48,6 +53,7 @@ const style: StyleGroup = {
   base: {
     width: '100%',
     height: '100%',
+    display: 'flex',
     overflow: 'auto',
   },
 }
