@@ -4,10 +4,12 @@
 
 ## Whats next?
 
+- Generic subscribe interface
 - Router helpers
 
 ## Done
 
+- Fix generic propagation name argument
 - Fix lifecycle ordering
 - Add init and destroy lifecycle hooks
 - Remove unused input helpers
