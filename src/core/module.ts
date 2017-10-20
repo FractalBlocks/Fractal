@@ -263,7 +263,7 @@ export async function propagate (ctx: Context, inputName: string, data: any) {
     parentInputName = `$$${componentSpace.name.split('_')[0]}_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      await toIt(parentSpace)(parentInputName, [componentSpace.name, data])
+      await toIt(parentSpace)(parentInputName, [componentSpace.name.split('_')[1], data])
     }
     parentInputName = `$_${inputName}`
     /* istanbul ignore else */
