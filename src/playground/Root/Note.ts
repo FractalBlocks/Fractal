@@ -7,8 +7,10 @@ import {
 import { View, h } from '../../interfaces/view'
 
 export const state = {
+  id: '',
   title: '',
   body: '',
+  _timestamp: 0,
 }
 
 export type S = typeof state
@@ -21,11 +23,11 @@ export const inputs: Inputs = F => ({
 })
 
 export const actions: Actions<S> = {
-  SetNote: ({ title, body }) => s => {
-    s.title = title
-    s.body = body
-    return s
-  },
+  SetNote: ([id, item]) => s => ({
+    ...s,
+    id,
+    ...item,
+  }),
 }
 
 const view: View<S> = ({ ctx, ev }) => s => {
@@ -34,7 +36,11 @@ const view: View<S> = ({ ctx, ev }) => s => {
   return h('div', {
     key: ctx.name,
     class: { [style.base]: true },
-  }, [
+  }, s.id == '' ? [
+    h('div', {
+      class: { [style.title]: true },
+    }, 'No note selected ...'),
+  ] : [
     h('input', {
       class: { [style.title]: true },
       props: { value: s.title },
@@ -54,14 +60,15 @@ const style: StyleGroup = {
   base: {
     width: '100%',
     height: '100%',
+    padding: '20px',
     display: 'flex',
     flexDirection: 'column',
     overflow: 'auto',
   },
   title: {
     width: '100%',
-    padding: '10px',
     fontSize: '34px',
+    paddingBottom: '20px',
     border: 'none',
     outline: 'none',
   },
@@ -69,6 +76,7 @@ const style: StyleGroup = {
     width: '100%',
     height: 'calc(100% - 63px)',
     fontSize: '21px',
+    color: '#484747',
     border: 'none',
     outline: 'none',
   },

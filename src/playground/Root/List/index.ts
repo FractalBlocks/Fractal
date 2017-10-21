@@ -5,7 +5,6 @@ import {
   assoc,
   StyleGroup,
   clickable,
-  AddComp,
   props,
   clone,
   _,
@@ -37,11 +36,11 @@ export const inputs: Inputs = F => ({
   add: async text => {
     await F.runIt(['db', ['addItem', { title: text, body: '', _timestamp: Date.now() }]])
   },
-  updateItem: async ([name, id, data]) => {
+  updateItem: async ([name, id, item]) => {
     if (name === 'add') {
-      await F.toAct('AddItem', [id, data])
+      await F.toAct('AddItem', [id, item])
     } else if (name === 'set') {
-      await F.toChild('Item_' + id, 'set', data)
+      await F.toChild('Item_' + id, 'set', item)
     } else if (name === 'remove') {
       await F.toAct('_remove', 'Item_' + id)
     }
@@ -59,9 +58,9 @@ export const inputs: Inputs = F => ({
     await F.runIt(['db', ['remove', name]])
   },
   $$Item_select: async ([id, item]) => {
-    await F.toIt('select', item)
+    await F.toIt('select', [id, item])
   },
-  select: async item => {},
+  select: async ([id, item]) => {},
 })
 
 export const actions: Actions<S> = {

@@ -55,6 +55,8 @@ const style: StyleGroup = {
     height: '100%',
     display: 'flex',
     overflow: 'auto',
+    fontFamily: 'Sans serif',
+    color: '#292828',
   },
 }
 
