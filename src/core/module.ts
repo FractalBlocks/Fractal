@@ -164,10 +164,8 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     await handleGroups(childCtx, component)
   }
 
-  if (childCtx.inputs.init) {
-    let lastRecord = childCtx.global.record = false
+  if (childCtx.inputs.init && !childCtx.global.hotSwap) {
     await childCtx.inputs.init()
-    childCtx.global.record = lastRecord
   }
 
   return childCtx
@@ -229,10 +227,8 @@ export const unnest = (ctx: Context): CtxUnnest => async name => {
   if (components) {
     await unnestAll(componentSpace)(Object.keys(componentSpace.state._nest))
   }
-  if (ctx.inputs.destroy) {
-    let lastRecord = ctx.global.record = false
+  if (ctx.inputs.destroy && !ctx.global.hotSwap) {
     await ctx.inputs.destroy()
-    ctx.global.record = lastRecord
   }
   delete ctx.components[id]
 }
@@ -522,6 +518,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       ctx.interfaceHandlers = app.rootCtx.interfaceHandlers
       ctx.taskHandlers = app.rootCtx.taskHandlers
       ctx.groupHandlers = app.rootCtx.groupHandlers
+      ctx.global.hotSwap = true
     }
 
     // Root component
