@@ -4,15 +4,23 @@ import { View, h } from '../../../interfaces/view'
 export const state = {
   checked: false,
   title: '',
+  body: '',
+  _timestamp: 0,
 }
 
 export type S = typeof state
 
-export const inputs: Inputs = ({ ctx }) => ({
-  init: async () => console.log('Init ' + ctx.id),
-  destroy: async () => console.log('Destroy ' + ctx.id),
+export const inputs: Inputs = F => ({
   remove: async () => {},
-  select: async () => {},
+  itemSelect: async () => {
+    let s: S = F.stateOf()
+    await F.toIt('select', {
+      title: s.title,
+      body: s.body,
+      _timestamp: s._timestamp,
+    })
+  },
+  select: async item => {},
 })
 
 export const actions: Actions<S> = {
@@ -20,6 +28,10 @@ export const actions: Actions<S> = {
     s.checked = checked
     return s
   },
+  SetItem: item => s => ({
+    ...s,
+    ...item,
+  })
 }
 
 const view: View<S> = ({ ctx, ev, act }) => s => {
@@ -41,7 +53,7 @@ const view: View<S> = ({ ctx, ev, act }) => s => {
     }),
     h('div', {
       class: { [style.title]: true },
-      on: { click: ev('select') },
+      on: { click: ev('itemSelect') },
     }, s.title),
     h('div', {
       class: { [style.remove]: true },

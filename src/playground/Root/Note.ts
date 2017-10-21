@@ -7,7 +7,6 @@ import {
 import { View, h } from '../../interfaces/view'
 
 export const state = {
-  idx: -1,
   title: '',
   body: '',
 }
@@ -38,10 +37,12 @@ const view: View<S> = ({ ctx, ev }) => s => {
   }, [
     h('input', {
       class: { [style.title]: true },
+      props: { value: s.title },
       on: { change: ev('set', 'title', ['target', 'value']) },
     }),
     h('textarea', {
       class: { [style.body]: true },
+      props: { value: s.body },
       on: { change: ev('set', 'body', ['target', 'value']) },
     }),
   ])
@@ -62,11 +63,14 @@ const style: StyleGroup = {
     padding: '10px',
     fontSize: '34px',
     border: 'none',
+    outline: 'none',
   },
   body: {
     width: '100%',
     height: 'calc(100% - 63px)',
+    fontSize: '21px',
     border: 'none',
+    outline: 'none',
   },
 }
 

@@ -122,19 +122,20 @@ export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
   let _toChild = toChild(ctx)
   let stateOf = _stateOf(ctx)
   return groupName => {
-    let componentNames = Object.keys(ctx.components[ctx.id].state._nest)
+    let completeNames = Object.keys(ctx.components[ctx.id].state._nest)
       .filter(name => name.split('_')[0] === groupName)
+    let componentNames = completeNames.map(n => n.split('_')[1])
     return {
       getState (key: string, options): any {
         let obj = {}
         let name
         let exceptions = options && options.exceptions
         let nameFn = options && options.nameFn
-        for (let i = 0, len = componentNames.length; i < len; i++) {
-          if (exceptions && exceptions.indexOf(componentNames[i]) === -1 || !exceptions) {
-            name = getName(componentNames[i])
+        for (let i = 0, len = completeNames.length; i < len; i++) {
+          if (exceptions && exceptions.indexOf(completeNames[i]) === -1 || !exceptions) {
+            name = getName(completeNames[i])
             name = nameFn ? nameFn(name) : name
-            obj[name] = stateOf(componentNames[i])[key]
+            obj[name] = stateOf(completeNames[i])[key]
           }
         }
         return obj
@@ -145,12 +146,15 @@ export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
         }
       },
       broadcast (inputName, data) {
-        for (let i = 0, name; name = componentNames[i]; i++) {
+        for (let i = 0, name; name = completeNames[i]; i++) {
           _toChild(name, inputName, data)
         }
       },
       getNames() {
         return componentNames
+      },
+      getCompleteNames() {
+        return completeNames
       }
     }
   }

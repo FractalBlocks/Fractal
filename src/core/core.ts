@@ -138,6 +138,7 @@ export interface Context {
     log: boolean
     // flag for manually disable rendering workflow, useful in SSR for performance
     render: boolean
+    hotSwap: boolean
     // root context delegation
     rootCtx: Context
   },
