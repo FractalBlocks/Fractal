@@ -165,7 +165,9 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   }
 
   if (childCtx.inputs.init) {
+    let lastRecord = childCtx.global.record = false
     await childCtx.inputs.init()
+    childCtx.global.record = lastRecord
   }
 
   return childCtx
@@ -228,7 +230,9 @@ export const unnest = (ctx: Context): CtxUnnest => async name => {
     await unnestAll(componentSpace)(Object.keys(componentSpace.state._nest))
   }
   if (ctx.inputs.destroy) {
+    let lastRecord = ctx.global.record = false
     await ctx.inputs.destroy()
+    ctx.global.record = lastRecord
   }
   delete ctx.components[id]
 }

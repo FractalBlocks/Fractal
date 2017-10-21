@@ -9,6 +9,7 @@
 
 ## Done
 
+- Fix: do not record init and destroy related actions
 - Fix generic propagation name argument
 - Fix lifecycle ordering
 - Add init and destroy lifecycle hooks
