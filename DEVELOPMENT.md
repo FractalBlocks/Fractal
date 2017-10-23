@@ -30,8 +30,8 @@ We support use of:
 There are TODOs for short term:
 
 - Simplify tests (would be reimplement it? most tests are disabled right now)
-- Implement component lifecycle
 - Document component lifecycle
+- OPTIMIZATION: Implement 'prepare' function for dynamic components. This allow to not reprocess styles (groups) for every component added
 - Add coverage for latets helpers: compGroup, comps and vws
 - Document prerendering (AOT) and SSR
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
