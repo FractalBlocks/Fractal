@@ -13,10 +13,10 @@ let DEV = process.env.ENV === 'development'
   ;(window as any).test = () => {
     let count = 1
     let interval = setInterval(async () => {
-      await sendMsg(app, 'Root$List', 'inputKeyup', [45, 'iteration ' + count])
-      await sendMsg(app, 'Root$List', 'inputKeyup', [13, 'iteration - ' + count])
+      sendMsg(app, 'Root$List', 'inputKeyup', [45, 'iteration ' + count])
+      sendMsg(app, 'Root$List', 'inputKeyup', [13, 'iteration - ' + count])
       count++
-      if (count === 1000) {
+      if (count === 300) {
         clearInterval(interval)
       }
     })

@@ -30,9 +30,9 @@ export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VN
         event.preventDefault()
       }
       // call function handler
-      setTimeout(() => {
+      setImmediate(() => {
         mod.dispatch(computeEvent(event, <InputData> handler))
-      }, 0)
+      })
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {

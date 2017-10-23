@@ -1,3 +1,4 @@
+require('setimmediate') // Polyfill setImmediate
 import {
   Component,
   Update,
@@ -351,31 +352,35 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
 
 export async function performUpdate (compCtx: Context, update: Update<any>): Promise<void> {
   if (compCtx.stateLocked) {
+    console.log('Locked')
     compCtx.actionQueue.push(update)
   } else {
-    compCtx.stateLocked = true
-    compCtx.state = update(compCtx.state)
-    if (compCtx.state._compUpdated) {
-      compCtx.global.render = false
-      let compNames = compCtx.state._compNames
-      let newCompNames = Object.keys(compCtx.state._nest)
-      let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
-      let removeNames = compNames.filter(n => newCompNames.indexOf(n) < 0)
-      for (let i = 0, len = newNames.length; i < len; i++) {
-        await _nest(compCtx, newNames[i], compCtx.state._nest[newNames[i]])
+    setImmediate(async () => {
+      compCtx.stateLocked = true
+      compCtx.state = update(compCtx.state)
+      if (compCtx.state._compUpdated) {
+        compCtx.global.render = false
+        let compNames = compCtx.state._compNames
+        let newCompNames = Object.keys(compCtx.state._nest)
+        let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
+        let removeNames = compNames.filter(n => newCompNames.indexOf(n) < 0)
+        for (let i = 0, len = newNames.length; i < len; i++) {
+          await _nest(compCtx, newNames[i], compCtx.state._nest[newNames[i]])
+        }
+        for (let i = 0, len = removeNames.length; i < len; i++) {
+          await unnest(compCtx)(removeNames[i])
+        }
+        compCtx.state._compUpdate = false
+        compCtx.state._compNames = newCompNames
+        compCtx.global.render = true
       }
-      for (let i = 0, len = removeNames.length; i < len; i++) {
-        await unnest(compCtx)(removeNames[i])
-      }
-      compCtx.state._compUpdate = false
-      compCtx.state._compNames = newCompNames
-      compCtx.global.render = true
-    }
-    compCtx.stateLocked = false
+      compCtx.stateLocked = false
+    })
     if (compCtx.global.render) {
       calcAndNotifyInterfaces(compCtx) // root context
     }
     if (compCtx.actionQueue.length > 0) {
+      console.log(compCtx.actionQueue)
       await performUpdate(compCtx, compCtx.actionQueue.shift())
     }
   }
@@ -387,7 +392,7 @@ export function calcAndNotifyInterfaces (ctx: Context) {
   let idParts = (ctx.id + '').split('$')
   idParts.pop()
   for (let name in space.interfaces) {
-    setTimeout(async () => {
+    setImmediate(async () => {
       space.interfaceValues[name] = await space.interfaces[name](space.state)
       // remove cache of parent component spaces
       let parts = idParts.slice(0)
@@ -396,7 +401,7 @@ export function calcAndNotifyInterfaces (ctx: Context) {
         parts.pop()
       }
       await notifyInterfaceHandlers(ctx)
-    }, 0)
+    })
   }
 }
 

@@ -43,7 +43,7 @@ function changed (evData) {
   if (changeListener) {
     changeListener(evData)
   }
-  setTimeout(() => save())
+  // setImmediate(() => save())
 }
 
 export const getDB = () => memoryDB

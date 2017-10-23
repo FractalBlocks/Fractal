@@ -6,7 +6,6 @@ import {
   StyleGroup,
   clickable,
   props,
-  clone,
   _,
 } from '../../../core'
 import { View, h } from '../../../interfaces/view'

@@ -18,9 +18,9 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
       if (options && options.default === false) {
         event.preventDefault()
       }
-      setTimeout(() => {
+      setImmediate(() => {
         mod.dispatch(computeEvent(event, <InputData> handler))
-      }, 0)
+      })
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
