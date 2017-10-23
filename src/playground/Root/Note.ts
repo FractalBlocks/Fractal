@@ -3,6 +3,7 @@ import {
   Inputs,
   Interfaces,
   StyleGroup,
+  _,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
@@ -19,6 +20,14 @@ export const inputs: Inputs = F => ({
   set: async ([name, value]) => {
     await F.toAct('Set', [name, value])
     await F.runIt(['db', ['setItem', [name, value]]])
+  },
+  setNote: async ([id, item]) => {
+    let s: S = F.stateOf()
+    if (s.id !== '') {
+      await F.runIt(['db', ['unsubscribe', F.ctx.id, s.id]])
+    }
+    await F.runIt(['db', ['subscribe', F.ctx.id, id, F.ev('SetNote', _, '*')]])
+    await F.toAct('SetNote', [id, item])
   },
 })
 
@@ -39,7 +48,7 @@ const view: View<S> = ({ ctx, ev }) => s => {
   }, s.id == '' ? [
     h('div', {
       class: { [style.title]: true },
-    }, 'No note selected ...'),
+    }, 'No one selected ...'),
   ] : [
     h('input', {
       class: { [style.title]: true },

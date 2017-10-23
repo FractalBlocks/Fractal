@@ -23,7 +23,7 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   init: async () => {
-    await F.runIt(['db', ['subscribe', '*', F.act('SetItems', _, '*'), F.ev('updateItem', _, '*')]])
+    await F.runIt(['db', ['subscribe', F.ctx.id, '*', F.act('SetItems', _, '*'), F.ev('updateItem', _, '*')]])
   },
   inputKeyup: async ([keyCode, text]) => {
     if (keyCode === 13 && text !== '') {
@@ -51,7 +51,9 @@ export const inputs: Inputs = F => ({
   removeChecked: async () => {
     let names = F.comps('Item').getNames()
     for (let i = 0, len = names.length; i < len; i++) {
-      await F.toIt('$$Item_remove', [names[i]])
+      if (F.stateOf('Item_' + names[i]).checked) {
+        await F.toIt('$$Item_remove', [names[i]])
+      }
     }
   },
   $$Item_remove: async ([name]) => {
@@ -66,7 +68,7 @@ export const inputs: Inputs = F => ({
 export const actions: Actions<S> = {
   SetText: assoc('text'),
   AddItem: ([id, data]) => s => {
-    s._nest['Item_' + id] = props(data)(clone(Item))
+    s._nest['Item_' + id] = props(data)(Item)
     s._compUpdated = true
     return s
   },

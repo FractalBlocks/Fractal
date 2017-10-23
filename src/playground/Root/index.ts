@@ -24,9 +24,9 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   $List_select: async item => {
-    await F.toChild('Note', '_action', ['SetNote', item])
+    await F.toChild('Note', 'setNote', item)
   },
-  $List_set: async ([name, value]) => {
+  $Note_set: async ([name, value]) => {
     let note = F.stateOf('Note')
     await F.toChild('List', '_action', ['SetItem', [note.idx, note.title, note.body]])
   },

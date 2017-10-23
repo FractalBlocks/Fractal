@@ -6,6 +6,7 @@ import {
   toIt,
   StyleGroup,
   mergeStyles,
+  clone,
 } from '../core'
 
 // set of helpers for building components
@@ -31,20 +32,17 @@ export function spaceOf (ctx: Context): any {
 // make a new component from another merging her state
 export function props (state) {
   return function (comp: Component<any>): Component<any> {
-    if (comp.state !== null && typeof comp.state === 'object'
-    && state !== null && typeof state === 'object') {
-      comp.state = Object.assign(comp.state, state)
-    } else {
-      comp.state = state
-    }
-    return comp
+    let newComp = Object.assign({}, comp) // shallow clone
+    newComp.state = clone(Object.assign(comp.state, state))
+    return newComp
   }
 }
 
 export function styles (style: StyleGroup) {
   return function (comp: Component<any>): Component<any>{
-    comp.groups.style = mergeStyles(comp.groups.style, style)
-    return comp
+    let newComp = Object.assign({}, comp) // shallow clone
+    newComp.groups.style = clone(mergeStyles(comp.groups.style, style))
+    return newComp
   }
 }
 

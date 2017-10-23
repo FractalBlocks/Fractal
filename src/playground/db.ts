@@ -30,6 +30,7 @@ export const addItem = (item: Item) => {
   let id = guid()
   memoryDB[id] = item
   changed(['add', id, item])
+  return id
 }
 
 export const removeItem = (id: string) => {
@@ -42,7 +43,7 @@ function changed (evData) {
   if (changeListener) {
     changeListener(evData)
   }
-  save()
+  setTimeout(() => save())
 }
 
 export const getDB = () => memoryDB
@@ -53,10 +54,10 @@ export const dbTask = () => mod => {
   let subs = []
   changeListener = evData => {
     for (let i = 0, sub; sub = subs[i]; i++) {
-      if (sub[0] === '*') {
+      if (sub[1] === '*') {
+        mod.dispatch(computeEvent(evData, <any> sub[3]))
+      } else if (sub[1] === evData[1]) {
         mod.dispatch(computeEvent(evData, <any> sub[2]))
-      } else if (sub[0] === evData[1]) {
-        mod.dispatch(computeEvent(evData, <any> sub[1]))
       }
     }
   }
@@ -68,20 +69,38 @@ export const dbTask = () => mod => {
       if (name === 'getItem') {
         result = getItem(data[0])
       } else if (name === 'setItem') {
-        result = setItem(data[0], data[1])
+        setItem(data[0], data[1])
+        return
       } else if (name === 'addItem') {
         result = addItem(data[0])
       } else if (name === 'getDB') {
         result = getDB()
       } else if (name === 'remove') {
-        result = removeItem(data[0])
+        removeItem(data[0])
+        return
       } else if (name === 'subscribe') {
         let sub = data
         subs.push(sub)
         // initial fetch
-        await mod.dispatch(computeEvent(getData(sub[0]), <any> sub[1]))
+        await mod.dispatch(computeEvent(getData(sub[1]), <any> sub[2]))
+        return
+      } else if (name === 'unsubscribe') {
+        let idx = -1
+        for (let i = 0, sub; sub = subs[i]; i++) {
+          if (data[0] === sub[0] && data[1] === sub[1] && data[2] === sub[2]) {
+            idx = i
+          }
+        }
+        if (idx !== -1) {
+          subs.splice(idx, 1)
+          return
+        }
       } else {
         mod.error('db handler', `Unhandled command type '${name}'`)
+        return
+      }
+      if (data[1]) {
+        await mod.dispatch(computeEvent(result, <any> data[1]))
       }
     },
     dispose: () => {},
