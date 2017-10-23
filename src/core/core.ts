@@ -126,8 +126,6 @@ export interface Context {
   interfaceHandlers: {
     [name: string]: HandlerObject
   }
-  // lock state for cosistency
-  stateLocked: boolean
   // action queue
   actionQueue: Update<any>[],
   // global flags delegation

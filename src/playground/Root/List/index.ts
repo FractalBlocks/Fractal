@@ -45,7 +45,7 @@ export const inputs: Inputs = F => ({
     }
   },
   setCheckAll: async (checked: boolean) => {
-    F.comps('Item').broadcast('_action', ['SetChecked', checked])
+    await F.comps('Item').broadcast('_action', ['SetChecked', checked])
   },
   removeChecked: async () => {
     let names = F.comps('Item').getNames()

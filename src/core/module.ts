@@ -116,7 +116,6 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     warn: ctx.warn,
     error: ctx.error,
     actionQueue: [],
-    stateLocked: false,
     // if state is an object, it is cloned
     state: clone(component.state),
     inputs: {}, // input helpers needs to be initialized after ComponentSpace, because references
@@ -351,38 +350,29 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
 }
 
 export async function performUpdate (compCtx: Context, update: Update<any>): Promise<void> {
-  if (compCtx.stateLocked) {
-    console.log('Locked')
-    compCtx.actionQueue.push(update)
-  } else {
-    setImmediate(async () => {
-      compCtx.stateLocked = true
-      compCtx.state = update(compCtx.state)
-      if (compCtx.state._compUpdated) {
-        compCtx.global.render = false
-        let compNames = compCtx.state._compNames
-        let newCompNames = Object.keys(compCtx.state._nest)
-        let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
-        let removeNames = compNames.filter(n => newCompNames.indexOf(n) < 0)
-        for (let i = 0, len = newNames.length; i < len; i++) {
-          await _nest(compCtx, newNames[i], compCtx.state._nest[newNames[i]])
-        }
-        for (let i = 0, len = removeNames.length; i < len; i++) {
-          await unnest(compCtx)(removeNames[i])
-        }
-        compCtx.state._compUpdate = false
-        compCtx.state._compNames = newCompNames
-        compCtx.global.render = true
-      }
-      compCtx.stateLocked = false
-    })
-    if (compCtx.global.render) {
-      calcAndNotifyInterfaces(compCtx) // root context
+  compCtx.state = update(compCtx.state)
+  if (compCtx.state._compUpdated) {
+    compCtx.global.render = false
+    let compNames = compCtx.state._compNames
+    let newCompNames = Object.keys(compCtx.state._nest)
+    let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
+    let removeNames = compNames.filter(n => newCompNames.indexOf(n) < 0)
+    for (let i = 0, len = newNames.length; i < len; i++) {
+      await _nest(compCtx, newNames[i], compCtx.state._nest[newNames[i]])
     }
-    if (compCtx.actionQueue.length > 0) {
-      console.log(compCtx.actionQueue)
-      await performUpdate(compCtx, compCtx.actionQueue.shift())
+    for (let i = 0, len = removeNames.length; i < len; i++) {
+      await unnest(compCtx)(removeNames[i])
     }
+    compCtx.state._compUpdate = false
+    compCtx.state._compNames = newCompNames
+    compCtx.global.render = true
+  }
+  if (compCtx.global.render) {
+    calcAndNotifyInterfaces(compCtx) // root context
+  }
+  if (compCtx.actionQueue.length > 0) {
+    console.log(compCtx.actionQueue)
+    await performUpdate(compCtx, compCtx.actionQueue.shift())
   }
 }
 
