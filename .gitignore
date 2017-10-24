@@ -9,7 +9,7 @@
 /utils/
 /prerender/
 /toHTML/
-/docsExamples/
+/playground/
 coverage/
 reports/
 dist/

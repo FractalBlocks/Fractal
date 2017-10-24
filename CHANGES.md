@@ -7,7 +7,7 @@
 - Generic subscribe interface
 - Router helpers
 
-## Done
+## v4.0
 
 - Fix: init and destroy are not called during hot-swaping
 - Fix generic propagation name argument
@@ -28,10 +28,6 @@
 - Actions ensures in-order execution
 - State always are an onject
 - Update TypeStyle dependency - performance boost
-
-## v4.0 A whole refactor (WIP)
-
-...
 
 ## v3.3.3
 
