@@ -163,7 +163,7 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   let interfaceObjects: { [name: string]: HandlerObject } = {}
 
   /* istanbul ignore next */
-  let attach = async comp => {
+  let attach: any = async comp => {
     def.error('reattach', 'unimplemented method')
   }
 
