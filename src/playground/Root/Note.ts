@@ -34,8 +34,7 @@ export const inputs: Inputs = F => ({
 
 export const actions: Actions<S> = {
   SetId: assoc('id'),
-  SetNote: ([evName, item]) => s => {
-    return ({
+  SetNote: ([evName, item]) => s => ({
     ...s,
     ...evName === 'add' || evName === 'set'
       ? item
@@ -43,7 +42,6 @@ export const actions: Actions<S> = {
       ? { id: '' }
       : {}
   })
-}
 }
 
 const view: View<S> = ({ ctx, ev }) => s => {
