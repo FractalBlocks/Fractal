@@ -4,6 +4,7 @@ import {
   Interfaces,
   StyleGroup,
   _,
+  assoc,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
@@ -21,22 +22,28 @@ export const inputs: Inputs = F => ({
     await F.toAct('Set', [name, value])
     await F.runIt(['db', ['setItem', [name, value]]])
   },
-  setNote: async ([id, item]) => {
+  setNoteFromId: async id => {
     let s: S = F.stateOf()
     if (s.id !== '') {
       await F.runIt(['db', ['unsubscribe', F.ctx.id, s.id]])
     }
-    await F.runIt(['db', ['subscribe', F.ctx.id, id, F.ev('SetNote', _, '*')]])
-    await F.toAct('SetNote', [id, item])
+    await F.runIt(['db', ['subscribe', F.ctx.id, id, F.act('SetNote', _, '*')]])
+    await F.toAct('SetId', id)
   },
 })
 
 export const actions: Actions<S> = {
-  SetNote: ([id, item]) => s => ({
+  SetId: assoc('id'),
+  SetNote: ([evName, item]) => s => {
+    return ({
     ...s,
-    id,
-    ...item,
-  }),
+    ...evName === 'add' || evName === 'set'
+      ? item
+      : evName === 'remove'
+      ? { id: '' }
+      : {}
+  })
+}
 }
 
 const view: View<S> = ({ ctx, ev }) => s => {

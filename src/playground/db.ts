@@ -17,8 +17,6 @@ if (value) {
 
 let memoryDB: { [id: string]: Item } = value
 
-const save = () => localStorage.setItem('memoryDB', JSON.stringify(memoryDB))
-
 export const getItem = (id: string) => memoryDB[id]
 
 export const setItem = (id: string, item: Item) => {
@@ -43,8 +41,10 @@ function changed (evData) {
   if (changeListener) {
     changeListener(evData)
   }
-  // setImmediate(() => save())
+  save()
 }
+
+const save = () => localStorage.setItem('memoryDB', JSON.stringify(memoryDB))
 
 export const getDB = () => memoryDB
 
@@ -82,12 +82,16 @@ export const dbTask = () => mod => {
         let sub = data
         subs.push(sub)
         // initial fetch
-        await mod.dispatch(computeEvent(getData(sub[1]), <any> sub[2]))
+        let dataObj = getData(sub[1])
+        let evObj = sub[1] === '*'
+          ? dataObj
+          : ['add', dataObj]
+        await mod.dispatch(computeEvent(evObj, <any> sub[2]))
         return
       } else if (name === 'unsubscribe') {
         let idx = -1
         for (let i = 0, sub; sub = subs[i]; i++) {
-          if (data[0] === sub[0] && data[1] === sub[1] && data[2] === sub[2]) {
+          if (data[0] === sub[0] && data[1] === sub[1]) {
             idx = i
           }
         }

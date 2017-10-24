@@ -23,5 +23,5 @@ export const runModule: RunModule = (root: Component<any>, DEV = false): Promise
   interfaces: {
     view: viewHandler('#app'),
   },
-  // ...logFns,
+  ...logFns,
 })

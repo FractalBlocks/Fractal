@@ -4,23 +4,13 @@ import { View, h } from '../../../interfaces/view'
 export const state = {
   checked: false,
   title: '',
-  body: '',
-  _timestamp: 0,
 }
 
 export type S = typeof state
 
 export const inputs: Inputs = F => ({
   remove: async () => {},
-  itemSelect: async () => {
-    let s: S = F.stateOf()
-    await F.toIt('select', {
-      title: s.title,
-      body: s.body,
-      _timestamp: s._timestamp,
-    })
-  },
-  select: async item => {},
+  select: async id => {},
 })
 
 export const actions: Actions<S> = {
@@ -53,7 +43,7 @@ const view: View<S> = ({ ctx, ev, act }) => s => {
     }),
     h('div', {
       class: { [style.title]: true },
-      on: { click: ev('itemSelect') },
+      on: { click: ev('select') },
     }, s.title),
     h('div', {
       class: { [style.remove]: true },
