@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.0.3
+
+- Add getCompleteNames method
+
 ## v4.0.2
 
 - Add getNames method
