@@ -187,19 +187,16 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     warn: def.warn,
     error: def.error,
   }
-  /* istanbul ignore else */
   if (def.groups) {
     for (let i = 0, names = Object.keys(def.groups), len = names.length ; i < len; i++) {
       groupObjects[names[i]] = def.groups[names[i]](moduleAPI)
     }
   }
-  /* istanbul ignore else */
   if (def.tasks) {
     for (let i = 0, names = Object.keys(def.tasks), len = names.length ; i < len; i++) {
       taskObjects[names[i]] = def.tasks[names[i]](moduleAPI)
     }
   }
-  /* istanbul ignore else */
   if (def.interfaces) {
     for (let i = 0, names = Object.keys(def.interfaces), len = names.length ; i < len; i++) {
       interfaceObjects[names[i]] = def.interfaces[names[i]](moduleAPI)
@@ -212,53 +209,45 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
     let data = ev.data
     switch (data[0]) {
       case 'interface':
-        /* istanbul ignore else */
         if (data[2] === 'handle') {
           await interfaceObjects[data[1]].handle(data[3])
           /* istanbul ignore next */
           break
         }
-        /* istanbul ignore else */
         if (data[2] === 'dispose') {
           interfaceObjects[data[1]].dispose()
           /* istanbul ignore next */
           break
         }
       case 'task':
-        /* istanbul ignore else */
         if (data[2] === 'handle') {
           await taskObjects[data[1]].handle(data[3])
           /* istanbul ignore next */
           break
         }
-        /* istanbul ignore else */
         if (data[2] === 'dispose') {
           await taskObjects[data[1]].dispose()
           /* istanbul ignore next */
           break
         }
       case 'group':
-        /* istanbul ignore else */
         if (data[2] === 'handle') {
           await groupObjects[data[1]].handle(data[3])
           /* istanbul ignore next */
           break
         }
-        /* istanbul ignore else */
         if (data[2] === 'dispose') {
           groupObjects[data[1]].dispose()
           /* istanbul ignore next */
           break
         }
       case 'log':
-        /* istanbul ignore else */
         if (moduleAPI[data[1]]) {
           moduleAPI[data[1]](data[2], data[3])
           /* istanbul ignore next */
           break
         }
       case 'dispose':
-        /* istanbul ignore else */
         if (def.destroy) {
           def.destroy(moduleAPI)
           /* istanbul ignore next */
