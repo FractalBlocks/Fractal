@@ -22,7 +22,8 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   init: async () => {
-    await F.runIt(['db', ['subscribe', F.ctx.id, '*', F.act('SetItems', _, '*'), F.ev('updateItem', _, '*')]])
+    let items = await F.runIt(['db', ['subscribe', F.ctx.id, '*', F.ev('updateItem', _, '*')]])
+    await F.toAct('SetItems', items)
   },
   inputKeyup: async ([keyCode, text]) => {
     if (keyCode === 13 && text !== '') {
@@ -39,7 +40,7 @@ export const inputs: Inputs = F => ({
     if (name === 'add') {
       await F.toAct('AddItem', [id, item])
     } else if (name === 'set') {
-      await F.toChild('Item_' + id, 'set', item)
+      await F.toChild('Item_' + id, '_action', ['SetItem', item])
     } else if (name === 'remove') {
       await F.toAct('_remove', 'Item_' + id)
     }

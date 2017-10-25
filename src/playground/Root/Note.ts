@@ -19,23 +19,23 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   set: async ([name, value]) => {
-    await F.toAct('Set', [name, value])
-    await F.runIt(['db', ['setItem', [name, value]]])
+    let s: S = F.stateOf()
+    await F.runIt(['db', ['setItemProps', s.id, { [name]: value }]])
   },
   setNoteFromId: async id => {
     let s: S = F.stateOf()
     if (s.id !== '') {
       await F.runIt(['db', ['unsubscribe', F.ctx.id, s.id]])
     }
-    await F.runIt(['db', ['subscribe', F.ctx.id, id, F.act('SetNote', _, '*')]])
-    await F.toAct('SetId', id)
+    let note = await F.runIt(['db', ['subscribe', F.ctx.id, id, F.act('SetNote', _, '*')]])
+    await F.toAct('SetNote', ['set', id, note])
   },
 })
 
 export const actions: Actions<S> = {
-  SetId: assoc('id'),
-  SetNote: ([evName, item]) => s => ({
+  SetNote: ([evName, id, item]) => s => ({
     ...s,
+    id,
     ...evName === 'add' || evName === 'set'
       ? item
       : evName === 'remove'

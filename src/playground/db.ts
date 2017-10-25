@@ -22,6 +22,16 @@ export const getItem = (id: string) => memoryDB[id]
 export const setItem = (id: string, item: Item) => {
   memoryDB[id] = item
   changed(['set', id, item])
+  return item
+}
+
+export const setItemProps = (id: string, itemProps: any) => {
+  memoryDB[id] = {
+    ...memoryDB[id],
+    ...itemProps,
+  }
+  changed(['set', id, memoryDB[id]])
+  return memoryDB[id]
 }
 
 export const addItem = (item: Item) => {
@@ -54,40 +64,31 @@ export const dbTask = () => mod => {
   let subs = []
   changeListener = evData => {
     for (let i = 0, sub; sub = subs[i]; i++) {
-      if (sub[1] === '*') {
-        mod.dispatch(computeEvent(evData, <any> sub[3]))
-      } else if (sub[1] === evData[1]) {
-        mod.dispatch(computeEvent(evData, <any> sub[2]))
-      }
+      mod.dispatch(computeEvent(evData, <any> sub[2]))
     }
   }
 
   return {
     state: _,
     handle: async ([name, ...data]) => {
-      let result
       if (name === 'getItem') {
-        result = getItem(data[0])
+        return getItem(data[0])
       } else if (name === 'setItem') {
-        setItem(data[0], data[1])
-        return
+        return setItem(data[0], data[1])
+      } else if (name === 'setItemProps') {
+        return setItemProps(data[0], data[1])
       } else if (name === 'addItem') {
-        result = addItem(data[0])
+        return addItem(data[0])
       } else if (name === 'getDB') {
-        result = getDB()
+        return getDB()
       } else if (name === 'remove') {
         removeItem(data[0])
-        return
+        return 'removed'
       } else if (name === 'subscribe') {
         let sub = data
         subs.push(sub)
         // initial fetch
-        let dataObj = getData(sub[1])
-        let evObj = sub[1] === '*'
-          ? dataObj
-          : ['add', dataObj]
-        await mod.dispatch(computeEvent(evObj, <any> sub[2]))
-        return
+        return getData(sub[1])
       } else if (name === 'unsubscribe') {
         let idx = -1
         for (let i = 0, sub; sub = subs[i]; i++) {
@@ -102,9 +103,6 @@ export const dbTask = () => mod => {
       } else {
         mod.error('db handler', `Unhandled command type '${name}'`)
         return
-      }
-      if (data[1]) {
-        await mod.dispatch(computeEvent(result, <any> data[1]))
       }
     },
     dispose: () => {},

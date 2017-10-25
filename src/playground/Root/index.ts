@@ -26,10 +26,6 @@ export const inputs: Inputs = F => ({
   $List_select: async id => {
     await F.toChild('Note', 'setNoteFromId', id)
   },
-  $Note_set: async ([name, value]) => {
-    let note = F.stateOf('Note')
-    await F.toChild('List', '_action', ['SetItem', [note.idx, note.title, note.body]])
-  },
 })
 
 export const actions: Actions<S> = {
