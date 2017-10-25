@@ -4,7 +4,6 @@ import {
   Interfaces,
   StyleGroup,
   _,
-  assoc,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 

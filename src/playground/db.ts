@@ -1,4 +1,4 @@
-import { computeEvent, _ } from "../core/index";
+import { computeEvent, _, Handler } from "../core/index";
 
 export interface Item {
   title: string
@@ -60,7 +60,7 @@ export const getDB = () => memoryDB
 
 const getData = pattern => pattern === '*' ? memoryDB : memoryDB[pattern]
 
-export const dbTask = () => mod => {
+export const dbTask: Handler = () => mod => {
   let subs = []
   changeListener = evData => {
     for (let i = 0, sub; sub = subs[i]; i++) {
