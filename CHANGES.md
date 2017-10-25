@@ -7,6 +7,13 @@
 - Generic subscribe interface
 - Router helpers
 
+### Done
+
+## v4.0.2
+
+- Add getNames method
+- Add getCompleteName type signature to ComponentHelpers
+
 ## v4.0.1
 
 - All component methods now return values
