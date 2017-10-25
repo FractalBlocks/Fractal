@@ -43,7 +43,6 @@
     "lodash.kebabcase": "^4.1.1",
     "lodash.remove": "^4.7.0",
     "lodash.uniq": "^4.5.0",
-    "mori": "^0.3.2",
     "navigo": "^5.2.0",
     "object-assign": "^4.1.1",
     "parse-sel": "^1.0.0",
