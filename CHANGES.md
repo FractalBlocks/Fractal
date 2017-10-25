@@ -7,7 +7,11 @@
 - Generic subscribe interface
 - Router helpers
 
-## v4.0
+## v4.0.1
+
+- All component methods now return values
+
+## v4.0.0
 
 - Fix: init and destroy are not called during hot-swaping
 - Fix generic propagation name argument
