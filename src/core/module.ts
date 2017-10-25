@@ -93,7 +93,6 @@ export const nest = (ctx: Context): CtxNest => async (name, component) => {
   await _nest(ctx, name, component)
 }
 
-/* istanbul ignore next */
 async function _nest (ctx: Context, name: string, component: Component<any>): Promise<Context> {
   // namespaced name if is a child
   let id = ctx.id === '' ? name : ctx.id + '$' + name
@@ -201,7 +200,6 @@ export interface CtxNestAll {
 }
 
 // add many components to the component index
-/* istanbul ignore next */
 export const nestAll = (ctx: Context): CtxNestAll => async (components, isStatic = false) => {
   let name
   for (name in components) {
@@ -217,7 +215,6 @@ export interface CtxUnnest {
 export const unnest = (ctx: Context): CtxUnnest => async name => {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
-  /* istanbul ignore next */
   if (!componentSpace) {
     return ctx.error('unnest', `there is no component with name '${name}' at component '${ctx.id}'`)
   }
@@ -279,7 +276,6 @@ export interface CtxToIt {
 
 // send a message to an input of a component from itself
 // There area a weird behaviuor in istanbul coverage
-/* istanbul ignore next */
 export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
@@ -293,11 +289,12 @@ export const toIt = (ctx: Context): CtxToIt => {
       return
     }
     if (ctx.beforeInput) await ctx.beforeInput(ctx, inputName, data)
-    await input(data)
+    let result = await input(data)
     if (ctx.afterInput) await ctx.afterInput(ctx, inputName, data)
     if (isPropagated) {
       await propagate(ctx, inputName, data)
     }
+    return result
   }
 }
 
@@ -307,7 +304,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
   let compCtx = ctx.components[id]
 
   if (typeof executable === 'function') {
-    await performUpdate(compCtx, executable)
+    return await performUpdate(compCtx, executable)
   } else {
     /* istanbul ignore else */
     if (executable instanceof Array) {
@@ -319,14 +316,15 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
             `there are no task handler for '${executable[0]}' in component '${compCtx.name}' from space '${id}'`
           )
         }
-        await ctx.taskHandlers[executable[0]].handle(executable[1])
+        return await ctx.taskHandlers[executable[0]].handle(executable[1])
       } else {
         /* istanbul ignore else */
         if (executable[0] instanceof Array || typeof executable[0] === 'function') {
           // list of updates and tasks
+          let results = []
           for (let i = 0, len = executable.length; i < len; i++) {
             if (typeof executable[i] === 'function') { // is an update?
-              await performUpdate(compCtx, executable[i])
+              results.push(await performUpdate(compCtx, executable[i]))
             } else {
                 /* istanbul ignore else */
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
@@ -337,11 +335,12 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
                     `there are no task handler for '${executable[i][0]}' in component '${compCtx.name}' from space '${id}'`
                   )
                 }
-                ctx.taskHandlers[executable[i][0]].handle(executable[i][1])
+                results.push(await ctx.taskHandlers[executable[i][0]].handle(executable[i][1]))
               }
             }
             // the else branch never occurs because of Typecript check
           }
+          return results
         }
       }
     }
@@ -349,7 +348,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
   }
 }
 
-export async function performUpdate (compCtx: Context, update: Update<any>): Promise<void> {
+export async function performUpdate (compCtx: Context, update: Update<any>): Promise<any> {
   compCtx.state = update(compCtx.state)
   if (compCtx.state._compUpdated) {
     compCtx.global.render = false
@@ -370,10 +369,7 @@ export async function performUpdate (compCtx: Context, update: Update<any>): Pro
   if (compCtx.global.render) {
     calcAndNotifyInterfaces(compCtx) // root context
   }
-  if (compCtx.actionQueue.length > 0) {
-    console.log(compCtx.actionQueue)
-    await performUpdate(compCtx, compCtx.actionQueue.shift())
-  }
+  return compCtx.state
 }
 
 export function calcAndNotifyInterfaces (ctx: Context) {
@@ -594,7 +590,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
 }
 
 // generic action input
-export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg2]: any): Promise<void> => {
+export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg2]: any): Promise<any> => {
   let name
   let value
   if (arg1 instanceof Array) {
@@ -609,16 +605,17 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
     name = arg1
     value = arg2
   }
-  await execute(ctx, actions[name](value))
+  let result = await execute(ctx, actions[name](value))
   if (ctx.global.record) {
     ctx.global.records.push({ id: ctx.id, actionName: name, value })
     ;(window as any).lastCtxAct = ctx
   }
+  return result
 }
 
 // generic execute input
-export const executeInput = (ctx: Context) => async (executable: GenericExecutable<any>): Promise<void> => {
-  await execute(ctx, executable)
+export const executeInput = (ctx: Context) => async (executable: GenericExecutable<any>): Promise<any> => {
+  return await execute(ctx, executable)
 }
 
 // generic execute input

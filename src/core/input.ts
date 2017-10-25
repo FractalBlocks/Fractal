@@ -73,7 +73,7 @@ export const toChild = (ctx: Context) => async (
 // ---
 
 export interface CtxToAct {
-  (actionName: string, data?: any, isPropagated?: boolean): void
+  (actionName: string, data?: any, isPropagated?: boolean): Promise<any>
 }
 
 // generic action self caller
@@ -84,7 +84,7 @@ export const toAct = (ctx: Context): CtxToAct => {
 }
 
 export interface CtxRunIt {
-  (executables: GenericExecutable<any>, isPropagated?: boolean): void
+  (executables: GenericExecutable<any>, isPropagated?: boolean): Promise<any>
 }
 
 // generic action self caller
