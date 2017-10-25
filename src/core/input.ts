@@ -110,6 +110,7 @@ export interface ComponentHelpers {
   executeAll (insts: Instruction[]): void
   broadcast (inputName: string, data?: any)
   getNames (): string[]
+  getCompleteNames (): string[]
 }
 
 export interface CtxComponentHelpers {
