@@ -119,9 +119,12 @@ export interface CtxComponentHelpers {
 
 export const getName = (name: string) => name.split('_')[1]
 
-export const getNames = (state: any, groupName: string) =>
+export const getCompleteNames = (state: any, groupName: string) =>
   Object.keys(state._nest)
     .filter(name => name.split('_')[0] === groupName)
+
+export const getNames = (state: any, groupName: string) =>
+  getCompleteNames(state, groupName)
     .map(n => n.split('_')[1])
 
 export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
