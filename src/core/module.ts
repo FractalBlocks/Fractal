@@ -362,7 +362,7 @@ export async function performUpdate (compCtx: Context, update: Update<any>): Pro
     for (let i = 0, len = removeNames.length; i < len; i++) {
       await unnest(compCtx)(removeNames[i])
     }
-    compCtx.state._compUpdate = false
+    compCtx.state._compUpdated = false
     compCtx.state._compNames = newCompNames
     compCtx.global.render = true
   }
