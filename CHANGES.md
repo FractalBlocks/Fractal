@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.0.4
+
+- Fix component update flag
+
 ## v4.0.3
 
 - Add getCompleteNames method
