@@ -35,6 +35,7 @@ There are TODOs for short term:
 - Add coverage for latets helpers: compGroup, comps and vws
 - Document prerendering (AOT) and SSR
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
+- Simplify toHTML function
 - Document sizeTask
 - Fix behaviour of hot-swaping with dynamic composition (replace defs)
 - Evaluate if a component tree is more performant and take action about it
