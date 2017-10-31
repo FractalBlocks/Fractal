@@ -349,7 +349,12 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
 }
 
 export async function performUpdate (compCtx: Context, update: Update<any>): Promise<any> {
-  compCtx.state = update(compCtx.state)
+  let updateRes = update(compCtx.state)
+  if (updateRes instanceof Promise) {
+    compCtx.state = await updateRes
+  } else {
+    compCtx.state = updateRes
+  }
   if (compCtx.state._compUpdated) {
     compCtx.global.render = false
     let compNames = compCtx.state._compNames
