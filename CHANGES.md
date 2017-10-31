@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.0.5
+
+- Updates can be async functions and sync too
+
 ## v4.0.4
 
 - Fix component update flag
