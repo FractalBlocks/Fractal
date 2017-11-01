@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.1.2
+
+- Fix interface excecution
+
 ## v4.1.1
 
 - Add type signature for async interfaces
