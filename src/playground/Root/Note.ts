@@ -11,12 +11,23 @@ export const state = {
   id: '',
   title: '',
   body: '',
+  count: 0,
   _timestamp: 0,
 }
 
 export type S = typeof state
 
 export const inputs: Inputs = F => ({
+  init: async () => {
+    await F.toIt('self')
+  },
+  self: async () => {
+    await new Promise(res => {
+      setTimeout(() => res(), 1000)
+    })
+    await F.toAct('Inc')
+    F.toIt('self')
+  },
   set: async ([name, value]) => {
     let s: S = F.stateOf()
     await F.runIt(['db', ['setItemProps', s.id, { [name]: value }]])
@@ -32,6 +43,10 @@ export const inputs: Inputs = F => ({
 })
 
 export const actions: Actions<S> = {
+  Inc: () => s => {
+    s.count++
+    return s
+  },
   SetNote: ([evName, id, item]) => s => ({
     ...s,
     id,
@@ -52,7 +67,7 @@ const view: View<S> = ({ ctx, ev }) => s => {
   }, s.id == '' ? [
     h('div', {
       class: { [style.title]: true },
-    }, 'No one selected ...'),
+    }, 'No one selected ... time: ' + s.count),
   ] : [
     h('input', {
       class: { [style.title]: true },
