@@ -546,7 +546,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     if (interfaceOrder) {
       for (let i = 0; name = interfaceOrder[i]; i++) {
         if (ctx.interfaceHandlers[name]) {
-          ctx.interfaceHandlers[name].handle(rootCtx.interfaces[name](ctx.components.Root.state))
+          ctx.interfaceHandlers[name].handle(await rootCtx.interfaces[name](ctx.components.Root.state))
         } else {
           return <any> errorNotHandler(name)
         }
