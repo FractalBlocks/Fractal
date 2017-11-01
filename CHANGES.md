@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.1.1
+
+- Add type signature for async interfaces
+
 ## v4.1.0
 
 - Interfaces are now async
