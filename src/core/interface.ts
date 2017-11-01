@@ -31,11 +31,11 @@ export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
 })
 
 export interface CtxInterfaceOf {
-  (name: string, interfaceName: string): any
+  (name: string, interfaceName: string): Promise<any>
 }
 
 // gets an interface message from a certain component
-export const _interfaceOf = (ctx: Context) => (name: string, interfaceName) => {
+export const _interfaceOf = (ctx: Context) => async (name: string, interfaceName) => {
   let id = `${ctx.id}$${name}`
   let compCtx = ctx.components[id]
   if (!compCtx) {
@@ -55,7 +55,7 @@ export const _interfaceOf = (ctx: Context) => (name: string, interfaceName) => {
     return cache
   } else {
     // caches interface
-    compCtx.interfaceValues[interfaceName] = compCtx.interfaces[interfaceName](compCtx.state)
+    compCtx.interfaceValues[interfaceName] = await compCtx.interfaces[interfaceName](compCtx.state)
     return compCtx.interfaceValues[interfaceName]
   }
 }
@@ -78,22 +78,22 @@ export interface CtxVw {
 // extract component view interface, sintax sugar
 export const _vw = (ctx: Context): CtxVw => {
   let _interfaceOfCtx = _interfaceOf(ctx)
-  return componentName => _interfaceOfCtx(componentName, 'view')
+  return async componentName => await _interfaceOfCtx(componentName, 'view')
 }
 
 export interface CtxVws {
-  (groupName: string): HandlerMsg[]
+  (groupName: string): Promise<HandlerMsg[]>
 }
 
 // extract view interfaces from a component group
 export const _vws = (ctx: Context): CtxVws => {
   let _interfaceOfCtx = _interfaceOf(ctx)
   let comps = _componentHelpers(ctx)
-  return groupName => {
+  return async groupName => {
     let views = []
-    let componentNames = comps(groupName).getNames()
+    let componentNames = comps(groupName).getCompleteNames()
     for (let i = 0, len = componentNames.length; i < len; i++) {
-      views.push(_interfaceOfCtx(componentNames[i], 'view'))
+      views.push(await _interfaceOfCtx(componentNames[i], 'view'))
     }
     return views
   }
