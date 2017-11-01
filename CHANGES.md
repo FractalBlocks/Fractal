@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.1.0
+
+- Interfaces are now async
+
 ## v4.0.6
 
 - Add global active flag to modules
