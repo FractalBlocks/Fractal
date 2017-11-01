@@ -23,6 +23,7 @@ export interface ModuleDef {
   record?: boolean
   log?: boolean
   render?: boolean // initial render flag
+  active?: boolean
   groups?: HandlerInterfaceIndex
   tasks?: HandlerInterfaceIndex
   interfaces: HandlerInterfaceIndex
@@ -275,11 +276,13 @@ export interface CtxToIt {
 }
 
 // send a message to an input of a component from itself
-// There area a weird behaviuor in istanbul coverage
 export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
   return async (inputName, data, isPropagated = true) => {
+    if (!ctx.global.active) {
+      return
+    }
     let input = componentSpace.inputs[inputName]
     if (input === undefined) {
       ctx.error(
@@ -433,6 +436,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         records: [],
         log: moduleDef.log || false,
         render: true,
+        active: moduleDef.active || true,
       },
       // component index
       components: {},

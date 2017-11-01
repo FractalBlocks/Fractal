@@ -139,6 +139,8 @@ export interface Context {
     hotSwap: boolean
     // root context delegation
     rootCtx: Context
+    // active flag, this flag can stop input excecution (used in hot-swap)
+    active: boolean
   },
   // input hooks delegation
   beforeInput? (ctxIn: Context, inputName: string, data: any): void

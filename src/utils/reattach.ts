@@ -3,6 +3,7 @@ import { MiddleFn, Module } from '../core/module'
 import { toAct } from '../core/input'
 
 export const hotSwap: MiddleFn = async (ctx, app: Module) => {
+  app.rootCtx.global.active = false
   let records = app.rootCtx.global.records
   ctx.global.records = []
   ctx.global.render = false
