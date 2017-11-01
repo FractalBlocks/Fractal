@@ -374,7 +374,7 @@ export async function performUpdate (compCtx: Context, update: Update<any>): Pro
     compCtx.state._compNames = newCompNames
     compCtx.global.render = true
   }
-  if (compCtx.global.render) {
+  if (compCtx.global.moduleRender && compCtx.global.render) {
     calcAndNotifyInterfaces(compCtx) // root context
   }
   return compCtx.state
@@ -425,78 +425,80 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   async function attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module> {
     // root component, take account of hot swapping
     component = comp ? comp : moduleDef.root
-    // if is hot swapping, do not recalculat context
+    // if is hot swapping, do not recalculate context
     // bootstrap context (level 0)
-    ctx = <any> { // because of rootCtx delegation
-      id: '',
-      name: 'Root',
-      groups: {},
-      global: {
-        record: moduleDef.record || false,
-        records: [],
-        log: moduleDef.log || false,
-        render: true,
-        active: moduleDef.active || true,
-      },
-      // component index
-      components: {},
-      groupHandlers: {},
-      taskHandlers: {},
-      interfaces: {},
-      interfaceHandlers: {},
-      // error and warning handling
-      beforeInput: (ctxIn, inputName, data) => {
-        /* istanbul ignore else */
-        if (moduleDef.beforeInput) {
-          moduleDef.beforeInput(ctxIn, inputName, data)
-        }
-      },
-      afterInput: (ctxIn, inputName, data) => {
-        /* istanbul ignore else */
-        if (moduleDef.afterInput) {
-          moduleDef.afterInput(ctxIn, inputName, data)
-        }
-      },
-      warn: (source, description) => {
-        /* istanbul ignore else */
-        if (moduleDef.warn) {
-          moduleDef.warn(source, description)
-        }
-      },
-      error: (source, description) => {
-        /* istanbul ignore else */
-        if (moduleDef.error) {
-          moduleDef.error(source, description)
-        }
-      },
-    }
+    if (!middleFn) {
+      ctx = <any> { // because of rootCtx delegation
+        id: '',
+        name: 'Root',
+        groups: {},
+        global: {
+          record: moduleDef.record || false,
+          records: [],
+          log: moduleDef.log || false,
+          render: true,
+          active: moduleDef.active || true,
+        },
+        // component index
+        components: {},
+        groupHandlers: {},
+        taskHandlers: {},
+        interfaces: {},
+        interfaceHandlers: {},
+        // error and warning handling
+        beforeInput: (ctxIn, inputName, data) => {
+          /* istanbul ignore else */
+          if (moduleDef.beforeInput) {
+            moduleDef.beforeInput(ctxIn, inputName, data)
+          }
+        },
+        afterInput: (ctxIn, inputName, data) => {
+          /* istanbul ignore else */
+          if (moduleDef.afterInput) {
+            moduleDef.afterInput(ctxIn, inputName, data)
+          }
+        },
+        warn: (source, description) => {
+          /* istanbul ignore else */
+          if (moduleDef.warn) {
+            moduleDef.warn(source, description)
+          }
+        },
+        error: (source, description) => {
+          /* istanbul ignore else */
+          if (moduleDef.error) {
+            moduleDef.error(source, description)
+          }
+        },
+      }
+      // API for modules
+      moduleAPI = {
+        // dispatch function type used for handlers
+        dispatch: (eventData: EventData) => dispatch(ctx, eventData),
+        dispose,
+        // merge a component to the component index
+        nest: nest(ctx),
+        // merge many components to the component index
+        nestAll: nestAll(ctx),
+        // unnest a component to the component index
+        unnest: unnest(ctx),
+        // unnest many components to the component index
+        unnestAll: unnestAll(ctx),
+        // set a space of a certain component
+        setGroup: (id, name, space) => {
+          ctx.components[id].groups[name] = space
+        },
+        attach,
+        // delegated methods
+        warn: ctx.warn,
+        error: ctx.error,
+      }
 
-    // API for modules
-    moduleAPI = {
-      // dispatch function type used for handlers
-      dispatch: (eventData: EventData) => dispatch(ctx, eventData),
-      dispose,
-      // merge a component to the component index
-      nest: nest(ctx),
-      // merge many components to the component index
-      nestAll: nestAll(ctx),
-      // unnest a component to the component index
-      unnest: unnest(ctx),
-      // unnest many components to the component index
-      unnestAll: unnestAll(ctx),
-      // set a space of a certain component
-      setGroup: (id, name, space) => {
-        ctx.components[id].groups[name] = space
-      },
-      attach,
-      // delegated methods
-      warn: ctx.warn,
-      error: ctx.error,
-    }
+      // module lifecycle hook: init
+      if (moduleDef.beforeInit && !middleFn) {
+        moduleDef.beforeInit(moduleAPI)
+      }
 
-    // module lifecycle hook: init
-    if (moduleDef.beforeInit && !middleFn) {
-      moduleDef.beforeInit(moduleAPI)
     }
 
     // if is not hot swapping
@@ -515,14 +517,16 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     }
 
     if (middleFn) {
-      ctx.interfaceHandlers = app.rootCtx.interfaceHandlers
-      ctx.taskHandlers = app.rootCtx.taskHandlers
-      ctx.groupHandlers = app.rootCtx.groupHandlers
+      // ctx.interfaceHandlers = app.rootCtx.interfaceHandlers
+      // ctx.taskHandlers = app.rootCtx.taskHandlers
+      // ctx.groupHandlers = app.rootCtx.groupHandlers
       ctx.global.hotSwap = true
     }
 
+    ctx.global.moduleRender = false
     // Root component
     let root = await _nest(ctx, 'Root', component)
+    ctx.global.moduleRender = true
     // Root context (level 1)
     ctx.global.rootCtx = root
     // middle function for hot-swapping
