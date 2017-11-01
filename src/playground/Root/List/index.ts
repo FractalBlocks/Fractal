@@ -80,11 +80,11 @@ export const actions: Actions<S> = {
   },
 }
 
-const view: View<S> = ({ ctx, ev, vw }) => s => {
-  let style = ctx.groups.style
+const view: View<S> = F => async s => {
+  let style = F.ctx.groups.style
 
   return h('div', {
-    key: ctx.name,
+    key: F.ctx.name,
     class: { [style.base]: true },
   }, [
     h('input', {
@@ -92,7 +92,7 @@ const view: View<S> = ({ ctx, ev, vw }) => s => {
       attrs: { placeholder: 'Type and hit enter' },
       props: { value: s.text },
       on: {
-        keyup: ev('inputKeyup', _, [
+        keyup: F.ev('inputKeyup', _, [
           ['keyCode'],
           ['target', 'value'],
         ]),
@@ -101,21 +101,19 @@ const view: View<S> = ({ ctx, ev, vw }) => s => {
     h('div', {class: { [style.menuBar]: true }}, [
       h('div', {
         class: { [style.menuItem]: true },
-        on: { click: ev('setCheckAll', true) },
+        on: { click: F.ev('setCheckAll', true) },
       }, 'check all'),
       h('div', {
         class: { [style.menuItem]: true },
-        on: { click: ev('setCheckAll', false) },
+        on: { click: F.ev('setCheckAll', false) },
       }, 'uncheck all'),
       h('div#el', {
         class: { [style.menuItem]: true },
-        on: { click: ev('removeChecked') },
+        on: { click: F.ev('removeChecked') },
       }, 'remove checked'),
     ]),
     h('ul', {class: { [style.list]: true }},
-      Object.keys(s._nest).map(
-        idx => vw(idx),
-      )
+      await F.vws('Item'),
     ),
   ])
 }

@@ -58,11 +58,11 @@ export const actions: Actions<S> = {
   })
 }
 
-const view: View<S> = ({ ctx, ev }) => s => {
-  let style = ctx.groups.style
+const view: View<S> = F => async s => {
+  let style = F.ctx.groups.style
 
   return h('div', {
-    key: ctx.name,
+    key: F.ctx.name,
     class: { [style.base]: true },
   }, s.id == '' ? [
     h('div', {
@@ -72,12 +72,12 @@ const view: View<S> = ({ ctx, ev }) => s => {
     h('input', {
       class: { [style.title]: true },
       props: { value: s.title },
-      on: { change: ev('set', 'title', ['target', 'value']) },
+      on: { change: F.ev('set', 'title', ['target', 'value']) },
     }),
     h('textarea', {
       class: { [style.body]: true },
       props: { value: s.body },
-      on: { change: ev('set', 'body', ['target', 'value']) },
+      on: { change: F.ev('set', 'body', ['target', 'value']) },
     }),
   ])
 }
