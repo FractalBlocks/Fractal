@@ -9,6 +9,12 @@
 
 ### Done
 
+## v4.0.6
+
+- Add global active flag to modules
+- Disable render when init components and add moduleRender option
+- Inputs processes can continue execution when hot-swap ocurrs
+
 ## v4.0.5
 
 - Updates can be async functions and sync too
