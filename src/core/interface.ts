@@ -72,7 +72,7 @@ export const _act = (ctx: Context): CtxAct => {
 }
 
 export interface CtxVw {
-  (componentName: string): HandlerMsg
+  (componentName: string): Promise<HandlerMsg>
 }
 
 // extract component view interface, sintax sugar
