@@ -113,7 +113,7 @@ const view: View<S> = F => async s => {
       }, 'remove checked'),
     ]),
     h('ul', {class: { [style.list]: true }},
-      await F.vws('Item'),
+      await F.group('Item'),
     ),
   ])
 }
