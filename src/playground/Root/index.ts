@@ -11,8 +11,6 @@ import { View, h } from '../..//interfaces/view'
 import * as List from './List'
 import * as Note from './Note'
 
-export const name = 'Root'
-
 export const state = {
   _nest: <any> {
     List: clone(List),
