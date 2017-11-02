@@ -18,6 +18,7 @@ export interface InterfaceHelpers {
   act: CtxAct
   vw: CtxVw
   vws: CtxVws
+  group: CtxGroup
 }
 
 export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
@@ -28,6 +29,7 @@ export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
   act: _act(ctx),
   vw: _vw(ctx),
   vws: _vws(ctx),
+  group: _group(ctx),
 })
 
 export interface CtxInterfaceOf {
@@ -82,11 +84,27 @@ export const _vw = (ctx: Context): CtxVw => {
 }
 
 export interface CtxVws {
-  (groupName: string): Promise<HandlerMsg[]>
+  (names: string[]): Promise<HandlerMsg[]>
 }
 
 // extract view interfaces from a component group
 export const _vws = (ctx: Context): CtxVws => {
+  let _interfaceOfCtx = _interfaceOf(ctx)
+  return async names => {
+    let views = []
+    for (let i = 0, len = names.length; i < len; i++) {
+      views.push(await _interfaceOfCtx(names[i], 'view'))
+    }
+    return views
+  }
+}
+
+export interface CtxGroup {
+  (groupName: string): Promise<HandlerMsg[]>
+}
+
+// extract view interfaces from a component group
+export const _group = (ctx: Context): CtxGroup => {
   let _interfaceOfCtx = _interfaceOf(ctx)
   let comps = _componentHelpers(ctx)
   return async groupName => {
