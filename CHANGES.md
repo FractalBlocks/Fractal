@@ -9,6 +9,11 @@
 
 ### Done
 
+## v4.1.4
+
+- Rename vws function to group
+- Add vws function for rendering an array of component names
+
 ## v4.1.3
 
 - Fix ordering in action records
