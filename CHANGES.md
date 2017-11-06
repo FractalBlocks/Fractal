@@ -4,6 +4,7 @@
 
 ## Whats next?
 
+- Implement `optionalBroadcast` to `comps` helper in inputs
 - Generic subscribe interface
 - Router helpers
 
