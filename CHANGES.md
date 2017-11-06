@@ -4,11 +4,14 @@
 
 ## Whats next?
 
-- Implement `optionalBroadcast` to `comps` helper in inputs
 - Generic subscribe interface
 - Router helpers
 
 ### Done
+
+## v4.1.5
+
+- Implement `optionalBroadcast`, `seqBroadcast` and `seqOptionalBroadcast` to `comps` helper in inputs
 
 ## v4.1.4
 
