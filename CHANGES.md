@@ -4,6 +4,7 @@
 
 ## Whats next?
 
+- Add method to manually perform a render
 - Generic subscribe interface
 - Router helpers
 
