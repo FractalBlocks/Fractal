@@ -266,7 +266,7 @@ export async function propagate (ctx: Context, inputName: string, data: any) {
     parentInputName = `$_${inputName}`
     /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
-      await toIt(parentSpace)(parentInputName, [componentSpace.name, data, componentSpace.name])
+      await toIt(parentSpace)(parentInputName, [componentSpace.name, data])
     }
   }
 }

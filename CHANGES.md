@@ -9,6 +9,8 @@
 
 ### Done
 
+- Remove duplicated parameter in `propagate` function
+
 ## v4.1.5
 
 - Implement `optionalBroadcast`, `seqBroadcast` and `seqOptionalBroadcast` to `comps` helper in inputs
