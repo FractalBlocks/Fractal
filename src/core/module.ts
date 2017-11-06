@@ -376,6 +376,8 @@ export async function performUpdate (compCtx: Context, update: Update<any>): Pro
   }
   if (compCtx.global.moduleRender && compCtx.global.render) {
     calcAndNotifyInterfaces(compCtx) // root context
+  } else {
+    compCtx.interfaceValues = {}
   }
   return compCtx.state
 }

@@ -4,7 +4,7 @@
 
 ## Whats next?
 
-- Add method to manually perform a render
+- Clean interface cache when perform an update
 - Generic subscribe interface
 - Router helpers
 
