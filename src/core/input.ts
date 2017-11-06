@@ -108,7 +108,10 @@ export interface ComponentHelpers {
     nameFn? (name: string): string
   }): any
   executeAll (insts: Instruction[]): void
-  broadcast (inputName: string, data?: any)
+  broadcast (inputName: string, data?: any): void
+  optionalBroadcast (inputName: string, data?: any): void
+  seqBroadcast (inputName: string, data?: any): Promise<any>
+  seqOptionalBroadcast (inputName: string, data?: any): Promise<any>
   getNames (): string[]
   getCompleteNames (): string[]
 }
@@ -157,6 +160,25 @@ export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
       broadcast (inputName, data) {
         for (let i = 0, name; name = completeNames[i]; i++) {
           _toChild(name, inputName, data)
+        }
+      },
+      optionalBroadcast (inputName, data) {
+        for (let i = 0, name; name = completeNames[i]; i++) {
+          if (ctx.components[ctx.id + '$' + name].inputs[inputName]) {
+            _toChild(name, inputName, data)
+          }
+        }
+      },
+      async seqBroadcast (inputName, data) {
+        for (let i = 0, name; name = completeNames[i]; i++) {
+          await _toChild(name, inputName, data)
+        }
+      },
+      async seqOptionalBroadcast (inputName, data) {
+        for (let i = 0, name; name = completeNames[i]; i++) {
+          if (ctx.components[ctx.id + '$' + name].inputs[inputName]) {
+            await _toChild(name, inputName, data)
+          }
         }
       },
       getNames() {
