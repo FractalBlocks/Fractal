@@ -9,6 +9,9 @@
 
 ### Done
 
+## v4.1.6
+
+- Fix placholderColor for Firefox
 - Remove duplicated parameter in `propagate` function
 
 ## v4.1.5
