@@ -76,9 +76,10 @@ export const placeholderColor = (color: string): CSS => ({
       $unique: true,
       color: color,
     },
-    '&:placeholder-shown': { /* Firefox 51+ */
+    '&::-moz-placeholder': { /* Firefox */
       $unique: true,
       color: color,
+      opacity: 1,
     },
     '&:-ms-input-placeholder': { /* IE 10+ */
       $unique: true,
