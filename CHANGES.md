@@ -4,11 +4,12 @@
 
 ## Whats next?
 
-- Clean interface cache when perform an update
 - Generic subscribe interface
 - Router helpers
 
 ### Done
+
+- Optimization in interface recalculation
 
 ## v4.1.6
 
