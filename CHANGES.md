@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.1.8
+
+- Add `clearCache` function to input helpers
+
 ## v4.1.7
 
 - Update TypeStyle dependency
