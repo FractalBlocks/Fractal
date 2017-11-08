@@ -52,3 +52,9 @@ export const compGroup = (groupName: string, arr: any[][], fn: any) => arr.reduc
     return comps
   }
 , {})
+
+
+export const getDescendantIds = (ctx: Context, id: string): string[] => {
+  let searchStr = id + '$'
+  return Object.keys(ctx.components).filter(compId => compId.includes(searchStr))
+}
