@@ -9,6 +9,11 @@
 
 ### Done
 
+## v4.1.9
+
+- `clearCache` now clear descendants
+- Implement `getDescendantIds` function
+
 ## v4.1.8
 
 - Add `clearCache` function to input helpers
