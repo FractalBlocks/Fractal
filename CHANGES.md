@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.1.7
+
+- Update TypeStyle dependency
+- Update Snabbdom dependency
 - Optimization in interface recalculation
 
 ## v4.1.6
