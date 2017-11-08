@@ -4,6 +4,7 @@ import {
   toIt,
   CtxToIt,
 } from './module'
+import { getDescendantIds } from './index';
 
 export interface InputHelpers {
   ctx: Context
@@ -103,12 +104,22 @@ export interface CtxClearCache {
 // Clear interface cache
 export const _clearCache = (ctx: Context): CtxClearCache => {
   return (interfaceName: string, childNames?: string[]) => {
+    let descendantIds, childId
     if (childNames) {
       for (let i = 0, childName; childName = childNames[i]; i++) {
-        ctx.components[ctx.id + '$' + childName].interfaceValues[interfaceName] = undefined
+        childId = ctx.id + '$' + childName
+        ctx.components[childId].interfaceValues[interfaceName] = undefined
+        descendantIds = getDescendantIds(ctx, childId)
+        for (let j = 0, descId; descId = descendantIds[j]; j++) {
+          ctx.components[descId].interfaceValues[interfaceName] = undefined
+        }
       }
     } else {
       ctx.components[ctx.id].interfaceValues[interfaceName] = undefined
+      descendantIds = getDescendantIds(ctx, childId)
+      for (let j = 0, descId; descId = descendantIds[j]; j++) {
+        ctx.components[descId].interfaceValues[interfaceName] = undefined
+      }
     }
   }
 }
