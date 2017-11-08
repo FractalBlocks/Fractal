@@ -15,6 +15,7 @@ export interface InputHelpers {
   toAct: CtxToAct
   runIt: CtxRunIt
   comps: CtxComponentHelpers
+  clearCache: CtxClearCache
 }
 
 export const makeInputHelpers = (ctx: Context): InputHelpers => ({
