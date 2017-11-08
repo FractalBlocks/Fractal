@@ -27,6 +27,7 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   toAct: toAct(ctx),
   runIt: runIt(ctx),
   comps: _componentHelpers(ctx),
+  clearCache: _clearCache(ctx),
 })
 
 export interface CtxStateOf {
@@ -92,6 +93,23 @@ export const runIt = (ctx: Context): CtxRunIt => {
   let _toIt = toIt(ctx)
   return async (executables: GenericExecutable<any>, isPropagated = true) =>
     await _toIt('_execute', executables, isPropagated)
+}
+
+export interface CtxClearCache {
+  (interfaceName: string, childNames?: string[]): void
+}
+
+// Clear interface cache
+export const _clearCache = (ctx: Context): CtxClearCache => {
+  return (interfaceName: string, childNames?: string[]) => {
+    if (childNames) {
+      for (let i = 0, childName; childName = childNames[i]; i++) {
+        ctx.components[ctx.id + '$' + childName].interfaceValues[interfaceName] = undefined
+      }
+    } else {
+      ctx.components[ctx.id].interfaceValues[interfaceName] = undefined
+    }
+  }
 }
 
 // --- Child components helpers: build functions for traversing components and broadcasting messages to them
