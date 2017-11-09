@@ -13,6 +13,7 @@
 coverage/
 reports/
 dist/
+src/playground/dist/
 .fusebox
 
 # npm stuff
