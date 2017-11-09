@@ -5,10 +5,10 @@ import { renderHTML } from './ssr'
 export interface PrerenderOptions {
   root: Component<any>
   runModule: RunModule
-  encoding: string
+  encoding?: string
   outputFile: string
   htmlFile: string
-  cssFile: string
+  cssFile?: string
   isStatic?: boolean // is isS this means there are no need of JS at all
   bundlePath?: string,
   url?: string, // canonical url
@@ -44,7 +44,7 @@ export async function prerender ({
 }: PrerenderOptions) {
   try {
     let html = fs.readFileSync(htmlFile, encoding)
-    let css = fs.readFileSync(cssFile, encoding)
+    let css = cssFile ? fs.readFileSync(cssFile, encoding) : ''
     let htmlResult = await renderHTML({
       root,
       encoding,
