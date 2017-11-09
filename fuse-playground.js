@@ -13,7 +13,7 @@ let fuse
 
 Sparky.task('init', () => {
   fuse = FuseBox.init({
-    home: './',
+    home: '.',
     output: 'dist/$name.js',
     tsConfig: './tsconfig.json',
     experimentalFeatures: true,
