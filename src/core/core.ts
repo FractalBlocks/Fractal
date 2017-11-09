@@ -170,5 +170,5 @@ export type Executable<S> = Update<S> | Task
 export type GenericExecutable<S> = Update<S> | Task | Executable<any>[]
 
 export interface RunModule {
-  (root: Component<any>, DEV: boolean, viewCb?): Promise<Module>
+  (root: Component<any>, DEV: boolean, options?, viewCb?): Promise<Module>
 }
