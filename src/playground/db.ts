@@ -1,4 +1,4 @@
-import { computeEvent, _, Handler } from "../core/index";
+import { computeEvent, _, Handler } from '../core/index'
 
 export interface Item {
   title: string
@@ -6,13 +6,16 @@ export interface Item {
   _timestamp: number
 }
 
-let value: any = localStorage.getItem('memoryDB')
+let value: any = {}
 
-if (value) {
-  value = JSON.parse(value)
-} else {
-  value = {}
-  localStorage.setItem('memoryDB', '{}')
+if (typeof window !== 'undefined') {
+  value = localStorage.getItem('memoryDB')
+
+  if (value) {
+    value = JSON.parse(value)
+  } else {
+    localStorage.setItem('memoryDB', '{}')
+  }
 }
 
 let memoryDB: { [id: string]: Item } = value
