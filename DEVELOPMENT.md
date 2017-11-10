@@ -31,17 +31,14 @@ There are TODOs for short term:
 
 - Simplify tests (would be reimplement it? most tests are disabled right now)
 - Document component lifecycle
+- Introduce a template language for AOT / SSR
 - OPTIMIZATION: Implement 'prepare' function for dynamic components. This allow to not reprocess styles (groups) for every component added
-- Add coverage for latets helpers: compGroup, comps and vws
 - Document prerendering (AOT) and SSR
 - Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
 - Simplify toHTML function
 - Document sizeTask
-- Evaluate optional propagation, is it a good option?
-- Evaluate if a component tree is more performant and take action about it
 - Document Cached interfaces, this is basically that interfaces are cached by default
 - Document interfaceOrder. This method is used to set the order of the initial evaluation of interfaces
-- Add coverage to view functions
 - Document global events listener selfPropagated option
 - Document that global and normal event listeners do not handle events that are prevented ( default: false ) and there are a listenPrevented option to reverse this behaviour
 - Document that we don't support stop propagation of DOM events as a design choice because of [this article](https://css-tricks.com/dangers-stopping-event-propagation/)
