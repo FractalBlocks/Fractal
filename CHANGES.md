@@ -9,6 +9,14 @@
 
 ### Done
 
+## v4.1.10 (Soon...)
+
+- Fix initial global values for rendering
+- Fix use of render in module definitions
+- Fix AOT and SSR
+- Change location of prerender template
+- Add options to `runModule`, this allow module definitions to be extendable
+
 ## v4.1.9
 
 - `clearCache` now clear descendants
