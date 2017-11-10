@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.1.14
+
+- Implement bundlePaths for SSR and AOT and remove bundlePath
+
 ## v4.1.12-13 (Fix broken build)
 
 - Add fs-jetpack and always reads utf8 from files in AOT compilation
