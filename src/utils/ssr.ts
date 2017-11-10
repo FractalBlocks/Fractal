@@ -7,7 +7,7 @@ export interface StaticRenderOptions {
   encoding?: string
   html: string
   css?: string
-  bundlePath?: string,
+  bundlePaths?: string[],
   url?: string, // canonical url
   componentNames?: any, // will be merged client-side
   title?: string
@@ -27,7 +27,7 @@ export const renderHTML = ({
   encoding,
   html,
   css,
-  bundlePath,
+  bundlePaths,
   url,
   componentNames,
   title,
@@ -55,10 +55,10 @@ export const renderHTML = ({
         html = html.replace('<!--##AUTHOR##-->', author || '')
         html = html.replace('<!--##TITLE##-->', title || '')
         html = html.replace('<!--##URL##-->', url || '/')
-        let bundle = isStatic
-        ? ''
-        : `<script defer src="${bundlePath || 'bundle.js'}?v=${version || ''}"></script>`
-        html = html.replace('<!--##BUNDLE##-->', bundle)
+        let bundles = bundlePaths.map(
+          p => `<script defer src="${p}?v=${version || ''}"></script>`
+        ).join('')
+        html = html.replace('<!--##BUNDLES##-->', bundles)
         html = html.replace('<!--##EXTRAS##-->', extras || '')
         html = html.replace('<!--##LANG##-->', lang || 'en')
         html = html.replace('<!--##VERSION##-->', version || '')

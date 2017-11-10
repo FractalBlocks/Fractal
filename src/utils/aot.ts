@@ -10,7 +10,7 @@ export interface PrerenderOptions {
   htmlFile: string
   cssFile?: string
   isStatic?: boolean // is isS this means there are no need of JS at all
-  bundlePath?: string,
+  bundlePaths?: string[],
   url?: string, // canonical url
   componentNames?: any, // will be merged client-side
   title?: string
@@ -39,7 +39,7 @@ export async function prerender ({
   keywords,
   author,
   extras,
-  bundlePath,
+  bundlePaths,
   componentNames,
   cb,
 }: PrerenderOptions) {
@@ -59,7 +59,7 @@ export async function prerender ({
       version,
       title,
       description,
-      bundlePath,
+      bundlePaths,
       keywords,
       author,
       extras,
