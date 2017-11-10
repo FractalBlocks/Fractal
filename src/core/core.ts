@@ -85,7 +85,7 @@ export interface Interface<Type, S>{
 }
 
 export interface CtxInterface<Type, S> {
-  (state: S): Promise<Type> | Type
+  (state: S): Promise<Type>
 }
 
 export interface CtxInterfaceIndex {

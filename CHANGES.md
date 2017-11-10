@@ -9,6 +9,7 @@
 
 ### Done
 
+- Fix interfaces type to be async
 - Add async type to renderHTML function
 
 ## v4.1.15
