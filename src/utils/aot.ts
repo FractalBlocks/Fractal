@@ -39,6 +39,7 @@ export async function prerender ({
   keywords,
   author,
   extras,
+  bundlePath,
   componentNames,
   cb,
 }: PrerenderOptions) {
@@ -57,6 +58,7 @@ export async function prerender ({
       version,
       title,
       description,
+      bundlePath,
       keywords,
       author,
       extras,

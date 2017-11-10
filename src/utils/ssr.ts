@@ -1,10 +1,10 @@
 import { Component, RunModule, Module } from '../core'
-import { toHTML } from '../prerender/index'
+import _toHTML from '../toHTML'
 
 export interface StaticRenderOptions {
   root: Component<any>
   runModule: RunModule
-  encoding: string
+  encoding?: string
   html: string
   css?: string
   bundlePath?: string,
@@ -45,9 +45,9 @@ export const renderHTML = ({
       try {
         var app = await runModule(root, false, { render: false })
         await cb(app)
-        let view = app.rootCtx.components.Root.interfaces['view'](app.rootCtx.components.Root.state)
+        let view = await app.rootCtx.components.Root.interfaces['view'](app.rootCtx.components.Root.state)
         let styleStr = (css || '') + app.rootCtx.groupHandlers['style'].state.instance.getStyles()
-        html = html.replace('<!--##HTML##-->', toHTML(view))
+        html = html.replace('<!--##HTML##-->', _toHTML(view))
         html = html.replace('<!--##STYLES##-->', '<style>' + styleStr + '</style>')
         html = html.replace('<!--##ENCODING##-->', encoding || 'utf-8')
         html = html.replace('<!--##DESCRIPTION##-->', description || '')
@@ -71,7 +71,7 @@ export const renderHTML = ({
           }
           components[key] = {}
           for (subkey in app.rootCtx.components[key]) {
-            if (['state', 'isStatic'].indexOf(subkey) !== -1) {
+            if (['state'].indexOf(subkey) !== -1) {
               // avoid cyclic structure
               components[key][subkey] = app.rootCtx.components[key][subkey]
             }
