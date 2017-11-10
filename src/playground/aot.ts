@@ -9,6 +9,6 @@ prerender({
   htmlFile: 'src/playground/aot.html',
   cssFile: 'src/playground/styles.css',
   outputFile: 'src/playground/dist/index.html',
-  bundlePath: 'app.js',
+  bundlePaths: ['app.js'],
   cb: () => {},
 })
