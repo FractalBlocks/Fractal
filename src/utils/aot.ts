@@ -44,6 +44,7 @@ export async function prerender ({
   cb,
 }: PrerenderOptions) {
   try {
+    encoding = encoding || 'utf-8'
     let html = fs.readFileSync(htmlFile, encoding)
     let css = cssFile ? fs.readFileSync(cssFile, encoding) : ''
     let htmlResult = await renderHTML({
