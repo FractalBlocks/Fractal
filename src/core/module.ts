@@ -62,6 +62,7 @@ export interface Module {
 
 // API from module to handlers
 export interface ModuleAPI {
+  ctx: Context
   dispatch (eventData: EventData): Promise<void>
   dispose (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
@@ -452,6 +453,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       }
       // API for modules
       moduleAPI = {
+        ctx,
         // dispatch function type used for handlers
         dispatch: (eventData: EventData) => dispatch(ctx, eventData),
         dispose,
@@ -475,7 +477,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
 
       // module lifecycle hook: init
       if (moduleDef.beforeInit && !middleFn) {
-        moduleDef.beforeInit(moduleAPI)
+        await moduleDef.beforeInit(moduleAPI)
       }
 
     }
@@ -496,9 +498,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     }
 
     if (middleFn) {
-      // ctx.interfaceHandlers = app.rootCtx.interfaceHandlers
-      // ctx.taskHandlers = app.rootCtx.taskHandlers
-      // ctx.groupHandlers = app.rootCtx.groupHandlers
       ctx.global.hotSwap = true
     }
 
