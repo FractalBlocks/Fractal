@@ -22,7 +22,7 @@ export interface StaticRenderOptions {
   version?: string
   base?: string // Base URL
   htmlFn? (op: StaticRenderOptions, renderData: RenderData, app: Module) // Replace default template transform function
-  cb? (app: Module)
+  cb? (app: Module): Promise<void>
 }
 
 export interface RenderData {

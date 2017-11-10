@@ -9,6 +9,8 @@
 
 ### Done
 
+- Add async type to renderHTML function
+
 ## v4.1.15
 
 - Implement htmlFn for replacing transformHTML function, allows customization
