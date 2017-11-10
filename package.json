@@ -1,6 +1,6 @@
 {
   "name": "fractal-core",
-  "version": "4.1.11",
+  "version": "4.1.12",
   "description": "A minimalist and well crafted app, content or component is our conviction",
   "main": "core/index.js",
   "typings": "core/index.d.ts",
@@ -48,6 +48,7 @@
     "parse-sel": "^1.0.0",
     "setimmediate": "^1.0.5",
     "snabbdom": "^0.7.0",
+    "fs-jetpack": "^1.2.0",
     "typestyle": "^1.5.1"
   },
   "devDependencies": {

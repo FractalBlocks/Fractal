@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.1.12
+
+- Add fs-jetpack and always reads utf8 from files in AOT compilation
+
 ## v4.1.11
 
 - Await for beforeInit hook
