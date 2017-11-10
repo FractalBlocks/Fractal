@@ -13,8 +13,7 @@ export const beforeInput = async (ctx: Context, inputName, data) => {
   if (typeof state === 'object') {
     state = clone(state)
   }
-  // <any> until groupCollapsed issue in TS repo is merged https://github.com/Microsoft/TypeScript/pull/15630
-  ;(<any> console.groupCollapsed)(
+  console.groupCollapsed(
     `%c input %c${inputName} %cfrom %c${ctx.id}`,
     'color: #626060; font-size: 12px;',
     'color: #3b3a3a; font-size: 14px;',
