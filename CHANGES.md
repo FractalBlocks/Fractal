@@ -9,6 +9,12 @@
 
 ### Done
 
+## v4.1.11
+
+- Await for beforeInit hook
+- Fix encoding optional parameter
+- Logs and module hooks are now async
+
 ## v4.1.10
 
 - Fix initial global values for rendering
