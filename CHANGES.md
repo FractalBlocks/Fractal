@@ -9,7 +9,7 @@
 
 ### Done
 
-## v4.1.10 (Soon...)
+## v4.1.10
 
 - Fix initial global values for rendering
 - Fix use of render in module definitions
