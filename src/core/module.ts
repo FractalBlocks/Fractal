@@ -434,7 +434,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
           record: moduleDef.record || false,
           records: [],
           log: moduleDef.log || false,
-          render: true,
+          render: moduleDef.render,
           active: moduleDef.active || true,
         },
         // component index
@@ -521,10 +521,11 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       ctx.global.hotSwap = true
     }
 
+    let lastModuleRender = ctx.global.moduleRender
     ctx.global.moduleRender = false
     // Root component
     let root = await _nest(ctx, 'Root', component)
-    ctx.global.moduleRender = true
+    ctx.global.moduleRender = lastModuleRender
     // Root context (level 1)
     ctx.global.rootCtx = root
     // middle function for hot-swapping
