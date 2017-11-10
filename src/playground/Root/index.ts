@@ -5,6 +5,7 @@ import {
   StyleGroup,
   clone,
   styles,
+  deepmerge,
 } from '../../core'
 import { View, h } from '../..//interfaces/view'
 
@@ -21,6 +22,16 @@ export const state = {
 export type S = typeof state
 
 export const inputs: Inputs = F => ({
+  init: async F => {
+    // Merge precalculated state
+    if (typeof window !== 'undefined' && (window as any).ssrInitialized) {
+      let components = (window as any).ssrComponents
+      let name
+      for (name in components) {
+        F.ctx.components[name].state = deepmerge(F.ctx.components[name].state, components[name].state)
+      }
+    }
+  },
   $List_select: async id => {
     await F.toChild('Note', 'setNoteFromId', id)
   },
