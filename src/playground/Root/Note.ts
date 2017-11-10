@@ -19,7 +19,9 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   init: async () => {
-    await F.toIt('self')
+    if (typeof window !== 'undefined') {
+      F.toIt('self')
+    }
   },
   self: async () => {
     await new Promise(res => {
