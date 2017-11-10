@@ -29,15 +29,15 @@ export interface ModuleDef {
   interfaces: HandlerInterfaceIndex
   interfaceOrder?: Array<string>
   // lifecycle hooks for modules
-  beforeInit? (mod: ModuleAPI): void
-  init? (mod: ModuleAPI): void
-  destroy? (mod: ModuleAPI): void
+  beforeInit? (mod: ModuleAPI): Promise<void>
+  init? (mod: ModuleAPI): Promise<void>
+  destroy? (mod: ModuleAPI): Promise<void>
   // hooks for inputs
-  beforeInput? (ctxIn: Context, inputName: string, data: any): void
-  afterInput? (ctxIn: Context, inputName: string, data: any): void
+  beforeInput? (ctxIn: Context, inputName: string, data: any): Promise<void>
+  afterInput? (ctxIn: Context, inputName: string, data: any): Promise<void>
   // callbacks (side effects) for log messages
-  warn? (source: string, description: string): void
-  error? (source: string, description: string): void
+  warn? (source: string, description: string): Promise<void>
+  error? (source: string, description: string): Promise<void>
 }
 
 // a gap is defined with undefined (optional)
@@ -445,30 +445,10 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         interfaces: {},
         interfaceHandlers: {},
         // error and warning handling
-        beforeInput: (ctxIn, inputName, data) => {
-          /* istanbul ignore else */
-          if (moduleDef.beforeInput) {
-            moduleDef.beforeInput(ctxIn, inputName, data)
-          }
-        },
-        afterInput: (ctxIn, inputName, data) => {
-          /* istanbul ignore else */
-          if (moduleDef.afterInput) {
-            moduleDef.afterInput(ctxIn, inputName, data)
-          }
-        },
-        warn: (source, description) => {
-          /* istanbul ignore else */
-          if (moduleDef.warn) {
-            moduleDef.warn(source, description)
-          }
-        },
-        error: (source, description) => {
-          /* istanbul ignore else */
-          if (moduleDef.error) {
-            moduleDef.error(source, description)
-          }
-        },
+        beforeInput: moduleDef.beforeInput ? moduleDef.beforeInput : _,
+        afterInput: moduleDef.afterInput || _,
+        warn: moduleDef.warn || _,
+        error: moduleDef.error || _,
       }
       // API for modules
       moduleAPI = {
@@ -567,7 +547,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
 
     // module lifecycle hook: init
     if (moduleDef.init && !middleFn) {
-      moduleDef.init(moduleAPI)
+      await moduleDef.init(moduleAPI)
     }
 
     return {
