@@ -11,5 +11,5 @@ prerender({
   root: Root,
   runModule,
   bundlePaths: ['app.js'],
-  cb: () => {},
+  cb: async () => {},
 })
