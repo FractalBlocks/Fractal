@@ -9,13 +9,8 @@ export interface Item {
 let value: any = {}
 
 if (typeof window !== 'undefined') {
-  value = localStorage.getItem('memoryDB')
-
-  if (value) {
-    value = JSON.parse(value)
-  } else {
-    localStorage.setItem('memoryDB', '{}')
-  }
+  value = JSON.parse(localStorage.getItem('memoryDB') || '{}')
+  localStorage.setItem('memoryDB', '{}')
 }
 
 let memoryDB: { [id: string]: Item } = value
