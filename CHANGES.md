@@ -9,6 +9,12 @@
 
 ### Done
 
+## v4.1.15
+
+- Implement htmlFn for replacing transformHTML function, allows customization
+- Implement transformHTML function in renderHTML
+- Implement base url for AOT / SSR
+
 ## v4.1.14
 
 - Implement bundlePaths for SSR and AOT and remove bundlePath
