@@ -62,7 +62,6 @@ export interface Module {
 
 // API from module to handlers
 export interface ModuleAPI {
-  ctx: Context
   dispatch (eventData: EventData): Promise<void>
   dispose (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
@@ -453,7 +452,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       }
       // API for modules
       moduleAPI = {
-        ctx,
         // dispatch function type used for handlers
         dispatch: (eventData: EventData) => dispatch(ctx, eventData),
         dispose,
