@@ -1,4 +1,4 @@
-import fs = require('fs')
+import fs = require('fs-jetpack')
 import { Module, Component, RunModule } from '../core'
 import { renderHTML } from './ssr'
 
@@ -45,8 +45,8 @@ export async function prerender ({
 }: PrerenderOptions) {
   try {
     encoding = encoding || 'utf-8'
-    let html = fs.readFileSync(htmlFile, encoding)
-    let css = cssFile ? fs.readFileSync(cssFile, encoding) : ''
+    let html = fs.read(htmlFile, 'utf8')
+    let css = cssFile ? fs.read(cssFile, 'utf8') : ''
     let htmlResult = await renderHTML({
       root,
       encoding,
@@ -67,12 +67,8 @@ export async function prerender ({
       cb,
     })
 
-    fs.unlink(outputFile, err => {
-      fs.writeFile(outputFile, htmlResult, { flag: 'wx' }, err => {
-        if (err) throw err
-        console.log('Guardado en archivo ' + outputFile)
-      })
-    })
+    fs.write(outputFile, htmlResult, { atomic: true })
+    console.log('Guardado en archivo ' + outputFile)
   } catch (err) {
     throw err
   }
