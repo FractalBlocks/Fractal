@@ -431,11 +431,12 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         name: 'Root',
         groups: {},
         global: {
-          record: moduleDef.record || false,
+          record: moduleDef.hasOwnProperty('record') ? moduleDef.record : false,
           records: [],
-          log: moduleDef.log || false,
-          render: moduleDef.render,
-          active: moduleDef.active || true,
+          log: moduleDef.hasOwnProperty('log') ? moduleDef.log : false,
+          moduleRender: moduleDef.hasOwnProperty('render') ? moduleDef.render : true,
+          render: true,
+          active: moduleDef.hasOwnProperty('active') ? moduleDef.active : true,
         },
         // component index
         components: {},
