@@ -13,7 +13,7 @@ Concepts:
 
 - Module: A runtime for you app, connect a component tree to the external world
 - Component
-  - State: Component changing data
+  - State: Changing data
   - Inputs: Async processes that recieve messages (data) from external components or outside the app, in an Input you can:
     - Send messages to other Inputs (same Component)
     - Send messages to other Component Inputs
