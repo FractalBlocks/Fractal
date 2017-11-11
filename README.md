@@ -12,7 +12,7 @@ We use better tools, we move fast, we love innovation ... Oh and Fractal is frac
 Concepts:
 
 - Module: A runtime for you app, connect a component tree to the external world
-- Component
+- Component:
   - State: Changing data
   - Inputs: Async processes that recieve messages (data) from external components or outside the app, in an Input you can:
     - Send messages to other Inputs (same Component)
