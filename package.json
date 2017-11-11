@@ -47,10 +47,10 @@
     "parse-sel": "^1.0.0",
     "setimmediate": "^1.0.5",
     "snabbdom": "^0.7.0",
-    "fs-jetpack": "^1.2.0",
     "typestyle": "^1.5.1"
   },
   "devDependencies": {
+    "fs-jetpack": "^1.2.0",
     "fuse-box": "^2.3.3",
     "typescript": "^2.5.0-dev.20170619"
   }
