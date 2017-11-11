@@ -36,15 +36,16 @@ Techniques:
   - Type some data models
   - Type functions
   - Catch syntax errors and a few bugs
+- Hot-swapping: Live develop your application with no state loss. It gives you a nice developer experience.
 - JS Bundling / Loading: [FuseBox](https://github.com/fuse-box/fuse-box) :fire::fire::fire:, we love it! is fast, clear and powerful ... oh I miss that it's fast .. well, it's blazingly fast, let's try it!
 
 ## Features
 
 - Fractal is minimal, composable and extendible
-- Simple inter-component comunication via messages, you cant broadcast messages to all components and listen for them
-- Async operations made simple, all Fractal core make a wide use of async functions, and you can use it inside components
-- Its clear and concise. All you application code are [pure functions](https://en.wikipedia.org/wiki/Pure_function). Your app code has NO side effects
-- You can serialize the whole side effects, this means you can run Fractal in a Web Worker, in a server via Websockets or even in a remote browser via WebRTC crazy right? :')
+- Simple inter-component comunication via messages, you can broadcast messages to all components and listen for them
+- Async operations made simple, all Fractal core make a wide use of async functions, and you can use it in your app
+- Its clear and concise. All you application is nicely structured. Fractal manage and isolate side effects
+- You can easly serialize side effects, this means you can run Fractal in a Web Worker, in a server via Websockets or even in a remote browser via WebRTC crazy right? :')
 - Gives you powerful patterns and composing tools that helps to build small and large apps
 - Prototype with ease and transform to a production level code seamlessly
 - A clear and flexible architecture that scales
