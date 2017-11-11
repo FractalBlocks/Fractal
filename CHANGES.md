@@ -9,6 +9,10 @@
 
 ### Done
 
+## v4.1.17
+
+- Move fs-jetpack to dev dependencies
+
 ## v4.1.16
 
 - Fix interfaces type to be async
