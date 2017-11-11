@@ -24,7 +24,7 @@ export const actions: Actions<S> = {
   })
 }
 
-const view: View<S> = ({ ctx, ev, act }) => s => {
+const view: View<S> = ({ ctx, ev, act }) => async s => {
   let style = ctx.groups.style
 
   return h('li', {
