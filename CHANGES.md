@@ -1,9 +1,9 @@
 # Changes
 
-## Changes for Fractal core
-
 ## Whats next?
 
+- Implement `toComp` and `dispatchEv` for ModuleAPI
+- Deprecate `dispatch` for moduleAPI
 - Generic subscribe interface
 - Router helpers
 
