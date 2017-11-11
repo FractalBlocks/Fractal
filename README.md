@@ -36,29 +36,9 @@ Techniques:
   - Type some data models
   - Type functions
   - Catch syntax errors and a few bugs
-- JS Bundling / Loading: FuseBox :fire::fire::fire:, we love it! is fast, clear and powerful ... oh I miss that it's fast .. well, it's blazingly fast, let's try it!
+- JS Bundling / Loading: [FuseBox](https://github.com/fuse-box/fuse-box) :fire::fire::fire:, we love it! is fast, clear and powerful ... oh I miss that it's fast .. well, it's blazingly fast, let's try it!
 
-## Easy flow
-
-- Setup your project: this means cloning an starter project, for now we have [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) and [Fractal-featured](https://github.com/FractalBlocks/Fractal-featured)
-- Prototype a component, we accept side effects in Inputs
-- Try it
-- Refactor: let stable things to be side effect free
-- Prototype again and have fun ...
-
-## Getting started
-
-The recomended way is using FuseBox, please download the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) repo, this gives you all things ready.
-
-Or in nodejs, browserify, Webpack like environments:
-
-```bash
-npm i --save fractal-core
-```
-
-Or see our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/tutorial/readme.md) and the examples (We are refactoring examples and tutorial, be in touch ...).
-
-## Features extended version
+## Features
 
 - Fractal is minimal, composable and extendible
 - Simple inter-component comunication via messages, you cant broadcast messages to all components and listen for them
@@ -88,6 +68,26 @@ Or see our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/
 See the [design document](https://github.com/FractalBlocks/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
 
 We make use of Fractal in our projects and this library is continuosly evolving, be in touch...
+
+## Easy flow
+
+- Setup your project: this means cloning an starter project, for now we have [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) and [Fractal-featured](https://github.com/FractalBlocks/Fractal-featured)
+- Prototype a component, we accept side effects in Inputs
+- Try it
+- Refactor: let stable things to be side effect free
+- Prototype again and have fun ...
+
+## Getting started
+
+The recomended way is using FuseBox, please download the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) repo, this gives you all things ready.
+
+Or in nodejs, browserify, Webpack like environments:
+
+```bash
+npm i --save fractal-core
+```
+
+Or see our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/tutorial/readme.md) and the examples (We are refactoring examples and tutorial, be in touch ...).
 
 ## Development Notes
 
