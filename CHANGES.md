@@ -4,6 +4,7 @@
 
 - Implement `toComp` and `dispatchEv` for ModuleAPI
 - Deprecate `dispatch` for moduleAPI
+- Replace `dispatch` in built-in hanlders
 - Generic subscribe interface
 - Router helpers
 
