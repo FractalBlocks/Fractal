@@ -1,21 +1,22 @@
 require('setimmediate') // Polyfill setImmediate
+
 import {
   Component,
   Update,
   Context,
-  EventData,
   Components,
   Interfaces,
   CtxInterfaceIndex,
   Actions,
   GenericExecutable,
   Action,
+  InputData,
 } from './core'
 import {
   HandlerInterface,
   HandlerObject,
 } from './handler'
-import { makeInterfaceHelpers, dispatch } from './interface'
+import { makeInterfaceHelpers, dispatchEv, toComp } from './interface'
 import { makeInputHelpers } from './input'
 
 export interface ModuleDef {
@@ -62,7 +63,8 @@ export interface Module {
 
 // API from module to handlers
 export interface ModuleAPI {
-  dispatch (eventData: EventData): Promise<void>
+  dispatchEv (event: any, iData: InputData): Promise<void>
+  toComp (id: string, inputName: string, data: any, isPropagated?: boolean): Promise<void>
   dispose (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
   nest: CtxNest
@@ -291,9 +293,9 @@ export const toIt = (ctx: Context): CtxToIt => {
       )
       return
     }
-    if (ctx.beforeInput) await ctx.beforeInput(ctx, inputName, data)
+    // if (ctx.beforeInput) await ctx.beforeInput(ctx, inputName, data)
     let result = await input(data)
-    if (ctx.afterInput) await ctx.afterInput(ctx, inputName, data)
+    // if (ctx.afterInput) await ctx.afterInput(ctx, inputName, data)
     if (isPropagated) {
       await propagate(ctx, inputName, data)
     }
@@ -453,7 +455,8 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       // API for modules
       moduleAPI = {
         // dispatch function type used for handlers
-        dispatch: (eventData: EventData) => dispatch(ctx, eventData),
+        dispatchEv: dispatchEv(ctx),
+        toComp: toComp(ctx),
         dispose,
         // merge a component to the component index
         nest: nest(ctx),

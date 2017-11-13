@@ -1,4 +1,4 @@
-import { Interface, ModuleAPI } from '../../core'
+import { Interface, ModuleAPI, Handler } from '../../core'
 import { init } from 'snabbdom'
 import classModule from 'snabbdom/modules/class'
 import attributesModule from 'snabbdom/modules/attributes'
@@ -16,7 +16,7 @@ export type VNode = _VNode
 export type View<S> = Interface<VNode, S>
 
 /* istanbul ignore next */
-export const viewHandler = (selectorElm, cb?: { (value: VNode): void }) => (mod: ModuleAPI) => {
+export const viewHandler: Handler = (selectorElm, cb?: { (value: VNode): void }) => (mod: ModuleAPI) => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let state: { lastContainer: VNode | Element } = {
     lastContainer: undefined,

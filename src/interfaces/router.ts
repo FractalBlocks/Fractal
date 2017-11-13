@@ -21,7 +21,7 @@ export const routesHandler: Handler = () => ctx => {
     for (key in value) {
       if (key !== 'name') {
         routes[key] = (params, query) => {
-          ctx.dispatch(computeEvent({ params, query }, value[key]))
+          ctx.dispatchEv({ params, query }, value[key])
         }
       }
     }

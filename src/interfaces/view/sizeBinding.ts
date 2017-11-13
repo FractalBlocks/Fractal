@@ -1,6 +1,6 @@
 import { VNode, VNodeData } from './vnode'
 import { Module } from 'snabbdom/modules/module'
-import { computeEvent, InputData, ModuleAPI } from '../../core'
+import { InputData, ModuleAPI } from '../../core'
 import { ResizeSensor } from './resizeSensor'
 
 export type SizeBinding = InputData | InputData[] | 'ignore'
@@ -13,7 +13,7 @@ export const sizeBindingModule = (mod: ModuleAPI): Module => {
   function invokeHandler (evHandler: SizeBinding, vnode: VNode, eventData) {
     if (evHandler instanceof Array && typeof evHandler[0] === 'string') {
       setTimeout(() => {
-        mod.dispatch(computeEvent(eventData, <InputData> evHandler))
+        mod.dispatchEv(eventData, <InputData> evHandler)
       }, 0)
     } else if (evHandler instanceof Array) {
       // call multiple handlers

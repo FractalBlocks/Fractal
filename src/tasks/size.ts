@@ -1,6 +1,6 @@
-import { computeEvent } from '../core/interface'
+import { Handler } from '../core/handler'
 
-export const sizeHandler = () => mod => ({
+export const sizeHandler: Handler = () => mod => ({
   state: undefined,
   handle: async ([selector, prop, cb]) => {
     let elements: HTMLElement[] = document.querySelectorAll(selector)
@@ -10,7 +10,7 @@ export const sizeHandler = () => mod => ({
       let bbox = element.getBoundingClientRect()
       propValues.push(bbox[prop])
     }
-    mod.dispatch(computeEvent(propValues, cb))
+    mod.dispatchEv(propValues, cb)
   },
   dispose: () => {},
 })

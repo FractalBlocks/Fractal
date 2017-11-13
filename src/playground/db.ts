@@ -62,7 +62,7 @@ export const dbTask: Handler = () => mod => {
   let subs = []
   changeListener = evData => {
     for (let i = 0, sub; sub = subs[i]; i++) {
-      mod.dispatch(computeEvent(evData, <any> sub[2]))
+      mod.dispatchEv(evData, <any> sub[2])
     }
   }
 

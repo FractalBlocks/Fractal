@@ -70,7 +70,7 @@ export interface CtxAct {
 export const _act = (ctx: Context): CtxAct => {
   let _evCtx = _ev(ctx)
   return (actionName, context, param, options): InputData =>
-    _evCtx('_action', [actionName, context], param, options)
+    _evCtx('_action', context !== undefined ? [actionName, context] : actionName, param, options)
 }
 
 export interface CtxVw {
@@ -146,13 +146,15 @@ function computePath (path: any[], event) {
   return data
 }
 
-export function computeEvent(event: any, iData: InputData): EventData {
+export function computeEvent(eventData: any, iData: InputData): EventData {
   let data
+  let haveContext = iData[2] !== undefined
+  let haveParam = iData[3] !== undefined
 
   if (iData[3] === '*') {
     // serialize the whole object (note that DOM events are not serializable, use paths instead)
-    data = JSON.parse(JSON.stringify(event))
-  } else if (event && iData[3] !== undefined) {
+    data = JSON.parse(JSON.stringify(eventData))
+  } else if (iData[3] !== undefined) {
     // have fetch parameter
     if (iData[3] instanceof Array) {
       // fetch parameter is a path, e.g. ['target', 'value']
@@ -160,50 +162,38 @@ export function computeEvent(event: any, iData: InputData): EventData {
       if (param[1] && param[1] instanceof Array) {
         data = []
         for (let i = 0, len = param.length; i < len; i++) {
-          data[i] = computePath(param[i], event)
+          data[i] = computePath(param[i], eventData)
         }
       } else {
         // only one path
-        data = computePath(param, event)
+        data = computePath(param, eventData)
       }
     } else {
       // fetch parameter is only a getter, e.g. 'target'
-      data = event[iData[3]]
+      data = eventData[iData[3]]
     }
   }
-  if (iData[2] === undefined && iData[3] === undefined) {
+  if (!haveContext && !haveParam) {
     return [iData[0], iData[1]] // dispatch an input with no arguments
   }
   return [
     iData[0], // component id
-    iData[1], // component event
-    iData[2], // context argument
-    data, // data
-    iData[2] !== undefined && iData[3] !== undefined
-      ? 'pair'
-      : (iData[2] !== undefined)
-      ? 'context'
-      : 'fn',
+    iData[1], // component input name
+    haveContext && haveParam
+      ? [iData[2], data]
+      : haveParam
+      ? data
+      : iData[2]
   ]
 }
 
-// dispatch an input based on eventData to the respective component
-/* istanbul ignore next */
-// TODO: optimize via currification
-export const dispatch = async (ctxIn: Context, eventData: EventData, isPropagated = true) => {
-  let id = eventData[0] + ''
-  // root component
-  let ctx = ctxIn.components[(id + '').split('$')[0]]
+export const dispatchEv = (ctx: Context) => async (event: any, iData: InputData) => {
+  let compCtx = ctx.components[iData[0] + '']
+  let cInputData = computeEvent(event, iData)
+  await toIt(compCtx)(cInputData[1], cInputData[2])
+}
+
+export const toComp = (ctx: Context) => async (id: string, inputName: string, data: any, isPropagated = true) => {
   let compCtx = ctx.components[id]
-  if (!compCtx) {
-    return ctx.error('dispatch', `there are no component space '${id}'`)
-  }
-  let inputName = eventData[1]
-  // extract data from eventData
-  let data = eventData[4] === 'pair' // is both?
-    ? [eventData[2], eventData[3]] // is both event data + context
-    : eventData[4] === 'context'
-    ? eventData[2] // is only context
-    : eventData[3] // is only event data
   await toIt(compCtx)(inputName, data, isPropagated)
 }

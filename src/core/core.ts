@@ -71,9 +71,7 @@ export interface InputData extends Array<any> {
 export interface EventData extends Array<any> {
   0: string // component index identifier
   1: string // input name
-  2?: any // context parameter from InputData (contextual)
-  3?: any // data from an interface / task handler ( result of function or value )
-  4?: 'pair' | 'fn' | 'context'
+  2?: any // data
 }
 
 export interface Update<S> {
