@@ -1,5 +1,5 @@
 import Navigo = require('navigo')
-import { Handler, computeEvent } from '../core'
+import { Handler } from '../core'
 
 export const routesHandler: Handler = () => ctx => {
   var useHash = true; // Defaults to: false
