@@ -1,9 +1,9 @@
 import {
   HandlerInterfaceIndex,
   HandlerObject,
-  EventData,
   ModuleAPI,
   Context,
+  InputData,
 } from '../core'
 
 declare var self: WorkerAPI
@@ -27,7 +27,6 @@ export interface Waiter {
   (data): boolean
 }
 
-/* istanbul ignore next */
 export function makeSyncQueue (): SyncQueue {
   let queue: Waiter[] = []
   return {
@@ -43,9 +42,7 @@ export function makeSyncQueue (): SyncQueue {
   }
 }
 
-/* istanbul ignore next */
 export const workerHandler = (type: 'interface' | 'task' | 'group', name: string, syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
-  /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
   return {
     state: undefined,
@@ -68,9 +65,7 @@ export const workerHandler = (type: 'interface' | 'task' | 'group', name: string
   }
 }
 
-/* istanbul ignore next */
 export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
-  /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
   return (source: string, description: string) => {
     _self.postMessage(['log', type, source, description])
@@ -78,48 +73,41 @@ export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
 }
 
 // receives messages from runWorker
-/* istanbul ignore next */
 export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
-  /* istanbul ignore next */
   let _self = workerAPI ? workerAPI : self
   // allows to dispatch inputs from the main thread
   _self.onmessage = ev => {
     let data = ev.data
     switch (data[0]) {
-      case 'dispatch':
-        mod.dispatch(data[1])
-        /* istanbul ignore next */
+      case 'dispatchEv':
+        mod.dispatchEv(data[1], data[2])
+        break
+      case 'toComp':
+        mod.toComp(data[1], data[2], data[3], data[4])
         break
       case 'setGroup':
         mod.setGroup(data[1], data[2], data[3])
-        /* istanbul ignore next */
         break
       case 'dispose':
         mod.dispose()
         _self.postMessage(['dispose'])
-        /* istanbul ignore next */
         break
       case 'nest':
         // not implemented yet, should deserialize a component with a safe eval
         mod.error('workerListener', `unimplemented method`)
-        /* istanbul ignore next */
         break
       case 'nestAll':
         // not implemented yet, should deserialize a list of components with a safe eval
         mod.error('workerListener', `unimplemented method`)
-        /* istanbul ignore next */
         break
       case 'unnest':
         // not implemented yet, should deserialize a component with a safe eval
         mod.error('workerListener', `unimplemented method`)
-        /* istanbul ignore next */
         break
       case 'unnestAll':
         // not implemented yet, should deserialize a list of components with a safe eval
         mod.error('workerListener', `unimplemented method`)
-        /* istanbul ignore next */
         break
-      /* istanbul ignore next */
       default:
         mod.error('workerListener', `unknown message type recived from worker: ${data.join(', ')}`)
     }
@@ -162,16 +150,16 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   let taskObjects: { [name: string]: HandlerObject } = {}
   let interfaceObjects: { [name: string]: HandlerObject } = {}
 
-  /* istanbul ignore next */
   let attach: any = async comp => {
     def.error('reattach', 'unimplemented method')
   }
 
   // API for modules
-  /* istanbul ignore next */
   let moduleAPI: ModuleAPI = {
     // dispatch function type used for handlers
-    dispatch: async (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
+    dispatchEv: async (event: any, iData: InputData) => worker.postMessage(['dispatchEv', event, iData]),
+    toComp: async (id: string, inputName: string, data: any, isPropagated = true) =>
+      worker.postMessage(['toComp', id, inputName, data, isPropagated]),
     dispose,
     attach,
     // nest a component to the component index
@@ -204,62 +192,51 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   }
 
   // TODO: reverse message sintax
-  /* istanbul ignore next */
   worker.onmessage = async ev => {
     let data = ev.data
     switch (data[0]) {
       case 'interface':
         if (data[2] === 'handle') {
           await interfaceObjects[data[1]].handle(data[3])
-          /* istanbul ignore next */
           break
         }
         if (data[2] === 'dispose') {
           interfaceObjects[data[1]].dispose()
-          /* istanbul ignore next */
           break
         }
       case 'task':
         if (data[2] === 'handle') {
           await taskObjects[data[1]].handle(data[3])
-          /* istanbul ignore next */
           break
         }
         if (data[2] === 'dispose') {
           await taskObjects[data[1]].dispose()
-          /* istanbul ignore next */
           break
         }
       case 'group':
         if (data[2] === 'handle') {
           await groupObjects[data[1]].handle(data[3])
-          /* istanbul ignore next */
           break
         }
         if (data[2] === 'dispose') {
           groupObjects[data[1]].dispose()
-          /* istanbul ignore next */
           break
         }
       case 'log':
         if (moduleAPI[data[1]]) {
           moduleAPI[data[1]](data[2], data[3])
-          /* istanbul ignore next */
           break
         }
       case 'dispose':
         if (def.destroy) {
           def.destroy(moduleAPI)
-          /* istanbul ignore next */
         }
         break
-      /* istanbul ignore next */
       default:
         moduleAPI.error('runWorker', `unknown message type recived from worker: ${data.join(', ')}`)
     }
   }
 
-  /* istanbul ignore next */
   function dispose () {
     worker.postMessage(['dispose'])
   }
