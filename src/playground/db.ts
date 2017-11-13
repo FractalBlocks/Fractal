@@ -1,4 +1,4 @@
-import { computeEvent, _, Handler } from '../core/index'
+import { Handler, _ } from '../core/index'
 
 export interface Item {
   title: string
