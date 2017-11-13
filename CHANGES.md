@@ -2,13 +2,18 @@
 
 ## Whats next?
 
-- Implement `toComp` and `dispatchEv` for ModuleAPI
-- Deprecate `dispatch` for moduleAPI
-- Replace `dispatch` in built-in hanlders
 - Generic subscribe interface
 - Router helpers
 
 ### Done
+
+## v4.2.0
+
+- Improve event system, optimization and clean code
+- Replace `dispatch` in built-in hanlders
+- Remove `dispatch` for moduleAPI (BREAKING CHANGE)
+- Implement `toComp` and `dispatchEv` for ModuleAPI
+- Delete unused value interface
 
 ## v4.1.17
 
