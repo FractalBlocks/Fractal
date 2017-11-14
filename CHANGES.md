@@ -7,6 +7,10 @@
 
 ### Done
 
+## v4.2.3
+
+- Enable input hooks (HOTFIX)
+
 ## v4.2.2
 
 - Fix `act` interface helper
