@@ -7,6 +7,10 @@
 
 ### Done
 
+## v4.2.2
+
+- Fix `act` interface helper
+
 ## v4.2.1
 
 - Implement `getParentCtx`, `mapAsync`, `filterAsync`, `reduceAsync` and `all` functions
