@@ -58,3 +58,5 @@ export const getDescendantIds = (ctx: Context, id: string): string[] => {
   let searchStr = id + '$'
   return Object.keys(ctx.components).filter(compId => compId.includes(searchStr))
 }
+
+export const getParentCtx = (ctx: Context) => ctx.components[(ctx.id + '').split('$').slice(0, -1).join('$')]

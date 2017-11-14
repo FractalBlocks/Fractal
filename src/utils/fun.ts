@@ -61,3 +61,30 @@ import * as _deepmerge from 'deepmerge/dist/umd'
 
 export const deepmerge = _deepmerge
 export const deepmergeAll = _deepmerge.all
+
+export const mapAsync = async (arr: any[], fn) => {
+  let res = []
+  for (let i = 0, len = arr.length; i < len; i++) {
+    res[i] = await fn(arr[i], i, arr)
+  }
+  return res
+}
+
+export const filterAsync = async (arr: any[], fn) => {
+  let res = []
+  for (let i = 0, len = arr.length; i < len; i++) {
+    if (await fn(arr[i], i, arr)) {
+      res.push(arr[i])
+    }
+  }
+  return res
+}
+
+export const reduceAsync = async (arr: any[], fn, v0: any) => {
+  for (let i = 0, len = arr.length; i < len; i++) {
+    v0 = await fn(v0, arr[i], i)
+  }
+  return v0
+}
+
+export const all = async (arr: Promise<any>[]) => await Promise.all(arr)
