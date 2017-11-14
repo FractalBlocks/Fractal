@@ -70,7 +70,7 @@ export interface CtxAct {
 export const _act = (ctx: Context): CtxAct => {
   let _evCtx = _ev(ctx)
   return (actionName, context, param, options): InputData =>
-    _evCtx('_action', context !== undefined ? [actionName, context] : actionName, param, options)
+    _evCtx('_action', [actionName, context], param, options)
 }
 
 export interface CtxVw {
