@@ -7,6 +7,10 @@
 
 ### Done
 
+## v4.2.1
+
+- Implement `getParentCtx`, `mapAsync`, `filterAsync`, `reduceAsync` and `all` functions
+
 ## v4.2.0
 
 - Improve event system, optimization and clean code
