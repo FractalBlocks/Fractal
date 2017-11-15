@@ -11,25 +11,25 @@ We use better tools, we move fast, we love innovation ... Oh and Fractal is frac
 
 Concepts:
 
-- Module: A runtime for you app, connect a component tree to the external world
-- Component:
-  - State: Changing data
-  - Inputs: Async processes that recieve messages (data) from external components or outside the app, in an Input you can:
-    - Send messages to other Inputs (same Component)
-    - Send messages to other Component Inputs
-    - Send messages outside the aplication with Tasks
-    - Perform side effects but only while prototyping, after that you should use Tasks
-  - Actions: The only way to change the state
-  - Interfaces: Here lives continous and hierachical connections with external world, the most common Interface is the `view`
-  - Groups: Data that can be used when a component is initialized, we use it for styles
-- Task: A mechanism to send messages to external world in a clean way (AKA perform side effects nicely), e.g. get some data from your local database
-- Handlers: Perform side effects, they receive messages from Tasks and hierachical structures from Interfaces and handle them
+- Module: A engine for you app, connect a component tree to the external world.
+- Component: Is a part of your app, a component have:
+  - State: Changing data.
+  - Inputs: Async processes that recieve messages (data) from other components or outside the app, in an Input you can:
+    - Send messages to other Inputs (same Component).
+    - Send messages to other Components via Inputs.
+    - Send messages outside the aplication with Tasks.
+    - Perform side effects but only while prototyping, after that you should use Tasks.
+  - Actions: The only way to change the state.
+  - Interfaces: Here lives continous and hierachical connections with external world, the most common Interface is the `view`.
+  - Groups: Data that can be used when a component is initialized, we use it for styles.
+- Task: A mechanism to send messages to external world in a clean way (AKA perform side effects nicely), e.g. get some data from your local database.
+- Handlers: Perform side effects, they receive messages from Tasks and hierachical structures from Interfaces and handle them.
 
 Techniques:
 
-- Fractal architecture: This is a kind of unidirectional user interface architecture see an insightful article [here](https://staltz.com/unidirectional-user-interface-architectures.html) by @staltz
-- Reactive views: We use [Snabbdom](https://github.com/snabbdom/snabbdom) for rendering
-- CSS in JS: We create styles in JS using [TypeStyle](https://github.com/typestyle/typestyle), see this [Vjeux slides](https://speakerdeck.com/vjeux/react-css-in-js)
+- Fractal architecture: This is a kind of unidirectional user interface architecture see an insightful article [here](https://staltz.com/unidirectional-user-interface-architectures.html) by @staltz.
+- Reactive views: We use [Snabbdom](https://github.com/snabbdom/snabbdom) for rendering.
+- CSS in JS: We create styles in JS using [TypeStyle](https://github.com/typestyle/typestyle), see this [Vjeux slides](https://speakerdeck.com/vjeux/react-css-in-js).
 - Typescript: We use [TypeScript](https://www.typescriptlang.org/) that is the same as JS but optionally you can have some types, we use it for better tooling [see this Eric Elliot article](https://medium.com/javascript-scene/the-shocking-secret-about-static-types-514d39bf30a3). Our lemma is to be fast with dynamic types but use types for stable code and some data modeling. We use it for:
   - A nice autocomplete for Styles and JavaScript
   - Errors in Styles (via TypeStyle)
