@@ -98,7 +98,7 @@ export const nest = (ctx: Context): CtxNest => async (name, component) => {
 
 async function _nest (ctx: Context, name: string, component: Component<any>): Promise<Context> {
   // namespaced name if is a child
-  let id = ctx.id === '' ? name : ctx.id + '$' + name
+  let id = ctx.id === 'Root' && name === 'Root' ? 'Root' : ctx.id + '$' + name
   // state default
   component.state._nest = component.state._nest || {}
   component.state._compCounter = 0
@@ -429,7 +429,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     // bootstrap context (level 0)
     if (!middleFn) {
       ctx = <any> { // because of rootCtx delegation
-        id: '',
+        id: 'Root',
         name: 'Root',
         groups: {},
         global: {
