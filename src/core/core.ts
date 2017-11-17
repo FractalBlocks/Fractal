@@ -60,7 +60,7 @@ export interface EventOptions {
   - 'other': which means, serialize the 'other' attribute of the event object
 */
 export interface InputData extends Array<any> {
-  0: string // component index identifier
+  0: string // component identifier
   1: string // input name
   2?: any // context parameter
   3?: any // a param function string / value is optional
