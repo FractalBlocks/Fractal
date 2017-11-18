@@ -446,6 +446,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         taskHandlers: {},
         interfaces: {},
         interfaceHandlers: {},
+        inputs: {},
         // error and warning handling
         beforeInput: moduleDef.beforeInput ? moduleDef.beforeInput : _,
         afterInput: moduleDef.afterInput || _,
