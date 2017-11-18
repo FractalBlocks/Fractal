@@ -3,11 +3,11 @@ import { clone, _stateOf, Context } from '../core'
 export const warn = async (source: string, description: string) =>
   console.warn(`source: ${source}, description: ${description}`)
 
-export const error = async (source: string, description: string) => {
+export const error = (source: string, description: string) => {
   throw `source: ${source}, description: ${description}`
 }
 
-export const beforeInput = async (ctx: Context, inputName, data) => {
+export const beforeInput = (ctx: Context, inputName, data) => {
   if (!ctx.global.log) return
   let state = _stateOf(ctx)()
   if (typeof state === 'object') {
@@ -26,7 +26,7 @@ export const beforeInput = async (ctx: Context, inputName, data) => {
 
 // color for actions (not yet implemented) #58C6F8
 
-export const afterInput = async (ctx: Context, inputName, data) => {
+export const afterInput = (ctx: Context, inputName, data) => {
   if (!ctx.global.log) return
   let state = _stateOf(ctx)()
   if (typeof state === 'object') {
