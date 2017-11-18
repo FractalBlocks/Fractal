@@ -293,9 +293,9 @@ export const toIt = (ctx: Context): CtxToIt => {
       )
       return
     }
-    if (ctx.beforeInput) await ctx.beforeInput(ctx, inputName, data)
+    if (ctx.beforeInput) ctx.beforeInput(ctx, inputName, data)
     let result = await input(data)
-    if (ctx.afterInput) await ctx.afterInput(ctx, inputName, data)
+    if (ctx.afterInput) ctx.afterInput(ctx, inputName, data)
     if (isPropagated) {
       await propagate(ctx, inputName, data)
     }
