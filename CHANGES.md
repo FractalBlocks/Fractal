@@ -2,10 +2,16 @@
 
 ## Whats next?
 
-- Generic subscribe interface
 - Router helpers
+- Remove navigo router interface
+- Generic subscribe interface
 
 ### Done
+
+- Change log functions from async to sync
+- Fix destroy component hook bug
+- Change input hooks from async to sync
+- Fix component  Root id
 
 ## v4.2.3
 
