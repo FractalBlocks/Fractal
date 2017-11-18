@@ -3,11 +3,13 @@ import {
   Inputs,
   Interfaces,
   StyleGroup,
+  Interface,
   _,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 export const state = {
+  activeChild: '',
   id: '',
   title: '',
   body: '',
@@ -20,7 +22,7 @@ export type S = typeof state
 export const inputs: Inputs = F => ({
   init: async () => {
     if (typeof window !== 'undefined') {
-      F.toIt('self')
+      // F.toIt('self')
     }
   },
   self: async () => {
@@ -39,9 +41,16 @@ export const inputs: Inputs = F => ({
     if (s.id !== '') {
       await F.runIt(['db', ['unsubscribe', F.ctx.id, s.id]])
     }
-    let note = await F.runIt(['db', ['subscribe', F.ctx.id, id, F.act('SetNote', _, '*')]])
+    let note = await F.runIt(['db', ['subscribe', F.ctx.id, id, F.ev('setNote', _, '*')]])
     await F.toAct('SetNote', ['set', id, note])
   },
+  setNote: async ([evName, id, item]) => {
+    await F.toAct('SetNote', [evName, id, item])
+    if (evName === 'remove') {
+      await F.toIt('removed')
+    }
+  },
+  removed: async () => {},
 })
 
 export const actions: Actions<S> = {
@@ -57,8 +66,12 @@ export const actions: Actions<S> = {
       : evName === 'remove'
       ? { id: '' }
       : {}
-  })
+  }),
 }
+
+const route: Interface<any, S> = F => async s => [
+  [F.ctx.id, s.activeChild],
+]
 
 const view: View<S> = F => async s => {
   let style = F.ctx.groups.style
@@ -84,7 +97,7 @@ const view: View<S> = F => async s => {
   ])
 }
 
-export const interfaces: Interfaces = { view }
+export const interfaces: Interfaces = { route, view }
 
 const style: StyleGroup = {
   base: {

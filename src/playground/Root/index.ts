@@ -6,6 +6,7 @@ import {
   clone,
   styles,
   deepmerge,
+  Interface,
 } from '../../core'
 import { View, h } from '../..//interfaces/view'
 
@@ -13,6 +14,7 @@ import * as List from './List'
 import * as Note from './Note'
 
 export const state = {
+  activeChild: '',
   _nest: <any> {
     List: clone(List),
     Note: styles({ base: { width: 'calc(100% - 400px)' }})(clone(Note)),
@@ -32,13 +34,27 @@ export const inputs: Inputs = F => ({
       }
     }
   },
+  Route_active: async ([id]) => {
+    if (id !== '') {
+      await F.toIt('$List_select', id)
+    }
+  },
   $List_select: async id => {
+    await F.toAct('Set', ['activeChild', id])
     await F.toChild('Note', 'setNoteFromId', id)
+  },
+  $Note_removed: async id => {
+    await F.toAct('Set', ['activeChild', ''])
   },
 })
 
 export const actions: Actions<S> = {
 }
+
+const route: Interface<any, S> = F => async s => [
+  [F.ctx.id, s.activeChild],
+  ...s.activeChild !== '' ? await F.interfaceOf('Note', 'route') : [],
+]
 
 const view: View<S> = F => async s => {
   let style = F.ctx.groups.style
@@ -52,7 +68,7 @@ const view: View<S> = F => async s => {
   ])
 }
 
-export const interfaces: Interfaces = { view }
+export const interfaces: Interfaces = { route, view }
 
 const style: StyleGroup = {
   base: {
