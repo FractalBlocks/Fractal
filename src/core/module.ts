@@ -255,18 +255,11 @@ export async function propagate (ctx: Context, inputName: string, data: any) {
     let parentId = idParts.slice(0, -1).join('$')
     let parentSpace = ctx.components[parentId]
     let parentInputName
-    parentInputName = `$${componentSpace.name}_${inputName}`
-    /* istanbul ignore else */
-    if (parentSpace.inputs[parentInputName]) {
-      await toIt(parentSpace)(parentInputName, data)
-    }
-    parentInputName = `$$${componentSpace.name.split('_')[0]}_${inputName}`
-    /* istanbul ignore else */
+    parentInputName = `$${componentSpace.name.split('_')[0]}_${inputName}`
     if (parentSpace.inputs[parentInputName]) {
       await toIt(parentSpace)(parentInputName, [componentSpace.name.split('_')[1], data])
     }
     parentInputName = `$_${inputName}`
-    /* istanbul ignore else */
     if (parentSpace.inputs[parentInputName]) {
       await toIt(parentSpace)(parentInputName, [componentSpace.name, data])
     }
