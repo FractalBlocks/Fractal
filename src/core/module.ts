@@ -34,8 +34,8 @@ export interface ModuleDef {
   init? (mod: ModuleAPI): Promise<void>
   destroy? (mod: ModuleAPI): Promise<void>
   // hooks for inputs
-  beforeInput? (ctxIn: Context, inputName: string, data: any): Promise<void>
-  afterInput? (ctxIn: Context, inputName: string, data: any): Promise<void>
+  beforeInput? (ctxIn: Context, inputName: string, data: any): void
+  afterInput? (ctxIn: Context, inputName: string, data: any): void
   // callbacks (side effects) for log messages
   warn? (source: string, description: string): Promise<void>
   error? (source: string, description: string): Promise<void>
