@@ -56,10 +56,10 @@ export const inputs: Inputs = F => ({
       }
     }
   },
-  $$Item_remove: async ([name]) => {
+  $Item_remove: async ([name]) => {
     await F.runIt(['db', ['remove', name]])
   },
-  $$Item_select: async ([id]) => {
+  $Item_select: async ([id]) => {
     await F.toIt('select', id)
   },
   select: async id => {},

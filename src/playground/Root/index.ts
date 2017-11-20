@@ -25,7 +25,7 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   init: async () => {
-    // Merge precalculated state
+    // Merge precalculated state (SSR)
     if (typeof window !== 'undefined' && (window as any).ssrInitialized) {
       let components = (window as any).ssrComponents
       let name

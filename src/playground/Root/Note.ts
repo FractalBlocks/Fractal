@@ -22,7 +22,7 @@ export type S = typeof state
 export const inputs: Inputs = F => ({
   init: async () => {
     if (typeof window !== 'undefined') {
-      // F.toIt('self')
+      F.toIt('self')
     }
   },
   self: async () => {
