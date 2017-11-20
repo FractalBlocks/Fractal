@@ -13,7 +13,7 @@ Concepts:
 
 - Module: A engine for you app, connect a component tree to the external world.
 - Component: Is a part of your app, a component have:
-  - State: Changing data.
+  - State: The component changing data.
   - Inputs: Async processes that recieve messages (data) from other components or outside the app, in an Input you can:
     - Send messages to other Inputs (same Component).
     - Send messages to other Components via Inputs.
@@ -37,7 +37,7 @@ Techniques:
   - Type functions
   - Catch syntax errors and a few bugs
 - Hot-swapping: Live develop your application with no state loss. It gives you a nice developer experience.
-- JS Bundling / Loading: [FuseBox](https://github.com/fuse-box/fuse-box) :fire::fire::fire:, we love it! is fast, clear and powerful ... oh I miss that it's fast .. well, it's blazingly fast, let's try it!
+- JS Bundling / Loading: [FuseBox](https://github.com/fuse-box/fuse-box) :fire::fire::fire: We love it! is fast, clear and powerful ... Oh! I said it's fast? .. Well, it's blazingly fast, let's try it!
 
 ## Features
 
