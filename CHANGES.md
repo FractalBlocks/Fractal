@@ -2,12 +2,13 @@
 
 ## Whats next?
 
-- Router helpers
-- Remove navigo router interface
+- Router helpers MVP (In progress...)
 - Generic subscribe interface
 
-### Done
+# v4.3.0 (Soon...)
 
+- Remove navigo router interface
+- Fix bundlePaths in ssr helpers, do it not optional
 - Change log functions from async to sync
 - Fix destroy component hook bug
 - Change input hooks from async to sync
