@@ -1,6 +1,6 @@
 {
   "name": "fractal-core",
-  "version": "4.3.0",
+  "version": "4.2.4",
   "description": "A minimalist and well crafted app, content or component is our conviction",
   "main": "core/index.js",
   "typings": "core/index.d.ts",
@@ -37,17 +37,16 @@
     "@types/node": "^8.0.26",
     "deep-equal": "^1.0.1",
     "deepmerge": "^1.4.3",
+    "fs-jetpack": "^1.2.0",
     "lodash.escape": "^4.0.1",
     "lodash.forown": "^4.4.0",
     "lodash.kebabcase": "^4.1.1",
     "lodash.remove": "^4.7.0",
     "lodash.uniq": "^4.5.0",
-    "navigo": "^5.2.0",
     "object-assign": "^4.1.1",
     "parse-sel": "^1.0.0",
     "setimmediate": "^1.0.5",
     "snabbdom": "^0.7.0",
-    "fs-jetpack": "^1.2.0",
     "typestyle": "^1.5.1"
   },
   "devDependencies": {

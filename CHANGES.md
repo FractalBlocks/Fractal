@@ -2,11 +2,13 @@
 
 ## Whats next?
 
-- Router helpers MVP (In progress...)
 - Generic subscribe interface
 
-# v4.3.0 (Soon...)
+# v4.3.0
 
+- Fix propagation data
+- Router interface MVP
+- Optimize propagation (BREAKING)
 - Remove navigo router interface
 - Fix bundlePaths in ssr helpers, do it not optional
 - Change log functions from async to sync
