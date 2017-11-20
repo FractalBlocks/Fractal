@@ -6,10 +6,10 @@ export const toHTML = _toHTML
 export interface StaticRenderOptions {
   root: Component<any>
   runModule: RunModule
+  bundlePaths: string[],
   encoding?: string
   html?: string
   css?: string
-  bundlePaths?: string[],
   url?: string, // Canonical url
   componentNames?: any, // will be merged client-side
   title?: string
