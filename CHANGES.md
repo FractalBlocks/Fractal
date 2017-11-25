@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Generic task execution with `cmd` handler
 - Generic subscribe interface
 
 ## Done
