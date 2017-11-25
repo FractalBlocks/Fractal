@@ -110,7 +110,17 @@ export const obfuscator: CSS = {
   display: 'none',
 }
 
-/* istanbul ignore next */
+export const imageRenderingContrast: CSS = <any> {
+  'imageRendering': [
+    'optimizeSpeed',             /*                     */
+    '-moz-crisp-edges',          /* Firefox             */
+    '-o-crisp-edges',            /* Opera               */
+    '-webkit-optimize-contrast', /* Chrome (and Safari) */
+    'optimize-contrast',         /* CSS3 Proposed       */
+  ],
+  '-ms-interpolation-mode': 'nearest-neighbor',   /* IE8+                */
+}
+
 export const iconView = (iconName, options = {}): VNode => h('svg', deepmerge({class: {['svg_' + iconName]: true}}, options), [
   h('use', {attrs: { 'xlink:href': 'assets/icons-bundle.min.svg#' + iconName }}),
 ])
