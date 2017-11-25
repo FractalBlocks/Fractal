@@ -4,6 +4,10 @@
 
 - Generic subscribe interface
 
+## Done
+
+- Add `range` function
+
 # v4.3.0
 
 - Fix propagation data

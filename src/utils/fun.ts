@@ -88,3 +88,19 @@ export const reduceAsync = async (arr: any[], fn, v0: any) => {
 }
 
 export const all = async (arr: Promise<any>[]) => await Promise.all(arr)
+
+export const range = (a: number, b: number) => {
+  let res = []
+  if (a < b) {
+    b++
+    for (; a < b; a++) {
+      res.push(a)
+    }
+  } else {
+    b--
+    for (; a > b; a--) {
+      res.push(a)
+    }
+  }
+  return res
+}
