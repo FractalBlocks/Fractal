@@ -7,6 +7,9 @@
 
 ## Done
 
+# v4.3.1
+
+- Add `imageRenderingContrast` CSS object helper
 - Add `range` function
 
 # v4.3.0
