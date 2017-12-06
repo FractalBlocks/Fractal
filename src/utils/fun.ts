@@ -104,3 +104,5 @@ export const range = (a: number, b: number) => {
   }
   return res
 }
+
+export const waitMS = (ms: number) => new Promise(res => setTimeout(res, ms))
