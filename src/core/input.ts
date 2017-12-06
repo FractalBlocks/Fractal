@@ -53,23 +53,23 @@ export const _stateOf = (ctx: Context): CtxStateOf => name => {
 // --- Message interchange between components
 
 export interface CtxToChild {
-  (name: string, inputName: string, msg?, isPropagated?: boolean): void
+  (childCompName: string, inputName: string, msg?, isPropagated?: boolean): void
 }
 
 // send a message to an input of a component from its parent
 export const toChild = (ctx: Context) => async (
-  name,
+  childCompName,
   inputName,
   msg = undefined,
   isAsync = false,
   isPropagated = true
 ) => {
-  let childId = ctx.id + '$' + name
+  let childId = ctx.id + '$' + childCompName
   let compCtx = ctx.components[childId]
   if (compCtx) {
     await toIt(compCtx)(inputName, msg, isPropagated)
   } else {
-    ctx.error('toChild', `there are no child '${name}' in space '${ctx.id}'`)
+    ctx.error('toChild', `there are no child '${childCompName}' in space '${ctx.id}'`)
   }
 }
 

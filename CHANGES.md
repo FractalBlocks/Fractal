@@ -7,6 +7,7 @@
 
 ## Done
 
+- Change toChild parameter 'name' for 'ChildCompName'
 - Add waitMS function
 
 # v4.3.1
