@@ -110,6 +110,7 @@ export const obfuscator: CSS = {
   display: 'none',
 }
 
+// Evaluate deprecation
 export const imageRenderingContrast: CSS = <any> {
   'imageRendering': [
     'optimizeSpeed',             /*                     */
