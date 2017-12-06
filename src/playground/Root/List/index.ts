@@ -52,7 +52,7 @@ export const inputs: Inputs = F => ({
     let names = F.comps('Item').getNames()
     for (let i = 0, len = names.length; i < len; i++) {
       if (F.stateOf('Item_' + names[i]).checked) {
-        await F.toIt('$$Item_remove', [names[i]])
+        await F.toIt('$Item_remove', [names[i]])
       }
     }
   },
