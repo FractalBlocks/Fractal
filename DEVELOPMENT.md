@@ -29,6 +29,7 @@ We support use of:
 
 There are TODOs for short term:
 
+- Add animation examples
 - Simplify tests (would be reimplement it? most tests are disabled right now)
 - Document component lifecycle
 - Introduce a template language for AOT / SSR
