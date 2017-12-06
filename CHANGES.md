@@ -7,6 +7,8 @@
 
 ## Done
 
+- Add waitMS function
+
 # v4.3.1
 
 - Add `imageRenderingContrast` CSS object helper
