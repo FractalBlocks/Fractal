@@ -393,7 +393,7 @@ export function calcAndNotifyInterfaces (ctx: Context) {
         parts.pop()
       }
       // permorms interface recalculation
-      let rootSpace = ctx.components[ctx.components.Root.id]
+      let rootSpace = ctx.components.Root
       for (let name in rootSpace.interfaces) {
         if (ctx.interfaceHandlers[name]) {
           ctx.interfaceHandlers[name].handle(await rootSpace.interfaces[name](rootSpace.state))
