@@ -2,7 +2,8 @@
 
 ## Done
 
-- [Let's start simple](https://github.com/FractalBlocks/Fractal/tree/master/docs/tutorial/readme.md)
+- [Tutorial Overview](readme.md)
+- [Let's start simple, a counter](counter.md)
 
 ## Soon
 
