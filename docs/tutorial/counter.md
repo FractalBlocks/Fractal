@@ -232,4 +232,4 @@ Save and see the browser, our code have been charged immediately without reload 
 
 Next section we will see how [Styling our Counter]() :heart: (Soon ...) (TODO: link)
 
-See the full [contents here](index.md)
+See the full [contents here](contents.md)

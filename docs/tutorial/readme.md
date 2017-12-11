@@ -23,4 +23,4 @@ We can divide it in components:
 
 So we have built a component hierarchy. Go to the [Next step](counter.md) to see our first component!
 
-See the full [contents here](index.md)
+See the full [contents here](contents.md)
