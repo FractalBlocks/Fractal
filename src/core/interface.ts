@@ -193,7 +193,7 @@ export const dispatchEv = (ctx: Context) => async (event: any, iData: InputData)
   await toIt(compCtx)(cInputData[1], cInputData[2])
 }
 
-export const toComp = (ctx: Context) => async (id: string, inputName: string, data: any, isPropagated = true) => {
+export const toComp = (ctx: Context) => async (id: string, inputName: string, data?: any, isPropagated = true) => {
   let compCtx = ctx.components[id]
   await toIt(compCtx)(inputName, data, isPropagated)
 }
