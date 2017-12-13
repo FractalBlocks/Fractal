@@ -7,9 +7,13 @@
 
 ## Done
 
+# v4.3.3
+
+- Make `toComp` data parameter optional (type)
+
 # v4.3.2
 
-- make `toComp` data parameter optional
+- Make `toComp` data parameter optional
 - Change toChild parameter 'name' for 'childCompName'
 - Add waitMS function
 
