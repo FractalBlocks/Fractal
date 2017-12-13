@@ -64,7 +64,7 @@ export interface Module {
 // API from module to handlers
 export interface ModuleAPI {
   dispatchEv (event: any, iData: InputData): Promise<void>
-  toComp (id: string, inputName: string, data: any, isPropagated?: boolean): Promise<void>
+  toComp (id: string, inputName: string, data?: any, isPropagated?: boolean): Promise<void>
   dispose (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
   nest: CtxNest
