@@ -124,8 +124,6 @@ export interface Context {
   interfaceHandlers: {
     [name: string]: HandlerObject
   }
-  // action queue
-  actionQueue: Update<any>[],
   // global flags delegation
   global: {
     // record all actions

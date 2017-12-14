@@ -7,6 +7,8 @@
 
 ## Done
 
+- Remove actionQueue remanent from Context
+
 # v4.3.3
 
 - Make `toComp` data parameter optional (type)

@@ -117,7 +117,6 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     afterInput: ctx.afterInput,
     warn: ctx.warn,
     error: ctx.error,
-    actionQueue: [],
     // if state is an object, it is cloned
     state: clone(component.state),
     inputs: {}, // input helpers needs to be initialized after ComponentSpace, because references
