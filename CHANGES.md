@@ -2,8 +2,17 @@
 
 ## Whats next?
 
+ -Add CSS type to Style module in Vnode
+- Add `sum` function to utils
+- Add `getPaths` function to utils
+- Add `getStates` to `ComponentHelpers`
+- Add `getStatePaths` to `ComponentHelpers`
+- Add multiple assignments to Set default action
+- Add paths to Set default action
 - Generic task execution with `cmd` handler
 - Generic subscribe interface
+- Solve bug related to stressing setImmediate in view rendering, state of child component doesn't change
+- BREAKING: Change `F.ev` with `F.in`
 
 ## Done
 

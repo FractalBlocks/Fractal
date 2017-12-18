@@ -30,7 +30,7 @@ export const inputs: Inputs = F => ({
       setTimeout(() => res(), 1000)
     })
     await F.toAct('Inc')
-    F.toIt('self')
+    // F.toIt('self')
   },
   set: async ([name, value]) => {
     let s: S = F.stateOf()
