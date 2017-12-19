@@ -606,8 +606,16 @@ export const executeInput = (ctx: Context) => async (executable: GenericExecutab
 }
 
 // generic execute input
-export const SetAction: Action<any> = ([name, value]): any => s => {
-  s[name] = value
+export const SetAction: Action<any> = (args): any => s => {
+  if (args[0] instanceof Array) {
+    // Multiple assignments
+    for (let i = 0, arg; arg = args[i]; i++) {
+      s[arg[0]] = arg[1]
+    }
+  } else {
+    // Single assignment
+    s[args[0]] = args[1]
+  }
   return s
 }
 
