@@ -137,6 +137,10 @@ export interface ComponentHelpers {
     exceptions?: string[]
     nameFn? (name: string): string
   }): any
+  getStates (options?: {
+    exceptions?: string[]
+    nameFn? (name: string): string
+  }): any
   executeAll (insts: Instruction[]): void
   broadcast (inputName: string, data?: any): void
   optionalBroadcast (inputName: string, data?: any): void
@@ -178,6 +182,20 @@ export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
             name = getName(completeNames[i])
             name = nameFn ? nameFn(name) : name
             obj[name] = stateOf(completeNames[i])[key]
+          }
+        }
+        return obj
+      },
+      getStates (options): any {
+        let obj = {}
+        let name
+        let exceptions = options && options.exceptions
+        let nameFn = options && options.nameFn
+        for (let i = 0, len = completeNames.length; i < len; i++) {
+          if (exceptions && exceptions.indexOf(completeNames[i]) === -1 || !exceptions) {
+            name = getName(completeNames[i])
+            name = nameFn ? nameFn(name) : name
+            obj[name] = stateOf(completeNames[i])
           }
         }
         return obj
