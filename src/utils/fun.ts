@@ -106,3 +106,7 @@ export const range = (a: number, b: number) => {
 }
 
 export const waitMS = (ms: number) => new Promise(res => setTimeout(res, ms))
+
+// Math
+
+export const sum = (numbers: number[]) => numbers.reduce((acc, n) => acc + n)
