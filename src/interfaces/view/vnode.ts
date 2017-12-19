@@ -1,3 +1,4 @@
+import { CSS } from '../../utils/style'
 import { Hooks } from 'snabbdom/hooks'
 import { AttachData } from 'snabbdom/helpers/attachto'
 import { On } from './eventListeners'
@@ -24,7 +25,7 @@ export interface VNodeData {
     props?: Props
     attrs?: Attrs
     class?: Classes
-    style?: any
+    style?: CSS
     dataset?: Dataset
     on?: On
     global?: OnGlobal
