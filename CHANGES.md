@@ -2,12 +2,8 @@
 
 ## Whats next?
 
- -Add CSS type to Style module in Vnode
-- Add `sum` function to utils
 - Add `getPaths` function to utils
-- Add `getStates` to `ComponentHelpers`
 - Add `getStatePaths` to `ComponentHelpers`
-- Add multiple assignments to Set default action
 - Add paths to Set default action
 - Generic task execution with `cmd` handler
 - Generic subscribe interface
@@ -16,6 +12,12 @@
 
 ## Done
 
+# v4.3.4
+
+- Add `getStates` to `ComponentHelpers`
+- Add multiple assignments to Set default action
+- Add `sum` function to utils
+- Add CSS type to Style module in Vnode
 - Remove actionQueue remanent from Context
 
 # v4.3.3
