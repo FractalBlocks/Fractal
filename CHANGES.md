@@ -6,7 +6,7 @@
 - Add `getStatePaths` to `ComponentHelpers`
 - Add paths to Set default action
 - Generic task execution with `cmd` handler
-- Generic subscribe interface
+- Generic pub / sub task handler
 - Add Reset default action to components
 - Solve bug related to stressing setImmediate in view rendering, state of child component doesn't change
 - BREAKING: Change `F.ev` with `F.in`

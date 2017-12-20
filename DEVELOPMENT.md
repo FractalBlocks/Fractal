@@ -29,6 +29,8 @@ We support use of:
 
 There are TODOs for short term:
 
+- Document pub / sub tasks pattern
+- Add realtime example
 - Add animation examples
 - Simplify tests (would be reimplement it? most tests are disabled right now)
 - Document component lifecycle
