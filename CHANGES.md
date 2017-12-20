@@ -13,9 +13,13 @@
 
 ## Done
 
+# v4.3.6
+
+- Make `toChild` return the result of the input
+
 # v4.3.5
 
-- Make `dispatchEv` and `toComp` return the the result of the input
+- Make `dispatchEv` and `toComp` return the result of the input
 
 # v4.3.4
 
