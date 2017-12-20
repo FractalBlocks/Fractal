@@ -67,7 +67,7 @@ export const toChild = (ctx: Context) => async (
   let childId = ctx.id + '$' + childCompName
   let compCtx = ctx.components[childId]
   if (compCtx) {
-    await toIt(compCtx)(inputName, msg, isPropagated)
+    return await toIt(compCtx)(inputName, msg, isPropagated)
   } else {
     ctx.error('toChild', `there are no child '${childCompName}' in space '${ctx.id}'`)
   }
