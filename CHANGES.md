@@ -7,10 +7,15 @@
 - Add paths to Set default action
 - Generic task execution with `cmd` handler
 - Generic subscribe interface
+- Add Reset default action to components
 - Solve bug related to stressing setImmediate in view rendering, state of child component doesn't change
 - BREAKING: Change `F.ev` with `F.in`
 
 ## Done
+
+# v4.3.5
+
+- Make `dispatchEv` and `toComp` return the the result of the input
 
 # v4.3.4
 
