@@ -190,10 +190,10 @@ export function computeEvent(eventData: any, iData: InputData): EventData {
 export const dispatchEv = (ctx: Context) => async (event: any, iData: InputData) => {
   let compCtx = ctx.components[iData[0] + '']
   let cInputData = computeEvent(event, iData)
-  await toIt(compCtx)(cInputData[1], cInputData[2])
+  return await toIt(compCtx)(cInputData[1], cInputData[2])
 }
 
 export const toComp = (ctx: Context) => async (id: string, inputName: string, data?: any, isPropagated = true) => {
   let compCtx = ctx.components[id]
-  await toIt(compCtx)(inputName, data, isPropagated)
+  return await toIt(compCtx)(inputName, data, isPropagated)
 }
