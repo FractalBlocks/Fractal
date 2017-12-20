@@ -31,7 +31,8 @@ There are TODOs for short term:
 
 - Document pub / sub tasks pattern
 - Add realtime example
-- Add animation examples
+- Add animation example
+- Create a library with PouchDB utils and patterns
 - Simplify tests (would be reimplement it? most tests are disabled right now)
 - Document component lifecycle
 - Introduce a template language for AOT / SSR
