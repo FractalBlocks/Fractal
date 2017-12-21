@@ -2,6 +2,8 @@
 
 ## Whats next?
 
+- Add nextFrame helper that returns a Promise
+- Add nextTick helper that returns a Promise
 - Add `getPaths` function to utils
 - Add `getStatePaths` to `ComponentHelpers`
 - Add paths to Set default action
