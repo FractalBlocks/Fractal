@@ -381,10 +381,8 @@ export function calcAndNotifyInterfaces (ctx: Context) {
   // calc and caches interfaces
   let space = ctx.components[ctx.id]
   let idParts = (ctx.id + '').split('$')
-  idParts.pop()
   for (let name in space.interfaces) {
     setImmediate(async () => {
-      space.interfaceValues[name] = await space.interfaces[name](space.state)
       // remove cache of parent component spaces
       let parts = idParts.slice(0)
       for (let i = parts.length - 1; i >=0 ; i--) {
