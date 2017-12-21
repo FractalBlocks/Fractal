@@ -10,10 +10,13 @@
 - Generic task execution with `cmd` handler
 - Generic pub / sub task handler
 - Add Reset default action to components
-- Solve bug related to stressing setImmediate in view rendering, state of child component doesn't change
 - BREAKING: Change `F.ev` with `F.in`
 
 ## Done
+
+# v4.3.7
+
+- Solve bug related to performUpdate in view rendering, state of child component doesn't change
 
 # v4.3.6
 
