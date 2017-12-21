@@ -87,7 +87,7 @@ export interface CtxVws {
   (names: string[]): Promise<HandlerMsg[]>
 }
 
-// extract view interfaces from a component group
+// extract view interfaces based on component names
 export const _vws = (ctx: Context): CtxVws => {
   let _interfaceOfCtx = _interfaceOf(ctx)
   return async names => {
