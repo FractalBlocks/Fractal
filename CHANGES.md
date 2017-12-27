@@ -14,6 +14,10 @@
 
 ## Done
 
+# v4.3.8
+
+- Fix bug in component helper exceptions and add an optimization
+
 # v4.3.7
 
 - Solve bug related to performUpdate in view rendering, state of child component doesn't change
