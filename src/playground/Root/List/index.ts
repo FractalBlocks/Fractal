@@ -7,6 +7,7 @@ import {
   clickable,
   props,
   _,
+  getStyle,
 } from '../../../core'
 import { View, h } from '../../../interfaces/view'
 
@@ -91,14 +92,14 @@ export const actions: Actions<S> = {
 }
 
 const view: View<S> = F => async s => {
-  let style = F.ctx.groups.style
+  let style = getStyle(F)
 
   return h('div', {
     key: F.ctx.name,
-    class: { [style.base]: true },
+    class: style('base'),
   }, [
     h('input', {
-      class: { [style.input]: true },
+      class: style('input'),
       attrs: { placeholder: 'Type and hit enter' },
       props: { value: s.text },
       on: {
@@ -108,21 +109,21 @@ const view: View<S> = F => async s => {
         ]),
       },
     }),
-    h('div', {class: { [style.menuBar]: true }}, [
+    h('div', { class: style('menuBar') }, [
       h('div', {
-        class: { [style.menuItem]: true },
+        class: style('menuItem'),
         on: { click: F.ev('setCheckAll', true) },
       }, 'check all'),
       h('div', {
-        class: { [style.menuItem]: true },
+        class: style('menuItem'),
         on: { click: F.ev('setCheckAll', false) },
       }, 'uncheck all'),
       h('div#el', {
-        class: { [style.menuItem]: true },
+        class: style('menuItem'),
         on: { click: F.ev('removeChecked') },
       }, 'remove checked'),
     ]),
-    h('ul', {class: { [style.list]: true }},
+    h('ul', { class: style('list') },
       await F.group('Item'),
     ),
   ])

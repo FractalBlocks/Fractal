@@ -1,4 +1,4 @@
-import { Actions, Inputs, Interfaces, StyleGroup, _, absoluteCenter } from '../../../core'
+import { Actions, Inputs, Interfaces, StyleGroup, _, absoluteCenter, getStyle } from '../../../core'
 import { View, h } from '../../../interfaces/view'
 
 export const state = {
@@ -24,34 +24,34 @@ export const actions: Actions<S> = {
   })
 }
 
-const view: View<S> = ({ ctx, ev, act }) => async s => {
-  let style = ctx.groups.style
+const view: View<S> = F => async s => {
+  let style = getStyle(F)
 
   return h('li', {
-    key: ctx.name,
-    class: { [style.base]: true },
+    key: F.ctx.name,
+    class: style('base'),
   }, [
     h('input', {
-      class: { [style.checkbox]: true },
+      class: style('checkbox'),
       props: {
         type: 'checkbox',
         checked: s.checked,
       },
       on: {
-        change: act('SetChecked', _, ['target', 'checked']),
+        change: F.act('SetChecked', _, ['target', 'checked']),
       },
     }),
     h('div', {
-      class: { [style.title]: true },
-      on: { click: ev('select') },
+      class: style('title'),
+      on: { click: F.ev('select') },
     }, s.title),
     h('div', {
-      class: { [style.remove]: true },
+      class: style('remove'),
       on: {
-        click: ev('remove'),
+        click: F.ev('remove'),
       },
     }, [
-      h('div', {class: { [style.removeLine]: true }}),
+      h('div', {class: style('removeLine')}),
     ]),
   ])
 }

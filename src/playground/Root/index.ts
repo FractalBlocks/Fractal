@@ -7,8 +7,9 @@ import {
   styles,
   deepmerge,
   Interface,
+  getStyle,
 } from '../../core'
-import { View, h } from '../..//interfaces/view'
+import { View, h } from '../../interfaces/view'
 
 import * as List from './List'
 import * as Note from './Note'
@@ -57,11 +58,11 @@ const route: Interface<any, S> = F => async s => [
 ]
 
 const view: View<S> = F => async s => {
-  let style = F.ctx.groups.style
+  let style = getStyle(F)
 
   return h('div', {
     key: F.ctx.name,
-    class: { [style.base]: true },
+    class: style('base'),
   }, [
     await F.vw('List'),
     await F.vw('Note'),

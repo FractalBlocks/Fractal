@@ -5,6 +5,7 @@ import {
   StyleGroup,
   Interface,
   _,
+  getStyle,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
@@ -74,23 +75,23 @@ const route: Interface<any, S> = F => async s => [
 ]
 
 const view: View<S> = F => async s => {
-  let style = F.ctx.groups.style
+  let style = getStyle(F)
 
   return h('div', {
     key: F.ctx.name,
-    class: { [style.base]: true },
+    class: style('base'),
   }, s.id == '' ? [
     h('div', {
-      class: { [style.title]: true },
+      class: style('title'),
     }, 'No one selected ... time: ' + s.count),
   ] : [
     h('input', {
-      class: { [style.title]: true },
+      class: style('title'),
       props: { value: s.title },
       on: { change: F.ev('set', 'title', ['target', 'value']) },
     }),
     h('textarea', {
-      class: { [style.body]: true },
+      class: style('body'),
       props: { value: s.body },
       on: { change: F.ev('set', 'body', ['target', 'value']) },
     }),
