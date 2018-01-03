@@ -69,7 +69,18 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
   return mergedGroup
 }
 
-/* istanbul ignore next */
+export const getStyle = F => {
+  const style = F.ctx.groups.style
+  return (...args) => {
+    let obj = {}
+    for (let i = 0, len = args.length, arg; i < len; i += 2) {
+      arg = args[i + 1]
+      obj[style[args[i]]] = arg === undefined ? true : arg
+    }
+    return obj
+  }
+}
+
 export const placeholderColor = (color: string): CSS => ({
   $nest: {
     '&::-webkit-input-placeholder': { /* Chrome/Opera/Safari */

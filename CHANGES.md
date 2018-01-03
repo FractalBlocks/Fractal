@@ -11,8 +11,11 @@
 - Generic pub / sub task handler
 - Add Reset default action to components
 - BREAKING: Change `F.ev` with `F.in`
+- BREAKING: All the stuff can be imported from 'fractal-core', single point of import
 
 ## Done
+
+- Implement style helper
 
 # v4.3.8
 
