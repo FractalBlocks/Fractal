@@ -10,6 +10,7 @@
 - Generic task execution with `cmd` handler
 - Generic pub / sub task handler
 - Add Reset default action to components
+- BREAKING: Change module option root by Root
 - BREAKING: Change `F.ev` with `F.in`
 - BREAKING: All the stuff can be imported from 'fractal-core', single point of import
 
