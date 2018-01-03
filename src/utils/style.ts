@@ -3,6 +3,7 @@ import { TypeStyle } from 'typestyle/lib/internal/typestyle'
 import { deepmerge } from './fun'
 import { h } from '../interfaces/view/index'
 import { VNode } from '../interfaces/view/vnode'
+import { InterfaceHelpers } from '../core/index'
 
 export type CSS = types.NestedCSSProperties
 
@@ -69,7 +70,7 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
   return mergedGroup
 }
 
-export const getStyle = F => {
+export const getStyle = (F: InterfaceHelpers): any => {
   const style = F.ctx.groups.style
   return (...args) => {
     let obj = {}
