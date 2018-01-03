@@ -16,6 +16,10 @@
 
 ## Done
 
+# V4.3.10
+
+- Fix type in style view helper
+
 # V4.3.9
 
 - Implement style helper
