@@ -110,3 +110,21 @@ export const waitMS = (ms: number) => new Promise(res => setTimeout(res, ms))
 // Math
 
 export const sum = (numbers: number[]) => numbers.reduce((acc, n) => acc + n)
+
+// Path helpers
+
+export const getPath = (path: string[], obj: any) => {
+  let actual = obj
+  for (let i = 0, len = path.length; i < len; i++) {
+    actual = obj[path[i]]
+  }
+  return actual
+}
+
+export const getPaths = (paths: string[][], obj: any) => {
+  let res =[]
+  for (let i = 0, path; path = paths[i]; i++) {
+    res[i] = getPath(path, obj)
+  }
+  return res
+}
