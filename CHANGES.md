@@ -4,11 +4,10 @@
 
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
 - Add immediate helper that returns a Promise (with setImmediate)
-- Add nextTick helper that returns a Promise (with ASAP)
 - Add paths to Set default action
 - Generic task execution with `cmd` handler
 - Generic pub / sub task handler
-- Add Reset default action to components
+- Add nextTick helper that returns a Promise (with ASAP)
 - IDEA-BREAKING: All the stuff can be imported from 'fractal-core', single point of import
 
 ## Done
