@@ -14,7 +14,7 @@ export interface InterfaceHelpers {
   ctx: Context
   interfaceOf: CtxInterfaceOf
   stateOf: CtxStateOf
-  ev: CtxEv
+  in: CtxIn
   act: CtxAct
   vw: CtxVw
   vws: CtxVws
@@ -25,7 +25,7 @@ export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
   ctx,
   interfaceOf: _interfaceOf(ctx),
   stateOf: _stateOf(ctx),
-  ev: _ev(ctx),
+  in: _in(ctx),
   act: _act(ctx),
   vw: _vw(ctx),
   vws: _vws(ctx),
@@ -68,9 +68,9 @@ export interface CtxAct {
 
 // generic action dispatcher
 export const _act = (ctx: Context): CtxAct => {
-  let _evCtx = _ev(ctx)
+  let _inCtx = _in(ctx)
   return (actionName, context, param, options): InputData =>
-    _evCtx('_action', [actionName, context], param, options)
+    _inCtx('_action', [actionName, context], param, options)
 }
 
 export interface CtxVw {
@@ -117,12 +117,12 @@ export const _group = (ctx: Context): CtxGroup => {
   }
 }
 
-export interface CtxEv {
+export interface CtxIn {
   (inputName: string, context?: any, param?: any, options?: EventOptions): InputData
 }
 
 // create an InputData array
-export const _ev = (ctx: Context): CtxEv => (inputName, context, param, options) => {
+export const _in = (ctx: Context): CtxIn => (inputName, context, param, options) => {
   return [ctx.id, inputName, context, param, options]
 }
 

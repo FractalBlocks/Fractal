@@ -1,14 +1,14 @@
 import { Context, GenericExecutable } from './core'
-import { CtxEv, _ev, CtxAct, _act } from './interface'
+import { CtxIn, _in, CtxAct, _act } from './interface'
 import {
   toIt,
   CtxToIt,
 } from './module'
-import { getDescendantIds } from './index';
+import { getDescendantIds, getPath } from './index';
 
 export interface InputHelpers {
   ctx: Context
-  ev: CtxEv
+  in: CtxIn
   act: CtxAct
   stateOf: CtxStateOf
   toIt: CtxToIt
@@ -21,7 +21,7 @@ export interface InputHelpers {
 
 export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   ctx,
-  ev: _ev(ctx),
+  in: _in(ctx),
   act: _act(ctx),
   stateOf: _stateOf(ctx),
   toIt: toIt(ctx),
@@ -138,6 +138,7 @@ export interface ComponentHelpers {
     nameFn? (name: string): string
   }): any
   getStates (options?: {
+    path?: string[]
     exceptions?: string[]
     nameFn? (name: string): string
   }): any
@@ -188,14 +189,16 @@ export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
       },
       getStates (options): any {
         let obj = {}
-        let name
+        let name, state
         let exceptions = options && options.exceptions
+        let path = options && options.path
         let nameFn = options && options.nameFn
         for (let i = 0, len = completeNames.length; i < len; i++) {
           if (exceptions && exceptions.indexOf(completeNames[i]) === -1 || !exceptions) {
             name = getName(completeNames[i])
             name = nameFn ? nameFn(name) : name
-            obj[name] = stateOf(completeNames[i])
+            state = stateOf(completeNames[i])
+            obj[name] = path ? getPath(path, state) : state
           }
         }
         return obj
