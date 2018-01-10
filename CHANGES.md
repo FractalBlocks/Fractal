@@ -2,19 +2,22 @@
 
 ## Whats next?
 
-- Add nextFrame helper that returns a Promise
-- Add nextTick helper that returns a Promise
-- Add `getPaths` function to utils
-- Add `getStatePaths` to `ComponentHelpers`
+- Add nextFrame helper that returns a Promise (with requestAnimationFrame)
+- Add immediate helper that returns a Promise (with setImmediate)
+- Add nextTick helper that returns a Promise (with ASAP)
 - Add paths to Set default action
 - Generic task execution with `cmd` handler
 - Generic pub / sub task handler
 - Add Reset default action to components
-- BREAKING: Change module option root by Root
-- BREAKING: Change `F.ev` with `F.in`
-- BREAKING: All the stuff can be imported from 'fractal-core', single point of import
+- IDEA-BREAKING: All the stuff can be imported from 'fractal-core', single point of import
 
 ## Done
+
+- BREAKING: Change `F.ev` with `F.in`
+- BREAKING: Change module option root by Root
+- Add `path` option to `getStates` function of `ComponentHelpers`
+- Add `getPath` function to utils
+- Add `getPaths` function to utils
 
 # V4.3.10
 

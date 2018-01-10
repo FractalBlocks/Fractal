@@ -31,7 +31,7 @@ export const inputs: Inputs = F => ({
       setTimeout(() => res(), 1000)
     })
     await F.toAct('Inc')
-    // F.toIt('self')
+    F.toIt('self')
   },
   set: async ([name, value]) => {
     let s: S = F.stateOf()
@@ -42,7 +42,7 @@ export const inputs: Inputs = F => ({
     if (s.id !== '') {
       await F.runIt(['db', ['unsubscribe', F.ctx.id, s.id]])
     }
-    let note = await F.runIt(['db', ['subscribe', F.ctx.id, id, F.ev('setNote', _, '*')]])
+    let note = await F.runIt(['db', ['subscribe', F.ctx.id, id, F.in('setNote', _, '*')]])
     await F.toAct('SetNote', ['set', id, note])
   },
   setNote: async ([evName, id, item]) => {
@@ -88,12 +88,12 @@ const view: View<S> = F => async s => {
     h('input', {
       class: style('title'),
       props: { value: s.title },
-      on: { change: F.ev('set', 'title', ['target', 'value']) },
+      on: { change: F.in('set', 'title', ['target', 'value']) },
     }),
     h('textarea', {
       class: style('body'),
       props: { value: s.body },
-      on: { change: F.ev('set', 'body', ['target', 'value']) },
+      on: { change: F.in('set', 'body', ['target', 'value']) },
     }),
   ])
 }

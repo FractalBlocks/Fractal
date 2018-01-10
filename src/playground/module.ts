@@ -11,8 +11,8 @@ import { routeHandler } from '../interfaces/route'
 import { styleHandler } from '../groups/style'
 import * as DB from './db'
 
-export const runModule: RunModule = (root: Component<any>, DEV = false): Promise<Module> => run({
-  root,
+export const runModule: RunModule = (Root: Component<any>, DEV = false): Promise<Module> => run({
+  Root,
   record: DEV,
   log: DEV,
   groups: {

@@ -43,12 +43,12 @@ const view: View<S> = F => async s => {
     }),
     h('div', {
       class: style('title'),
-      on: { click: F.ev('select') },
+      on: { click: F.in('select') },
     }, s.title),
     h('div', {
       class: style('remove'),
       on: {
-        click: F.ev('remove'),
+        click: F.in('remove'),
       },
     }, [
       h('div', {class: style('removeLine')}),

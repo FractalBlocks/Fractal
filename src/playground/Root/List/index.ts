@@ -23,7 +23,7 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   init: async () => {
-    let items = await F.runIt(['db', ['subscribe', F.ctx.id, '*', F.ev('updateItem', _, '*')]])
+    let items = await F.runIt(['db', ['subscribe', F.ctx.id, '*', F.in('updateItem', _, '*')]])
     await F.toAct('SetItems', items)
   },
   inputKeyup: async ([keyCode, text]) => {
@@ -103,7 +103,7 @@ const view: View<S> = F => async s => {
       attrs: { placeholder: 'Type and hit enter' },
       props: { value: s.text },
       on: {
-        keyup: F.ev('inputKeyup', _, [
+        keyup: F.in('inputKeyup', _, [
           ['keyCode'],
           ['target', 'value'],
         ]),
@@ -112,15 +112,15 @@ const view: View<S> = F => async s => {
     h('div', { class: style('menuBar') }, [
       h('div', {
         class: style('menuItem'),
-        on: { click: F.ev('setCheckAll', true) },
+        on: { click: F.in('setCheckAll', true) },
       }, 'check all'),
       h('div', {
         class: style('menuItem'),
-        on: { click: F.ev('setCheckAll', false) },
+        on: { click: F.in('setCheckAll', false) },
       }, 'uncheck all'),
       h('div#el', {
         class: style('menuItem'),
-        on: { click: F.ev('removeChecked') },
+        on: { click: F.in('removeChecked') },
       }, 'remove checked'),
     ]),
     h('ul', { class: style('list') },

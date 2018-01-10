@@ -20,7 +20,7 @@ import { makeInterfaceHelpers, dispatchEv, toComp } from './interface'
 import { makeInputHelpers } from './input'
 
 export interface ModuleDef {
-  root: Component<any>
+  Root: Component<any>
   record?: boolean
   log?: boolean
   render?: boolean // initial render flag
@@ -415,7 +415,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   // attach root component
   async function attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module> {
     // root component, take account of hot swapping
-    component = comp ? comp : moduleDef.root
+    component = comp ? comp : moduleDef.Root
     // if is hot swapping, do not recalculate context
     // bootstrap context (level 0)
     if (!middleFn) {
