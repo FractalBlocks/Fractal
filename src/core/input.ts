@@ -13,6 +13,7 @@ export interface InputHelpers {
   stateOf: CtxStateOf
   toIt: CtxToIt
   toChild: CtxToChild
+  toChildAct: CtxToChildAct
   toAct: CtxToAct
   runIt: CtxRunIt
   comps: CtxComponentHelpers
@@ -26,6 +27,7 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   stateOf: _stateOf(ctx),
   toIt: toIt(ctx),
   toChild: toChild(ctx),
+  toChildAct: toChildAct(ctx),
   toAct: toAct(ctx),
   runIt: runIt(ctx),
   comps: _componentHelpers(ctx),
@@ -68,6 +70,27 @@ export const toChild = (ctx: Context) => async (
   let compCtx = ctx.components[childId]
   if (compCtx) {
     return await toIt(compCtx)(inputName, msg, isPropagated)
+  } else {
+    ctx.error('toChild', `there are no child '${childCompName}' in space '${ctx.id}'`)
+  }
+}
+
+export interface CtxToChildAct {
+  (childCompName: string, actionName: string, msg?, isPropagated?: boolean): void
+}
+
+// execute an action of a component from its parent
+export const toChildAct = (ctx: Context) => async (
+  childCompName,
+  actionName,
+  msg = undefined,
+  isAsync = false,
+  isPropagated = true
+) => {
+  let childId = ctx.id + '$' + childCompName
+  let compCtx = ctx.components[childId]
+  if (compCtx) {
+    return await toIt(compCtx)('_action', [actionName, msg], isPropagated)
   } else {
     ctx.error('toChild', `there are no child '${childCompName}' in space '${ctx.id}'`)
   }
