@@ -8,9 +8,14 @@
 - Generic task execution with `cmd` handler
 - Generic pub / sub task handler
 - Add nextTick helper that returns a Promise (with ASAP)
-- IDEA-BREAKING: All the stuff can be imported from 'fractal-core', single point of import
 
 ## Done
+
+# v4.4.1
+
+- Implement `toChildAct` InputHelper
+
+# v4.4.0
 
 - BREAKING: Change `F.ev` with `F.in`
 - BREAKING: Change module option root by Root
@@ -18,7 +23,7 @@
 - Add `getPath` function to utils
 - Add `getPaths` function to utils
 
-# V4.3.10
+# v4.3.10
 
 - Fix type in style view helper
 
