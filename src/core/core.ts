@@ -41,7 +41,7 @@ export interface Input {
 }
 
 export interface Action<S> {
-  (data?: any): Update<S>
+  (data?: any): Update<S> | Promise<Update<S>>
 }
 
 export interface Actions<S> {
@@ -79,7 +79,7 @@ export interface Update<S> {
 }
 
 export interface Interface<Type, S>{
-  (helpers: InterfaceHelpers) : CtxInterface<Type, S>
+  (helpers: InterfaceHelpers) : CtxInterface<Type, S> | Promise<CtxInterface<Type, S>>
 }
 
 export interface CtxInterface<Type, S> {
@@ -87,7 +87,7 @@ export interface CtxInterface<Type, S> {
 }
 
 export interface CtxInterfaceIndex {
-  [name: string]: CtxInterface<any, any>
+  [name: string]:  CtxInterface<any, any>
 }
 
 // a task executes some kind of side effect (output) - Comunications stuff

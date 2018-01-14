@@ -127,7 +127,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
 
   ctx.components[id] =  childCtx
 
-  childCtx.interfaces = _makeInterfaces(childCtx, component.interfaces)
+  childCtx.interfaces = await _makeInterfaces(childCtx, component.interfaces)
 
   if (component.inputs) {
     childCtx.inputs = component.inputs(makeInputHelpers(childCtx))
@@ -172,11 +172,11 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   return childCtx
 }
 
-function _makeInterfaces (ctx: Context, interfaces: Interfaces): CtxInterfaceIndex {
+async function _makeInterfaces (ctx: Context, interfaces: Interfaces): Promise<CtxInterfaceIndex> {
   let index: CtxInterfaceIndex = {}
   let name
   for (name in interfaces) {
-    index[name] = interfaces[name](makeInterfaceHelpers(ctx))
+    index[name] = await interfaces[name](makeInterfaceHelpers(ctx))
   }
   return index
 }
@@ -590,7 +590,7 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
     ctx.global.records.push({ id: ctx.id, actionName: name, value })
     ;(window as any).lastCtxAct = ctx
   }
-  let result = await execute(ctx, actions[name](value))
+  let result = await execute(ctx, await actions[name](value))
   return result
 }
 

@@ -55,7 +55,7 @@ export const inputs: Inputs = F => ({
 })
 
 export const actions: Actions<S> = {
-  Inc: () => s => {
+  Inc: async () => async s => {
     s.count++
     return s
   },
@@ -74,7 +74,7 @@ const route: Interface<any, S> = F => async s => [
   [F.ctx.id, s.activeChild],
 ]
 
-const view: View<S> = F => async s => {
+const view: View<S> = async F => async s => {
   let style = getStyle(F)
 
   return h('div', {
