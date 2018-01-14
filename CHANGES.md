@@ -11,6 +11,11 @@
 
 ## Done
 
+# v4.4.3
+
+- Complete support for async functions
+- BREAKING: types when use handlers
+
 # v4.4.2
 
 - Support async functions in all core methods
