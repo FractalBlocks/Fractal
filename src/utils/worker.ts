@@ -143,7 +143,7 @@ export interface WorkerModule {
   interfaceObjects: { [name: string]: HandlerObject }
 }
 
-export function runWorker (def: WorkerModuleDef): WorkerModule {
+export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
   let worker: WorkerAPI = def.worker
 
   let groupObjects: { [name: string]: HandlerObject } = {}
@@ -177,17 +177,17 @@ export function runWorker (def: WorkerModuleDef): WorkerModule {
   }
   if (def.groups) {
     for (let i = 0, names = Object.keys(def.groups), len = names.length ; i < len; i++) {
-      groupObjects[names[i]] = def.groups[names[i]](moduleAPI)
+      groupObjects[names[i]] = await def.groups[names[i]](moduleAPI)
     }
   }
   if (def.tasks) {
     for (let i = 0, names = Object.keys(def.tasks), len = names.length ; i < len; i++) {
-      taskObjects[names[i]] = def.tasks[names[i]](moduleAPI)
+      taskObjects[names[i]] = await def.tasks[names[i]](moduleAPI)
     }
   }
   if (def.interfaces) {
     for (let i = 0, names = Object.keys(def.interfaces), len = names.length ; i < len; i++) {
-      interfaceObjects[names[i]] = def.interfaces[names[i]](moduleAPI)
+      interfaceObjects[names[i]] = await def.interfaces[names[i]](moduleAPI)
     }
   }
 

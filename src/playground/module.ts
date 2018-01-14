@@ -11,20 +11,20 @@ import { routeHandler } from '../interfaces/route'
 import { styleHandler } from '../groups/style'
 import * as DB from './db'
 
-export const runModule: RunModule = (Root: Component<any>, DEV = false): Promise<Module> => run({
+export const runModule: RunModule = async (Root: Component<any>, DEV = false): Promise<Module> => run({
   Root,
   record: DEV,
   log: DEV,
   groups: {
-    style: styleHandler('', DEV),
+    style: <any> styleHandler('', DEV),
   },
   tasks: {
-    db: DB.dbTask(),
+    db: <any> DB.dbTask(),
   },
   interfaceOrder: ['route', 'view'],
   interfaces: {
-    route: routeHandler('/', 'hash'),
-    view: viewHandler('#app'),
+    route: <any> routeHandler('/', 'hash'),
+    view: <any> viewHandler('#app'),
   },
   ...logFns,
 })

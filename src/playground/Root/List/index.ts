@@ -85,7 +85,7 @@ export const actions: Actions<S> = {
   },
   SetItems: items => s => {
     Object.keys(items).map(
-      id => actions.AddItem([id, items[id]])(s)
+      id => (<any> actions.AddItem([id, items[id]]))(s)
     )
     return s
   },
