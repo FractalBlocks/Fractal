@@ -11,6 +11,10 @@
 
 ## Done
 
+# v4.4.2
+
+- Support async functions in all core methods
+
 # v4.4.1
 
 - Implement `toChildAct` InputHelper

@@ -1,6 +1,6 @@
 {
   "name": "fractal-core",
-  "version": "4.4.1",
+  "version": "4.4.2",
   "description": "A minimalist and well crafted app, content or component is our conviction",
   "main": "core/index.js",
   "typings": "core/index.d.ts",
@@ -50,7 +50,7 @@
     "typestyle": "^1.5.1"
   },
   "devDependencies": {
-    "fuse-box": "^2.3.3",
+    "fuse-box": "^2.4.0",
     "typescript": "^2.5.0-dev.20170619"
   }
 }
