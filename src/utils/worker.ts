@@ -177,17 +177,17 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
   }
   if (def.groups) {
     for (let i = 0, names = Object.keys(def.groups), len = names.length ; i < len; i++) {
-      groupObjects[names[i]] = await def.groups[names[i]](moduleAPI)
+      groupObjects[names[i]] = await (await def.groups[names[i]])(moduleAPI)
     }
   }
   if (def.tasks) {
     for (let i = 0, names = Object.keys(def.tasks), len = names.length ; i < len; i++) {
-      taskObjects[names[i]] = await def.tasks[names[i]](moduleAPI)
+      taskObjects[names[i]] = await (await def.tasks[names[i]])(moduleAPI)
     }
   }
   if (def.interfaces) {
     for (let i = 0, names = Object.keys(def.interfaces), len = names.length ; i < len; i++) {
-      interfaceObjects[names[i]] = await def.interfaces[names[i]](moduleAPI)
+      interfaceObjects[names[i]] = await (await def.interfaces[names[i]])(moduleAPI)
     }
   }
 

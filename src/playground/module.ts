@@ -16,15 +16,15 @@ export const runModule: RunModule = async (Root: Component<any>, DEV = false): P
   record: DEV,
   log: DEV,
   groups: {
-    style: <any> styleHandler('', DEV),
+    style: styleHandler('', DEV),
   },
   tasks: {
-    db: <any> DB.dbTask(),
+    db: DB.dbTask(),
   },
   interfaceOrder: ['route', 'view'],
   interfaces: {
-    route: <any> routeHandler('/', 'hash'),
-    view: <any> viewHandler('#app'),
+    route: routeHandler('/', 'hash'),
+    view: viewHandler('#app'),
   },
   ...logFns,
 })

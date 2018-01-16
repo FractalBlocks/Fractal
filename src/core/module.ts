@@ -45,7 +45,7 @@ export interface ModuleDef {
 export const _ = undefined
 
 export interface HandlerInterfaceIndex {
-  [name: string]: HandlerInterface
+  [name: string]: HandlerInterface | Promise<HandlerInterface>
 }
 
 export interface HandlerObjectIndex {
@@ -480,7 +480,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         if (handlers) {
           let name
           for (name in handlers) {
-            ctx[handlerTypes[c] + 'Handlers'][name] = await handlers[name](moduleAPI)
+            ctx[handlerTypes[c] + 'Handlers'][name] = await (await handlers[name])(moduleAPI)
           }
         }
       }
