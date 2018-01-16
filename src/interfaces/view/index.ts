@@ -16,7 +16,7 @@ export type VNode = _VNode
 export type View<S> = Interface<VNode, S>
 
 /* istanbul ignore next */
-export const viewHandler: Handler = (selectorElm, cb?: { (value: VNode): void }) => async (mod: ModuleAPI) => {
+export const viewHandler: Handler = (selectorElm, cb?: { (value: VNode): void }) => (mod: ModuleAPI) => {
   let selector = (typeof selectorElm === 'string') ? selectorElm : ''
   let state: { lastContainer: VNode | Element } = {
     lastContainer: undefined,

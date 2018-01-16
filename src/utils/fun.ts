@@ -109,7 +109,7 @@ export const waitMS = (ms: number) => new Promise(res => setTimeout(res, ms))
 
 // Math
 
-export const sum = (numbers: number[]) => numbers.reduce((acc, n) => acc + n)
+export const sum = (numbers: number[]) => numbers.reduce((acc, n) => acc + n, 0)
 
 // Path helpers
 
