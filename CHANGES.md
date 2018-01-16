@@ -11,6 +11,14 @@
 
 ## Done
 
+# v4.4.5
+
+- Fix async functions support and types
+
+# v4.4.4
+
+- Fix sum function and remove testing stuff
+
 # v4.4.3
 
 - Complete support for async functions
