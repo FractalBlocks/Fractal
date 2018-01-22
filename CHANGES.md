@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Add comp method that makes more clear the component instantiation
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
 - Add immediate helper that returns a Promise (with setImmediate)
 - Add paths to Set default action
