@@ -7,11 +7,14 @@
 - Add `comp` method that makes more clear the component instantiation
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
 - Add immediate helper that returns a Promise (with setImmediate)
-- Implement a way for importing modules, not only components, this allows emmbeding apps and whole features in a nutshell
+- Implement a way for merging module definitions
 - Add paths to Set default action
 - Generic task execution with `cmd` handler
 - Generic pub / sub task handler
 - Add nextTick helper that returns a Promise (with ASAP)
+- Add a simple test suite based on prior work
+- Simplify worker helpers
+- Implement an alternative module for running playground in a worker
 
 ## Done
 
