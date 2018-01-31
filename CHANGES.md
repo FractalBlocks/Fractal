@@ -2,15 +2,19 @@
 
 ## Whats next?
 
+- Task helper
+- RunIt helper deprecation and elimination
+- Tasks should contain sender component id
+- Pausable event bus implementation (Generic pub / sub task handler)
+- implement Event Bus helper F.event
+- Add `comp` method that makes more clear the component instantiation
 - Refactor logs (nested look overwhelming)
 - Implement filtered logs with a console interface
-- Add `comp` method that makes more clear the component instantiation
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
 - Add immediate helper that returns a Promise (with setImmediate)
 - Implement a way for merging module definitions
 - Add paths to Set default action
 - Generic task execution with `cmd` handler
-- Generic pub / sub task handler
 - Add nextTick helper that returns a Promise (with ASAP)
 - Add a simple test suite based on prior work
 - Simplify worker helpers
