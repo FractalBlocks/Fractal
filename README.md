@@ -45,9 +45,9 @@ Techniques:
 - Simple inter-component comunication via messages, you can broadcast messages to all components and listen for them
 - Async operations made simple, all Fractal core make a wide use of async functions, and you can use it in your app
 - Its clear and concise. All you application is nicely structured. Fractal manage and isolate side effects
-- You can easly serialize side effects, this means you can run Fractal in a Web Worker, in a server via Websockets or even in a remote browser via WebRTC crazy right? :')
-- Gives you powerful patterns and composing tools that helps to build small and large apps
-- Prototype with ease and transform to a production level code seamlessly
+- Blazingly fast because we use caching. This is possible because actions are the unique way of updating the state and the component view changes only depends on state so we only compute components that are actually needed. For DOM updates we use Snabbdom that it's pretty fast but you can use whatever DOM library you want, e.g. React
+- You can easly serialize side effects, this means you can run Fractal in a Web Worker, in a server via Websockets or even in a remote browser via WebRTC, crazy right? :'). An example comming soon...
+- We gives you powerful patterns and composing tools that helps you to build small and large apps like Legos
 - A clear and flexible architecture that scales
 - Easy sandbox an app, your app has an integrated API, pause and play it, this allow your app to be embeddable
 - Easily integrable and embeddable by design
@@ -57,13 +57,13 @@ Techniques:
     - We have hot-swapping
     - We have TimeTravel debugging (soon)
 - Excellent error / warn handling:
-    - Your app will never crash
+    - Your app will never crash for a runtime error (Actually under testing, if you have an uncovered case please open an issue)
     - Application logs are meaningful. No more WTF?!! errors
     - You can search for any error in our complete error index, a list of all possible errors can happen with their respective solution (soon)
 - Your code is flexible, composable and reausable. Modularization as a foundation
 - Lazy loading of components
 - We have high code quality standards and development flows you and your team can follow, from prototyping to production code (We will publish these soon ...)
-- Blazingly fast because we use WebAssembly (Soon ... Work In Progress)
+- Prototype with ease and transform to a production level code with easy (Guide comming soon...)
 - We support hot-swapping code in production :rose: (soon)
 
 See the [design document](https://github.com/FractalBlocks/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
@@ -93,3 +93,9 @@ Or see our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/
 ## Development Notes
 
 See our [Development Documentation](https://github.com/FractalBlocks/Fractal/blob/master/DEVELOPMENT.md)
+
+## Related Projects
+
+- [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart)
+- [Fractal-featured](https://github.com/FractalBlocks/Fractal-featured)
+- Fractal CLI (Comming soon...), making a spec
