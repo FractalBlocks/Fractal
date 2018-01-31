@@ -187,7 +187,7 @@ async function handleGroups (ctx: Context, component: Component<any>) {
   for (name in component.groups) {
     space = ctx.groupHandlers[name]
     if (space) {
-      await space.handle([ctx.id, component.groups[name]])
+      await space.handle(ctx.id, component.groups[name])
     } else {
       ctx.error(
         'nest',
@@ -314,7 +314,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
             `there are no task handler for '${executable[0]}' in component '${compCtx.name}' from space '${id}'`
           )
         }
-        return await ctx.taskHandlers[executable[0]].handle(executable[1])
+        return await ctx.taskHandlers[executable[0]].handle(executable[1], executable[2])
       } else {
         /* istanbul ignore else */
         if (executable[0] instanceof Array || typeof executable[0] === 'function') {
@@ -333,7 +333,7 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
                     `there are no task handler for '${executable[i][0]}' in component '${compCtx.name}' from space '${id}'`
                   )
                 }
-                results.push(await ctx.taskHandlers[executable[i][0]].handle(executable[i][1]))
+                results.push(await ctx.taskHandlers[executable[i][0]].handle(executable[i][1], executable[i][2]))
               }
             }
             // the else branch never occurs because of Typecript check
@@ -389,7 +389,7 @@ export function calcAndNotifyInterfaces (ctx: Context) {
       let rootSpace = ctx.components.Root
       for (let name in rootSpace.interfaces) {
         if (ctx.interfaceHandlers[name]) {
-          ctx.interfaceHandlers[name].handle(await rootSpace.interfaces[name](rootSpace.state))
+          ctx.interfaceHandlers[name].handle('Root', await rootSpace.interfaces[name](rootSpace.state))
         } else {
           // This only can happen when this method is called for a context that is not the root
           ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.name}' from space '${ctx.id}'`)
@@ -514,7 +514,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     if (interfaceOrder) {
       for (let i = 0; name = interfaceOrder[i]; i++) {
         if (ctx.interfaceHandlers[name]) {
-          ctx.interfaceHandlers[name].handle(await rootCtx.interfaces[name](ctx.components.Root.state))
+          ctx.interfaceHandlers[name].handle('Root', await rootCtx.interfaces[name](ctx.components.Root.state))
         } else {
           return <any> errorNotHandler(name)
         }
@@ -526,6 +526,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       }
       if (ctx.interfaceHandlers[name]) {
         ctx.interfaceHandlers[name].handle(
+          'Root',
           await rootCtx.interfaces[name](ctx.components.Root.state)
         )
       } else {

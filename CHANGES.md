@@ -2,11 +2,8 @@
 
 ## Whats next?
 
-- Task helper
-- RunIt helper deprecation and elimination
-- Tasks should contain sender component id
 - Pausable event bus implementation (Generic pub / sub task handler)
-- implement Event Bus helper F.event
+- Implement Event Bus helper F.event
 - Add `comp` method that makes more clear the component instantiation
 - Refactor logs (nested look overwhelming)
 - Implement filtered logs with a console interface
@@ -21,6 +18,15 @@
 - Implement an alternative module for running playground in a worker
 
 ## Done
+
+# v5.0.0
+
+- Better internal implementation of tasks
+- Handlers now receive the component id
+- Task helper
+- RunIt helper removed
+- Tasks should contain sender component id
+- clearCache input helper changed to _clearCache for preventing use in production, this is only for development and testing pruposes
 
 # v4.4.5
 

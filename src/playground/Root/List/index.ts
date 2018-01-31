@@ -23,7 +23,7 @@ export type S = typeof state
 
 export const inputs: Inputs = F => ({
   init: async () => {
-    let items = await F.runIt(['db', ['subscribe', F.ctx.id, '*', F.in('updateItem', _, '*')]])
+    let items = await F.task('db', ['subscribe', '*', F.in('updateItem', _, '*')])
     await F.toAct('SetItems', items)
   },
   inputKeyup: async ([keyCode, text]) => {
@@ -35,7 +35,7 @@ export const inputs: Inputs = F => ({
     }
   },
   add: async text => {
-    await F.runIt(['db', ['addItem', { title: text, body: '', _timestamp: Date.now() }]])
+    await F.task('db', ['addItem', { title: text, body: '', _timestamp: Date.now() }])
   },
   updateItem: async ([name, id, item]) => {
     if (name === 'add') {
@@ -68,7 +68,7 @@ export const inputs: Inputs = F => ({
     }
   },
   $Item_remove: async ([name]) => {
-    await F.runIt(['db', ['remove', name]])
+    await F.task('db', ['remove', name])
   },
   $Item_select: async ([id]) => {
     await F.toIt('select', id)

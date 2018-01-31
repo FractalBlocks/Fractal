@@ -35,14 +35,14 @@ export const inputs: Inputs = F => ({
   },
   set: async ([name, value]) => {
     let s: S = F.stateOf()
-    await F.runIt(['db', ['setItemProps', s.id, { [name]: value }]])
+    await F.task('db', ['setItemProps', s.id, { [name]: value }])
   },
   setNoteFromId: async id => {
     let s: S = F.stateOf()
     if (s.id !== '') {
-      await F.runIt(['db', ['unsubscribe', F.ctx.id, s.id]])
+      await F.task('db', ['unsubscribe', F.ctx.id, s.id])
     }
-    let note = await F.runIt(['db', ['subscribe', F.ctx.id, id, F.in('setNote', _, '*')]])
+    let note = await F.task('db', ['subscribe', F.ctx.id, id, F.in('setNote', _, '*')])
     await F.toAct('SetNote', ['set', id, note])
   },
   setNote: async ([evName, id, item]) => {

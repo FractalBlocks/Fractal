@@ -46,8 +46,8 @@ export const workerHandler = (type: 'interface' | 'task' | 'group', name: string
   let _self = workerAPI ? workerAPI : self
   return {
     state: undefined,
-    handle: async value => {
-      _self.postMessage([type, name, 'handle', value])
+    handle: async (id, value) => {
+      _self.postMessage([type, name, 'handle', id, value])
       if (type === 'group') {
         return new Promise<any>((resolve) => {
           syncQueue.addWaiter(data => {
@@ -191,13 +191,12 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
     }
   }
 
-  // TODO: reverse message sintax
   worker.onmessage = async ev => {
     let data = ev.data
     switch (data[0]) {
       case 'interface':
         if (data[2] === 'handle') {
-          await interfaceObjects[data[1]].handle(data[3])
+          await interfaceObjects[data[1]].handle('Root', data[3])
           break
         }
         if (data[2] === 'dispose') {
@@ -206,7 +205,7 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
         }
       case 'task':
         if (data[2] === 'handle') {
-          await taskObjects[data[1]].handle(data[3])
+          await taskObjects[data[1]].handle(data[3], data[4])
           break
         }
         if (data[2] === 'dispose') {
@@ -215,7 +214,7 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
         }
       case 'group':
         if (data[2] === 'handle') {
-          await groupObjects[data[1]].handle(data[3])
+          await groupObjects[data[1]].handle(data[3], data[4])
           break
         }
         if (data[2] === 'dispose') {

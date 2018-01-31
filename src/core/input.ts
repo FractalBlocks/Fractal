@@ -1,10 +1,10 @@
-import { Context, GenericExecutable } from './core'
+import { Context } from './core'
 import { CtxIn, _in, CtxAct, _act } from './interface'
+import { getDescendantIds, getPath } from './index'
 import {
   toIt,
   CtxToIt,
 } from './module'
-import { getDescendantIds, getPath } from './index';
 
 export interface InputHelpers {
   ctx: Context
@@ -15,9 +15,9 @@ export interface InputHelpers {
   toChild: CtxToChild
   toChildAct: CtxToChildAct
   toAct: CtxToAct
-  runIt: CtxRunIt
+  task: CtxTask
   comps: CtxComponentHelpers
-  clearCache: CtxClearCache
+  _clearCache: CtxClearCache
 }
 
 export const makeInputHelpers = (ctx: Context): InputHelpers => ({
@@ -29,9 +29,9 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   toChild: toChild(ctx),
   toChildAct: toChildAct(ctx),
   toAct: toAct(ctx),
-  runIt: runIt(ctx),
+  task: task(ctx),
   comps: _componentHelpers(ctx),
-  clearCache: _clearCache(ctx),
+  _clearCache: _clearCache(ctx), // TODO:
 })
 
 export interface CtxStateOf {
@@ -109,15 +109,15 @@ export const toAct = (ctx: Context): CtxToAct => {
     await _toIt('_action', [actionName, data], isPropagated)
 }
 
-export interface CtxRunIt {
-  (executables: GenericExecutable<any>, isPropagated?: boolean): Promise<any>
+export interface CtxTask {
+  (taskName: string, data: any, isPropagated?: boolean): Promise<any>
 }
 
 // generic action self caller
-export const runIt = (ctx: Context): CtxRunIt => {
+export const task = (ctx: Context): CtxTask => {
   let _toIt = toIt(ctx)
-  return async (executables: GenericExecutable<any>, isPropagated = true) =>
-    await _toIt('_execute', executables, isPropagated)
+  return async (taskName, data, isPropagated = true) =>
+    await _toIt('_execute', [taskName, ctx.id, data], isPropagated)
 }
 
 export interface CtxClearCache {

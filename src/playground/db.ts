@@ -71,7 +71,7 @@ export const dbTask: Handler = () => mod => {
 
   return {
     state: _,
-    handle: async ([name, ...data]) => {
+    handle: async (__, [name, ...data]) => {
       if (name === 'getItem') {
         return getItem(data[0])
       } else if (name === 'setItem') {
