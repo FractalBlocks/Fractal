@@ -69,7 +69,7 @@ export const routeHandler: Handler = (root: string, mode: RouterMode = 'history'
   }
   return {
     state,
-    handle: async parts => {
+    handle: async (id, parts) => {
       await checkAppChanges(parts, !state.parts)
       state.parts = parts
     },
