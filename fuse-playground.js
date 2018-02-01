@@ -42,8 +42,7 @@ Sparky.task('default', ['init'], () => {
     .bundle('Root')
     .instructions('> src/playground/index.ts')
 
-  fuse.dev({ port: 3000 })
   playground.watch('src/**/**.ts').hmr()
+  fuse.dev({ port: 3000 })
   fuse.run()
 })
-
