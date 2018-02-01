@@ -19,6 +19,13 @@
 
 ## Done
 
+# v5.0.1
+
+- Handle error in dispatchEv
+- Fix route interface
+- Update deps
+- Fix fuse config
+
 # v5.0.0
 
 - Better internal implementation of tasks
