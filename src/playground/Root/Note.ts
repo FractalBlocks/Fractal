@@ -40,9 +40,9 @@ export const inputs: Inputs = F => ({
   setNoteFromId: async id => {
     let s: S = F.stateOf()
     if (s.id !== '') {
-      await F.task('db', ['unsubscribe', F.ctx.id, s.id])
+      await F.task('db', ['unsubscribe', s.id])
     }
-    let note = await F.task('db', ['subscribe', F.ctx.id, id, F.in('setNote', _, '*')])
+    let note = await F.task('db', ['subscribe', id, F.in('setNote', _, '*')])
     await F.toAct('SetNote', ['set', id, note])
   },
   setNote: async ([evName, id, item]) => {

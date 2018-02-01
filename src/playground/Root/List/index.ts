@@ -46,16 +46,6 @@ export const inputs: Inputs = F => ({
       await F.toAct('_remove', 'Item_' + id)
     }
   },
-  toChild: async () => { // -----
-    let id = Object.keys(F.stateOf()._nest)[0]
-    await F.toAct('SetText', 'GIGI')
-    await F.toChild(id, '_action', ['SetItem', { title: 'GG' }])
-    await F.toAct('SetText', 'GIGI')
-    await F.toAct('SetText', 'GIGI')
-  },
-  cv: async () => { // -----
-    await F.toAct('SetText', 'URUR')
-  },
   setCheckAll: async (checked: boolean) => {
     await F.comps('Item').broadcast('_action', ['SetChecked', checked])
   },
@@ -63,7 +53,7 @@ export const inputs: Inputs = F => ({
     let names = F.comps('Item').getNames()
     for (let i = 0, len = names.length; i < len; i++) {
       if (F.stateOf('Item_' + names[i]).checked) {
-        await F.toIt('$Item_remove', [names[i]])
+        setImmediate(() => F.toIt('$Item_remove', [names[i]]))
       }
     }
   },

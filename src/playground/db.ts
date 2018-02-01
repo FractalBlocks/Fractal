@@ -71,7 +71,7 @@ export const dbTask: Handler = () => mod => {
 
   return {
     state: _,
-    handle: async (__, [name, ...data]) => {
+    handle: async (id, [name, ...data]) => {
       if (name === 'getItem') {
         return getItem(data[0])
       } else if (name === 'setItem') {
@@ -86,7 +86,7 @@ export const dbTask: Handler = () => mod => {
         removeItem(data[0])
         return 'removed'
       } else if (name === 'subscribe') {
-        let sub = data
+        let sub = [id].concat(data)
         subs.push(sub)
         // initial fetch
         return getData(sub[1])
