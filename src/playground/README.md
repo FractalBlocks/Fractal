@@ -8,6 +8,11 @@ Structure:
   - List
   - Note
 
+## Runing
+
+```bash
+node fuse-playground
+```
 
 ## Compiling
 
