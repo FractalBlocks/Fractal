@@ -189,6 +189,10 @@ export function computeEvent(eventData: any, iData: InputData): EventData {
 
 export const dispatchEv = (ctx: Context) => async (event: any, iData: InputData) => {
   let compCtx = ctx.components[iData[0] + '']
+  if (!compCtx) {
+    ctx.error('Dispatch Event', `There is no component with id: ${iData[0]}`)
+    return
+  }
   let cInputData = computeEvent(event, iData)
   return await toIt(compCtx)(cInputData[1], cInputData[2])
 }
