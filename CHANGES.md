@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Implement `F.set` helper
 - Pausable event bus implementation (Generic pub / sub task handler)
 - Implement Event Bus helper F.event
 - Add `comp` method that makes more clear the component instantiation
