@@ -3,20 +3,20 @@
 ## Whats next?
 
 - Implement `F.set` helper
-- Pausable event bus implementation (Generic pub / sub task handler)
-- Implement Event Bus helper F.event
 - Add `comp` method that makes more clear the component instantiation
+- Pausable event bus implementation (Generic pub / sub task handler)
 - Refactor logs (nested look overwhelming)
 - Implement filtered logs with a console interface
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
 - Add immediate helper that returns a Promise (with setImmediate)
 - Implement a way for merging module definitions
 - Add paths to Set default action
-- Generic task execution with `cmd` handler
-- Add nextTick helper that returns a Promise (with ASAP)
+- Implement plugin system, this means tasks can override
+- Implement Event Bus helper `F.event` in eventBus handler
 - Add a simple test suite based on prior work
 - Simplify worker helpers
 - Implement an alternative module for running playground in a worker
+- Add nextTick helper that returns a Promise (with ASAP)
 
 ## Done
 
