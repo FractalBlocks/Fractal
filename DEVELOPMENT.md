@@ -29,11 +29,10 @@ We support use of:
 
 There are TODOs for short term:
 
-- Document pub / sub tasks pattern
+- Build the test suite
 - Add realtime example
 - Add animation example
 - Create a library with PouchDB utils and patterns
-- Simplify tests (would be reimplement it? most tests are disabled right now)
 - Document component lifecycle
 - Introduce a template language for AOT / SSR
 - OPTIMIZATION: Implement 'prepare' function for dynamic components. This allow to not reprocess styles (groups) for every component added
