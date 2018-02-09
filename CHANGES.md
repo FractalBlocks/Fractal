@@ -2,7 +2,6 @@
 
 ## Whats next?
 
-- Fix name collision with component groups and parent listeners
 - Handle errors when a task fails
 - Implement `F.set` helper
 - Add `comp` method that makes more clear the component instantiation
@@ -21,6 +20,8 @@
 - Add nextTick helper that returns a Promise (with ASAP)
 
 ## Done
+
+- Fix bug with propagation and optimize it
 
 # v5.0.1
 

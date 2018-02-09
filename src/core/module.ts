@@ -254,11 +254,25 @@ export async function propagate (ctx: Context, inputName: string, data: any) {
     let parentId = idParts.slice(0, -1).join('$')
     let parentSpace = ctx.components[parentId]
     let parentInputName
-    parentInputName = `$${componentSpace.name.split('_')[0]}_${inputName}`
+    let nameParts = componentSpace.name.split('_')
+    /** Component Input Listeners
+    * - Individual: $CompName_inputName or $GroupName_compName_inputName -> data
+    * - Groupal: $GroupName_inputName -> [name, data]
+    * - Global: $_inputName -> [name, data]
+    */
+     // Individual
+    parentInputName = `$${componentSpace.name}_${inputName}`
     if (parentSpace.inputs[parentInputName]) {
-      let name = componentSpace.name.split('_')[1]
-      await toIt(parentSpace)(parentInputName, name ? [name, data] : data)
+      await toIt(parentSpace)(parentInputName, data)
     }
+    // Groupal
+    if (nameParts.length === 2) {
+      parentInputName = `$${nameParts[0]}_${inputName}`
+      if (parentSpace.inputs[parentInputName]) {
+        await toIt(parentSpace)(parentInputName, [nameParts[1], data])
+      }
+    }
+    // Global
     parentInputName = `$_${inputName}`
     if (parentSpace.inputs[parentInputName]) {
       await toIt(parentSpace)(parentInputName, [componentSpace.name, data])
