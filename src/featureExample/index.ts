@@ -1,5 +1,5 @@
 // All in one file example
-import { getStyle, Actions, StyleGroup, run, logFns, Inputs, Interfaces, clone } from '../core'
+import { getStyle, Actions, StyleGroup, run, Inputs, Interfaces, clone } from '../core'
 import { h, View, viewHandler } from '../interfaces/view'
 import { styleHandler } from '../groups/style'
 
