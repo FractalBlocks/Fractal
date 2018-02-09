@@ -110,7 +110,7 @@ export const toAct = (ctx: Context): CtxToAct => {
 }
 
 export interface CtxTask {
-  (taskName: string, data: any, isPropagated?: boolean): Promise<any>
+  (taskName: string, data?: any, isPropagated?: boolean): Promise<any>
 }
 
 // generic action self caller
