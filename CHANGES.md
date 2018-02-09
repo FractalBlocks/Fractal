@@ -21,6 +21,9 @@
 
 ## Done
 
+# v5.0.3
+
+- Fix task type signature, data is optional
 
 # v5.0.2
 
