@@ -21,6 +21,9 @@
 
 ## Done
 
+
+# v5.0.2
+
 - Fix bug with propagation, add docs and optimize it
 
 # v5.0.1
