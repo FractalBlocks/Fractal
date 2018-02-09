@@ -33,6 +33,7 @@ There are TODOs for short term:
 - Add realtime example
 - Add animation example
 - Create a library with PouchDB utils and patterns
+- Easy traductions and per component example
 - Document component lifecycle
 - Introduce a template language for AOT / SSR
 - OPTIMIZATION: Implement 'prepare' function for dynamic components. This allow to not reprocess styles (groups) for every component added
