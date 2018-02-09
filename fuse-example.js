@@ -9,7 +9,7 @@ const {
 
 let ENV = 'development'
 
-let fuse
+let fuse, name
 
 Sparky.task('init', () => {
   fuse = FuseBox.init({
@@ -24,12 +24,10 @@ Sparky.task('init', () => {
       JSONPlugin(),
       EnvPlugin({ ENV }),
       WebIndexPlugin({
-        template: './src/playground/index.html',
+        template: `./src/${name}/index.html`,
       }),
     ],
   })
-
-
 
 })
 
@@ -38,11 +36,28 @@ Sparky.task('production', () => {
 })
 
 Sparky.task('default', ['init'], () => {
-  let playground = fuse
+  let example = fuse
     .bundle('Root')
-    .instructions('> src/playground/index.ts')
+    .instructions(`> src/${name}/index.ts`)
 
-  playground.watch('src/**/**.ts').hmr()
+  example.watch('src/**/**.ts').hmr({
+   socketURI: 'ws://localhost:3000',
+  })
   fuse.dev({ port: 3000 })
   fuse.run()
+})
+
+Sparky.task('simpleExample', () => {
+  name = 'simpleExample'
+  Sparky.start('default')
+})
+
+Sparky.task('playground', () => {
+  name = 'playground'
+  Sparky.start('default')
+})
+
+Sparky.task('featureExample', () => {
+  name = 'featureExample'
+  Sparky.start('default')
 })
