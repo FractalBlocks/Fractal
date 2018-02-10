@@ -1,3 +1,4 @@
+import test from 'ava'
 import {
   assoc,
   evolve,
@@ -7,84 +8,80 @@ import {
   merge,
 } from './fun'
 
-describe('Functional utils', () => {
+// Functional utils tests
 
-  describe('assoc', () => {
+test('assoc', t => {
 
-    it('should assoc a value to a key in an object', () => {
-      let obj = {}
-      assoc('key')('value')(obj)
-      expect(obj['key']).toEqual('value')
-    })
+  let obj = {}
+  assoc('key')('value')(obj)
+  t.is(obj['key'], 'value', 'should assoc a value to a key in an object')
 
-  })
+})
 
-  describe('evolve', () => {
+test('evolve: should apply many functions to the values of an object given the keys', t => {
 
-    it('should apply many functions to the values of an object given the keys', () => {
-      let obj = {
-        count: 0,
-      }
-      evolve({
-        count: x => x + 1,
-        name: () => 'Fun',
-      })(obj)
-      expect(obj['count']).toEqual(1)
-      expect(obj['name']).toEqual('Fun')
-    })
+  let obj = {
+    count: 0,
+  }
+  evolve({
+    count: x => x + 1,
+    name: () => 'Fun',
+  })(obj)
+  t.is(obj['count'], 1)
+  t.is(obj['name'], 'Fun')
 
-  })
+})
 
-  describe('evolveKey', () => {
+test('evolveKey', t => {
 
-    it('should apply a function to a value of an object given the key', () => {
-      let obj = { count: 0 }
-      evolveKey('count')(x => x + 1)(obj)
-      expect(obj['count']).toEqual(1)
-    })
+  let obj = { count: 0 }
+  evolveKey('count')(x => x + 1)(obj)
+  t.is(
+    obj['count'],
+    1,
+    'should apply a function to a value of an object given the key'
+  )
 
-  })
+})
 
-  describe('pipe function for piping functions', () => {
-    let fun = pipe(
-      x => x + 1,
-      x => x + 1,
-      x => x - 1,
-      x => x * 2,
-    )
+test('pipe function for piping functions', t => {
+  let fun = pipe(
+    x => x + 1,
+    x => x + 1,
+    x => x - 1,
+    x => x * 2,
+  )
 
-    it('should return the rigth result', () => {
-      expect(fun(0)).toBe(2)
-      expect(fun(1)).toBe(4)
-      expect(fun(2)).toBe(6)
-      expect(fun(3)).toBe(8)
-    })
+  t.is(fun(0), 2)
+  t.is(fun(1), 4)
+  t.is(fun(2), 6)
+  t.is(fun(3), 8)
 
-  })
+})
 
-  describe('mapToObj helper', () => {
+test('mapToObj helper', t => {
 
-    it('should map an array to an object', () => {
-      expect(mapToObj([1, 2, 3], (idx, value) => ['a' + idx, `a${value}elm`])).toEqual({
-        a0: 'a1elm',
-        a1: 'a2elm',
-        a2: 'a3elm',
-      })
-    })
+  t.deepEqual(
+    mapToObj([1, 2, 3], (idx, value) => ['a' + idx, `a${value}elm`]),
+    {
+      a0: 'a1elm',
+      a1: 'a2elm',
+      a2: 'a3elm',
+    }
+  )
 
-  })
+})
 
-  describe('merge helper', () => {
+test('merge helper', t => {
 
-    it('should merge two objects', () => {
-      expect(merge({ a: 1, b: 2 })({ c: 3, d: 4 })).toEqual({
-        a: 1,
-        b: 2,
-        c: 3,
-        d: 4,
-      })
-    })
-
-  })
+  t.deepEqual(
+    merge({ a: 1, b: 2 })({ c: 3, d: 4 }),
+    {
+      a: 1,
+      b: 2,
+      c: 3,
+      d: 4,
+    }
+  )
 
 })
