@@ -6,7 +6,6 @@ export interface On {
   [event: string]: InputData | InputData[] | 'ignore'
 }
 
-/* istanbul ignore next */
 export const eventListenersModule = (mod: ModuleAPI): Module => {
 
   function invokeHandler(handler: InputData | InputData[] | 'ignore', event: Event): void {

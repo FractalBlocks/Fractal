@@ -7,13 +7,11 @@ export interface OnGlobal {
   [event: string]: InputData | InputData[] | 'ignore'
 }
 
-/* istanbul ignore next */
 function getContainer (lastContainer) {
   let elm = (<any> lastContainer).elm ? (<VNode> lastContainer).elm : lastContainer
   return elm
 }
 
-/* istanbul ignore next */
 export const globalListenersModule = (mod: ModuleAPI, state: { lastContainer: VNode | Element }): Module => {
 
   function invokeHandler(handler: InputData | InputData[] | 'ignore', event: Event, vnode: VNode): void {
