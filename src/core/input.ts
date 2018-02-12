@@ -15,6 +15,7 @@ export interface InputHelpers {
   toChild: CtxToChild
   toChildAct: CtxToChildAct
   toAct: CtxToAct
+  set: CtxSet
   task: CtxTask
   comps: CtxComponentHelpers
   _clearCache: CtxClearCache
@@ -29,6 +30,7 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   toChild: toChild(ctx),
   toChildAct: toChildAct(ctx),
   toAct: toAct(ctx),
+  set: set(ctx),
   task: task(ctx),
   comps: _componentHelpers(ctx),
   _clearCache: _clearCache(ctx), // TODO:
@@ -102,11 +104,22 @@ export interface CtxToAct {
   (actionName: string, data?: any, isPropagated?: boolean): Promise<any>
 }
 
-// generic action self caller
+// generic action caller
 export const toAct = (ctx: Context): CtxToAct => {
   let _toIt = toIt(ctx)
   return async (actionName, data, isPropagated = true) =>
     await _toIt('_action', [actionName, data], isPropagated)
+}
+
+export interface CtxSet {
+  (variable: string, data?: any, isPropagated?: boolean): Promise<any>
+}
+
+// Set Action caller (syntax sugar)
+export const set = (ctx: Context): CtxToAct => {
+  let _toIt = toIt(ctx)
+  return async (data, isPropagated = true) =>
+    await _toIt('_action', ['Set', data], isPropagated)
 }
 
 export interface CtxTask {

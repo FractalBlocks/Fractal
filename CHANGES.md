@@ -4,7 +4,6 @@
 
 - Remove optional propagation
 - Handle errors when a task fails
-- Implement `F.set` helper
 - Add `comp` method that makes more clear the component instantiation
 - Pausable event bus implementation (Generic pub / sub task handler)
 - Refactor logs (nested look overwhelming)
@@ -21,6 +20,8 @@
 - Add nextTick helper that returns a Promise (with ASAP)
 
 ## Done
+
+- Implement `F.set` helper
 
 # v5.0.3
 
