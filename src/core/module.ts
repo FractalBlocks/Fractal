@@ -64,7 +64,7 @@ export interface Module {
 // API from module to handlers
 export interface ModuleAPI {
   dispatchEv (event: any, iData: InputData): Promise<void>
-  toComp (id: string, inputName: string, data?: any, isPropagated?: boolean): Promise<void>
+  toComp (id: string, inputName: string, data?: any): Promise<void>
   dispose (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
   nest: CtxNest
@@ -281,14 +281,14 @@ export async function propagate (ctx: Context, inputName: string, data: any) {
 }
 
 export interface CtxToIt {
-  (inputName: string, data?, isPropagated?: boolean): Promise<void>
+  (inputName: string, data?): Promise<void>
 }
 
 // send a message to an input of a component from itself
 export const toIt = (ctx: Context): CtxToIt => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
-  return async (inputName, data, isPropagated = true) => {
+  return async (inputName, data) => {
     if (!ctx.global.active) {
       return
     }
@@ -303,9 +303,7 @@ export const toIt = (ctx: Context): CtxToIt => {
     if (ctx.beforeInput) ctx.beforeInput(ctx, inputName, data)
     let result = await input(data)
     if (ctx.afterInput) ctx.afterInput(ctx, inputName, data)
-    if (isPropagated) {
-      await propagate(ctx, inputName, data)
-    }
+    await propagate(ctx, inputName, data)
     return result
   }
 }

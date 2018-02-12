@@ -2,7 +2,6 @@
 
 ## Whats next?
 
-- Remove optional propagation
 - Handle errors when a task fails
 - Add `comp` method that makes more clear the component instantiation
 - Pausable event bus implementation (Generic pub / sub task handler)
@@ -21,6 +20,7 @@
 
 ## Done
 
+- Remove optional propagation
 - Implement `F.set` helper
 
 # v5.0.3

@@ -83,7 +83,7 @@ export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (
         mod.dispatchEv(data[1], data[2])
         break
       case 'toComp':
-        mod.toComp(data[1], data[2], data[3], data[4])
+        mod.toComp(data[1], data[2], data[3])
         break
       case 'setGroup':
         mod.setGroup(data[1], data[2], data[3])
@@ -158,8 +158,8 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
   let moduleAPI: ModuleAPI = {
     // dispatch function type used for handlers
     dispatchEv: async (event: any, iData: InputData) => worker.postMessage(['dispatchEv', event, iData]),
-    toComp: async (id: string, inputName: string, data: any, isPropagated = true) =>
-      worker.postMessage(['toComp', id, inputName, data, isPropagated]),
+    toComp: async (id: string, inputName: string, data: any) =>
+      worker.postMessage(['toComp', id, inputName, data]),
     dispose,
     attach,
     // nest a component to the component index

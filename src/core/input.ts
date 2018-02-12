@@ -57,42 +57,38 @@ export const _stateOf = (ctx: Context): CtxStateOf => name => {
 // --- Message interchange between components
 
 export interface CtxToChild {
-  (childCompName: string, inputName: string, msg?, isPropagated?: boolean): void
+  (childCompName: string, inputName: string, msg?): void
 }
 
 // send a message to an input of a component from its parent
 export const toChild = (ctx: Context) => async (
   childCompName,
   inputName,
-  msg = undefined,
-  isAsync = false,
-  isPropagated = true
+  msg = undefined
 ) => {
   let childId = ctx.id + '$' + childCompName
   let compCtx = ctx.components[childId]
   if (compCtx) {
-    return await toIt(compCtx)(inputName, msg, isPropagated)
+    return await toIt(compCtx)(inputName, msg)
   } else {
     ctx.error('toChild', `there are no child '${childCompName}' in space '${ctx.id}'`)
   }
 }
 
 export interface CtxToChildAct {
-  (childCompName: string, actionName: string, msg?, isPropagated?: boolean): void
+  (childCompName: string, actionName: string, msg?): void
 }
 
 // execute an action of a component from its parent
 export const toChildAct = (ctx: Context) => async (
   childCompName,
   actionName,
-  msg = undefined,
-  isAsync = false,
-  isPropagated = true
+  msg = undefined
 ) => {
   let childId = ctx.id + '$' + childCompName
   let compCtx = ctx.components[childId]
   if (compCtx) {
-    return await toIt(compCtx)('_action', [actionName, msg], isPropagated)
+    return await toIt(compCtx)('_action', [actionName, msg])
   } else {
     ctx.error('toChild', `there are no child '${childCompName}' in space '${ctx.id}'`)
   }
@@ -101,36 +97,36 @@ export const toChildAct = (ctx: Context) => async (
 // ---
 
 export interface CtxToAct {
-  (actionName: string, data?: any, isPropagated?: boolean): Promise<any>
+  (actionName: string, data?: any): Promise<any>
 }
 
 // generic action caller
 export const toAct = (ctx: Context): CtxToAct => {
   let _toIt = toIt(ctx)
-  return async (actionName, data, isPropagated = true) =>
-    await _toIt('_action', [actionName, data], isPropagated)
+  return async (actionName, data) =>
+    await _toIt('_action', [actionName, data])
 }
 
 export interface CtxSet {
-  (variable: string, data?: any, isPropagated?: boolean): Promise<any>
+  (variable: string, data?: any): Promise<any>
 }
 
 // Set Action caller (syntax sugar)
 export const set = (ctx: Context): CtxToAct => {
   let _toIt = toIt(ctx)
-  return async (data, isPropagated = true) =>
-    await _toIt('_action', ['Set', data], isPropagated)
+  return async (data) =>
+    await _toIt('_action', ['Set', data])
 }
 
 export interface CtxTask {
-  (taskName: string, data?: any, isPropagated?: boolean): Promise<any>
+  (taskName: string, data?: any): Promise<any>
 }
 
 // generic action self caller
 export const task = (ctx: Context): CtxTask => {
   let _toIt = toIt(ctx)
-  return async (taskName, data, isPropagated = true) =>
-    await _toIt('_execute', [taskName, ctx.id, data], isPropagated)
+  return async (taskName, data) =>
+    await _toIt('_execute', [taskName, ctx.id, data])
 }
 
 export interface CtxClearCache {
