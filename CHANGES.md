@@ -2,8 +2,9 @@
 
 ## Whats next?
 
-- Handle errors when a task fails
 - Add `comp` method that makes more clear the component instantiation
+- Handle errors when a task fails
+- Fix hmr on examples
 - Pausable event bus implementation (Generic pub / sub task handler)
 - Find a way for to hotSwapp dyamic components
 - Refactor logs (nested look overwhelming)
