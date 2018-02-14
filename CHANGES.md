@@ -5,7 +5,7 @@
 - Handle errors when a task fails
 - Add `comp` method that makes more clear the component instantiation
 - Pausable event bus implementation (Generic pub / sub task handler)
-- Find a way for making hotSwapping of dyamic components work
+- Find a way for to hotSwapp dyamic components
 - Refactor logs (nested look overwhelming)
 - Implement filtered logs with a console interface
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
