@@ -108,14 +108,14 @@ export const toAct = (ctx: Context): CtxToAct => {
 }
 
 export interface CtxSet {
-  (variable: string, data?: any): Promise<any>
+  (arg0: any, arg1?: any): Promise<any>
 }
 
 // Set Action caller (syntax sugar)
-export const set = (ctx: Context): CtxToAct => {
+export const set = (ctx: Context): CtxSet => {
   let _toIt = toIt(ctx)
-  return async (data) =>
-    await _toIt('_action', ['Set', data])
+  return async (arg0, arg1) =>
+    await _toIt('_action', ['Set', arg0 instanceof Array ? arg0 : [arg0, arg1]])
 }
 
 export interface CtxTask {
