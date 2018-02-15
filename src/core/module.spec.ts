@@ -1,45 +1,8 @@
 import test from 'ava'
-import { run, clone, deepmerge } from '../core'
+import { clone } from '.'
+import { createApp, ChildComp } from './testUtils'
 
 // Propagation tests
-
-const ChildComp = {
-  state: { count: 0 },
-  inputs: F => ({
-    inc: async () => {
-      await F.toAct('Inc')
-      await F.toIt('changed', F.stateOf().count)
-    },
-    changed: async value => {},
-  }),
-  actions: {
-    Inc: () => s => {
-      s.count++
-      return s
-    },
-  },
-  interfaces: {},
-}
-
-const createApp = (comp?) => {
-
-  const Root = {
-    state: { result: '' },
-    inputs: F => ({}),
-    actions: {},
-    interfaces: {},
-  }
-
-  const DEV = true
-
-  return run({
-    Root: deepmerge(Root, comp || {}),
-    record: DEV,
-    log: DEV,
-    interfaces: {},
-  })
-
-}
 
 test('Propagation: Individual', async t => {
   const app = await createApp({
