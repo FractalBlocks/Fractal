@@ -2,11 +2,12 @@
 
 ## Whats next?
 
+- Pullable event bus implementation (task)
+- Implement bulk matching for event bus
+- Find a way for to hotSwapp dyamic components
 - Add `comp` method that makes more clear the component instantiation
 - Handle errors when a task fails
 - Fix hmr on examples
-- Pausable event bus implementation (Generic pub / sub task handler)
-- Find a way for to hotSwapp dyamic components
 - Refactor logs (nested look overwhelming)
 - Implement filtered logs with a console interface
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
@@ -22,6 +23,7 @@
 
 ## Done
 
+- Add error msg to edge case in toComp funtion
 - Remove optional propagation
 - Implement `F.set` helper
 
