@@ -601,7 +601,6 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
   }
   if (ctx.global.record) {
     ctx.global.records.push({ id: ctx.id, actionName: name, value })
-    ;(window as any).lastCtxAct = ctx
   }
   let result = await execute(ctx, await actions[name](value))
   return result
