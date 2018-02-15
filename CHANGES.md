@@ -23,6 +23,8 @@
 
 ## Done
 
+# v5.0.4
+
 - Add error msg to edge case in toComp funtion
 - Remove optional propagation
 - Implement `F.set` helper
