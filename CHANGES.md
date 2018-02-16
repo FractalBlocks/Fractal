@@ -2,8 +2,6 @@
 
 ## Whats next?
 
-- Pullable event bus implementation (task)
-- Implement bulk matching for event bus
 - Find a way for to hotSwapp dyamic components
 - Add `comp` method that makes more clear the component instantiation
 - Handle errors when a task fails
@@ -15,13 +13,17 @@
 - Implement a way for merging module definitions
 - Add paths to Set default action
 - Implement plugin system, this means tasks can override
-- Implement Event Bus helper `F.event` in eventBus handler
-- Add a simple test suite based on prior work
-- Simplify worker helpers
+- Implement Event Bus helper `F.ev` in eventBus handler
 - Implement an alternative module for running playground in a worker
+- Implement bulk matching for event bus
+- Simplify worker helpers
 - Add nextTick helper that returns a Promise (with ASAP)
 
 ## Done
+
+# v5.0.5
+
+- Pullable event bus implementation (task)
 
 # v5.0.4
 
