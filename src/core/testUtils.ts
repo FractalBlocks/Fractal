@@ -18,7 +18,7 @@ export const ChildComp = {
   interfaces: {},
 }
 
-export const createApp = (comp?): Promise<Module>  => {
+export const createApp = (comp?, mod?): Promise<Module>  => {
 
   const Root = {
     state: { result: '' },
@@ -29,11 +29,11 @@ export const createApp = (comp?): Promise<Module>  => {
 
   const DEV = true
 
-  return run({
+  return run(deepmerge({
     Root: deepmerge(Root, comp || {}),
     record: DEV,
     log: DEV,
     interfaces: {},
-  })
+  }, mod || {}))
 
 }
