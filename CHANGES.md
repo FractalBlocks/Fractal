@@ -27,7 +27,7 @@
 
 # v5.0.4
 
-- Add error msg to edge case in toComp funtion
+- Add error message to edge case in toComp function
 - Remove optional propagation
 - Implement `F.set` helper
 
