@@ -1,0 +1,70 @@
+import test from 'ava'
+import { clone, _ } from '../core'
+import { createApp } from '../core/testUtils'
+import { eventBusHandler } from '../tasks/eventBus'
+
+// Event Bus tests
+
+export const ChildComp = {
+  state: { result: '', count: 0 },
+  inputs: F => ({
+    inc: async () => {
+      let state = F.stateOf()
+      await F.toAct('Inc')
+      let res = await F.task('ev', ['myEvent', state.count])
+      await F.set('result', res)
+    },
+    changed: async value => {},
+  }),
+  actions: {
+    Inc: () => s => {
+      s.count++
+      return s
+    },
+  },
+  interfaces: {},
+}
+
+export const ReceptorComp = {
+  state: {},
+  inputs: F => ({
+    init: async () => {
+      await F.task('ev', ['_subscribe', 'myEvent', F.in('myEvent', _, '*'), true])
+    },
+    myEvent: async ([count]) => {
+      return count * 3 + 1
+    },
+  }),
+  actions: {},
+  interfaces: {},
+}
+
+test('Event bus with pullable and normal subscribers', async t => {
+
+  const app = await createApp({
+    state: {
+      result: '',
+      _nest: {
+        Child: clone(ChildComp),
+        R1: clone(ReceptorComp),
+        R2: clone(ReceptorComp),
+        R3: clone(ReceptorComp),
+      },
+    },
+    inputs: F => ({
+      init: async () => {
+        await F.task('ev', ['_subscribe', 'myEvent', F.in('myEvent', _, '*')])
+      },
+      myEvent: async ([count]) => {
+        await F.set('result', count)
+      },
+    }),
+  }, {
+    tasks: { ev: eventBusHandler() },
+  })
+
+  await app.moduleAPI.toComp('Root$Child', 'inc')
+  t.is(app.rootCtx.components.Root.state.result, 1, 'Should propagate events to not pullable susbscribers')
+  t.deepEqual(app.rootCtx.components.Root$Child.state.result, [4, 4, 4], 'Should pull results from subscribers before sending the event')
+
+})
