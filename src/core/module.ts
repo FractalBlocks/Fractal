@@ -417,7 +417,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     // root component, take account of hot swapping
     component = comp ? comp : moduleDef.Root
     // if is hot swapping, do not recalculate context
-    // bootstrap context (level 0)
+    // bootstrap context (level 0 in hierarchy)
     if (!middleFn) {
       ctx = <any> { // because of rootCtx delegation
         id: 'Root',
