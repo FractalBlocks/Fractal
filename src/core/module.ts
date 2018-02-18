@@ -69,10 +69,6 @@ export interface ModuleAPI {
   toComp (id: string, inputName: string, data?: any): Promise<void>
   dispose (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
-  nest: CtxNest
-  unnest: CtxUnnest
-  nestAll: CtxNestAll
-  unnestAll: CtxUnnestAll
   setGroup (id: string, name: string, space: any): void
   warn (source, description): void
   error (source, description): void
@@ -90,12 +86,6 @@ export const handlerTypes = ['interface', 'task', 'group']
 
 export interface CtxNest {
   (name: string, component: Component<any>, isStatic?: boolean): void
-}
-
-// Evaluate DEPRECATION
-// add a component to the component index
-export const nest = (ctx: Context): CtxNest => async (name, component) => {
-  await _nest(ctx, name, component)
 }
 
 async function _nest (ctx: Context, name: string, component: Component<any>): Promise<Context> {
@@ -460,14 +450,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         dispatchEv: dispatchEv(ctx),
         toComp: toComp(ctx),
         dispose,
-        // merge a component to the component index
-        nest: nest(ctx),
-        // merge many components to the component index
-        nestAll: nestAll(ctx),
-        // unnest a component to the component index
-        unnest: unnest(ctx),
-        // unnest many components to the component index
-        unnestAll: unnestAll(ctx),
         // set a space of a certain component
         setGroup: (id, name, space) => {
           ctx.components[id].groups[name] = space

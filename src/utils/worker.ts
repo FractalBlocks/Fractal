@@ -162,14 +162,6 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
       worker.postMessage(['toComp', id, inputName, data]),
     dispose,
     attach,
-    // nest a component to the component index
-    nest: async (name, component, isStatic = false): Promise<any> => worker.postMessage(['nest', name, component]),
-    // nest many components to the component index
-    nestAll: async (components, isStatic = false) => worker.postMessage(['nestAll', components]),
-    // unnest a component to the component index
-    unnest: async (name: string) => worker.postMessage(['unnest', name]),
-    // unnest many components to the component index
-    unnestAll: async (components: string[]) => worker.postMessage(['unnestAll', components]),
     // delegated methods
     setGroup: (id, name, group) => worker.postMessage(['setGroup', id, name, group]),
     warn: def.warn,
