@@ -20,6 +20,7 @@ import {
   toComp,
   makeInputHelpers,
 } from '.'
+import { eventBusHandler } from '../tasks/eventBus';
 
 export interface ModuleDef {
   Root: Component<any>
@@ -405,12 +406,18 @@ export function calcAndNotifyInterfaces (ctx: Context) {
 
 // function for running a root component
 export async function run (moduleDef: ModuleDef): Promise<Module> {
-  // internal module state
   // root component
   let component: Component<any>
   let moduleAPI: ModuleAPI
   // root context
   let ctx: Context
+
+  // Prevents cross references
+  moduleDef = clone(moduleDef)
+
+  // Add event bus as default `ev` task handler
+  moduleDef.tasks = moduleDef.tasks ? moduleDef.tasks : {}
+  moduleDef.tasks.ev = eventBusHandler()
 
   // attach root component
   async function attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module> {
