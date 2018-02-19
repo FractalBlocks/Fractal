@@ -3,11 +3,6 @@
 ## Whats next?
 
 - Implement Event Bus helper `F.ev` in eventBus handler
-- Add `comp` method that makes more clear the component instantiation
-- Fix hmr on examples
-- Find a way for to hotSwapp dyamic components
-- Evaluate how to handle errors when a task fails
-- Refactor logs (deeply nested look overwhelming)
 - Implement filtered logs with a console interface
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
 - Add immediate helper that returns a Promise (with setImmediate)
@@ -16,11 +11,17 @@
 - Implement plugin system, this means tasks can override
 - Implement an alternative module for running playground in a worker
 - Implement bulk matching for event bus
-- Simplify worker helpers
 - Add nextTick helper that returns a Promise (with ASAP)
+- Refactor logs (deeply nested look overwhelming)
+- Fix hmr on examples
+- Find a way for to hotSwapp dyamic components
+- Evaluate how to handle errors when a task fails
+- Simplify worker helpers
 
 ## Done
 
+- Add `comp` method that makes more clear the component instantiation
+- Fixed bug in getPath function
 - Remove nest functions, is better to nest dynamic components with actions
 
 # v5.0.5
