@@ -68,3 +68,23 @@ export const getDescendantIds = (ctx: Context, id: string): string[] => {
  * @param ctx The component context
  */
 export const getParentCtx = (ctx: Context) => ctx.components[(ctx.id + '').split('$').slice(0, -1).join('$')]
+
+export interface CompOptions {
+  state: any
+  style: StyleGroup,
+}
+
+/**
+ * Function for concateniting properties to a component, makes a copy fisrt
+ * @param component The target component
+ * @param options Options to concatenate
+ */
+export const comp = (component: Component<any>, options: CompOptions) => {
+  const newComp = clone(component)
+  if (options.state) {
+    newComp.state = Object.assign(newComp.state, options.state)
+  }
+  if (options.style) {
+    newComp.groups.style = mergeStyles(newComp.groups.style, options.style)
+  }
+}
