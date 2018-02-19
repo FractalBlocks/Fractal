@@ -17,6 +17,9 @@ export interface InputHelpers {
   toAct: CtxToAct
   set: CtxSet
   task: CtxTask
+  emit: CtxEmit
+  on: CtxOn
+  off: CtxOff
   comps: CtxComponentHelpers
   _clearCache: CtxClearCache
 }
@@ -32,6 +35,9 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   toAct: toAct(ctx),
   set: set(ctx),
   task: task(ctx),
+  emit: emit(ctx),
+  on: on(ctx),
+  off: off(ctx),
   comps: _componentHelpers(ctx),
   _clearCache: _clearCache(ctx), // TODO:
 })
@@ -127,6 +133,36 @@ export const task = (ctx: Context): CtxTask => {
   let _toIt = toIt(ctx)
   return async (taskName, data) =>
     await _toIt('_execute', [taskName, ctx.id, data])
+}
+
+export interface CtxEmit {
+  (eventName: string, data: any): Promise<any>
+}
+
+export const emit = (ctx: Context): CtxEmit => {
+  let _toIt = toIt(ctx)
+  return async (eventName, data) =>
+    await _toIt('_execute', ['ev', ctx.id, [eventName, data]])
+}
+
+export interface CtxOn {
+  (eventName: string, data: any, pullable?: boolean): Promise<any>
+}
+
+export const on = (ctx: Context): CtxOn => {
+  let _toIt = toIt(ctx)
+  return async (eventName, data, pullable) =>
+    await _toIt('_execute', ['ev', ctx.id, ['_subscribe', eventName, data, pullable]])
+}
+
+export interface CtxOff {
+  (eventName: string, data: any): Promise<any>
+}
+
+export const off = (ctx: Context): CtxOff => {
+  let _toIt = toIt(ctx)
+  return async ([eventName, seq]) =>
+    await _toIt('_execute', ['ev', ctx.id, ['_unsubscribe', eventName, seq]])
 }
 
 export interface CtxClearCache {
