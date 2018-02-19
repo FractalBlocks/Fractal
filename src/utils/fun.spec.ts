@@ -7,7 +7,7 @@ import {
   mapToObj,
   merge,
 } from './fun'
-import { mapAsync, filterAsync, reduceAsync } from '.';
+import { mapAsync, filterAsync, reduceAsync, all, range } from '.';
 
 // Functional utils tests
 
@@ -113,3 +113,29 @@ test('reduceAsync helper', async t => {
   )
 
 })
+
+test('all helper', async t => {
+
+  t.deepEqual(
+    await all([1, 2, 3, 4].map(el => Promise.resolve(el))),
+    [1, 2, 3, 4],
+  )
+
+})
+
+test('range helper', async t => {
+
+  t.deepEqual(
+    await range(1, 4),
+    [1, 2, 3, 4],
+    'Ascendant range',
+  )
+
+  t.deepEqual(
+    await range(4, -4),
+    [4, 3, 2, 1, 0, -1, -2, -3, -4],
+    'Descendant range',
+  )
+
+})
+
