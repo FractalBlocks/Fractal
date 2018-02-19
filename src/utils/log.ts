@@ -4,7 +4,7 @@ export const warn = async (source: string, description: string) =>
   console.warn(`source: ${source}, description: ${description}`)
 
 export const error = (source: string, description: string) => {
-  throw `source: ${source}, description: ${description}`
+  throw new Error(`source: ${source}, description: ${description}`)
 }
 
 export const beforeInput = (ctx: Context, inputName, data) => {
