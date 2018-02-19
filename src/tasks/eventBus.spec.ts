@@ -1,7 +1,6 @@
 import test from 'ava'
 import { clone, _ } from '../core'
 import { createApp } from '../core/testUtils'
-import { eventBusHandler } from '../tasks/eventBus'
 
 // Event Bus tests
 
@@ -11,7 +10,7 @@ export const ChildComp = {
     inc: async () => {
       let state = F.stateOf()
       await F.toAct('Inc')
-      let res = await F.task('ev', ['myEvent', state.count])
+      let res = await F.emit('myEvent', state.count)
       await F.set('result', res)
     },
     changed: async value => {},
@@ -29,7 +28,7 @@ export const ReceptorComp = {
   state: {},
   inputs: F => ({
     init: async () => {
-      await F.task('ev', ['_subscribe', 'myEvent', F.in('myEvent', _, '*'), true])
+      F.on('myEvent', F.in('myEvent', _, '*'), true)
     },
     myEvent: async ([count]) => {
       return count * 3 + 1
@@ -53,14 +52,12 @@ test('Event bus with pullable and normal subscribers', async t => {
     },
     inputs: F => ({
       init: async () => {
-        await F.task('ev', ['_subscribe', 'myEvent', F.in('myEvent', _, '*')])
+        F.on('myEvent', F.in('myEvent', _, '*'))
       },
       myEvent: async ([count]) => {
         await F.set('result', count)
       },
     }),
-  }, {
-    tasks: { ev: eventBusHandler() },
   })
 
   await app.moduleAPI.toComp('Root$Child', 'inc')
