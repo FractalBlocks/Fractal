@@ -7,7 +7,7 @@ import {
   mapToObj,
   merge,
 } from './fun'
-import { mapAsync, filterAsync } from '.';
+import { mapAsync, filterAsync, reduceAsync } from '.';
 
 // Functional utils tests
 
@@ -105,3 +105,11 @@ test('filterAsync helper', async t => {
 
 })
 
+test('reduceAsync helper', async t => {
+
+  t.deepEqual(
+    await reduceAsync([1, 2, 3, 4], async (ac, el, i) => ac.concat([el, i]), []),
+    [1, 0, 2, 1, 3, 2, 4, 3],
+  )
+
+})
