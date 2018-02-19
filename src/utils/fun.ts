@@ -62,7 +62,11 @@ import * as _deepmerge from 'deepmerge/dist/umd'
 export const deepmerge = _deepmerge
 export const deepmergeAll = _deepmerge.all
 
-export const mapAsync = async (arr: any[], fn) => {
+export interface AsyncMapFn<U> {
+  (element: U, index: number, array: U[]): Promise<U>
+}
+
+export const mapAsync = async <U>(arr: U[], fn: AsyncMapFn<U>) => {
   let res = []
   for (let i = 0, len = arr.length; i < len; i++) {
     res[i] = await fn(arr[i], i, arr)
@@ -70,7 +74,7 @@ export const mapAsync = async (arr: any[], fn) => {
   return res
 }
 
-export const filterAsync = async (arr: any[], fn) => {
+export const filterAsync = async  <U>(arr: U[], fn: AsyncMapFn<U>) => {
   let res = []
   for (let i = 0, len = arr.length; i < len; i++) {
     if (await fn(arr[i], i, arr)) {
@@ -80,7 +84,11 @@ export const filterAsync = async (arr: any[], fn) => {
   return res
 }
 
-export const reduceAsync = async (arr: any[], fn, v0: any) => {
+export interface AsyncReduceFn<U> {
+  (acumulator: U, element: U, index: number): Promise<U>
+}
+
+export const reduceAsync = async  <U>(arr: U[], fn: AsyncReduceFn<U>, v0: U) => {
   for (let i = 0, len = arr.length; i < len; i++) {
     v0 = await fn(v0, arr[i], i)
   }
