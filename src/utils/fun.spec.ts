@@ -7,7 +7,7 @@ import {
   mapToObj,
   merge,
 } from './fun'
-import { mapAsync, filterAsync, reduceAsync, all, range } from '.';
+import { mapAsync, filterAsync, reduceAsync, all, range, sum, getPath, getPaths } from '.';
 
 // Functional utils tests
 
@@ -123,18 +123,52 @@ test('all helper', async t => {
 
 })
 
-test('range helper', async t => {
+test('range helper', t => {
 
   t.deepEqual(
-    await range(1, 4),
+    range(1, 4),
     [1, 2, 3, 4],
     'Ascendant range',
   )
 
   t.deepEqual(
-    await range(4, -4),
+    range(4, -4),
     [4, 3, 2, 1, 0, -1, -2, -3, -4],
     'Descendant range',
+  )
+
+})
+
+test('sum helper', t => {
+
+  t.is(
+    sum([1, 2, 3, 4]),
+    10,
+  )
+
+})
+
+test('getPath helper', t => {
+
+  t.is(
+    getPath(['a', 'b', 'c', 'd'], {a:{b:{c:{ d: 10 }}}}),
+    10,
+  )
+
+})
+
+test('getPaths helper', t => {
+
+  t.deepEqual(
+    getPaths(
+      [
+        ['a', 'b', 'c', 'd'],
+        ['z', 'x', 'y', 'w'],
+        ['z', 'x', 'y', 't'],
+      ],
+      {a:{b:{c:{ d: 10 }}},z:{x:{y:{ w: 11, t: 12 }}}},
+    ),
+    [10, 11, 12],
   )
 
 })
