@@ -2,7 +2,6 @@
 
 ## Whats next?
 
-- Implement Event Bus helper `F.ev` in eventBus handler
 - Implement filtered logs with a console interface
 - Add nextFrame helper that returns a Promise (with requestAnimationFrame)
 - Add immediate helper that returns a Promise (with setImmediate)
@@ -19,6 +18,13 @@
 - Simplify worker helpers
 
 ## Done
+
+# v5.0.7
+
+- Include eventBus as `ev` default task
+- Implement Event Bus helpers `F.emit`, `F.on` and `F.off`
+- Implement multiple listeners support in eventBus
+- Show stack trace in error function of logFns
 
 # v5.0.6
 
