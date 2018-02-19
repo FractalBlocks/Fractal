@@ -41,7 +41,7 @@ export const eventBusHandler: Handler = () => mod => {
           pullable,
         }
         state.subSeq++
-        return seq
+        return [evName, seq]
       }
       if (type === '_unsubscribe') {
         let evName = arg0
