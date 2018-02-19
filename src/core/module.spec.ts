@@ -36,7 +36,6 @@ test('Propagation: Groupal', async t => {
   t.deepEqual(app.rootCtx.components.Root.state.result, ['2', 1], 'Expect the component scoped name and the value')
 })
 
-
 test('Propagation: Global', async t => {
   const app = await createApp({
     state: {
