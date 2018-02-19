@@ -6,17 +6,23 @@ interface Subscription {
   pullable: boolean
 }
 
-interface ComponentSubscriptions {
-  [componentId: string]: Subscription
+interface Subscription {
+  sub: EventData
+  pullable: boolean
+}
+
+interface EventSubscriptions {
+  [seq: string]: Subscription
 }
 
 interface Subscriptions {
-  [eventName: string]: ComponentSubscriptions
+  [eventName: string]: EventSubscriptions
 }
 
 export const eventBusHandler: Handler = () => mod => {
   let state = {
     subs: <Subscriptions> {},
+    subSeq: 0,
     returnFn: <any> false,
   }
   return {
@@ -29,36 +35,43 @@ export const eventBusHandler: Handler = () => mod => {
         if (!state.subs[evName]) {
           state.subs[evName] = {}
         }
-        state.subs[evName][id] = {
+        let seq = state.subSeq
+        state.subs[evName][seq] = {
           sub: evData,
           pullable,
         }
-        return
+        state.subSeq++
+        return seq
       }
       if (type === '_unsubscribe') {
         let evName = arg0
-        let id = arg1
-        delete state.subs[evName][id]
+        let seq = arg1
+        delete state.subs[evName][seq]
+        if (Object.keys(state.subs[evName]).length === 0) {
+          // Delete empty tables
+          delete state.subs[evName]
+        }
+        return
       }
       // A custom event have come
       let evName = type
       let data = arg0
       let evSpace = state.subs[evName]
       if (!evSpace) {
-        mod.error('EventBus', `There is no subscription for event '${evName}' dispatched from '${id}', dismissing data: ${data}`)
+        return
       }
       setImmediate(async () => {
         let _id = id
         // Await pullable subscribers
         let results = await Promise.all(
           Object.keys(evSpace)
-            .filter(compId => evSpace[compId].pullable)
-            .map(compId => mod.dispatchEv([data, evName, _id], evSpace[compId].sub))
+            .filter(seq => evSpace[seq].pullable)
+            .map(seq => mod.dispatchEv([data, evName, _id], evSpace[seq].sub))
         )
         Object.keys(evSpace)
-            .filter(compId => !evSpace[compId].pullable)
-            .forEach(compId => {
-              mod.dispatchEv([data, evName, _id], evSpace[compId].sub)
+            .filter(seq => !evSpace[seq].pullable)
+            .forEach(seq => {
+              mod.dispatchEv([data, evName, _id], evSpace[seq].sub)
             })
 
         state.returnFn(results)
