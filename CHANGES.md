@@ -20,6 +20,8 @@
 
 ## Done
 
+# v5.0.6
+
 - Add `comp` method that makes more clear the component instantiation
 - Fixed bug in getPath function
 - Remove nest functions, is better to nest dynamic components with actions
