@@ -53,10 +53,18 @@ export const compGroup = (groupName: string, arr: any[][], fn: any) => arr.reduc
   }
 , {})
 
-
+/**
+ * Get the component descendants ids
+ * @param ctx Any Context
+ * @param id The component id
+ */
 export const getDescendantIds = (ctx: Context, id: string): string[] => {
   let searchStr = id + '$'
   return Object.keys(ctx.components).filter(compId => compId.includes(searchStr))
 }
 
+/**
+ * Get the context of the parent of a component
+ * @param ctx The component context
+ */
 export const getParentCtx = (ctx: Context) => ctx.components[(ctx.id + '').split('$').slice(0, -1).join('$')]
