@@ -1,4 +1,4 @@
-import { run, deepmerge, Module } from '../core'
+import { run, deepmerge, Module, logFns } from '../core'
 
 export const ChildComp = {
   state: { count: 0 },
@@ -34,6 +34,7 @@ export const createApp = (comp?, mod?): Promise<Module>  => {
     record: DEV,
     log: DEV,
     interfaces: {},
+    ...logFns,
   }, mod || {}))
 
 }
