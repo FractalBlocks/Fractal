@@ -7,6 +7,7 @@ import {
   mapToObj,
   merge,
 } from './fun'
+import { mapAsync } from '.';
 
 // Functional utils tests
 
@@ -85,3 +86,15 @@ test('merge helper', t => {
   )
 
 })
+
+test('mapAsync helper', async t => {
+
+  t.deepEqual(
+    await mapAsync([1, 2, 3, 4], async (el, i, array) => [el, i]),
+    [[1, 0], [2, 1], [3, 2], [4, 3]],
+  )
+
+})
+
+
+
