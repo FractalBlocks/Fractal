@@ -128,13 +128,13 @@ export const sum = (numbers: number[]) => numbers.reduce((acc, n) => acc + n, 0)
 export const getPath = (path: string[], obj: any) => {
   let actual = obj
   for (let i = 0, len = path.length; i < len; i++) {
-    actual = obj[path[i]]
+    actual = actual[path[i]]
   }
   return actual
 }
 
 export const getPaths = (paths: string[][], obj: any) => {
-  let res =[]
+  let res = []
   for (let i = 0, path; path = paths[i]; i++) {
     res[i] = getPath(path, obj)
   }
