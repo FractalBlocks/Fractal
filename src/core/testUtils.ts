@@ -34,7 +34,7 @@ export const createApp = (comp?, mod?): Promise<Module>  => {
     record: DEV,
     log: DEV,
     interfaces: {},
-    ...logFns,
+    error: logFns.error,
   }, mod || {}))
 
 }
