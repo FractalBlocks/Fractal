@@ -70,8 +70,8 @@ export const getDescendantIds = (ctx: Context, id: string): string[] => {
 export const getParentCtx = (ctx: Context) => ctx.components[(ctx.id + '').split('$').slice(0, -1).join('$')]
 
 export interface CompOptions {
-  state: any
-  style: StyleGroup,
+  state?: any
+  style?: StyleGroup,
 }
 
 /**
