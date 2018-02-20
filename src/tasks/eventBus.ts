@@ -1,5 +1,5 @@
 // Pullable event bus implementation
-import { Handler, EventData } from '../core'
+import { Handler, EventData, SubscriptionInfo } from '../core'
 
 interface Subscription {
   sub: EventData
@@ -41,7 +41,7 @@ export const eventBusHandler: Handler = () => mod => {
           pullable,
         }
         state.subSeq++
-        return [evName, seq]
+        return <SubscriptionInfo> [evName, seq]
       }
       if (type === '_unsubscribe') {
         let evName = arg0

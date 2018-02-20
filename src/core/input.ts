@@ -1,6 +1,6 @@
 import { Context } from './core'
 import { CtxIn, _in, CtxAct, _act } from './interface'
-import { getDescendantIds, getPath } from './index'
+import { getDescendantIds, getPath, InputData } from './index'
 import {
   toIt,
   CtxToIt,
@@ -136,7 +136,7 @@ export const task = (ctx: Context): CtxTask => {
 }
 
 export interface CtxEmit {
-  (eventName: string, data: any): Promise<any>
+  (eventName: string, data?: any): Promise<any>
 }
 
 export const emit = (ctx: Context): CtxEmit => {
@@ -146,7 +146,7 @@ export const emit = (ctx: Context): CtxEmit => {
 }
 
 export interface CtxOn {
-  (eventName: string, data: any, pullable?: boolean): Promise<any>
+  (eventName: string, evData: InputData, pullable?: boolean): Promise<any>
 }
 
 export const on = (ctx: Context): CtxOn => {
@@ -155,8 +155,15 @@ export const on = (ctx: Context): CtxOn => {
     await _toIt('_execute', ['ev', ctx.id, ['_subscribe', eventName, data, pullable]])
 }
 
+export interface SubscriptionInfo extends Array<any> {
+  /** Event name */
+  0: string
+  /** Event identifier */
+  1: number
+}
+
 export interface CtxOff {
-  (eventName: string, data: any): Promise<any>
+  (subscriptionInfo: SubscriptionInfo): Promise<any>
 }
 
 export const off = (ctx: Context): CtxOff => {
