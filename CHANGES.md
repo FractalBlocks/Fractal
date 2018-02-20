@@ -19,9 +19,13 @@
 
 ## Done
 
+# v5.0.10
+
+- Improvements in event bus and make `data` F.emit parameter optional
+
 # v5.0.9
 
-- Fix bug in `comp` helper and type signature
+- Fix bug in `comp` helper function and type signature
 
 # v5.0.8
 
