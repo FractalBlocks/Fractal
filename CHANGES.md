@@ -21,7 +21,7 @@
 
 # v5.0.9
 
-- Fix bug in `comp` helper
+- Fix bug in `comp` helper and type signature
 
 # v5.0.8
 
