@@ -87,4 +87,5 @@ export const comp = (component: Component<any>, options: CompOptions) => {
   if (options.style) {
     newComp.groups.style = mergeStyles(newComp.groups.style, options.style)
   }
+  return newComp
 }
