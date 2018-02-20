@@ -19,6 +19,10 @@
 
 ## Done
 
+# v5.0.9
+
+- Fix bug in `comp` helper
+
 # v5.0.8
 
 - Fix `comp` helper type signature, properties are now optional
