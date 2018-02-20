@@ -79,7 +79,7 @@ export interface CompOptions {
  * @param component The target component
  * @param options Options to concatenate
  */
-export const comp = (component: Component<any>, options: CompOptions) => {
+export const comp = (component: Component<any>, options: CompOptions): Component<any> => {
   const newComp = clone(component)
   if (options.state) {
     newComp.state = Object.assign(newComp.state, options.state)
