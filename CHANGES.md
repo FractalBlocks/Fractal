@@ -19,6 +19,10 @@
 
 ## Done
 
+# v5.0.8
+
+- Fix `comp` helper type signature, properties are now optional
+
 # v5.0.7
 
 - Include eventBus as `ev` default task
