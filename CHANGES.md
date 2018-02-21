@@ -3,19 +3,19 @@
 ## Whats next?
 
 - Implement filtered logs with a console interface
-- Add nextFrame helper that returns a Promise (with requestAnimationFrame)
-- Add immediate helper that returns a Promise (with setImmediate)
+- Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
+- Add `fork` helper that returns a Promise (with setImmediate)
 - Implement a way for merging module definitions
 - Add paths to Set default action
 - Implement plugin system, this means tasks can override
 - Implement an alternative module for running playground in a worker
 - Implement bulk matching for event bus
-- Add nextTick helper that returns a Promise (with ASAP)
 - Refactor logs (deeply nested look overwhelming)
 - Fix hmr on examples
 - Find a way for to hotSwapp dyamic components
 - Evaluate how to handle errors when a task fails
 - Simplify worker helpers
+- Add `asap` helper that returns a Promise (with ASAP)
 
 ## Done
 
