@@ -2,9 +2,10 @@
 
 ## Whats next?
 
-- Implement filtered logs with a console interface
+- Implement a way for returning a value when a susbsriber enter in an event channel
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
 - Add `fork` helper that returns a Promise (with setImmediate)
+- Implement filtered logs with a console interface
 - Implement a way for merging module definitions
 - Add paths to Set default action
 - Implement plugin system, this means tasks can override
