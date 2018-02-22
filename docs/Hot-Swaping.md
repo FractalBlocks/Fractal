@@ -1,16 +1,5 @@
-# Hot-Swaping algorithm (reconciliation)
+# Hot-Swaping
 
-The scenario, incoming hot-swap update, there are:
+It is done in a pretty simple way. We save 'actions' all the time during development, so each time hot-swapping is activated, the whole component tree is recalculated and 'actions' are replayed. After that state should be consistent.
 
-- Last components (0 subindex)
-- New / Incoming components (n subindex)
-
-And we need to figure out how to obtain the uptated components (1 subindex) for static components (S) and dynamic components (D), here is how:
-
-Given the next operations:
-
-- Merge components states: mergeStates = CompSet => map((C0, Cn) -> C1, CompSet), through the same component C
-
-S1 = (Sn - (Sn ∩ S0)) + mergeStates(Sn ∩ S0)
-
-D1 =
+One of the reasons we encourage that dynamic components should be wrapped in actions its because this way actions are replayed over the lattest components code.
