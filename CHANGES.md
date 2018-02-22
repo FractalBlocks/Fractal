@@ -2,7 +2,7 @@
 
 ## Whats next?
 
-- Implement a way for returning a value when a susbsriber enter in an event channel
+- Implement a way for returning a value when a subscriber enter in an event channel
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
 - Automatic management of event channel subscriptions in Components, when disposed
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
