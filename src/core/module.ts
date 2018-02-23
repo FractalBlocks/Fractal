@@ -215,7 +215,6 @@ export const unnest = (ctx: Context): CtxUnnest => async name => {
   }
   // decomposition
   let components = componentSpace.components
-  /* istanbul ignore else */
   if (components) {
     await unnestAll(componentSpace)(Object.keys(componentSpace.state._nest))
   }
@@ -309,7 +308,6 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
   if (typeof executable === 'function') {
     return await performUpdate(compCtx, executable)
   } else {
-    /* istanbul ignore else */
     if (executable instanceof Array) {
       if (executable[0] && typeof executable[0] === 'string') {
         // single task
@@ -321,7 +319,6 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
         }
         return await ctx.taskHandlers[executable[0]].handle(executable[1], executable[2])
       } else {
-        /* istanbul ignore else */
         if (executable[0] instanceof Array || typeof executable[0] === 'function') {
           // list of updates and tasks
           let results = []
@@ -329,7 +326,6 @@ export async function execute (ctx: Context, executable: GenericExecutable<any>)
             if (typeof executable[i] === 'function') { // is an update?
               results.push(await performUpdate(compCtx, executable[i]))
             } else {
-                /* istanbul ignore else */
                 if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
                 // single task
                 if (!ctx.taskHandlers[executable[i][0]]) {
