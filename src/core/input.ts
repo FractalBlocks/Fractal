@@ -4,43 +4,34 @@ import { getDescendantIds, getPath, InputData } from './index'
 import {
   toIt,
   CtxToIt,
+  performTask,
 } from './module'
 
-export interface InputHelpers {
-  ctx: Context
-  in: CtxIn
-  act: CtxAct
-  stateOf: CtxStateOf
-  toIt: CtxToIt
-  toChild: CtxToChild
-  toChildAct: CtxToChildAct
-  toAct: CtxToAct
-  set: CtxSet
-  task: CtxTask
-  emit: CtxEmit
-  on: CtxOn
-  off: CtxOff
-  comps: CtxComponentHelpers
-  _clearCache: CtxClearCache
-}
-
-export const makeInputHelpers = (ctx: Context): InputHelpers => ({
+export const makeInputHelpers = (ctx: Context) => ({
   ctx,
-  in: _in(ctx),
-  act: _act(ctx),
+  in: <CtxIn> _in(ctx),
+  act: <CtxAct> _act(ctx),
   stateOf: _stateOf(ctx),
-  toIt: toIt(ctx),
+  toIt: <CtxToIt> toIt(ctx),
   toChild: toChild(ctx),
   toChildAct: toChildAct(ctx),
   toAct: toAct(ctx),
   set: set(ctx),
-  task: task(ctx),
+  task: performTask(ctx),
   emit: emit(ctx),
   on: on(ctx),
   off: off(ctx),
   comps: _componentHelpers(ctx),
-  _clearCache: _clearCache(ctx), // TODO:
+  _clearCache: _clearCache(ctx),
 })
+
+/**
+ * Work around while we can get the type of any expression with typeof
+ * See https://github.com/Microsoft/TypeScript/issues/6606
+ */
+export let __wr_inputHelpers = true ? undefined as never : makeInputHelpers(<Context> {});
+
+export type InputHelpers = typeof __wr_inputHelpers;
 
 export interface CtxStateOf {
   (name?: string): any
@@ -124,25 +115,14 @@ export const set = (ctx: Context): CtxSet => {
     await _toIt('_action', ['Set', arg0 instanceof Array ? arg0 : [arg0, arg1]])
 }
 
-export interface CtxTask {
-  (taskName: string, data?: any): Promise<any>
-}
-
-// generic action self caller
-export const task = (ctx: Context): CtxTask => {
-  let _toIt = toIt(ctx)
-  return async (taskName, data) =>
-    await _toIt('_execute', [taskName, ctx.id, data])
-}
-
 export interface CtxEmit {
   (eventName: string, data?: any): Promise<any>
 }
 
 export const emit = (ctx: Context): CtxEmit => {
-  let _toIt = toIt(ctx)
+  const _task = performTask(ctx)
   return async (eventName, data) =>
-    await _toIt('_execute', ['ev', ctx.id, [eventName, data]])
+    await _task('ev', [eventName, data])
 }
 
 export interface CtxOn {
@@ -150,9 +130,9 @@ export interface CtxOn {
 }
 
 export const on = (ctx: Context): CtxOn => {
-  let _toIt = toIt(ctx)
+  const _task = performTask(ctx)
   return async (eventName, data, pullable) =>
-    await _toIt('_execute', ['ev', ctx.id, ['_subscribe', eventName, data, pullable]])
+    await _task('ev', ['_subscribe', eventName, data, pullable])
 }
 
 export interface SubscriptionInfo extends Array<any> {
@@ -167,16 +147,19 @@ export interface CtxOff {
 }
 
 export const off = (ctx: Context): CtxOff => {
-  let _toIt = toIt(ctx)
+  const _task = performTask(ctx)
   return async ([eventName, seq]) =>
-    await _toIt('_execute', ['ev', ctx.id, ['_unsubscribe', eventName, seq]])
+    await _task('ev', ['_unsubscribe', eventName, seq])
 }
 
 export interface CtxClearCache {
   (interfaceName: string, childNames?: string[]): void
 }
 
-// Clear interface cache
+/**
+ * Clears the interface cache of a component and its descendants
+ * @param ctx The component Context
+ */
 export const _clearCache = (ctx: Context): CtxClearCache => {
   return (interfaceName: string, childNames?: string[]) => {
     let descendantIds, childId
@@ -199,7 +182,7 @@ export const _clearCache = (ctx: Context): CtxClearCache => {
   }
 }
 
-// --- Child components helpers: build functions for traversing components and broadcasting messages to them
+// --- Child component helpers: functions for traversing and broadcasting messages to child components
 
 export interface Instruction extends Array<any> {
   0: string // component name

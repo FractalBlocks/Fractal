@@ -6,10 +6,8 @@ import {
   Components,
   Interfaces,
   CtxInterfaceIndex,
-  GenericExecutable,
   InputData,
   action,
-  executeInput,
   SetAction,
   _removeAction,
   clone,
@@ -131,10 +129,6 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     if (!childCtx.inputs._action) {
       // action helper enabled by default
       childCtx.inputs._action = action(childCtx, component.actions)
-    }
-    if (!childCtx.inputs._execute) {
-      // action helper enabled by default
-      childCtx.inputs._execute = executeInput(childCtx)
     }
     if (!childCtx.actions.Set) {
       childCtx.actions.Set = SetAction
@@ -300,53 +294,6 @@ export const toIt = (ctx: Context): CtxToIt => {
   }
 }
 
-// execute an executable in a context, executable parameter should not be undefined
-export async function execute (ctx: Context, executable: GenericExecutable<any>) {
-  let id = ctx.id
-  let compCtx = ctx.components[id]
-
-  if (typeof executable === 'function') {
-    return await performUpdate(compCtx, executable)
-  } else {
-    if (executable instanceof Array) {
-      if (executable[0] && typeof executable[0] === 'string') {
-        // single task
-        if (!ctx.taskHandlers[executable[0]]) {
-          return ctx.error(
-            'execute',
-            `there are no task handler for '${executable[0]}' in component '${compCtx.name}' from space '${id}'`
-          )
-        }
-        return await ctx.taskHandlers[executable[0]].handle(executable[1], executable[2])
-      } else {
-        if (executable[0] instanceof Array || typeof executable[0] === 'function') {
-          // list of updates and tasks
-          let results = []
-          for (let i = 0, len = executable.length; i < len; i++) {
-            if (typeof executable[i] === 'function') { // is an update?
-              results.push(await performUpdate(compCtx, executable[i]))
-            } else {
-                if (executable[i] instanceof Array && typeof executable[i][0] === 'string') {
-                // single task
-                if (!ctx.taskHandlers[executable[i][0]]) {
-                  return ctx.error(
-                    'execute',
-                    `there are no task handler for '${executable[i][0]}' in component '${compCtx.name}' from space '${id}'`
-                  )
-                }
-                results.push(await ctx.taskHandlers[executable[i][0]].handle(executable[i][1], executable[i][2]))
-              }
-            }
-            // the else branch never occurs because of Typecript check
-          }
-          return results
-        }
-      }
-    }
-    // the else branch never occurs because of Typecript check
-  }
-}
-
 export async function performUpdate (compCtx: Context, update: Update<any>): Promise<any> {
   let updateRes = update(compCtx.state)
   compCtx.state = await updateRes
@@ -372,6 +319,20 @@ export async function performUpdate (compCtx: Context, update: Update<any>): Pro
     compCtx.interfaceValues = {}
   }
   return compCtx.state
+}
+
+export function performTask (ctx: Context) {
+  return (name: string, data?: any): Promise<any> => {
+    // single task
+    if (!ctx.taskHandlers[name]) {
+      ctx.error(
+        'execute',
+        `there are no task handler for '${name}' in component '${ctx.name}' from space '${ctx.id}'`
+      )
+      return
+    }
+    return ctx.taskHandlers[name].handle(ctx.id, data)
+  }
 }
 
 export function calcAndNotifyInterfaces (ctx: Context) {

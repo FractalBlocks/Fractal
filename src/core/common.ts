@@ -1,4 +1,4 @@
-import { Context, Actions, execute, GenericExecutable, Action } from '.'
+import { Context, Actions, Action, performUpdate } from '.'
 
 // generic action input
 export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg2]: any): Promise<any> => {
@@ -19,13 +19,8 @@ export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg
   if (ctx.global.record) {
     ctx.global.records.push({ id: ctx.id, actionName: name, value })
   }
-  let result = await execute(ctx, await actions[name](value))
+  let result = await performUpdate(ctx, await actions[name](value))
   return result
-}
-
-// generic execute input
-export const executeInput = (ctx: Context) => async (executable: GenericExecutable<any>): Promise<any> => {
-  return await execute(ctx, executable)
 }
 
 // generic execute input

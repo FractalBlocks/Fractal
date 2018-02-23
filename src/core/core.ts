@@ -130,7 +130,7 @@ export interface Context {
     record: boolean
     records: ActionRecord[]
     log: boolean
-    // flag for manually disable rendering workflow, useful in SSR for performance
+    // flag for disabling rendering workflow, useful in SSR for performance
     render: boolean
     moduleRender: boolean
     hotSwap: boolean
@@ -160,10 +160,6 @@ export interface ActionRecord {
 export interface ContextIndex {
   [id: string]: Context
 }
-
-export type Executable<S> = Update<S> | Task
-
-export type GenericExecutable<S> = Update<S> | Task | Executable<any>[]
 
 export interface RunModule {
   (root: Component<any>, DEV: boolean, options?, viewCb?): Promise<Module>

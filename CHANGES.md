@@ -24,6 +24,8 @@
 
 ## Done
 
+- Implement optimization and simplification regarding _execute internal function, remove Executable abstraction in favor of more decoupled concepts
+
 # v5.0.10
 
 - Improvements in event bus and make `data` F.emit parameter optional
