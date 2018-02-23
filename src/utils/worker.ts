@@ -88,6 +88,9 @@ export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (
       case 'setGroup':
         mod.setGroup(data[1], data[2], data[3])
         break
+      case 'task':
+        mod.task(data[1], data[2])
+        break
       case 'dispose':
         mod.dispose()
         _self.postMessage(['dispose'])
@@ -164,6 +167,7 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
     attach,
     // delegated methods
     setGroup: (id, name, group) => worker.postMessage(['setGroup', id, name, group]),
+    task: async (name: string, data?: any) => worker.postMessage(['task', name, data]),
     warn: def.warn,
     error: def.error,
   }

@@ -1,5 +1,5 @@
-import { Context } from './core'
-import { CtxIn, _in, CtxAct, _act } from './interface'
+import { Context, InterfaceHelpers, CtxPerformTask } from '.'
+import { _in, _act } from './interface'
 import { getDescendantIds, getPath, InputData } from './index'
 import {
   toIt,
@@ -7,12 +7,26 @@ import {
   performTask,
 } from './module'
 
-export const makeInputHelpers = (ctx: Context) => ({
+export interface InputHelpers extends InterfaceHelpers {
+  toIt: CtxToIt
+  toChild: CtxToChild
+  toChildAct: CtxToChildAct
+  toAct: CtxToAct
+  set: CtxSet
+  task: CtxPerformTask
+  emit: CtxEmit
+  on: CtxOn
+  off: CtxOff
+  comps: CtxComponentHelpers
+  _clearCache: CtxClearCache
+}
+
+export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   ctx,
-  in: <CtxIn> _in(ctx),
-  act: <CtxAct> _act(ctx),
+  in: _in(ctx),
+  act: _act(ctx),
   stateOf: _stateOf(ctx),
-  toIt: <CtxToIt> toIt(ctx),
+  toIt: toIt(ctx),
   toChild: toChild(ctx),
   toChildAct: toChildAct(ctx),
   toAct: toAct(ctx),
@@ -24,14 +38,6 @@ export const makeInputHelpers = (ctx: Context) => ({
   comps: _componentHelpers(ctx),
   _clearCache: _clearCache(ctx),
 })
-
-/**
- * Work around while we can get the type of any expression with typeof
- * See https://github.com/Microsoft/TypeScript/issues/6606
- */
-export let __wr_inputHelpers = true ? undefined as never : makeInputHelpers(<Context> {});
-
-export type InputHelpers = typeof __wr_inputHelpers;
 
 export interface CtxStateOf {
   (name?: string): any

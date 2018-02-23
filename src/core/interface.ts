@@ -8,17 +8,17 @@ import {
   HandlerMsg,
 } from './handler'
 import { toIt } from './module'
-import { _stateOf, CtxStateOf, _componentHelpers } from './input'
+import { _stateOf, _componentHelpers, CtxStateOf } from './input'
 
 export interface InterfaceHelpers {
   ctx: Context
-  interfaceOf: CtxInterfaceOf
+  interfaceOf?: CtxInterfaceOf
   stateOf: CtxStateOf
   in: CtxIn
   act: CtxAct
-  vw: CtxVw
-  vws: CtxVws
-  group: CtxGroup
+  vw?: CtxVw
+  vws?: CtxVws
+  group?: CtxGroup
 }
 
 export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
@@ -60,6 +60,15 @@ export const _interfaceOf = (ctx: Context) => async (name: string, interfaceName
     compCtx.interfaceValues[interfaceName] = await compCtx.interfaces[interfaceName](compCtx.state)
     return compCtx.interfaceValues[interfaceName]
   }
+}
+
+export interface CtxIn {
+  (inputName: string, context?: any, param?: any, options?: EventOptions): InputData
+}
+
+// create an InputData array
+export const _in = (ctx: Context): CtxIn => (inputName, context, param, options) => {
+  return [ctx.id, inputName, context, param, options]
 }
 
 export interface CtxAct {
@@ -115,15 +124,6 @@ export const _group = (ctx: Context): CtxGroup => {
     }
     return views
   }
-}
-
-export interface CtxIn {
-  (inputName: string, context?: any, param?: any, options?: EventOptions): InputData
-}
-
-// create an InputData array
-export const _in = (ctx: Context): CtxIn => (inputName, context, param, options) => {
-  return [ctx.id, inputName, context, param, options]
 }
 
 function computePath (path: any[], event) {

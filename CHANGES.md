@@ -24,6 +24,7 @@
 
 ## Done
 
+- Add task method to ModuleAPI
 - Implement optimization and simplification regarding _execute internal function, remove Executable abstraction in favor of more decoupled concepts
 
 # v5.0.10

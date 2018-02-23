@@ -1,9 +1,9 @@
 import { types, getStyles as _getStyles } from 'typestyle'
 import { TypeStyle } from 'typestyle/lib/internal/typestyle'
 import { deepmerge } from './fun'
-import { h } from '../interfaces/view/index'
+import { h } from '../interfaces/view'
 import { VNode } from '../interfaces/view/vnode'
-import { InterfaceHelpers } from '../core/index'
+import { InterfaceHelpers } from '../core'
 
 export type CSS = types.NestedCSSProperties
 

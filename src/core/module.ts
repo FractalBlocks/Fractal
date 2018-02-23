@@ -69,6 +69,7 @@ export interface ModuleAPI {
   dispose (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
   setGroup (id: string, name: string, space: any): void
+  task: CtxPerformTask
   warn (source, description): void
   error (source, description): void
 }
@@ -321,9 +322,12 @@ export async function performUpdate (compCtx: Context, update: Update<any>): Pro
   return compCtx.state
 }
 
-export function performTask (ctx: Context) {
-  return (name: string, data?: any): Promise<any> => {
-    // single task
+export interface CtxPerformTask {
+  (name: string, data?: any): Promise<any>
+}
+
+export function performTask (ctx: Context): CtxPerformTask {
+  return (name, data) => {
     if (!ctx.taskHandlers[name]) {
       ctx.error(
         'execute',
@@ -419,6 +423,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
           ctx.components[id].groups[name] = space
         },
         attach,
+        task: performTask(ctx),
         // delegated methods
         warn: ctx.warn,
         error: ctx.error,
