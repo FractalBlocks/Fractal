@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Extract event bus implementation to a library called `pullable-event-bus`
 - Implement a way for returning a value when a subscriber enter in an event channel
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
 - Automatic management of event channel subscriptions in Components, when disposed
@@ -18,7 +19,6 @@
 - Find a way for to hotSwapp dyamic components
 - Evaluate how to handle errors when a task fails
 - Simplify worker helpers
-- Add `asap` helper that returns a Promise (with ASAP)
 - Implement timetravel UI
 
 ## Done
