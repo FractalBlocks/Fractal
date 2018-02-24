@@ -21,6 +21,8 @@
 - Evaluate how to handle errors when a task fails
 - Simplify worker helpers
 - Implement timetravel UI
+- Implement tree view
+- Implement Fractal App Viewer as a separate project
 
 ## Done
 
