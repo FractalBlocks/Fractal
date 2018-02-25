@@ -6,11 +6,6 @@ interface Subscription {
   pullable: boolean
 }
 
-interface Subscription {
-  sub: EventData
-  pullable: boolean
-}
-
 interface EventSubscriptions {
   [seq: string]: Subscription
 }
