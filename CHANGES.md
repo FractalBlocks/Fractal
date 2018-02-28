@@ -26,6 +26,10 @@
 
 ## Done
 
+# v5.0.12
+
+- Improve type signature of mapToObj utility function
+
 # v5.0.11
 
 - Add task method to ModuleAPI
