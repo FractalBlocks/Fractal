@@ -38,7 +38,7 @@ export interface KeyValuePair extends Array<any> {
   1: any
 }
 
-export function mapToObj (arr: any[], fn: { (idx, value?): KeyValuePair } ): any {
+export function mapToObj<U> (arr: U[], fn: { (idx, value?: U): KeyValuePair } ): { [key: string]: any } {
   let result = {}, aux
   for (let i = 0, len = arr.length; i < len; i++) {
     aux = fn(i, arr[i])
