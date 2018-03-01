@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Insightful error when nesting components and here is no component
 - Make all components parts optional for easy learning and prototyping
 - Extract event bus implementation to a library called `pullable-event-bus`
 - Implement a way for returning a value when a subscriber enter in an event channel
