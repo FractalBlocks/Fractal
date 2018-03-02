@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Breaking change evaluation, rename toIt with toIn
 - Insightful error when nesting components and here is no component
 - Make all components parts optional for easy learning and prototyping
 - Extract event bus implementation to a library called `pullable-event-bus`
