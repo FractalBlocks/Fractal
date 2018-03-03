@@ -5,7 +5,7 @@ export const ChildComp = {
   inputs: F => ({
     inc: async () => {
       await F.toAct('Inc')
-      await F.toIt('changed', F.stateOf().count)
+      await F.toIn('changed', F.stateOf().count)
     },
     changed: async value => {},
   }),

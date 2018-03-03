@@ -23,7 +23,7 @@ export type S = typeof state
 export const inputs: Inputs = F => ({
   init: async () => {
     if (typeof window !== 'undefined') {
-      F.toIt('self')
+      F.toIn('self')
     }
   },
   self: async () => {
@@ -31,7 +31,7 @@ export const inputs: Inputs = F => ({
       setTimeout(() => res(), 1000)
     })
     await F.toAct('Inc')
-    F.toIt('self')
+    F.toIn('self')
   },
   set: async ([name, value]) => {
     let s: S = F.stateOf()
@@ -48,7 +48,7 @@ export const inputs: Inputs = F => ({
   setNote: async ([evName, id, item]) => {
     await F.toAct('SetNote', [evName, id, item])
     if (evName === 'remove') {
-      await F.toIt('removed')
+      await F.toIn('removed')
     }
   },
   removed: async () => {},

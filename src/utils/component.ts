@@ -3,7 +3,7 @@ import {
   Context,
   Group,
   Module,
-  toIt,
+  toIn,
   StyleGroup,
   mergeStyles,
   clone,
@@ -15,7 +15,7 @@ import {
 /* istanbul ignore next */
 export async function sendMsg (mod: Module, id: string, inputName: string, msg?) {
   let ctx = mod.rootCtx
-  await toIt(ctx.components[id])(inputName, msg)
+  await toIn(ctx.components[id])(inputName, msg)
 }
 
 export function setGroup (name: string, group: Group) {

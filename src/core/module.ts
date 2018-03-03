@@ -250,29 +250,29 @@ export async function propagate (ctx: Context, inputName: string, data: any) {
      // Individual
     parentInputName = `$${componentSpace.name}_${inputName}`
     if (parentSpace.inputs[parentInputName]) {
-      await toIt(parentSpace)(parentInputName, data)
+      await toIn(parentSpace)(parentInputName, data)
     }
     // Groupal
     if (nameParts.length === 2) {
       parentInputName = `$${nameParts[0]}_${inputName}`
       if (parentSpace.inputs[parentInputName]) {
-        await toIt(parentSpace)(parentInputName, [nameParts[1], data])
+        await toIn(parentSpace)(parentInputName, [nameParts[1], data])
       }
     }
     // Global
     parentInputName = `$_${inputName}`
     if (parentSpace.inputs[parentInputName]) {
-      await toIt(parentSpace)(parentInputName, [componentSpace.name, data])
+      await toIn(parentSpace)(parentInputName, [componentSpace.name, data])
     }
   }
 }
 
-export interface CtxToIt {
+export interface CtxToIn {
   (inputName: string, data?): Promise<void>
 }
 
 // send a message to an input of a component from itself
-export const toIt = (ctx: Context): CtxToIt => {
+export const toIn = (ctx: Context): CtxToIn => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
   return async (inputName, data) => {

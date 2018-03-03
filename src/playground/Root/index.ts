@@ -37,7 +37,7 @@ export const inputs: Inputs = F => ({
   },
   Route_active: async ([id]) => {
     if (id !== '') {
-      await F.toIt('$List_select', id)
+      await F.toIn('$List_select', id)
     }
   },
   $List_select: async id => {

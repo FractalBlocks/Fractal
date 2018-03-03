@@ -15,7 +15,7 @@ const inputs: Inputs = F => ({
   inc: async () => {
     await F.toAct('Inc')
     setImmediate(() => {
-      F.toIt('inc')
+      F.toIn('inc')
     })
   },
 })

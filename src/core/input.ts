@@ -2,13 +2,13 @@ import { Context, InterfaceHelpers, CtxPerformTask } from '.'
 import { _in, _act } from './interface'
 import { getDescendantIds, getPath, InputData } from './index'
 import {
-  toIt,
-  CtxToIt,
+  toIn,
+  CtxToIn,
   performTask,
 } from './module'
 
 export interface InputHelpers extends InterfaceHelpers {
-  toIt: CtxToIt
+  toIn: CtxToIn
   toChild: CtxToChild
   toChildAct: CtxToChildAct
   toAct: CtxToAct
@@ -26,7 +26,7 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   in: _in(ctx),
   act: _act(ctx),
   stateOf: _stateOf(ctx),
-  toIt: toIt(ctx),
+  toIn: toIn(ctx),
   toChild: toChild(ctx),
   toChildAct: toChildAct(ctx),
   toAct: toAct(ctx),
@@ -72,7 +72,7 @@ export const toChild = (ctx: Context) => async (
   let childId = ctx.id + '$' + childCompName
   let compCtx = ctx.components[childId]
   if (compCtx) {
-    return await toIt(compCtx)(inputName, msg)
+    return await toIn(compCtx)(inputName, msg)
   } else {
     ctx.error('toChild', `there are no child '${childCompName}' in space '${ctx.id}'`)
   }
@@ -91,7 +91,7 @@ export const toChildAct = (ctx: Context) => async (
   let childId = ctx.id + '$' + childCompName
   let compCtx = ctx.components[childId]
   if (compCtx) {
-    return await toIt(compCtx)('_action', [actionName, msg])
+    return await toIn(compCtx)('_action', [actionName, msg])
   } else {
     ctx.error('toChild', `there are no child '${childCompName}' in space '${ctx.id}'`)
   }
@@ -105,9 +105,9 @@ export interface CtxToAct {
 
 // generic action caller
 export const toAct = (ctx: Context): CtxToAct => {
-  let _toIt = toIt(ctx)
+  let _toIn = toIn(ctx)
   return async (actionName, data) =>
-    await _toIt('_action', [actionName, data])
+    await _toIn('_action', [actionName, data])
 }
 
 export interface CtxSet {
@@ -116,9 +116,9 @@ export interface CtxSet {
 
 // Set Action caller (syntax sugar)
 export const set = (ctx: Context): CtxSet => {
-  let _toIt = toIt(ctx)
+  let _toIn = toIn(ctx)
   return async (arg0, arg1) =>
-    await _toIt('_action', ['Set', arg0 instanceof Array ? arg0 : [arg0, arg1]])
+    await _toIn('_action', ['Set', arg0 instanceof Array ? arg0 : [arg0, arg1]])
 }
 
 export interface CtxEmit {

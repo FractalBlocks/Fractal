@@ -29,7 +29,7 @@ export const inputs: Inputs = F => ({
   inputKeyup: async ([keyCode, text]) => {
     if (keyCode === 13 && text !== '') {
       await F.toAct('SetText', '')
-      await F.toIt('add', text)
+      await F.toIn('add', text)
     } else {
       await F.toAct('SetText', text)
     }
@@ -53,7 +53,7 @@ export const inputs: Inputs = F => ({
     let names = F.comps('Item').getNames()
     for (let i = 0, len = names.length; i < len; i++) {
       if (F.stateOf('Item_' + names[i]).checked) {
-        setImmediate(() => F.toIt('$Item_remove', [names[i]]))
+        setImmediate(() => F.toIn('$Item_remove', [names[i]]))
       }
     }
   },
@@ -61,7 +61,7 @@ export const inputs: Inputs = F => ({
     await F.task('db', ['remove', name])
   },
   $Item_select: async ([id]) => {
-    await F.toIt('select', id)
+    await F.toIn('select', id)
   },
   select: async id => {},
 })

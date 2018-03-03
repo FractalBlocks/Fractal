@@ -7,7 +7,7 @@ import {
 import {
   HandlerMsg,
 } from './handler'
-import { toIt } from './module'
+import { toIn } from './module'
 import { _stateOf, _componentHelpers, CtxStateOf } from './input'
 
 export interface InterfaceHelpers {
@@ -194,7 +194,7 @@ export const dispatchEv = (ctx: Context) => async (event: any, iData: InputData)
     return
   }
   let cInputData = computeEvent(event, iData)
-  return await toIt(compCtx)(cInputData[1], cInputData[2])
+  return await toIn(compCtx)(cInputData[1], cInputData[2])
 }
 
 export const toComp = (ctx: Context) => async (id: string, inputName: string, data?: any) => {
@@ -203,5 +203,5 @@ export const toComp = (ctx: Context) => async (id: string, inputName: string, da
     ctx.error('Execute component input (toComp)', `There is no component with id: ${id}`)
     return
   }
-  return await toIt(compCtx)(inputName, data)
+  return await toIn(compCtx)(inputName, data)
 }

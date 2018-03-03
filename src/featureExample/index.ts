@@ -14,7 +14,7 @@ namespace ChildComp {
   export const inputs: Inputs = F => ({
     inc: async name => {
       await F.toAct('Inc')
-      await F.toIt('changed', F.stateOf().count)
+      await F.toIn('changed', F.stateOf().count)
     },
     changed: async value => {},
   })
