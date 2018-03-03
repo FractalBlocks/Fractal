@@ -92,6 +92,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   // namespaced name if is a child
   let id = ctx.id === 'Root' && name === 'Root' ? 'Root' : ctx.id + '$' + name
   // state default
+  component.state = component.state || {}
   component.state._nest = component.state._nest || {}
   component.state._compCounter = 0
 
