@@ -2,7 +2,7 @@
 
 ## Whats next?
 
-- Make all components parts optional for easy learning and prototyping
+- Insightful error when nesting components and here is no component
 - Publish minified version for using Fractal with a script tag easily
 - Extract event bus implementation to a library called `pullable-event-bus`
 - Implement a way for returning a value when a subscriber enter in an event channel
@@ -27,7 +27,7 @@
 
 ## Done
 
-- Insightful error when nesting components and here is no component
+- Make state optional
 - Breaking change evaluation, rename toIt with toIn
 
 # v5.0.12
