@@ -2,9 +2,8 @@
 
 ## Whats next?
 
-- Breaking change evaluation, rename toIt with toIn
-- Insightful error when nesting components and here is no component
 - Make all components parts optional for easy learning and prototyping
+- Publish minified version for using Fractal with a script tag easily
 - Extract event bus implementation to a library called `pullable-event-bus`
 - Implement a way for returning a value when a subscriber enter in an event channel
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
@@ -27,6 +26,9 @@
 - Implement Fractal App Viewer as a separate project
 
 ## Done
+
+- Insightful error when nesting components and here is no component
+- Breaking change evaluation, rename toIt with toIn
 
 # v5.0.12
 
