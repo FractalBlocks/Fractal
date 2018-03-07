@@ -88,7 +88,21 @@ Or in nodejs, browserify, Webpack like environments:
 npm i --save fractal-core
 ```
 
-Or see our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/tutorial/readme.md) and the examples (We are refactoring examples and tutorial, be in touch ...).
+## Examples
+
+Working examples you can start hacking immediately:
+
+- [Counter](https://stackblitz.com/edit/fractal-counter?file=Root%2Findex.ts)
+- [Simple Todo List](https://stackblitz.com/edit/fractal-simple-todo-list?file=Root/index.ts)
+- [Filesystem View](https://stackblitz.com/edit/fractal-filesystem-view?file=Root%2Findex.ts)
+- [API Users Posts](https://stackblitz.com/edit/fractal-api-users-posts?file=Root/index.ts)
+- [Conway's Game of Life - Flat Version](https://stackblitz.com/edit/fractal-game-of-life-flat?file=Root%2Findex.ts)
+
+## Tutorial
+
+See our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/tutorial/readme.md) and the examples (We are refactoring examples and tutorial, be in touch ...).
+
+Note: The tutorial is not updated, we will update it soon.
 
 ## Development Notes
 
