@@ -2,8 +2,6 @@
 
 ## Whats next?
 
-- Insightful error when nesting components and here is no component
-- Publish minified version for using Fractal with a script tag easily
 - Extract event bus implementation to a library called `pullable-event-bus`
 - Implement a way for returning a value when a subscriber enter in an event channel
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
@@ -27,6 +25,7 @@
 
 ## Done
 
+- Insightful error when nesting components and there is no component
 - Make state optional
 - Breaking change evaluation, rename toIt with toIn
 
