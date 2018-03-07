@@ -7,6 +7,28 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 
 We use better tools, we move fast, we love innovation ... Oh and Fractal is fractal, this means you can embed any Fractal app inside another with no effort
 
+
+## Features
+
+- Fractal is minimal, composable and extendible
+- A simple and powerful architecture that scales
+- Simple inter-component comunication via messages, you can broadcast messages to all components and listen for them
+- Async operations made simple, all Fractal core make a wide use of async functions, and you can use it in your app
+- We gives you powerful patterns and composing tools that helps you to build small and large apps like Legos
+- Excellent developer experience. We love to improve your experience for now we have hot-swapping support.
+- Lazy loading of components out of the box
+- Prerendering and Server Side Rendering
+- Blazingly fast because we use caching. This is possible because actions are the unique way of updating the state and the component view changes only depends on state so we only compute components that are actually needed. For DOM updates we use Snabbdom that it's pretty fast but you can use whatever DOM library you want, e.g. React
+- Excellent error / warn handling:
+    - Your app will never crash for a runtime error (Actually under testing, if you have an uncovered case please open an issue)
+    - Application logs are meaningful. No more WTF?!! errors
+- You can easly serialize side effects, this means you can run Fractal in a Web Worker, in a server via Websockets or even in a remote browser via WebRTC, crazy right? :'). An example comming soon...
+- High code quality, we love that!! and we helps you to achive it in your proyect :heart:
+
+See the [design document](https://github.com/FractalBlocks/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
+
+We make use of Fractal in our projects and this library is continuosly evolving, be in touch...
+
 ## How it works?
 
 Concepts:
@@ -39,36 +61,13 @@ Techniques:
 - Hot-swapping: Live develop your application with no state loss. It gives you a nice developer experience.
 - JS Bundling / Loading: [FuseBox](https://github.com/fuse-box/fuse-box) :fire::fire::fire: We love it! is fast, clear and powerful ... Oh! I said it's fast? .. Well, it's blazingly fast, let's try it!
 
-## Features
+## Future
 
-- Fractal is minimal, composable and extendible
-- Simple inter-component comunication via messages, you can broadcast messages to all components and listen for them
-- Async operations made simple, all Fractal core make a wide use of async functions, and you can use it in your app
-- Its clear and concise. All you application is nicely structured. Fractal manage and isolate side effects
-- Blazingly fast because we use caching. This is possible because actions are the unique way of updating the state and the component view changes only depends on state so we only compute components that are actually needed. For DOM updates we use Snabbdom that it's pretty fast but you can use whatever DOM library you want, e.g. React
-- You can easly serialize side effects, this means you can run Fractal in a Web Worker, in a server via Websockets or even in a remote browser via WebRTC, crazy right? :'). An example comming soon...
-- We gives you powerful patterns and composing tools that helps you to build small and large apps like Legos
-- A clear and flexible architecture that scales
-- Easy sandbox an app, your app has an integrated API, pause and play it, this allow your app to be embeddable
-- Easily integrable and embeddable by design
-- High code quality, we love that!! and we helps you to achive it in your proyect :heart:
-- The state is isolated, this mean it is serializable and you can hot-swap code updating the UI without reload the navigator
-- Excellent developer experience. We love to improve your experience
-    - We have hot-swapping
-    - We have TimeTravel debugging (soon)
-- Excellent error / warn handling:
-    - Your app will never crash for a runtime error (Actually under testing, if you have an uncovered case please open an issue)
-    - Application logs are meaningful. No more WTF?!! errors
-    - You can search for any error in our complete error index, a list of all possible errors can happen with their respective solution (soon)
-- Your code is flexible, composable and reausable. Modularization as a foundation
-- Lazy loading of components
+- Nice in-app debugger with timetravel debugging and a component tree view
+- A list of all possible errors can happen with their respective solution, this can evolve including links within error logs
 - We have high code quality standards and development flows you and your team can follow, from prototyping to production code (We will publish these soon ...)
 - Prototype with ease and transform to a production level code with easy (Guide comming soon...)
 - We support hot-swapping code in production :rose: (soon)
-
-See the [design document](https://github.com/FractalBlocks/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
-
-We make use of Fractal in our projects and this library is continuosly evolving, be in touch...
 
 ## Getting started
 
@@ -86,6 +85,8 @@ Or with yarn:
 yarn add fractal-core
 ```
 
+Note for VSCoders, you can use the [Fractal VSCode Extension](https://github.com/FractalBlocks/Fractal-vscode-extension)
+
 ## Examples
 
 Working examples you can start hacking immediately:
@@ -102,12 +103,13 @@ See our [tutorial](https://github.com/FractalBlocks/Fractal/blob/master/docs/tut
 
 Note: The tutorial is not updated, we will update it soon.
 
+## Related Projects
+
+- [Fractal Quickstart](https://github.com/FractalBlocks/Fractal-quickstart)
+- [Fractal Featured](https://github.com/FractalBlocks/Fractal-featured)
+- [Fractal VSCode Extension](https://github.com/FractalBlocks/Fractal-vscode-extension)
+- Fractal CLI, Comming soon...
+
 ## Development Notes
 
 See our [Development Documentation](https://github.com/FractalBlocks/Fractal/blob/master/DEVELOPMENT.md)
-
-## Related Projects
-
-- [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart)
-- [Fractal-featured](https://github.com/FractalBlocks/Fractal-featured)
-- Fractal CLI (Comming soon...), making a spec
