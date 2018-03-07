@@ -24,7 +24,7 @@
 
 ## Done
 
-- Extract event bus implementation to a library called `pullable-event-bus`
+- Extract event bus implementation to a library called `pullable-event-bus` (WIP)
 - Insightful error when nesting components and there is no component
 - Make state optional
 - Breaking change evaluation, rename toIt with toIn
