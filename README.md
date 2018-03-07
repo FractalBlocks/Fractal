@@ -5,25 +5,23 @@ We believe in more than frameworks, we believe that minimalist and well crafted 
 
 ## TLDR
 
-We use better tools, we move fast, we love innovation ... Oh and Fractal is fractal, this means you can embed any Fractal app inside another with no effort
-
+We use better tools, we move fast, we love innovation ... Oh and Fractal is fractal, this means you can embed any Fractal app inside another with no effort.
 
 ## Features
 
-- Fractal is minimal, composable and extendible
-- A simple and powerful architecture that scales
+- Minimal, simple and composable architecture that scales
 - Simple inter-component comunication via messages, you can broadcast messages to all components and listen for them
-- Async operations made simple, all Fractal core make a wide use of async functions, and you can use it in your app
+- Async operations made simple. Fractal make a wide use of async functions and you can use it in your app
 - We gives you powerful patterns and composing tools that helps you to build small and large apps like Legos
-- Excellent developer experience. We love to improve your experience for now we have hot-swapping support.
-- Lazy loading of components out of the box
-- Prerendering and Server Side Rendering
+- Excellent developer experience. We love to improve your experience, for now we have hot-swapping support but wait more dev tools in the short term
+- Lazy loading support
+- Prerendering and Server Side Rendering support
 - Blazingly fast because we use caching. This is possible because actions are the unique way of updating the state and the component view changes only depends on state so we only compute components that are actually needed. For DOM updates we use Snabbdom that it's pretty fast but you can use whatever DOM library you want, e.g. React
 - Excellent error / warn handling:
     - Your app will never crash for a runtime error (Actually under testing, if you have an uncovered case please open an issue)
-    - Application logs are meaningful. No more WTF?!! errors
+    - Application logs are meaningful. No more WTF?!! errors, if you see one, report it and we will fix it in a timely manner
 - You can easly serialize side effects, this means you can run Fractal in a Web Worker, in a server via Websockets or even in a remote browser via WebRTC, crazy right? :'). An example comming soon...
-- High code quality, we love that!! and we helps you to achive it in your proyect :heart:
+- High code quality, we love that!! We helps you to achive it in your proyect :heart:
 
 See the [design document](https://github.com/FractalBlocks/Fractal/blob/master/DESIGN.md). In order to be scalable, Fractal is implemented using [Typescript](https://www.typescriptlang.org/)
 
