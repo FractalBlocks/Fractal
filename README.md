@@ -70,22 +70,20 @@ See the [design document](https://github.com/FractalBlocks/Fractal/blob/master/D
 
 We make use of Fractal in our projects and this library is continuosly evolving, be in touch...
 
-## Easy flow
-
-- Setup your project: this means cloning an starter project, for now we have [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) and [Fractal-featured](https://github.com/FractalBlocks/Fractal-featured)
-- Prototype a component, we accept side effects in Inputs
-- Try it
-- Refactor: let stable things to be side effect free
-- Prototype again and have fun ...
-
 ## Getting started
 
-The recomended way is using FuseBox, please download the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) repo, this gives you all things ready.
+The recomended way is using FuseBox, please download the [Fractal-quickstart](https://github.com/FractalBlocks/Fractal-quickstart) or [Fractal-featured](https://github.com/FractalBlocks/Fractal-featured) repo depending on your needs, this gives you all things ready to start hacking.
 
 Or in nodejs, browserify, Webpack like environments:
 
 ```bash
 npm i --save fractal-core
+```
+
+Or with yarn:
+
+```bash
+yarn add fractal-core
 ```
 
 ## Examples
