@@ -89,6 +89,9 @@ export interface CtxNest {
 }
 
 async function _nest (ctx: Context, name: string, component: Component<any>): Promise<Context> {
+  if (!component) {
+    ctx.error('_nest', `Error when trying to create a component named ${name} in component ${ctx.id}`)
+  }
   // namespaced name if is a child
   let id = ctx.id === 'Root' && name === 'Root' ? 'Root' : ctx.id + '$' + name
   // state default
