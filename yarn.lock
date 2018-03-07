@@ -2876,6 +2876,10 @@ pseudomap@^1.0.2:
   version "1.0.2"
   resolved "https://npm.coachcare.io/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
 
+pullable-event-bus@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/pullable-event-bus/-/pullable-event-bus-0.0.3.tgz#ece5f594cdc720fa73ec8105c15ceba605e18d33"
+
 punycode@^1.4.1:
   version "1.4.1"
   resolved "https://npm.coachcare.io/punycode/-/punycode-1.4.1.tgz#c0d5a63b2718800ad8e1eb0fa5269c84dd41845e"

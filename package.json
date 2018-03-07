@@ -46,6 +46,7 @@
     "lodash.uniq": "^4.5.0",
     "object-assign": "^4.1.1",
     "parse-sel": "^1.0.0",
+    "pullable-event-bus": "^0.0.3",
     "setimmediate": "^1.0.5",
     "snabbdom": "^0.7.0",
     "typestyle": "^1.5.1"

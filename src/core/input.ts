@@ -1,11 +1,16 @@
-import { Context, InterfaceHelpers, CtxPerformTask } from '.'
+import { Emit, Off, Descriptor } from 'pullable-event-bus'
+import { Context, InterfaceHelpers, CtxPerformTask, EventData, dispatchEv } from '.'
 import { _in, _act } from './interface'
-import { getDescendantIds, getPath, InputData } from './index'
+import { getDescendantIds, getPath } from './index'
 import {
   toIn,
   CtxToIn,
   performTask,
 } from './module'
+
+export interface FractalOn {
+  (evName: string, evData: EventData): Descriptor
+}
 
 export interface InputHelpers extends InterfaceHelpers {
   toIn: CtxToIn
@@ -14,9 +19,9 @@ export interface InputHelpers extends InterfaceHelpers {
   toAct: CtxToAct
   set: CtxSet
   task: CtxPerformTask
-  emit: CtxEmit
-  on: CtxOn
-  off: CtxOff
+  emit: Emit
+  on: FractalOn
+  off: Off
   comps: CtxComponentHelpers
   _clearCache: CtxClearCache
 }
@@ -32,9 +37,12 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   toAct: toAct(ctx),
   set: set(ctx),
   task: performTask(ctx),
-  emit: emit(ctx),
-  on: on(ctx),
-  off: off(ctx),
+  emit: ctx.eventBus.emit,
+  on: (evName, evData) => {
+    const _dispatchEv = dispatchEv(ctx)
+    return ctx.eventBus.on(evName, data => _dispatchEv(data, evData))
+  },
+  off: ctx.eventBus.off,
   comps: _componentHelpers(ctx),
   _clearCache: _clearCache(ctx),
 })
@@ -121,42 +129,7 @@ export const set = (ctx: Context): CtxSet => {
     await _toIn('_action', ['Set', arg0 instanceof Array ? arg0 : [arg0, arg1]])
 }
 
-export interface CtxEmit {
-  (eventName: string, data?: any): Promise<any>
-}
-
-export const emit = (ctx: Context): CtxEmit => {
-  const _task = performTask(ctx)
-  return async (eventName, data) =>
-    await _task('ev', [eventName, data])
-}
-
-export interface CtxOn {
-  (eventName: string, evData: InputData, pullable?: boolean): Promise<any>
-}
-
-export const on = (ctx: Context): CtxOn => {
-  const _task = performTask(ctx)
-  return async (eventName, data, pullable) =>
-    await _task('ev', ['_subscribe', eventName, data, pullable])
-}
-
-export interface SubscriptionInfo extends Array<any> {
-  /** Event name */
-  0: string
-  /** Event identifier */
-  1: number
-}
-
-export interface CtxOff {
-  (subscriptionInfo: SubscriptionInfo): Promise<any>
-}
-
-export const off = (ctx: Context): CtxOff => {
-  const _task = performTask(ctx)
-  return async ([eventName, seq]) =>
-    await _task('ev', ['_unsubscribe', eventName, seq])
-}
+export type SubscriptionInfo = Descriptor
 
 export interface CtxClearCache {
   (interfaceName: string, childNames?: string[]): void

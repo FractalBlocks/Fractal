@@ -1,3 +1,4 @@
+import { EventBus } from 'pullable-event-bus'
 import { HandlerMsg, HandlerObject } from './handler'
 import { InterfaceHelpers } from './interface'
 import { InputHelpers } from './input'
@@ -139,6 +140,7 @@ export interface Context {
     // active flag, this flag can stop input excecution (used in hot-swap)
     active: boolean
   },
+  eventBus: EventBus,
   // input hooks delegation
   beforeInput? (ctxIn: Context, inputName: string, data: any): void
   afterInput? (ctxIn: Context, inputName: string, data: any): void

@@ -2,7 +2,6 @@
 
 ## Whats next?
 
-- Extract event bus implementation to a library called `pullable-event-bus`
 - Implement a way for returning a value when a subscriber enter in an event channel
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
 - Automatic management of event channel subscriptions in Components, when disposed
@@ -25,6 +24,7 @@
 
 ## Done
 
+- Extract event bus implementation to a library called `pullable-event-bus`
 - Insightful error when nesting components and there is no component
 - Make state optional
 - Breaking change evaluation, rename toIt with toIn

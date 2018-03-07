@@ -18,7 +18,7 @@ import {
   toComp,
   makeInputHelpers,
 } from '.'
-import { eventBusHandler } from '../tasks/eventBus';
+import { makeEventBus } from 'pullable-event-bus'
 
 export interface ModuleDef {
   Root: Component<any>
@@ -104,6 +104,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     name,
     groups: {},
     // delegation
+    eventBus: makeEventBus(),
     global: ctx.global,
     components: ctx.components,
     groupHandlers: ctx.groupHandlers,
@@ -382,7 +383,6 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
 
   // Add event bus as default `ev` task handler
   moduleDef.tasks = moduleDef.tasks ? moduleDef.tasks : {}
-  moduleDef.tasks.ev = eventBusHandler()
 
   // attach root component
   async function attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module> {

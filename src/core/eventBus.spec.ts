@@ -1,4 +1,4 @@
-import test from 'ava'
+// import test from 'ava'
 import { clone, _ } from '../core'
 import { createApp } from '../core/testUtils'
 
@@ -38,8 +38,8 @@ export const ReceptorComp = {
   interfaces: {},
 }
 
-test('Event bus with pullable and normal subscribers', async t => {
-
+// test('Event bus with pullable and normal subscribers', async t => {
+;(async () => {
   const app = await createApp({
     state: {
       result: '',
@@ -61,7 +61,10 @@ test('Event bus with pullable and normal subscribers', async t => {
   })
 
   await app.moduleAPI.toComp('Root$Child', 'inc')
-  t.is(app.rootCtx.components.Root.state.result, 1, 'Should propagate events to not pullable susbscribers')
-  t.deepEqual(app.rootCtx.components.Root$Child.state.result, [4, 4, 4], 'Should pull results from subscribers before sending the event')
+  debugger
+  console.log(app.rootCtx.components.Root.state.result)
+})()
+//   t.is(app.rootCtx.components.Root.state.result, 1, 'Should propagate events to not pullable susbscribers')
+//   t.deepEqual(app.rootCtx.components.Root$Child.state.result, [4, 4, 4], 'Should pull results from subscribers before sending the event')
 
-})
+// })
