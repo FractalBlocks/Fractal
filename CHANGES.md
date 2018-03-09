@@ -10,6 +10,8 @@
 - Implement a way for merging module definitions
 - Add paths to Set default action
 - Implement plugin system, this means tasks can override
+- Add a mechanism for workers to return data, necesary to support full communication and event bus functions to ModuleAPI
+- Add event bus functions to ModuleAPI
 - Implement an alternative module for running playground in a worker
 - Implement bulk matching for event bus
 - Refactor logs (deeply nested look overwhelming)
@@ -22,6 +24,10 @@
 - Implement Fractal App Viewer as a separate project
 
 ## Done
+
+# v5.1.1
+
+- Fix style merge order
 
 # v5.1.0
 
