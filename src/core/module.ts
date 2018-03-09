@@ -104,7 +104,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
     name,
     groups: {},
     // delegation
-    eventBus: makeEventBus(),
+    eventBus: ctx.eventBus,
     global: ctx.global,
     components: ctx.components,
     groupHandlers: ctx.groupHandlers,
@@ -293,6 +293,7 @@ export const toIn = (ctx: Context): CtxToIn => {
       return
     }
     if (ctx.beforeInput) ctx.beforeInput(ctx, inputName, data)
+    console.log(inputName, data)
     let result = await input(data)
     if (ctx.afterInput) ctx.afterInput(ctx, inputName, data)
     await propagate(ctx, inputName, data)
@@ -403,6 +404,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
           render: true,
           active: moduleDef.hasOwnProperty('active') ? moduleDef.active : true,
         },
+        eventBus: makeEventBus(),
         // component index
         components: {},
         groupHandlers: {},
