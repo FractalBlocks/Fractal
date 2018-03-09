@@ -159,6 +159,9 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
 
   // API for modules
   let moduleAPI: ModuleAPI = {
+    // on: (eventName, eventData, pullable) => worker.postMessage(['on', eventName, eventData, pullable]),
+    // off: descriptor => worker.postMessage(['off', descriptor]),
+    // emit: (eventName, data) => worker.postMessage(['emit', eventName, data]),
     // dispatch function type used for handlers
     dispatchEv: async (event: any, iData: InputData) => worker.postMessage(['dispatchEv', event, iData]),
     toComp: async (id: string, inputName: string, data: any) =>

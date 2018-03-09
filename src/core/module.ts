@@ -17,8 +17,13 @@ import {
   dispatchEv,
   toComp,
   makeInputHelpers,
+  // FractalOn,
 } from '.'
-import { makeEventBus } from 'pullable-event-bus'
+import {
+  makeEventBus,
+  // Off,
+  // Emit
+} from 'pullable-event-bus'
 
 export interface ModuleDef {
   Root: Component<any>
@@ -64,6 +69,9 @@ export interface Module {
 
 // API from module to handlers
 export interface ModuleAPI {
+  // on: FractalOn,
+  // off: Off,
+  // emit: Emit,
   dispatchEv (event: any, iData: InputData): Promise<void>
   toComp (id: string, inputName: string, data?: any): Promise<void>
   dispose (): void
@@ -419,6 +427,12 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       }
       // API for modules
       moduleAPI = {
+        on: (evName, evData, pullable) => {
+          const _dispatchEv = dispatchEv(ctx)
+          return ctx.eventBus.on(evName, data => _dispatchEv(data, evData), pullable)
+        },
+        off: ctx.eventBus.off,
+        emit: ctx.eventBus.emit,
         // dispatch function type used for handlers
         dispatchEv: dispatchEv(ctx),
         toComp: toComp(ctx),
