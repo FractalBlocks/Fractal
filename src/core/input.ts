@@ -9,7 +9,7 @@ import {
 } from './module'
 
 export interface FractalOn {
-  (evName: string, evData: EventData): Descriptor
+  (evName: string, evData: EventData, pullable?: boolean): Descriptor
 }
 
 export interface InputHelpers extends InterfaceHelpers {
@@ -38,9 +38,9 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   set: set(ctx),
   task: performTask(ctx),
   emit: ctx.eventBus.emit,
-  on: (evName, evData) => {
+  on: (evName, evData, pullable) => {
     const _dispatchEv = dispatchEv(ctx)
-    return ctx.eventBus.on(evName, data => _dispatchEv(data, evData))
+    return ctx.eventBus.on(evName, data => _dispatchEv(data, evData), pullable)
   },
   off: ctx.eventBus.off,
   comps: _componentHelpers(ctx),
