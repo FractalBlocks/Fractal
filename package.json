@@ -37,7 +37,7 @@
     "@types/core-js": "^0.9.43",
     "@types/node": "^8.0.26",
     "deep-equal": "^1.0.1",
-    "deepmerge": "^1.4.3",
+    "deepmerge": "^2.1.0",
     "fs-jetpack": "^1.2.0",
     "lodash.escape": "^4.0.1",
     "lodash.forown": "^4.4.0",
