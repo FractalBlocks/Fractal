@@ -293,7 +293,6 @@ export const toIn = (ctx: Context): CtxToIn => {
       return
     }
     if (ctx.beforeInput) ctx.beforeInput(ctx, inputName, data)
-    console.log(inputName, data)
     let result = await input(data)
     if (ctx.afterInput) ctx.afterInput(ctx, inputName, data)
     await propagate(ctx, inputName, data)
