@@ -17,6 +17,7 @@ reports/
 dist/
 src/playground/dist/
 .fusebox
+yarn-error.log
 
 # npm stuff
 node_modules/
