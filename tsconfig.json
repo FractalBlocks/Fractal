@@ -18,8 +18,7 @@
     "tabSize": 2
   },
   "files": [
-    "src/core/index.ts",
-    "typings/index.d.ts"
+    "src/core/index.ts"
   ],
   "include": [
     "src/**/*.ts",

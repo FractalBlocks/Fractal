@@ -1,7 +1,0 @@
-{
-  "name": "fractal-framework",
-  "dependencies": {},
-  "globalDependencies": {
-    "webpack-env": "registry:dt/webpack-env#1.13.0+20170105061735"
-  }
-}
