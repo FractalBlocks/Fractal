@@ -60,7 +60,6 @@ test('Event bus with pullable and normal subscribers', async t => {
   })
 
   await app.moduleAPI.toComp('Root$Child', 'inc')
-  console.log(app.rootCtx.components.Root$Child.state.result)
   t.is(app.rootCtx.components.Root.state.result, 1, 'Should propagate events to not pullable susbscribers')
   t.deepEqual(app.rootCtx.components.Root$Child.state.result, [4, 4, 4], 'Should pull results from subscribers before sending the event')
 })
