@@ -62,7 +62,7 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
   }
   for(let i = 0, keys = Object.keys(group2), len = keys.length; i < len; i++) {
     if (mergedGroup[keys[i]] && typeof mergedGroup[keys[i]] === 'object') {
-      mergedGroup[keys[i]] = deepmerge(group2[keys[i]], mergedGroup[keys[i]])
+      mergedGroup[keys[i]] = deepmerge(mergedGroup[keys[i]], group2[keys[i]])
     } else {
       mergedGroup[keys[i]] = group2[keys[i]]
     }
