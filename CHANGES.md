@@ -25,6 +25,10 @@
 
 ## Done
 
+# v5.1.2
+
+- Fix style merge order (Revert)
+
 # v5.1.1
 
 - Fix style merge order
