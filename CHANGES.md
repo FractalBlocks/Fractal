@@ -25,6 +25,8 @@
 
 ## Done
 
+- Add seq helper
+
 # v5.1.2
 
 - Fix style merge order (Revert)
