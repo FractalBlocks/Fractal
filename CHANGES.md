@@ -2,6 +2,9 @@
 
 ## Whats next?
 
+- Implement timetravel UI
+- Implement tree view
+- Implement Fractal App Viewer as a separate project
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
 - Automatic management of event channel subscriptions in Components, when disposed
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
@@ -19,9 +22,6 @@
 - Find a way for to hotSwapp dyamic components
 - Evaluate how to handle errors when a task fails
 - Simplify worker helpers
-- Implement timetravel UI
-- Implement tree view
-- Implement Fractal App Viewer as a separate project
 
 ## Done
 
