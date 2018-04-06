@@ -101,6 +101,13 @@ export const reduceAsync = async <U, V>(arr: U[], fn: AsyncReduceFn<U, V>, v0: V
 
 export const all = async (arr: Promise<any>[]) => await Promise.all(arr)
 
+export const seq = async (...arr: Promise<any>[]) => {
+  let element
+  for (element of arr) {
+    await element
+  }
+}
+
 export const range = (a: number, b: number) => {
   let res = []
   if (a < b) {
