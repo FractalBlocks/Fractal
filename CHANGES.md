@@ -25,6 +25,8 @@
 
 ## Done
 
+- Add AppViewer (In progress)
+- Add guid function
 - Add seq helper
 
 # v5.1.2
