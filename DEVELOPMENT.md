@@ -10,9 +10,15 @@ See the reference (TODO: put a link to structure reference).
 
 We follow semver.
 
-## Code conventions
+## Design Principles
 
-We follow the Fractal Standards for Software Quality (TODO: put the link) that describes conventions for coding
+- All-in-JS: No templates, no html, no JSX, no CSS, no whatever CSS preprocessor. We simply use JS libraries and plain JS / TS:
+  - TypeStyle for styles
+  - Snabbdom for DOM
+- TypeScript as preferred language but everything works in JS pretty well. We use TS for coding experience and catching a few bugs.
+- We prefer imperative APIs and controled mutation for a more intuitive use.
+
+Soon ... We follow the Fractal Standards for Software Quality (TODO: put the link) that describes conventions for coding
 
 ## Core Dependencies
 
@@ -24,6 +30,18 @@ We support use of:
 
 - Snabbdom for vdom: used in examples and view interface handlers
 - Typestyle for safe styles: used in examples
+
+## TODOs - Short Term
+
+What are missing for this repo:
+
+- Cancelable callbacks from subcribables in tasks, via an instance index
+- Document use cases on stateless components and modules
+- Implement an example of charts (D3) (SERVICE 3PARTY-DOM-INTEGRATION)
+- Implement on demand large app loading example (@carloslfu)
+- Implement pouchdb integration example (@carloslfu)
+- Implement an example of whole service pattern, serviceTest module and API definitions
+- Implement ui-modules as an example of setting-up an own design framework for an app, take the button from quickstart repo
 
 ## Roadmap (What is next?)
 
@@ -58,7 +76,7 @@ There are TODOs for short term:
 - Evaluate a way for keeping state in inputs, maybe support use of generators e.g. keep waiting for 3 messages after execute some action or task
 - Add error index (DX)
 - Router Docs (ASAP)
-- Build an example of Scuttlebott integration (ASAP)
+- Build an example of Scuttlebott integration
 - Use complexList inside manyLists example and add adapter to complexList
 - Document adapters like a way for nesting complex lists (dynamic component trees)
 - Refactor examples to make use of typesafe actions
@@ -80,18 +98,6 @@ There are TODOs for medium term:
 - Implement fractal-native using anvil
 - Implement fractal-native iOS
   - Implement anvil-ios, Note that we can use [PortalView](https://github.com/guidomb/PortalView)
-
-## TODOs
-
-What are missing for this repo:
-
-- Cancelable callbacks from subcribables in tasks, via an instance index
-- Document use cases on stateless components and modules
-- Implement an example of charts (D3) (SERVICE 3PARTY-DOM-INTEGRATION)
-- Implement on demand large app loading example (@carloslfu)
-- Implement pouchdb integration example (@carloslfu)
-- Implement an example of whole service pattern, serviceTest module and API definitions
-- Implement ui-modules as an example of setting-up an own design framework for an app, take the button from quickstart repo
 
 ## Ideas
 
