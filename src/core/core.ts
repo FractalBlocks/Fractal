@@ -4,7 +4,7 @@ import { InterfaceHelpers } from './interface'
 import { InputHelpers } from './input'
 import { Module } from './module'
 
-export interface Component<S> {
+export interface Component<S extends State> {
   // the changing stuff (AKA variables)
   state?: S
   // Inputs are dispatchers of actions and tasks
@@ -17,6 +17,11 @@ export interface Component<S> {
   groups?: {
     [name: string]: Group
   }
+}
+
+export interface State {
+  [prop: string]: any
+  _nest: Components
 }
 
 export interface Components {
@@ -80,7 +85,7 @@ export interface Update<S> {
 }
 
 export interface Interface<Type, S>{
-  (helpers: InterfaceHelpers) : CtxInterface<Type, S> | Promise<CtxInterface<Type, S>>
+  (helpers: InterfaceHelpers<S>) : CtxInterface<Type, S> | Promise<CtxInterface<Type, S>>
 }
 
 export interface CtxInterface<Type, S> {
@@ -115,7 +120,7 @@ export interface Context<S> {
     [name: string]: Group,
   },
   // global component index
-  components: ContextIndex<S>
+  components: ContextIndex<State>
   groupHandlers: {
     [name: string]: HandlerObject
   }

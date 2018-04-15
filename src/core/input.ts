@@ -1,5 +1,5 @@
 import { Emit, Off, Descriptor } from 'pullable-event-bus'
-import { Context, InterfaceHelpers, CtxPerformTask, EventData, dispatchEv } from '.'
+import { Context, InterfaceHelpers, CtxPerformTask, EventData, dispatchEv, State } from '.'
 import { _in, _act } from './interface'
 import { getDescendantIds, getPath } from './index'
 import {
@@ -12,7 +12,7 @@ export interface FractalOn {
   (evName: string, evData: EventData, pullable?: boolean): Descriptor
 }
 
-export interface InputHelpers<S> extends InterfaceHelpers {
+export interface InputHelpers<S> extends InterfaceHelpers<S> {
   state: S
   toIn: CtxToIn
   toChild: CtxToChild
@@ -27,7 +27,7 @@ export interface InputHelpers<S> extends InterfaceHelpers {
   _clearCache: CtxClearCache
 }
 
-export const makeInputHelpers = <S>(ctx: Context<S>): InputHelpers<S> => ({
+export const makeInputHelpers = <S extends State>(ctx: Context<S>): InputHelpers<S> => ({
   state: ctx.state,
   ctx,
   in: _in(ctx),
@@ -49,11 +49,11 @@ export const makeInputHelpers = <S>(ctx: Context<S>): InputHelpers<S> => ({
   _clearCache: _clearCache(ctx),
 })
 
-export interface CtxStateOf<S> {
-  (name?: string): S
+export interface CtxStateOf {
+  (name?: string): State
 }
 
-export const _stateOf = <S>(ctx: Context<S>): CtxStateOf<S> => name => {
+export const _stateOf = <S extends State>(ctx: Context<S>): CtxStateOf => name => {
   let id = name ? ctx.id + '$' + name : ctx.id
   let space = ctx.components[id]
   if (space) {
@@ -204,7 +204,7 @@ export const getNames = (state: any, groupName: string) =>
   getCompleteNames(state, groupName)
     .map(n => n.split('_')[1])
 
-export const _componentHelpers = <S>(ctx: Context<S>): CtxComponentHelpers => {
+export const _componentHelpers = <S extends State>(ctx: Context<S>): CtxComponentHelpers => {
   let _toChild = toChild(ctx)
   let stateOf = _stateOf(ctx)
   return groupName => {

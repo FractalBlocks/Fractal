@@ -17,6 +17,7 @@ import {
   dispatchEv,
   toComp,
   makeInputHelpers,
+  State,
   // FractalOn,
 } from '.'
 import {
@@ -40,8 +41,8 @@ export interface ModuleDef {
   init? (mod: ModuleAPI): Promise<void>
   destroy? (mod: ModuleAPI): Promise<void>
   // hooks for inputs
-  beforeInput? (ctxIn: Context, inputName: string, data: any): void
-  afterInput? (ctxIn: Context, inputName: string, data: any): void
+  beforeInput? (ctxIn: Context<any>, inputName: string, data: any): void
+  afterInput? (ctxIn: Context<any>, inputName: string, data: any): void
   // callbacks (side effects) for log messages
   warn? (source: string, description: string): Promise<void>
   error? (source: string, description: string): Promise<void>
@@ -64,7 +65,7 @@ export interface Module {
   // API to module
   moduleAPI: ModuleAPI
   // Root component context
-  rootCtx: Context
+  rootCtx: Context<any>
 }
 
 // API from module to handlers
@@ -85,7 +86,7 @@ export interface ModuleAPI {
 // MiddleFn is used for merge the states on hot-swaping (reattach)
 export interface MiddleFn {
   (
-    ctx: Context,
+    ctx: Context<any>,
     app: Module
   ): void
 }
@@ -96,7 +97,7 @@ export interface CtxNest {
   (name: string, component: Component<any>, isStatic?: boolean): void
 }
 
-async function _nest (ctx: Context, name: string, component: Component<any>): Promise<Context> {
+async function _nest <S extends State>(ctx: Context<S>, name: string, component: Component<any>): Promise<Context<S>> {
   if (!component) {
     ctx.error('_nest', `Error when trying to create a component named ${name} in component ${ctx.id}`)
   }
@@ -107,7 +108,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   component.state._nest = component.state._nest || {}
   component.state._compCounter = 0
 
-  let childCtx: Context = {
+  let childCtx: Context<S> = {
     id, // the component id
     name,
     groups: {},
@@ -173,7 +174,7 @@ async function _nest (ctx: Context, name: string, component: Component<any>): Pr
   return childCtx
 }
 
-async function _makeInterfaces (ctx: Context, interfaces: Interfaces): Promise<CtxInterfaceIndex> {
+async function _makeInterfaces <S extends State>(ctx: Context<S>, interfaces: Interfaces): Promise<CtxInterfaceIndex> {
   let index: CtxInterfaceIndex = {}
   let name
   for (name in interfaces) {
@@ -182,7 +183,7 @@ async function _makeInterfaces (ctx: Context, interfaces: Interfaces): Promise<C
   return index
 }
 
-async function handleGroups (ctx: Context, component: Component<any>) {
+async function handleGroups <S>(ctx: Context<S>, component: Component<any>) {
   let space: HandlerObject
   let name
   for (name in component.groups) {
@@ -203,7 +204,7 @@ export interface CtxNestAll {
 }
 
 // add many components to the component index
-export const nestAll = (ctx: Context): CtxNestAll => async (components, isStatic = false) => {
+export const nestAll = <S extends State>(ctx: Context<S>): CtxNestAll => async (components, isStatic = false) => {
   let name
   for (name in components) {
     await _nest(ctx, name, components[name])

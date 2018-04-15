@@ -3,6 +3,7 @@ import {
   InputData,
   EventOptions,
   EventData,
+  State,
 } from './core'
 import {
   HandlerMsg,
@@ -10,10 +11,10 @@ import {
 import { toIn } from './module'
 import { _stateOf, _componentHelpers, CtxStateOf } from './input'
 
-export interface InterfaceHelpers {
-  ctx: Context
+export interface InterfaceHelpers<S> {
+  ctx: Context<S>
   interfaceOf?: CtxInterfaceOf
-  stateOf: CtxStateOf
+  stateOf: CtxStateOf<S>
   in: CtxIn
   act: CtxAct
   vw?: CtxVw
@@ -21,7 +22,7 @@ export interface InterfaceHelpers {
   group?: CtxGroup
 }
 
-export const makeInterfaceHelpers = (ctx: Context): InterfaceHelpers => ({
+export const makeInterfaceHelpers = <S extends State>(ctx: Context<S>): InterfaceHelpers<S> => ({
   ctx,
   interfaceOf: _interfaceOf(ctx),
   stateOf: _stateOf(ctx),
@@ -37,7 +38,7 @@ export interface CtxInterfaceOf {
 }
 
 // gets an interface message from a certain component
-export const _interfaceOf = (ctx: Context) => async (name: string, interfaceName) => {
+export const _interfaceOf = <S>(ctx: Context<S>) => async (name: string, interfaceName) => {
   let id = `${ctx.id}$${name}`
   let compCtx = ctx.components[id]
   if (!compCtx) {
@@ -67,7 +68,7 @@ export interface CtxIn {
 }
 
 // create an InputData array
-export const _in = (ctx: Context): CtxIn => (inputName, context, param, options) => {
+export const _in = <S>(ctx: Context<S>): CtxIn => (inputName, context, param, options) => {
   return [ctx.id, inputName, context, param, options]
 }
 
@@ -76,7 +77,7 @@ export interface CtxAct {
 }
 
 // generic action dispatcher
-export const _act = (ctx: Context): CtxAct => {
+export const _act = <S>(ctx: Context<S>): CtxAct => {
   let _inCtx = _in(ctx)
   return (actionName, context, param, options): InputData =>
     _inCtx('_action', [actionName, context], param, options)
@@ -87,7 +88,7 @@ export interface CtxVw {
 }
 
 // extract component view interface, sintax sugar
-export const _vw = (ctx: Context): CtxVw => {
+export const _vw = <S>(ctx: Context<S>): CtxVw => {
   let _interfaceOfCtx = _interfaceOf(ctx)
   return async componentName => await _interfaceOfCtx(componentName, 'view')
 }
@@ -97,7 +98,7 @@ export interface CtxVws {
 }
 
 // extract view interfaces based on component names
-export const _vws = (ctx: Context): CtxVws => {
+export const _vws = <S>(ctx: Context<S>): CtxVws => {
   let _interfaceOfCtx = _interfaceOf(ctx)
   return async names => {
     let views = []
@@ -113,7 +114,7 @@ export interface CtxGroup {
 }
 
 // extract view interfaces from a component group
-export const _group = (ctx: Context): CtxGroup => {
+export const _group = <S extends State>(ctx: Context<S>): CtxGroup => {
   let _interfaceOfCtx = _interfaceOf(ctx)
   let comps = _componentHelpers(ctx)
   return async groupName => {
@@ -126,6 +127,11 @@ export const _group = (ctx: Context): CtxGroup => {
   }
 }
 
+/**
+ * Extract a path or some paths from an Event Object
+ * @param path An array that contains an object path
+ * @param event An Event Object
+ */
 function computePath (path: any[], event) {
   let data
   let actual = event
@@ -187,7 +193,7 @@ export function computeEvent(eventData: any, iData: InputData): EventData {
   ]
 }
 
-export const dispatchEv = (ctx: Context) => async (event: any, iData: InputData) => {
+export const dispatchEv = <S>(ctx: Context<S>) => async (event: any, iData: InputData) => {
   let compCtx = ctx.components[iData[0] + '']
   if (!compCtx) {
     ctx.error('Dispatch Event (dispatchEv)', `There is no component with id: ${iData[0]}`)
@@ -197,7 +203,19 @@ export const dispatchEv = (ctx: Context) => async (event: any, iData: InputData)
   return await toIn(compCtx)(cInputData[1], cInputData[2])
 }
 
-export const toComp = (ctx: Context) => async (id: string, inputName: string, data?: any) => {
+/**
+ * Executes an input of aa certain component, passing to some data to him
+ */
+export interface CtxToComp {
+  (id: string, inputName: string, data?: any): any
+}
+
+/**
+ * toComp function factory
+ * @param ctx
+ * @returns CtxToComp
+ */
+export const toComp = <S>(ctx: Context<S>): CtxToComp => async (id: string, inputName: string, data?: any) => {
   let compCtx = ctx.components[id]
   if (!compCtx) {
     ctx.error('Execute component input (toComp)', `There is no component with id: ${id}`)
