@@ -37,7 +37,7 @@ export interface Interfaces {
 export type Group = any
 
 export interface Inputs<S> {
-  (helpers: InputHelpers<S>): InputIndex
+  (s?: S, F?: InputHelpers<S>): InputIndex
 }
 
 export interface InputIndex {
@@ -86,16 +86,12 @@ export interface Update<S> {
   (state: S): Promise<S> | S
 }
 
-export interface Interface<Type, S>{
-  (helpers: InterfaceHelpers<S>) : CtxInterface<Type, S> | Promise<CtxInterface<Type, S>>
+export interface Interface<Type, S> {
+  (state: S, F: InterfaceHelpers<S>): Promise<Type>
 }
 
-export interface CtxInterface<Type, S> {
-  (state: S): Promise<Type>
-}
-
-export interface CtxInterfaceIndex {
-  [name: string]:  CtxInterface<any, any>
+export interface InterfaceIndex {
+  [name: string]:  Interface<any, any>
 }
 
 // a task executes some kind of side effect (output) - Comunications stuff
@@ -113,7 +109,8 @@ export interface Context<S> {
   state: S
   inputs: InputIndex
   actions: Actions<any>
-  interfaces: CtxInterfaceIndex
+  interfaces: InterfaceIndex
+  interfaceHelpers: InterfaceHelpers<S>
   interfaceValues: { // caches interfaces
     [name: string]: any
   }

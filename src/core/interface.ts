@@ -58,7 +58,8 @@ export const _interfaceOf = <S>(ctx: Context<S>) => async (name: string, interfa
     return cache
   } else {
     // caches interface
-    compCtx.interfaceValues[interfaceName] = await compCtx.interfaces[interfaceName](compCtx.state)
+    compCtx.interfaceValues[interfaceName]
+      = await compCtx.interfaces[interfaceName](compCtx.state, compCtx.interfaceHelpers)
     return compCtx.interfaceValues[interfaceName]
   }
 }

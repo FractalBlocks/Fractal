@@ -4,8 +4,6 @@ import {
   Update,
   Context,
   Components,
-  Interfaces,
-  CtxInterfaceIndex,
   InputData,
   action,
   SetAction,
@@ -107,7 +105,9 @@ async function _nest <S extends State>(ctx: Context<S>, name: string, component:
   component.state = component.state || {}
   component.state._nest = component.state._nest || {}
   component.state._compCounter = 0
-
+  // Component state
+  const state = clone(component.state)
+  // Component context
   let childCtx: Context<S> = {
     id, // the component id
     name,
@@ -123,20 +123,21 @@ async function _nest <S extends State>(ctx: Context<S>, name: string, component:
     afterInput: ctx.afterInput,
     warn: ctx.warn,
     error: ctx.error,
-    // if state is an object, it is cloned
-    state: clone(component.state),
+    // Component related context
+    state,
     inputs: {}, // input helpers needs to be initialized after ComponentSpace, because references
     actions: component.actions,
-    interfaces: {},
+    interfaces: component.interfaces,
+    interfaceHelpers: <any> {},
     interfaceValues: {},
   }
+  // Create interface helpers
+  childCtx.interfaceHelpers = makeInterfaceHelpers(childCtx)
 
   ctx.components[id] =  childCtx
 
-  childCtx.interfaces = await _makeInterfaces(childCtx, component.interfaces)
-
   if (component.inputs) {
-    childCtx.inputs = component.inputs(makeInputHelpers(childCtx))
+    childCtx.inputs = component.inputs(childCtx.state, makeInputHelpers(childCtx))
   } else {
     childCtx.inputs = {}
   }
@@ -172,15 +173,6 @@ async function _nest <S extends State>(ctx: Context<S>, name: string, component:
   }
 
   return childCtx
-}
-
-async function _makeInterfaces <S extends State>(ctx: Context<S>, interfaces: Interfaces): Promise<CtxInterfaceIndex> {
-  let index: CtxInterfaceIndex = {}
-  let name
-  for (name in interfaces) {
-    index[name] = await interfaces[name](makeInterfaceHelpers(ctx))
-  }
-  return index
 }
 
 async function handleGroups <S>(ctx: Context<S>, component: Component<any>) {
@@ -369,7 +361,7 @@ export function calcAndNotifyInterfaces <S>(ctx: Context<S>) {
       let rootSpace = ctx.components.Root
       for (let name in rootSpace.interfaces) {
         if (ctx.interfaceHandlers[name]) {
-          ctx.interfaceHandlers[name].handle('Root', await rootSpace.interfaces[name](rootSpace.state))
+          ctx.interfaceHandlers[name].handle('Root', await rootSpace.interfaces[name](rootSpace.state, rootSpace.interfaceHelpers))
         } else {
           // This only can happen when this method is called for a context that is not the root
           ctx.error('notifyInterfaceHandlers', `module does not have interface handler named '${name}' for component '${space.name}' from space '${ctx.id}'`)
@@ -499,7 +491,10 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     if (interfaceOrder) {
       for (let i = 0; name = interfaceOrder[i]; i++) {
         if (ctx.interfaceHandlers[name]) {
-          ctx.interfaceHandlers[name].handle('Root', await rootCtx.interfaces[name](ctx.components.Root.state))
+          ctx.interfaceHandlers[name].handle(
+            'Root',
+            await rootCtx.interfaces[name](ctx.components.Root.state, ctx.components.Root.interfaceHelpers)
+          )
         } else {
           return <any> errorNotHandler(name)
         }
@@ -512,7 +507,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       if (ctx.interfaceHandlers[name]) {
         ctx.interfaceHandlers[name].handle(
           'Root',
-          await rootCtx.interfaces[name](ctx.components.Root.state)
+          await rootCtx.interfaces[name](ctx.components.Root.state, ctx.components.Root.interfaceHelpers)
         )
       } else {
         return <any> errorNotHandler(name)
