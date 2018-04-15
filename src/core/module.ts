@@ -216,7 +216,7 @@ export interface CtxUnnest {
 }
 
 // remove a component to the component index, if name is not defined dispose the root
-export const unnest = (ctx: Context): CtxUnnest => async name => {
+export const unnest = <S>(ctx: Context<S>): CtxUnnest => async name => {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
@@ -238,14 +238,14 @@ export interface CtxUnnestAll {
 }
 
 // add many components to the component index
-export const unnestAll = (ctx: Context): CtxUnnestAll => async components => {
+export const unnestAll = <S>(ctx: Context<S>): CtxUnnestAll => async components => {
   let _unnest = unnest(ctx)
   for (let i = 0, len = components.length; i < len; i++) {
     await _unnest(components[i])
   }
 }
 
-export async function propagate (ctx: Context, inputName: string, data: any) {
+export async function propagate <S>(ctx: Context<S>, inputName: string, data: any) {
   // notifies parent if name starts with $
   let id = ctx.id
   let idParts = (id + '').split('$')
@@ -286,7 +286,7 @@ export interface CtxToIn {
 }
 
 // send a message to an input of a component from itself
-export const toIn = (ctx: Context): CtxToIn => {
+export const toIn = <S>(ctx: Context<S>): CtxToIn => {
   let id = ctx.id
   let componentSpace = ctx.components[id]
   return async (inputName, data) => {
@@ -309,7 +309,7 @@ export const toIn = (ctx: Context): CtxToIn => {
   }
 }
 
-export async function performUpdate (compCtx: Context, update: Update<any>): Promise<any> {
+export async function performUpdate <S extends State>(compCtx: Context<S>, update: Update<S>): Promise<any> {
   let updateRes = update(compCtx.state)
   compCtx.state = await updateRes
   if (compCtx.state._compUpdated) {
@@ -340,7 +340,7 @@ export interface CtxPerformTask {
   (name: string, data?: any): Promise<any>
 }
 
-export function performTask (ctx: Context): CtxPerformTask {
+export function performTask <S>(ctx: Context<S>): CtxPerformTask {
   return (name, data) => {
     if (!ctx.taskHandlers[name]) {
       ctx.error(
@@ -353,7 +353,7 @@ export function performTask (ctx: Context): CtxPerformTask {
   }
 }
 
-export function calcAndNotifyInterfaces (ctx: Context) {
+export function calcAndNotifyInterfaces <S>(ctx: Context<S>) {
   // calc and caches interfaces
   let space = ctx.components[ctx.id]
   let idParts = (ctx.id + '').split('$')
@@ -385,7 +385,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   let component: Component<any>
   let moduleAPI: ModuleAPI
   // root context
-  let ctx: Context
+  let ctx: Context<any>
 
   // Prevents cross references
   moduleDef = clone(moduleDef)

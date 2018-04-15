@@ -21,7 +21,9 @@ export interface Component<S extends State> {
 
 export interface State {
   [prop: string]: any
-  _nest: Components
+  _nest?: Components
+  _compNames?: string[]
+  _compUpdated?: boolean
 }
 
 export interface Components {
