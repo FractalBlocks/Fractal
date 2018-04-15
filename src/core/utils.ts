@@ -4,7 +4,7 @@
  * @param object Object to clone
  * @returns The cloned object
  */
-export function clone (object) {
+export function clone <T>(object: T): T {
   var out, v, key
   out = Array.isArray(object) ? [] : {}
   for (key in object) {
