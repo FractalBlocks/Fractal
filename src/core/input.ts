@@ -12,7 +12,8 @@ export interface FractalOn {
   (evName: string, evData: EventData, pullable?: boolean): Descriptor
 }
 
-export interface InputHelpers extends InterfaceHelpers {
+export interface InputHelpers<S> extends InterfaceHelpers {
+  state: S
   toIn: CtxToIn
   toChild: CtxToChild
   toChildAct: CtxToChildAct
@@ -26,7 +27,8 @@ export interface InputHelpers extends InterfaceHelpers {
   _clearCache: CtxClearCache
 }
 
-export const makeInputHelpers = (ctx: Context): InputHelpers => ({
+export const makeInputHelpers = <S>(ctx: Context<S>): InputHelpers<S> => ({
+  state: ctx.state,
   ctx,
   in: _in(ctx),
   act: _act(ctx),
@@ -47,11 +49,11 @@ export const makeInputHelpers = (ctx: Context): InputHelpers => ({
   _clearCache: _clearCache(ctx),
 })
 
-export interface CtxStateOf {
-  (name?: string): any
+export interface CtxStateOf<S> {
+  (name?: string): S
 }
 
-export const _stateOf = (ctx: Context): CtxStateOf => name => {
+export const _stateOf = <S>(ctx: Context<S>): CtxStateOf<S> => name => {
   let id = name ? ctx.id + '$' + name : ctx.id
   let space = ctx.components[id]
   if (space) {
@@ -72,7 +74,7 @@ export interface CtxToChild {
 }
 
 // send a message to an input of a component from its parent
-export const toChild = (ctx: Context) => async (
+export const toChild = <S>(ctx: Context<S>) => async (
   childCompName,
   inputName,
   msg = undefined
@@ -91,7 +93,7 @@ export interface CtxToChildAct {
 }
 
 // execute an action of a component from its parent
-export const toChildAct = (ctx: Context) => async (
+export const toChildAct = <S>(ctx: Context<S>) => async (
   childCompName,
   actionName,
   msg = undefined
@@ -112,7 +114,7 @@ export interface CtxToAct {
 }
 
 // generic action caller
-export const toAct = (ctx: Context): CtxToAct => {
+export const toAct = <S>(ctx: Context<S>): CtxToAct => {
   let _toIn = toIn(ctx)
   return async (actionName, data) =>
     await _toIn('_action', [actionName, data])
@@ -123,7 +125,7 @@ export interface CtxSet {
 }
 
 // Set Action caller (syntax sugar)
-export const set = (ctx: Context): CtxSet => {
+export const set = <S>(ctx: Context<S>): CtxSet => {
   let _toIn = toIn(ctx)
   return async (arg0, arg1) =>
     await _toIn('_action', ['Set', arg0 instanceof Array ? arg0 : [arg0, arg1]])
@@ -139,7 +141,7 @@ export interface CtxClearCache {
  * Clears the interface cache of a component and its descendants
  * @param ctx The component Context
  */
-export const _clearCache = (ctx: Context): CtxClearCache => {
+export const _clearCache = <S>(ctx: Context<S>): CtxClearCache => {
   return (interfaceName: string, childNames?: string[]) => {
     let descendantIds, childId
     if (childNames) {
@@ -202,7 +204,7 @@ export const getNames = (state: any, groupName: string) =>
   getCompleteNames(state, groupName)
     .map(n => n.split('_')[1])
 
-export const _componentHelpers = (ctx: Context): CtxComponentHelpers => {
+export const _componentHelpers = <S>(ctx: Context<S>): CtxComponentHelpers => {
   let _toChild = toChild(ctx)
   let stateOf = _stateOf(ctx)
   return groupName => {

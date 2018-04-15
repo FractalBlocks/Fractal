@@ -8,7 +8,7 @@ export interface Component<S> {
   // the changing stuff (AKA variables)
   state?: S
   // Inputs are dispatchers of actions and tasks
-  inputs?: Inputs
+  inputs?: Inputs<S>
   // unique way to change the state
   actions?: Actions<S>
   // a way to suscribe to external events and perform continous side effects (recalculated on every state change)
@@ -29,8 +29,8 @@ export interface Interfaces {
 
 export type Group = any
 
-export interface Inputs {
-  (helpers: InputHelpers): InputIndex
+export interface Inputs<S> {
+  (helpers: InputHelpers<S>): InputIndex
 }
 
 export interface InputIndex {
@@ -98,12 +98,12 @@ export interface Task extends Array<any> {
 }
 
 // describes an excecution context
-export interface Context {
+export interface Context<S> {
   // name for that component in the index
   id: string
   // sintax sugar: the name is the last part of the id (e.g. the id is Main$child the name is child)
   name: string
-  state: { [name: string]: any }
+  state: S
   inputs: InputIndex
   actions: Actions<any>
   interfaces: CtxInterfaceIndex
@@ -115,7 +115,7 @@ export interface Context {
     [name: string]: Group,
   },
   // global component index
-  components: ContextIndex
+  components: ContextIndex<S>
   groupHandlers: {
     [name: string]: HandlerObject
   }
@@ -136,14 +136,14 @@ export interface Context {
     moduleRender: boolean
     hotSwap: boolean
     // root context delegation
-    rootCtx: Context
+    rootCtx: Context<S>
     // active flag, this flag can stop input excecution (used in hot-swap)
     active: boolean
   },
   eventBus: EventBus,
   // input hooks delegation
-  beforeInput? (ctxIn: Context, inputName: string, data: any): void
-  afterInput? (ctxIn: Context, inputName: string, data: any): void
+  beforeInput? (ctxIn: Context<S>, inputName: string, data: any): void
+  afterInput? (ctxIn: Context<S>, inputName: string, data: any): void
   // error and warning delegation
   warn: {
     (source: string, description: string): void
@@ -159,8 +159,8 @@ export interface ActionRecord {
   value: any
 }
 
-export interface ContextIndex {
-  [id: string]: Context
+export interface ContextIndex<S> {
+  [id: string]: Context<S>
 }
 
 export interface RunModule {
