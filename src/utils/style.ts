@@ -70,7 +70,7 @@ export function mergeStyles (group1: StyleGroup, group2: StyleGroup): StyleGroup
   return mergedGroup
 }
 
-export const getStyle = (F: InterfaceHelpers): any => {
+export const getStyle = <S>(F: InterfaceHelpers<S>): any => {
   const style = F.ctx.groups.style
   return (...args) => {
     let obj = {}
