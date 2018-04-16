@@ -25,9 +25,15 @@
 
 ## Done
 
-- Add AppViewer (In progress)
+- AppViewer POC
 - Add guid function
 - Add seq helper
+- Add `s` property to `InputHelpers` interface, that is a reference to local state
+- Deprecate recommended `F.stateOf()` sentence with no arguments in favor of `F.state`
+- BREAKING: Add many state type signatures
+- Add `s` parameter to input factory
+- Add `State` interface
+- Remove currification in interfaces
 
 # v5.1.2
 
