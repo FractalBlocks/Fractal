@@ -17,6 +17,8 @@ export interface InterfaceHelpers<S> {
   stateOf: CtxStateOf
   in: CtxIn
   act: CtxAct
+  inFn: CtxInFn
+  actFn: CtxActFn
   vw?: CtxVw
   vws?: CtxVws
   group?: CtxGroup
@@ -28,6 +30,8 @@ export const makeInterfaceHelpers = <S extends State>(ctx: Context<S>): Interfac
   stateOf: _stateOf(ctx),
   in: _in(ctx),
   act: _act(ctx),
+  inFn: _inFn(ctx),
+  actFn: _actFn(ctx),
   vw: _vw(ctx),
   vws: _vws(ctx),
   group: _group(ctx),
@@ -82,6 +86,32 @@ export const _act = <S>(ctx: Context<S>): CtxAct => {
   let _inCtx = _in(ctx)
   return (actionName, context, param, options): InputData =>
     _inCtx('_action', [actionName, context], param, options)
+}
+
+
+export interface CtxInFn {
+  (inputName: string, context?: any, param?: any, options?: EventOptions): void
+}
+
+// create an InputData array
+export const _inFn = <S>(ctx: Context<S>): CtxInFn => {
+  const dispatchEvCtx = dispatchEv(ctx)
+  return (inputName, context, param, options) => {
+    return (event: Event) => invokeHandler(
+      ctx.error, dispatchEvCtx, [ctx.id, inputName, context, param, options], event
+    )
+  }
+}
+
+export interface CtxActFn {
+  (actionName: string, context?: any, param?: any, options?: EventOptions): void
+}
+
+// generic action dispatcher
+export const _actFn = <S>(ctx: Context<S>): CtxActFn => {
+  let _inFnCtx = _inFn(ctx)
+  return (actionName, context, param, options): void =>
+    _inFnCtx('_action', [actionName, context], param, options)
 }
 
 export interface CtxVw {
@@ -223,4 +253,32 @@ export const toComp = <S>(ctx: Context<S>): CtxToComp => async (id: string, inpu
     return
   }
   return await toIn(compCtx)(inputName, data)
+}
+
+export const invokeHandler = (error, dispatchEvCtx, handler: InputData | InputData[] | 'ignore', event: Event) => {
+    if (handler instanceof Array && typeof handler[0] === 'string') {
+      let options = handler[4]
+      if ((options && options.listenPrevented !== true || !options) && event.defaultPrevented) {
+        return
+      }
+      if (options && options.default === false) {
+        event.preventDefault()
+      }
+      setImmediate(() => {
+        dispatchEvCtx(event, handler)
+      })
+    } else if (handler instanceof Array) {
+      // call multiple handlers
+      for (var i = 0; i < handler.length; i++) {
+        invokeHandler(error, dispatchEvCtx, handler[i], event)
+      }
+    } else if (handler === 'ignore') {
+      // this handler is ignored
+      event.preventDefault()
+    } else if (handler === '' && handler === undefined) {
+      // this handler is passed
+      return
+    } else {
+      error('Interface helpers - invokeHandler', 'event handler of type ' + typeof handler + 'are not allowed, data: ' + JSON.stringify(handler))
+    }
 }
