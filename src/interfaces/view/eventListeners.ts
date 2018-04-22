@@ -1,6 +1,6 @@
 import { VNode, VNodeData } from './vnode'
 import { Module } from 'snabbdom/modules/module'
-import { InputData, ModuleAPI } from '../../core'
+import { InputData, ModuleAPI, invokeHandler } from '../../core'
 
 export interface On {
   [event: string]: InputData | InputData[] | 'ignore'
@@ -8,41 +8,13 @@ export interface On {
 
 export const eventListenersModule = (mod: ModuleAPI): Module => {
 
-  function invokeHandler(handler: InputData | InputData[] | 'ignore', event: Event): void {
-    if (handler instanceof Array && typeof handler[0] === 'string') {
-      let options = handler[4]
-      if ((options && options.listenPrevented !== true || !options) && event.defaultPrevented) {
-        return
-      }
-      if (options && options.default === false) {
-        event.preventDefault()
-      }
-      setImmediate(() => {
-        mod.dispatchEv(event, <InputData> handler)
-      })
-    } else if (handler instanceof Array) {
-      // call multiple handlers
-      for (var i = 0; i < handler.length; i++) {
-        invokeHandler(handler[i], event)
-      }
-    } else if (handler === 'ignore') {
-      // this handler is ignored
-      event.preventDefault()
-    } else if (handler === '' && handler === undefined) {
-      // this handler is passed
-      return
-    } else {
-      mod.error('ViewInterface-eventListenersModule', 'event handler of type ' + typeof handler + 'are not allowed, data: ' + JSON.stringify(handler))
-    }
-  }
-
   function handleEvent (event: Event, vnode: VNode) {
     var name = event.type,
         on = (vnode.data as VNodeData).on
 
     // call event handler(s) if exists
     if (on && on[name]) {
-      invokeHandler(on[name], event)
+      invokeHandler(mod.error, mod.dispatchEv, on[name], event)
     }
   }
 
