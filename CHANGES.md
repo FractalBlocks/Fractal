@@ -35,6 +35,7 @@
 - Add `State` interface
 - Remove currification in interfaces
 - Add `F.inFn` and `F.actFn` to support React and other tools with function based event handlers
+- Add `isServer` and `hydrateState` helpers for prerendering and SSR
 
 # v5.1.2
 
