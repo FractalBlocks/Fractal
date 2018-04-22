@@ -42,6 +42,7 @@ What are missing for this repo:
 - Implement pouchdb integration example (@carloslfu)
 - Implement an example of whole service pattern, serviceTest module and API definitions
 - Implement ui-modules as an example of setting-up an own design framework for an app, take the button from quickstart repo
+- Evaluate if multiple handlers in an element are an ati-pattern, if so deprecate it
 
 ## Roadmap (What is next?)
 
