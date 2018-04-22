@@ -1,3 +1,4 @@
+import { Context, deepmerge } from '.'
 
 /**
  * Deep clone object
@@ -12,4 +13,18 @@ export function clone <T>(object: T): T {
       out[key] = (typeof v === 'object') ? clone (v) : v
   }
   return out
+}
+
+export const isServer = typeof window === 'undefined'
+
+export const isBrowser = !isServer
+
+export const hydrateState = <S>(ctx: Context<S>) => {
+  if ((window as any).ssrInitialized) {
+    let components = (window as any).ssrComponents
+    let name
+    for (name in components) {
+      ctx.components[name].state = deepmerge(ctx.components[name].state, components[name].state)
+    }
+  }
 }
