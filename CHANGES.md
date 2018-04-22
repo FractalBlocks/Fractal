@@ -34,6 +34,7 @@
 - Add `s` parameter to input factory
 - Add `State` interface
 - Remove currification in interfaces
+- Add `F.inFn` and `F.actFn` to support React and other tools with function based event handlers
 
 # v5.1.2
 
