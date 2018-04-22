@@ -36,7 +36,8 @@ export const renderHTML = (op: StaticRenderOptions): Promise<string> => {
       try {
         var app = await op.runModule(op.root, false, { render: false })
         if (op.cb) await op.cb(app)
-        let view = await app.rootCtx.components.Root.interfaces['view'](app.rootCtx.components.Root.state)
+        const Root = app.rootCtx.components.Root
+        let view = await Root.interfaces['view'](Root.state, Root.interfaceHelpers)
         let styleStr = (op.css || '') + app.rootCtx.groupHandlers['style'].state.instance.getStyles()
         let renderData =  {
           view,
