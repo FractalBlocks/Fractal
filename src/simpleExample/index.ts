@@ -1,5 +1,5 @@
 // All in one file example
-import { Component, getStyle, Actions, StyleGroup, run, Inputs } from '../core'
+import { Component, getStyle, Actions, StyleGroup, run, Inputs, logFns } from '../core'
 import { h, View, viewHandler } from '../interfaces/view'
 import { styleHandler } from '../groups/style'
 
@@ -11,7 +11,7 @@ const state = {
 
 type S = typeof state
 
-const inputs: Inputs = F => ({
+const inputs: Inputs<S> = (s, F) => ({
   inc: async () => {
     await F.toAct('Inc')
     setImmediate(() => {
@@ -23,11 +23,10 @@ const inputs: Inputs = F => ({
 const actions: Actions<S> = {
   Inc: () => s => {
     s.count++
-    return s
   },
 }
 
-const view: View<S> = F => async s => {
+const view: View<S> = async (s, F) => {
   const style = getStyle(F)
   return h('div', {
     class: style('base'),
