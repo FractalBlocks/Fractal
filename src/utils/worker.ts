@@ -118,7 +118,7 @@ export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (
   }
 }
 
-export interface WorkerModuleDef {
+export interface WorkerModuleDef<S> {
   worker: any
   log?: boolean
   logAll?: boolean
@@ -134,8 +134,8 @@ export interface WorkerModuleDef {
   destroy? (mod: ModuleAPI): void
   // not implemented yet
   // hooks for inputs
-  beforeInput? (ctxIn: Context, inputName: string, data: any): void
-  afterInput? (ctxIn: Context, inputName: string, data: any): void
+  beforeInput? (ctxIn: Context<S>, inputName: string, data: any): void
+  afterInput? (ctxIn: Context<S>, inputName: string, data: any): void
 }
 
 export interface WorkerModule {
@@ -146,7 +146,7 @@ export interface WorkerModule {
   interfaceObjects: { [name: string]: HandlerObject }
 }
 
-export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
+export async function runWorker <S>(def: WorkerModuleDef<S>): Promise<WorkerModule> {
   let worker: WorkerAPI = def.worker
 
   let groupObjects: { [name: string]: HandlerObject } = {}

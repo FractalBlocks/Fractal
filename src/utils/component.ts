@@ -7,6 +7,7 @@ import {
   StyleGroup,
   mergeStyles,
   clone,
+  State,
 } from '../core'
 
 // set of helpers for building components
@@ -25,7 +26,7 @@ export function setGroup (name: string, group: Group) {
   }
 }
 
-export function spaceOf (ctx: Context): any {
+export function spaceOf <S>(ctx: Context<S>): any {
   return ctx.components[ctx.id]
 }
 
@@ -58,7 +59,7 @@ export const compGroup = (groupName: string, arr: any[][], fn: any) => arr.reduc
  * @param ctx Any Context
  * @param id The component id
  */
-export const getDescendantIds = (ctx: Context, id: string): string[] => {
+export const getDescendantIds = <S>(ctx: Context<S>, id: string): string[] => {
   let searchStr = id + '$'
   return Object.keys(ctx.components).filter(compId => compId.includes(searchStr))
 }
@@ -67,7 +68,7 @@ export const getDescendantIds = (ctx: Context, id: string): string[] => {
  * Get the context of the parent of a component
  * @param ctx The component context
  */
-export const getParentCtx = (ctx: Context) => ctx.components[(ctx.id + '').split('$').slice(0, -1).join('$')]
+export const getParentCtx = <S>(ctx: Context<S>): Context<State> => ctx.components[(ctx.id + '').split('$').slice(0, -1).join('$')]
 
 export interface CompOptions {
   state?: any

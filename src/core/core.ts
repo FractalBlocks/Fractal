@@ -83,7 +83,7 @@ export interface EventData extends Array<any> {
 }
 
 export interface Update<S> {
-  (state: S): Promise<S> | S
+  (state: S): Promise<void | State> | void | State
 }
 
 export interface Interface<Type, S> {

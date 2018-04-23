@@ -1,7 +1,7 @@
 import { Context, Actions, Action, performUpdate } from '.'
 
 // generic action input
-export const action = (ctx: Context, actions: Actions<any>) => async ([arg1, arg2]: any): Promise<any> => {
+export const action = <S>(ctx: Context<S>, actions: Actions<any>) => async ([arg1, arg2]: any): Promise<any> => {
   let name
   let value
   if (arg1 instanceof Array) {
