@@ -2,19 +2,16 @@
 
 ## Whats next?
 
+- Change `init` and `destroy`
 - Implement timetravel UI
 - Implement tree view
-- Implement Fractal App Viewer as a separate project
+- Add event bus functions to ModuleAPI
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
 - Automatic management of event channel subscriptions in Components, when disposed
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
 - Add `fork` helper that returns a Promise (with setImmediate)
 - Implement filtered logs with a console interface
 - Implement a way for merging module definitions
-- Add paths to Set default action
-- Implement plugin system, this means tasks can override
-- Add a mechanism for workers to return data, necesary to support full communication and event bus functions to ModuleAPI
-- Add event bus functions to ModuleAPI
 - Implement an alternative module for running playground in a worker
 - Implement bulk matching for event bus
 - Refactor logs (deeply nested look overwhelming)
@@ -23,7 +20,7 @@
 - Evaluate how to handle errors when a task fails
 - Simplify worker helpers
 
-## Done
+## Done (v6.0.0 in progress)
 
 - AppViewer POC
 - Add guid function
