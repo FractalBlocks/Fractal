@@ -3,7 +3,6 @@ import {
   Module,
   Component,
   // DEV
-  logFns,
   RunModule,
 } from '../core'
 import { viewHandler } from '../interfaces/view'
@@ -26,5 +25,4 @@ export const runModule: RunModule = async (Root: Component<any>, DEV = false): P
     route: routeHandler('/', 'hash'),
     view: viewHandler('#app'),
   },
-  ...logFns,
 })

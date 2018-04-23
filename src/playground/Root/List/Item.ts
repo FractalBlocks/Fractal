@@ -8,7 +8,7 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs = F => ({
+export const inputs: Inputs<S> = (s, F) => ({
   remove: async () => {},
   select: async id => {},
 })
@@ -24,7 +24,7 @@ export const actions: Actions<S> = {
   })
 }
 
-const view: View<S> = F => async s => {
+const view: View<S> = async (s, F) => {
   let style = getStyle(F)
 
   return h('li', {

@@ -3,9 +3,9 @@ import {
   Inputs,
   Interfaces,
   StyleGroup,
-  Interface,
   _,
   getStyle,
+  waitMS,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
@@ -20,30 +20,27 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs = F => ({
+export const inputs: Inputs<S> = (s, F) => ({
   init: async () => {
     if (typeof window !== 'undefined') {
       F.toIn('self')
     }
   },
   self: async () => {
-    await new Promise(res => {
-      setTimeout(() => res(), 1000)
-    })
+    await waitMS(1000)
     await F.toAct('Inc')
     F.toIn('self')
   },
   set: async ([name, value]) => {
-    let s: S = F.stateOf()
     await F.task('db', ['setItemProps', s.id, { [name]: value }])
   },
   setNoteFromId: async id => {
-    let s: S = F.stateOf()
     if (s.id !== '') {
       await F.task('db', ['unsubscribe', s.id])
     }
     let note = await F.task('db', ['subscribe', id, F.in('setNote', _, '*')])
     await F.toAct('SetNote', ['set', id, note])
+    await F.set('id', id)
   },
   setNote: async ([evName, id, item]) => {
     await F.toAct('SetNote', [evName, id, item])
@@ -57,24 +54,17 @@ export const inputs: Inputs = F => ({
 export const actions: Actions<S> = {
   Inc: async () => async s => {
     s.count++
-    return s
   },
-  SetNote: ([evName, id, item]) => s => ({
-    ...s,
-    id,
-    ...evName === 'add' || evName === 'set'
-      ? item
-      : evName === 'remove'
-      ? { id: '' }
-      : {}
-  }),
+  SetNote: ([evName, id, item]) => s => {
+    s.id = evName === 'remove' ? '' : id
+    if (evName === 'add' || evName === 'set') {
+      s.title = item.title
+      s.body = item.body
+    }
+  },
 }
 
-const route: Interface<any, S> = F => async s => [
-  [F.ctx.id, s.activeChild],
-]
-
-const view: View<S> = async F => async s => {
+const view: View<S> = async (s, F) => {
   let style = getStyle(F)
 
   return h('div', {
@@ -98,7 +88,7 @@ const view: View<S> = async F => async s => {
   ])
 }
 
-export const interfaces: Interfaces = { route, view }
+export const interfaces: Interfaces = { view }
 
 const style: StyleGroup = {
   base: {

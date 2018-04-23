@@ -5,18 +5,20 @@ import {
   StyleGroup,
   clone,
   styles,
-  deepmerge,
   Interface,
   getStyle,
+  State,
+  hydrateState,
+  isBrowser,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
 
 import * as List from './List'
 import * as Note from './Note'
 
-export const state = {
+export const state: State = {
   activeChild: '',
-  _nest: <any> {
+  _nest: {
     List: clone(List),
     Note: styles({ base: { width: 'calc(100% - 400px)' }})(clone(Note)),
   },
@@ -24,20 +26,19 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs = F => ({
+export const inputs: Inputs<S> = (s, F) => ({
   init: async () => {
-    // Merge precalculated state (SSR)
-    if (typeof window !== 'undefined' && (window as any).ssrInitialized) {
-      let components = (window as any).ssrComponents
-      let name
-      for (name in components) {
-        F.ctx.components[name].state = deepmerge(F.ctx.components[name].state, components[name].state)
-      }
+    if (isBrowser) {
+      hydrateState(F.ctx)
     }
   },
   Route_active: async ([id]) => {
-    if (id !== '') {
+    if (id !== '') return
+    const item = await F.task('db', ['getItem', id])
+    if (item) {
       await F.toIn('$List_select', id)
+    } else {
+      await F.toAct('Set', ['activeChild', ''])
     }
   },
   $List_select: async id => {
@@ -52,12 +53,11 @@ export const inputs: Inputs = F => ({
 export const actions: Actions<S> = {
 }
 
-const route: Interface<any, S> = F => async s => [
+const route: Interface<any, S> = async (s, F) => [
   [F.ctx.id, s.activeChild],
-  ...s.activeChild !== '' ? await F.interfaceOf('Note', 'route') : [],
 ]
 
-const view: View<S> = F => async s => {
+const view: View<S> = async (s, F) => {
   let style = getStyle(F)
 
   return h('div', {

@@ -21,7 +21,7 @@ export const state = {
 
 export type S = typeof state
 
-export const inputs: Inputs = F => ({
+export const inputs: Inputs<S> = (s, F) => ({
   init: async () => {
     let items = await F.task('db', ['subscribe', '*', F.in('updateItem', _, '*')])
     await F.toAct('SetItems', items)
@@ -81,7 +81,7 @@ export const actions: Actions<S> = {
   },
 }
 
-const view: View<S> = F => async s => {
+const view: View<S> = async (s, F) => {
   let style = getStyle(F)
 
   return h('div', {

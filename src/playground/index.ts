@@ -1,6 +1,7 @@
 import './styles.css'
 import { runModule } from './module'
 import './hmr'
+import { attachAppViewer } from '../AppViewer'
 
 import * as Root from './Root'
 
@@ -10,6 +11,8 @@ let DEV = process.env.ENV === 'development'
 
   const app = await runModule(Root, DEV)
   ;(window as any).app = app
+
+  attachAppViewer(app)
 
   // For testing purposes
   // ;(window as any).test = () => {
