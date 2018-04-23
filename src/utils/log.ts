@@ -7,7 +7,7 @@ export const error = (source: string, description: string) => {
   throw new Error(`source: ${source}, description: ${description}`)
 }
 
-export const beforeInput = (ctx: Context, inputName, data) => {
+export const beforeInput = <S>(ctx: Context<S>, inputName, data) => {
   if (!ctx.global.log) return
   let state = _stateOf(ctx)()
   if (typeof state === 'object') {
@@ -26,7 +26,7 @@ export const beforeInput = (ctx: Context, inputName, data) => {
 
 // color for actions (not yet implemented) #58C6F8
 
-export const afterInput = (ctx: Context, inputName, data) => {
+export const afterInput = <S>(ctx: Context<S>, inputName, data) => {
   if (!ctx.global.log) return
   let state = _stateOf(ctx)()
   if (typeof state === 'object') {
