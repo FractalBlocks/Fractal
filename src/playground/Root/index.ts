@@ -33,7 +33,7 @@ export const inputs: Inputs<S> = (s, F) => ({
     }
   },
   Route_active: async ([id]) => {
-    if (id !== '') return
+    if (id === '') return
     const item = await F.task('db', ['getItem', id])
     if (item) {
       await F.toIn('$List_select', id)
