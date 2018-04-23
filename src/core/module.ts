@@ -16,6 +16,7 @@ import {
   toComp,
   makeInputHelpers,
   State,
+  makeImmutableState,
   // FractalOn,
 } from '.'
 import {
@@ -137,7 +138,10 @@ async function _nest <S extends State>(ctx: Context<S>, name: string, component:
   ctx.components[id] =  childCtx
 
   if (component.inputs) {
-    childCtx.inputs = component.inputs(childCtx.state, makeInputHelpers(childCtx))
+    childCtx.inputs = component.inputs(
+      makeImmutableState(childCtx, childCtx.state),
+      makeInputHelpers(childCtx),
+    )
   } else {
     childCtx.inputs = {}
   }

@@ -51,15 +51,15 @@ export const makeInputHelpers = <S extends State>(ctx: Context<S>): InputHelpers
   _clearCache: _clearCache(ctx),
 })
 
-const disallowMutation = <S>(ctx: Context<S>) => {
-  ctx.error('Cannot Mutate the State here', 'State mutations are not allowed inside inputs')
+export const disallowMutation = <S>(ctx: Context<S>) => () => {
+  ctx.error(`'${ctx.id}' context (component)`, 'State mutations are not allowed inside inputs')
   return false
 }
 
-const makeImmutableState = <S>(ctx: Context<S>, s: S): S => new Proxy(<any> s, {
-  set: disallowMutation,
-  deleteProperty: disallowMutation,
-  defineProperty: disallowMutation,
+export const makeImmutableState = <S>(ctx: Context<S>, s: S): S => new Proxy(<any> s, {
+  set: disallowMutation(ctx),
+  deleteProperty: disallowMutation(ctx),
+  defineProperty: disallowMutation(ctx),
 })
 
 export interface CtxStateOf {
@@ -68,14 +68,14 @@ export interface CtxStateOf {
 
 export const _stateOf = <S extends State>(ctx: Context<S>): CtxStateOf => name => {
   let id = name ? ctx.id + '$' + name : ctx.id
-  let space = ctx.components[id]
-  if (space) {
-    return space.state
+  let childCtx = ctx.components[id]
+  if (childCtx) {
+    return makeImmutableState(childCtx, childCtx.state)
   } else {
     ctx.error('stateOf',
       name
-      ? `there are no child '${name}' in space '${ctx.id}'`
-      : `there are no space '${id}'`
+      ? `there are no child '${name}' in context '${ctx.id}'`
+      : `there are no context '${id}'`
     )
   }
 }
