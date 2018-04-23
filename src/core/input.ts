@@ -1,6 +1,6 @@
-import { Emit, Off, Descriptor } from 'pullable-event-bus'
 import { Context, InterfaceHelpers, CtxPerformTask, EventData, dispatchEv, State } from '.'
-import { _in, _act } from './interface'
+import { Emit, Off, Descriptor } from 'pullable-event-bus'
+import { _in, _act, _actFn, _inFn } from './interface'
 import { getDescendantIds, getPath } from './index'
 import {
   toIn,
@@ -32,6 +32,8 @@ export const makeInputHelpers = <S extends State>(ctx: Context<S>): InputHelpers
   ctx,
   in: _in(ctx),
   act: _act(ctx),
+  inFn: _inFn(ctx),
+  actFn: _actFn(ctx),
   stateOf: _stateOf(ctx),
   toIn: toIn(ctx),
   toChild: toChild(ctx),
