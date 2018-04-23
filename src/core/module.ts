@@ -37,8 +37,8 @@ export interface ModuleDef {
   interfaceOrder?: Array<string>
   // lifecycle hooks for modules
   beforeInit? (mod: ModuleAPI): Promise<void>
-  init? (mod: ModuleAPI): Promise<void>
-  destroy? (mod: ModuleAPI): Promise<void>
+  onInit? (mod: ModuleAPI): Promise<void>
+  onDestroy? (mod: ModuleAPI): Promise<void>
   // hooks for inputs
   beforeInput? (ctxIn: Context<any>, inputName: string, data: any): void
   afterInput? (ctxIn: Context<any>, inputName: string, data: any): void
@@ -172,8 +172,9 @@ async function _nest <S extends State>(ctx: Context<S>, name: string, component:
     await handleGroups(childCtx, component)
   }
 
-  if (childCtx.inputs.init && !childCtx.global.hotSwap) {
-    await childCtx.inputs.init()
+  if (childCtx.inputs.onInit && !childCtx.global.hotSwap) {
+    // component lifecycle hook: onInit
+    await childCtx.inputs.onInit()
   }
 
   return childCtx
@@ -223,8 +224,9 @@ export const unnest = <S>(ctx: Context<S>): CtxUnnest => async name => {
   if (components) {
     await unnestAll(componentSpace)(Object.keys(componentSpace.state._nest))
   }
-  if (ctx.inputs.destroy && !ctx.global.hotSwap) {
-    await ctx.inputs.destroy()
+  // component lifecycle hook: onDestroy
+  if (ctx.inputs.onDestroy && !ctx.global.hotSwap) {
+    await ctx.inputs.onDestroy()
   }
   delete ctx.components[id]
 }
@@ -450,7 +452,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         error: ctx.error,
       }
 
-      // module lifecycle hook: init
+      // module lifecycle hook: beforeInit
       if (moduleDef.beforeInit && !middleFn) {
         await moduleDef.beforeInit(moduleAPI)
       }
@@ -523,9 +525,9 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       }
     }
 
-    // module lifecycle hook: init
-    if (moduleDef.init && !middleFn) {
-      await moduleDef.init(moduleAPI)
+    // module lifecycle hook: onInit
+    if (moduleDef.onInit && !middleFn) {
+      await moduleDef.onInit(moduleAPI)
     }
 
     return {
@@ -540,8 +542,8 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   }
 
   function dispose () {
-    if (moduleDef.destroy) {
-      moduleDef.destroy(moduleAPI)
+    if (moduleDef.onDestroy) {
+      moduleDef.onDestroy(moduleAPI)
     }
     // dispose all handlers
     let handlers: HandlerObjectIndex

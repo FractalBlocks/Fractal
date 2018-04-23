@@ -2,7 +2,7 @@
 
 ## Whats next?
 
-- Change `init` and `destroy`
+- Change `init` and `destroy` with `onInit` and `onDestroy`
 - Implement timetravel UI
 - Implement tree view
 - Add event bus functions to ModuleAPI
