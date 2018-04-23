@@ -11,7 +11,7 @@ namespace ChildComp {
 
   export type S = typeof state
 
-  export const inputs: Inputs = F => ({
+  export const inputs: Inputs<S> = (s, F) => ({
     inc: async name => {
       await F.toAct('Inc')
       await F.toIn('changed', F.stateOf().count)
@@ -26,7 +26,7 @@ namespace ChildComp {
     },
   }
 
-  const view: View<S> = F => async s => {
+  const view: View<S> = async (s, F) => {
     const style = getStyle(F)
     return h('div', {
       key: F.ctx.name,
@@ -65,7 +65,7 @@ namespace Root {
 
   export type S = typeof state
 
-  export const inputs: Inputs = F => ({
+  export const inputs: Inputs<S> = (s, F) => ({
     $C3_changed: async n => console.log('Individual propagation ', n),
     $A_changed: async n => console.log('Groupal propagation ', n),
     $_changed: async n => console.log('Global propagation ', n),
@@ -73,7 +73,7 @@ namespace Root {
 
   export const actions: Actions<S> = {}
 
-  const view: View<S> = F => async s => {
+  const view: View<S> = async (s, F) => {
     const style = getStyle(F)
     return h('div', {
       class: style('base'),
