@@ -301,23 +301,29 @@ export const toIn = <S>(ctx: Context<S>): CtxToIn => {
   }
 }
 
-export async function performUpdate <S extends State>(compCtx: Context<S>, update: Update<S>): Promise<any> {
-  let updateRes = update(compCtx.state)
-  compCtx.state = await updateRes
-  if (compCtx.state._compUpdated) {
+export async function performUpdate <S extends State>(compCtx: Context<S>, update: Update<S>): Promise<void> {
+  const state = compCtx.state
+  const stateUpdates = await update(state)
+  if (stateUpdates) {
+    let key
+    for (key in stateUpdates) {
+      state[key] = stateUpdates[key]
+    }
+  }
+  if (state._compUpdated) {
     compCtx.global.render = false
-    let compNames = compCtx.state._compNames
-    let newCompNames = Object.keys(compCtx.state._nest)
+    let compNames = state._compNames
+    let newCompNames = Object.keys(state._nest)
     let newNames = newCompNames.filter(n => compNames.indexOf(n) < 0)
     let removeNames = compNames.filter(n => newCompNames.indexOf(n) < 0)
     for (let i = 0, len = newNames.length; i < len; i++) {
-      await _nest(compCtx, newNames[i], compCtx.state._nest[newNames[i]])
+      await _nest(compCtx, newNames[i], state._nest[newNames[i]])
     }
     for (let i = 0, len = removeNames.length; i < len; i++) {
       await unnest(compCtx)(removeNames[i])
     }
-    compCtx.state._compUpdated = false
-    compCtx.state._compNames = newCompNames
+    state._compUpdated = false
+    state._compNames = newCompNames
     compCtx.global.render = true
   }
   if (compCtx.global.moduleRender && compCtx.global.render) {
@@ -325,7 +331,6 @@ export async function performUpdate <S extends State>(compCtx: Context<S>, updat
   } else {
     compCtx.interfaceValues = {}
   }
-  return compCtx.state
 }
 
 export interface CtxPerformTask {
