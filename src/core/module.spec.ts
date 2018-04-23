@@ -11,7 +11,7 @@ test('Propagation: Individual', async t => {
         Child: clone(ChildComp),
       },
     },
-    inputs: F => ({
+    inputs: (s, F) => ({
       $Child_changed: async r => await F.set('result', r), // Individual propagation
     })
   })
@@ -28,7 +28,7 @@ test('Propagation: Groupal', async t => {
         A_3: clone(ChildComp),
       },
     },
-    inputs: F => ({
+    inputs: (s, F) => ({
       $A_changed: async r => await F.set('result', r),
     })
   })
@@ -46,7 +46,7 @@ test('Propagation: Global', async t => {
         C: clone(ChildComp),
       },
     },
-    inputs: F => ({
+    inputs: (s, F) => ({
       $_changed: async r => await F.set('result', r),
     })
   })

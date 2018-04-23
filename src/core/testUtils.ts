@@ -2,7 +2,7 @@ import { run, deepmerge, Module, logFns } from '../core'
 
 export const ChildComp = {
   state: { count: 0 },
-  inputs: F => ({
+  inputs: (s, F) => ({
     inc: async () => {
       await F.toAct('Inc')
       await F.toIn('changed', F.stateOf().count)
@@ -22,7 +22,7 @@ export const createApp = (comp?, mod?): Promise<Module>  => {
 
   const Root = {
     state: { result: '' },
-    inputs: F => ({}),
+    inputs: (s, F) => ({}),
     actions: {},
     interfaces: {},
   }

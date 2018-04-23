@@ -6,7 +6,7 @@ import { createApp } from '../core/testUtils'
 
 export const ChildComp = {
   state: { result: '', count: 0 },
-  inputs: F => ({
+  inputs: (s, F) => ({
     inc: async () => {
       let state = F.stateOf()
       await F.toAct('Inc')
@@ -18,7 +18,6 @@ export const ChildComp = {
   actions: {
     Inc: () => s => {
       s.count++
-      return s
     },
   },
   interfaces: {},
@@ -26,7 +25,7 @@ export const ChildComp = {
 
 export const ReceptorComp = {
   state: {},
-  inputs: F => ({
+  inputs: (s, F) => ({
     init: async () => {
       F.on('myEvent', F.in('myEvent', _, '*'), true)
     },
@@ -49,7 +48,7 @@ test('Event bus with pullable and normal subscribers', async t => {
         R3: clone(ReceptorComp),
       },
     },
-    inputs: F => ({
+    inputs: (s, F) => ({
       init: async () => {
         F.on('myEvent', F.in('myEvent', _, '*'))
       },
