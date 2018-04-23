@@ -1,5 +1,5 @@
 // All in one file example
-import { Component, getStyle, Actions, StyleGroup, run, Inputs, logFns } from '../core'
+import { Component, getStyle, Actions, StyleGroup, run, Inputs } from '../core'
 import { h, View, viewHandler } from '../interfaces/view'
 import { styleHandler } from '../groups/style'
 
