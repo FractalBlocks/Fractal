@@ -7,9 +7,9 @@ import * as AppViewer from './AppViewer'
 
 export const attachAppViewer = async (app: Module): Promise<Module> => {
   if (typeof window === undefined) return
-  const id = guid()
+  const id = guid().replace(/-/g, '')
   const appViewerElm = document.createElement('div')
-  appViewerElm.id = id
+  appViewerElm.id = '_' + id
   document.body.appendChild(appViewerElm)
   return run({
     Root: AppViewer,
@@ -17,7 +17,7 @@ export const attachAppViewer = async (app: Module): Promise<Module> => {
       style: styleHandler(),
     },
     interfaces: {
-      view: viewHandler('#' + id),
+      view: viewHandler('#_' + id),
     },
   })
 }
