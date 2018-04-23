@@ -29,13 +29,16 @@
 - Add guid function
 - Add seq helper
 - Add `s` property to `InputHelpers` interface, that is a reference to local state
-- Deprecate recommended `F.stateOf()` sentence with no arguments in favor of `F.state`
+- Deprecate recommended `F.stateOf()` sentence with no arguments in favor of `s` in input parameters
 - BREAKING: Add many state type signatures
 - Add `s` parameter to input factory
 - Add `State` interface
 - Remove currification in interfaces
 - Add `F.inFn` and `F.actFn` to support React and other tools with function based event handlers
 - Add `isServer` and `hydrateState` helpers for prerendering and SSR
+- Add support for `state` updates with the result of an action
+- Actions cannot replace the state object
+- Add proxy to `state` in `InputHelpers` to disallow state mutation from inputs
 
 # v5.1.2
 
