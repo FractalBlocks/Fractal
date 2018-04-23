@@ -32,7 +32,7 @@ export const inputs: Inputs<S> = (s, F) => ({
       hydrateState(F.ctx)
     }
   },
-  Route_active: async ([id]) => {
+  onRouteActive: async ([id]) => {
     if (id === '') return
     const item = await F.task('db', ['getItem', id])
     if (item) {
