@@ -2,23 +2,23 @@
 
 ## Whats next?
 
-- Change `init` and `destroy` with `onInit` and `onDestroy`
+- Publish fractal-react repository for React support
+- Add event bus functions to ModuleAPI
 - Implement timetravel UI
 - Implement tree view
-- Add event bus functions to ModuleAPI
+- Filtered console logs in AppViewer UI and console
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
 - Automatic management of event channel subscriptions in Components, when disposed
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
 - Add `fork` helper that returns a Promise (with setImmediate)
-- Implement filtered logs with a console interface
 - Implement a way for merging module definitions
 - Implement an alternative module for running playground in a worker
 - Implement bulk matching for event bus
-- Refactor logs (deeply nested look overwhelming)
 - Fix hmr on examples
 - Find a way for to hotSwapp dyamic components
 - Evaluate how to handle errors when a task fails
 - Simplify worker helpers
+- Implement filtered logs with a console interface
 
 ## Done (v6.0.0 in progress)
 
