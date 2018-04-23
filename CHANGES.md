@@ -36,6 +36,8 @@
 - Add support for `state` updates with the result of an action
 - Actions cannot replace the state object
 - Add proxy to `state` in `InputHelpers` to disallow state mutation from inputs
+- Change `init` and `destroy` with `onInit` and `onDestroy`
+- Change router events name: `onRouteActive` and `onRouteInactive`
 
 # v5.1.2
 

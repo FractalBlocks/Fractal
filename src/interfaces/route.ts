@@ -50,10 +50,10 @@ export const routeHandler: Handler = (root: string, mode: RouterMode = 'history'
         part = parts[i]
         if (part !== pathPart[1] && !changed) {
           changed = true
-          await mod.dispatchEv(part, [pathPart[0], 'Route_active', [part]])
+          await mod.dispatchEv(part, [pathPart[0], 'onRouteActive', [part]])
         } else {
           if (changed) {
-            await mod.dispatchEv(part, [pathPart[0], 'Route_inactive'])
+            await mod.dispatchEv(part, [pathPart[0], 'onRouteInactive'])
           }
         }
       }
