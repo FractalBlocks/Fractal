@@ -41,6 +41,8 @@ export interface Inputs<S> {
 }
 
 export interface InputIndex {
+  onInit?: Input
+  onDestroy?: Input
   [name: string]: Input
 }
 
