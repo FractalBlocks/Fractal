@@ -22,7 +22,7 @@ export const state = {
 export type S = typeof state
 
 export const inputs: Inputs<S> = (s, F) => ({
-  init: async () => {
+  onInit: async () => {
     let items = await F.task('db', ['subscribe', '*', F.in('updateItem', _, '*')])
     await F.toAct('SetItems', items)
   },
