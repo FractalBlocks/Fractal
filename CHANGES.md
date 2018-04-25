@@ -38,6 +38,8 @@
 - Add proxy to `state` in `InputHelpers` to disallow state mutation from inputs
 - Change `init` and `destroy` with `onInit` and `onDestroy`
 - Change router events name: `onRouteActive` and `onRouteInactive`
+- Add onInit and onDestroy to InputIndex type interface
+- Add onRouteActive and onRouteInactive to InputIndex type interface
 
 # v5.1.2
 
