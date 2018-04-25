@@ -11,6 +11,7 @@ export const ChildComp = {
       let state = F.stateOf()
       await F.toAct('Inc')
       let res = await F.emit('myEvent', state.count)
+      debugger
       await F.set('result', res)
     },
     changed: async value => {},
@@ -26,7 +27,7 @@ export const ChildComp = {
 export const ReceptorComp = {
   state: {},
   inputs: (s, F) => ({
-    init: async () => {
+    onInit: async () => {
       F.on('myEvent', F.in('myEvent', _, '*'), true)
     },
     myEvent: async count => {
@@ -49,7 +50,7 @@ test('Event bus with pullable and normal subscribers', async t => {
       },
     },
     inputs: (s, F) => ({
-      init: async () => {
+      onInit: async () => {
         F.on('myEvent', F.in('myEvent', _, '*'))
       },
       myEvent: async count => {
