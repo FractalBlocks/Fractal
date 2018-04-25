@@ -43,6 +43,8 @@ export interface Inputs<S> {
 export interface InputIndex {
   onInit?: Input
   onDestroy?: Input
+  onRouteActive?: Input
+  onRouteInactive?: Input
   [name: string]: Input
 }
 
