@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Internal flag to seamlessly support other view libraries such as React
 - Publish fractal-react repository for React support
 - Add event bus functions to ModuleAPI
 - Implement timetravel UI
@@ -22,6 +23,7 @@
 
 ## Done (v6.0.0 in progress)
 
+- Implement worker performance example
 - `invokeHandler` now performs event object data extraction
 - Implement `dispatch` function and add it to `ModuleAPI`
 - Rename `beforeInit` module hook to `onBeforeInit`

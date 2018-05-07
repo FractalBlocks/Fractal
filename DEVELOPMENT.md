@@ -72,7 +72,6 @@ There are TODOs for short term:
 - Start prototyping of core implementation in WebAssembly (ASAP)
 - Flux-Challenge example and do a PR to Staltz repo (WIP)
 - Todo-mvc example in a separated repo
-- Asyncronous handling of groups, Fix styles in worker example (Fixes worker support)
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
 - Evaluate a way for keeping state in inputs, maybe support use of generators e.g. keep waiting for 3 messages after execute some action or task
 - Add error index (DX)
