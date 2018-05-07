@@ -18,7 +18,7 @@ Sparky.task('init', () => {
     tsConfig: './tsconfig.json',
     experimentalFeatures: true,
     useTypescriptCompiler: true,
-    sourceMaps: true,
+    // sourceMaps: true,
     plugins: [
       CSSPlugin(),
       JSONPlugin(),
@@ -40,6 +40,14 @@ Sparky.task('default', ['init'], () => {
     .bundle('Root')
     .instructions(`> src/${name}/index.ts`)
 
+  if (name.includes('worker')) {
+    console.log('Worker enabled')
+    worker = fuse
+      .bundle('worker')
+      .instructions(`> src/${name}/worker.ts`)
+      .watch('src/**/**.ts')
+  }
+
   example.watch('src/**/**.ts').hmr({
    socketURI: 'ws://localhost:3000',
   })
@@ -59,5 +67,10 @@ Sparky.task('playground', () => {
 
 Sparky.task('featureExample', () => {
   name = 'featureExample'
+  Sparky.start('default')
+})
+
+Sparky.task('workerExample', () => {
+  name = 'workerExample'
   Sparky.start('default')
 })

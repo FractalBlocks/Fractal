@@ -11,7 +11,6 @@ export const ChildComp = {
       let state = F.stateOf()
       await F.toAct('Inc')
       let res = await F.emit('myEvent', state.count)
-      debugger
       await F.set('result', res)
     },
     changed: async value => {},
@@ -62,4 +61,21 @@ test('Event bus with pullable and normal subscribers', async t => {
   await app.moduleAPI.toComp('Root$Child', 'inc')
   t.is(app.rootCtx.components.Root.state.result, 1, 'Should propagate events to not pullable susbscribers')
   t.deepEqual(app.rootCtx.components.Root$Child.state.result, [4, 4, 4], 'Should pull results from subscribers before sending the event')
+})
+
+test('Event bus from Module API', async t => {
+  const app = await createApp({
+    state: { result: 0 },
+    inputs: (s, F) => ({
+      onInit: async () => {
+        F.on('myEvent', F.in('myEvent', _, '*'))
+      },
+      myEvent: async num => {
+        await F.set('result', num + 1)
+      },
+    }),
+  })
+
+  await app.moduleAPI.emit('myEvent', 2)
+  t.is(app.rootCtx.components.Root.state.result, 3, 'Should send the message')
 })

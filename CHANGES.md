@@ -22,6 +22,9 @@
 
 ## Done (v6.0.0 in progress)
 
+- `invokeHandler` now performs event object data extraction
+- Implement `dispatch` function and add it to `ModuleAPI`
+- Rename `beforeInit` module hook to `onBeforeInit`
 - AppViewer POC
 - Add guid function
 - Add seq helper

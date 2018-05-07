@@ -1,9 +1,9 @@
 import {
-  HandlerInterfaceIndex,
   HandlerObject,
   ModuleAPI,
-  Context,
   InputData,
+  ModuleDef,
+  EventData,
 } from '../core'
 
 declare var self: WorkerAPI
@@ -72,8 +72,8 @@ export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
   }
 }
 
-// receives messages from runWorker
-export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
+// receives messages from runWorker in the WorkerSide
+export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI): any => (mod: ModuleAPI) => {
   let _self = workerAPI ? workerAPI : self
   // allows to dispatch inputs from the main thread
   _self.onmessage = ev => {
@@ -81,6 +81,9 @@ export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (
     switch (data[0]) {
       case 'dispatchEv':
         mod.dispatchEv(data[1], data[2])
+        break
+      case 'dispatch':
+        mod.dispatch(data[1])
         break
       case 'toComp':
         mod.toComp(data[1], data[2], data[3])
@@ -118,24 +121,9 @@ export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (
   }
 }
 
-export interface WorkerModuleDef<S> {
+export interface WorkerModuleDef extends ModuleDef {
   worker: any
-  log?: boolean
-  logAll?: boolean
-  groups?: HandlerInterfaceIndex
-  tasks?: HandlerInterfaceIndex
-  interfaces: HandlerInterfaceIndex
-  warn?: {
-    (source, description): void
-  }
-  error?: {
-    (source, description): void
-  }
-  destroy? (mod: ModuleAPI): void
-  // not implemented yet
-  // hooks for inputs
-  beforeInput? (ctxIn: Context<S>, inputName: string, data: any): void
-  afterInput? (ctxIn: Context<S>, inputName: string, data: any): void
+  Root: any
 }
 
 export interface WorkerModule {
@@ -146,7 +134,7 @@ export interface WorkerModule {
   interfaceObjects: { [name: string]: HandlerObject }
 }
 
-export async function runWorker <S>(def: WorkerModuleDef<S>): Promise<WorkerModule> {
+export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
   let worker: WorkerAPI = def.worker
 
   let groupObjects: { [name: string]: HandlerObject } = {}
@@ -157,13 +145,16 @@ export async function runWorker <S>(def: WorkerModuleDef<S>): Promise<WorkerModu
     def.error('reattach', 'unimplemented method')
   }
 
-  // API for modules
+  // const eventHandlerRegister = {}
+
+  // API for modules (Main Thread)
   let moduleAPI: ModuleAPI = {
-    // on: (eventName, eventData, pullable) => worker.postMessage(['on', eventName, eventData, pullable]),
-    // off: descriptor => worker.postMessage(['off', descriptor]),
-    // emit: (eventName, data) => worker.postMessage(['emit', eventName, data]),
+    on: (eventName, eventData, pullable) => ['ev', 12],// worker.postMessage(['on', eventName, eventData, pullable]),
+    off: descriptor => worker.postMessage(['off', descriptor]),
+    emit: (eventName, data) => new Promise(() => {}), // worker.postMessage(['emit', eventName, data]),
     // dispatch function type used for handlers
     dispatchEv: async (event: any, iData: InputData) => worker.postMessage(['dispatchEv', event, iData]),
+    dispatch: async (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
     toComp: async (id: string, inputName: string, data: any) =>
       worker.postMessage(['toComp', id, inputName, data]),
     dispose,
@@ -195,7 +186,7 @@ export async function runWorker <S>(def: WorkerModuleDef<S>): Promise<WorkerModu
     switch (data[0]) {
       case 'interface':
         if (data[2] === 'handle') {
-          await interfaceObjects[data[1]].handle('Root', data[3])
+          await interfaceObjects[data[1]].handle('Root', data[4])
           break
         }
         if (data[2] === 'dispose') {
@@ -226,8 +217,8 @@ export async function runWorker <S>(def: WorkerModuleDef<S>): Promise<WorkerModu
           break
         }
       case 'dispose':
-        if (def.destroy) {
-          def.destroy(moduleAPI)
+        if (def.onDestroy) {
+          def.onDestroy(moduleAPI)
         }
         break
       default:
