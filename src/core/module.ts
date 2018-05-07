@@ -17,12 +17,12 @@ import {
   makeInputHelpers,
   State,
   makeImmutableState,
-  // FractalOn,
 } from '.'
 import {
   makeEventBus,
-  // Off,
-  // Emit
+  Off,
+  Emit,
+  On,
 } from 'pullable-event-bus'
 
 export interface ModuleDef {
@@ -36,7 +36,7 @@ export interface ModuleDef {
   interfaces: HandlerInterfaceIndex
   interfaceOrder?: Array<string>
   // lifecycle hooks for modules
-  beforeInit? (mod: ModuleAPI): Promise<void>
+  onBeforeInit? (mod: ModuleAPI): Promise<void>
   onInit? (mod: ModuleAPI): Promise<void>
   onDestroy? (mod: ModuleAPI): Promise<void>
   // hooks for inputs
@@ -69,9 +69,9 @@ export interface Module {
 
 // API from module to handlers
 export interface ModuleAPI {
-  // on: FractalOn,
-  // off: Off,
-  // emit: Emit,
+  on: On,
+  off: Off,
+  emit: Emit,
   dispatchEv (event: any, iData: InputData): Promise<void>
   toComp (id: string, inputName: string, data?: any): Promise<void>
   dispose (): void
@@ -431,12 +431,9 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       }
       // API for modules
       moduleAPI = {
-        // on: (evName, evData, pullable) => {
-        //   const _dispatchEv = dispatchEv(ctx)
-        //   return ctx.eventBus.on(evName, data => _dispatchEv(data, evData), pullable)
-        // },
-        // off: ctx.eventBus.off,
-        // emit: ctx.eventBus.emit,
+        on: ctx.eventBus.on,
+        off: ctx.eventBus.off,
+        emit: ctx.eventBus.emit,
         // dispatch function type used for handlers
         dispatchEv: dispatchEv(ctx),
         toComp: toComp(ctx),
@@ -452,9 +449,9 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         error: ctx.error,
       }
 
-      // module lifecycle hook: beforeInit
-      if (moduleDef.beforeInit && !middleFn) {
-        await moduleDef.beforeInit(moduleAPI)
+      // module lifecycle hook: onBeforeInit
+      if (moduleDef.onBeforeInit && !middleFn) {
+        await moduleDef.onBeforeInit(moduleAPI)
       }
 
     }
