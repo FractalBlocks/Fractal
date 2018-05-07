@@ -17,6 +17,8 @@ import {
   makeInputHelpers,
   State,
   makeImmutableState,
+  dispatch,
+  EventData,
 } from '.'
 import {
   makeEventBus,
@@ -73,6 +75,7 @@ export interface ModuleAPI {
   off: Off,
   emit: Emit,
   dispatchEv (event: any, iData: InputData): Promise<void>
+  dispatch (eventData: EventData): Promise<void>
   toComp (id: string, inputName: string, data?: any): Promise<void>
   dispose (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
@@ -436,6 +439,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         emit: ctx.eventBus.emit,
         // dispatch function type used for handlers
         dispatchEv: dispatchEv(ctx),
+        dispatch: dispatch(ctx),
         toComp: toComp(ctx),
         dispose,
         // set a space of a certain component

@@ -234,6 +234,15 @@ export const dispatchEv = <S>(ctx: Context<S>) => async (event: any, iData: Inpu
   return await toIn(compCtx)(cInputData[1], cInputData[2])
 }
 
+export const dispatch = <S>(ctx: Context<S>) => async (eventData: EventData) => {
+  let compCtx = ctx.components[eventData[0] + '']
+  if (!compCtx) {
+    ctx.error('Dispatch EventData (dispatch)', `There is no component with id: ${eventData[0]}`)
+    return
+  }
+  return await toIn(compCtx)(eventData[1], eventData[2])
+}
+
 /**
  * Executes an input of aa certain component, passing to some data to him
  */
