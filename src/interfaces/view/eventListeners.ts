@@ -14,7 +14,7 @@ export const eventListenersModule = (mod: ModuleAPI): Module => {
 
     // call event handler(s) if exists
     if (on && on[name]) {
-      invokeHandler(mod.error, mod.dispatchEv, on[name], event)
+      invokeHandler(mod.error, mod.dispatch, on[name], event)
     }
   }
 

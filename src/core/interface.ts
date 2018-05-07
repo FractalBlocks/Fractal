@@ -95,10 +95,10 @@ export interface CtxInFn {
 
 // create an InputData array
 export const _inFn = <S>(ctx: Context<S>): CtxInFn => {
-  const dispatchEvCtx = dispatchEv(ctx)
+  const dispatchCtx = dispatch(ctx)
   return (inputName, context, param, options) => {
     return (event: Event) => invokeHandler(
-      ctx.error, dispatchEvCtx, [ctx.id, inputName, context, param, options], event
+      ctx.error, dispatchCtx, [ctx.id, inputName, context, param, options], event
     )
   }
 }
@@ -234,7 +234,11 @@ export const dispatchEv = <S>(ctx: Context<S>) => async (event: any, iData: Inpu
   return await toIn(compCtx)(cInputData[1], cInputData[2])
 }
 
-export const dispatch = <S>(ctx: Context<S>) => async (eventData: EventData) => {
+export interface DispatchCtx {
+  (eventData: EventData): Promise<any>
+}
+
+export const dispatch = <S>(ctx: Context<S>): DispatchCtx => async (eventData: EventData) => {
   let compCtx = ctx.components[eventData[0] + '']
   if (!compCtx) {
     ctx.error('Dispatch EventData (dispatch)', `There is no component with id: ${eventData[0]}`)
@@ -264,7 +268,7 @@ export const toComp = <S>(ctx: Context<S>): CtxToComp => async (id: string, inpu
   return await toIn(compCtx)(inputName, data)
 }
 
-export const invokeHandler = (error, dispatchEvCtx, handler: InputData | InputData[] | 'ignore', event: Event) => {
+export const invokeHandler = (error, dispatchCtx: DispatchCtx, handler: InputData | InputData[] | 'ignore', event: Event) => {
     if (handler instanceof Array && typeof handler[0] === 'string') {
       let options = handler[4]
       if ((options && options.listenPrevented !== true || !options) && event.defaultPrevented) {
@@ -274,12 +278,12 @@ export const invokeHandler = (error, dispatchEvCtx, handler: InputData | InputDa
         event.preventDefault()
       }
       setImmediate(() => {
-        dispatchEvCtx(event, handler)
+        dispatchCtx(computeEvent(event, <InputData> handler))
       })
     } else if (handler instanceof Array) {
       // call multiple handlers
       for (var i = 0; i < handler.length; i++) {
-        invokeHandler(error, dispatchEvCtx, handler[i], event)
+        invokeHandler(error, dispatchCtx, handler[i], event)
       }
     } else if (handler === 'ignore') {
       // this handler is ignored
