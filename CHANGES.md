@@ -13,10 +13,10 @@
 - Implement a way for merging module definitions (FANCY)
 - Evaluate how to handle errors when a task fails
 - Filtered console logs in AppViewer UI and console
-- Simplify worker helpers
 
 ## Done (v6.0.0 in progress)
 
+- Worker helper to automatically proxy all stuff inside a Module Definition
 - Implement worker performance example
 - `invokeHandler` now performs event object data extraction
 - Implement `dispatch` function and add it to `ModuleAPI`

@@ -4,6 +4,10 @@ import {
   InputData,
   ModuleDef,
   EventData,
+  Module,
+  run,
+  clone,
+  handlerTypes,
 } from '../core'
 
 declare var self: WorkerAPI
@@ -73,7 +77,7 @@ export const workerLog = (type: 'warn' | 'error', workerAPI?: WorkerAPI) => {
 }
 
 // receives messages from runWorker in the WorkerSide
-export const workerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI): any => (mod: ModuleAPI) => {
+export const createWorkerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI): any => (mod: ModuleAPI) => {
   let _self = workerAPI ? workerAPI : self
   // allows to dispatch inputs from the main thread
   _self.onmessage = ev => {
@@ -237,4 +241,38 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
     taskObjects,
     interfaceObjects,
   }
+}
+
+export interface ExceptionsObject {
+  interfaces: string[]
+  tasks: string[]
+  groups: string[]
+}
+
+export const runInWorker = (moduleDef: ModuleDef, exceptions?: ExceptionsObject): Promise<Module> => {
+  const syncQueue = makeSyncQueue()
+  const workerModule: ModuleDef = clone(moduleDef)
+  const workerListener = createWorkerListener(syncQueue)
+
+  // Inject into onBeforeInit hook
+  workerModule.onBeforeInit
+    = moduleDef.onBeforeInit
+      ? mod => {
+        workerListener(mod)
+        workerModule.onBeforeInit(mod)
+      }
+      : workerListener
+
+  // Make a proxy for handler inside the worker for comunicating to the main thread
+  let handlerType, handlerName, handlerTypePlural
+  for (handlerType of handlerTypes) {
+    handlerTypePlural = handlerType + 's'
+    for (handlerName in moduleDef[handlerTypePlural]) {
+      if (exceptions && exceptions[handlerTypePlural].indexOf(handlerName) === -1 || !exceptions) {
+        workerModule[handlerTypePlural][handlerName] = workerHandler(handlerType, handlerName, syncQueue)
+      }
+    }
+  }
+
+  return run(workerModule)
 }
