@@ -10,7 +10,7 @@ import { routeHandler } from '../interfaces/route'
 import { styleHandler } from '../groups/style'
 import * as DB from './db'
 
-export const runModule: RunModule = async (Root: Component<any>, DEV = false): Promise<Module> => run({
+export const runModule: RunModule = async (Root, DEV = false) => run({
   Root,
   record: DEV,
   log: DEV,
