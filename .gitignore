@@ -13,6 +13,8 @@
 /toHTML/
 /playground/
 /featureExample/
+/workerExample/
+/animationExample/
 coverage/
 reports/
 dist/
