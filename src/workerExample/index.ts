@@ -1,41 +1,18 @@
-// Running Fractal in a worker thread
+import { runWorker, run } from '../core'
+import { moduleDef } from './module'
 
-import { runWorker } from '../core'
-import { styleHandler } from '../groups/style'
-import { viewHandler } from '../interfaces/view'
+// TODO: make this variable dynamic, implement a toggle button for that
+const runInWorker = true
 
-const DEV = true
+if (runInWorker) {
+  // Running Fractal in a worker thread
+  runWorker({
+    Root: 'in-worker', // no matter what you put here ;) because Root component is imported inside the worker
+    worker: new Worker('worker.js'),
+    ...moduleDef,
+  })
+} else {
+  // Running Fractal in the main thread
+  run(moduleDef)
+}
 
-runWorker({
-  Root: 'in-worker', // no matter what you put here ;) because Root component is imported inside the worker
-  worker: new Worker('worker.js'),
-  record: DEV,
-  log: DEV,
-  groups: {
-    style: styleHandler('', DEV),
-  },
-  interfaces: {
-    view: viewHandler('#app'),
-  },
-})
-
-// Running Fractal in the main thread
-
-// import { run } from '../core'
-// import { styleHandler } from '../groups/style'
-// import { viewHandler } from '../interfaces/view'
-// import * as Root from './Root'
-
-// const DEV = true
-
-// run({
-//   Root,
-//   record: DEV,
-//   log: DEV,
-//   groups: {
-//     style: styleHandler('', DEV),
-//   },
-//   interfaces: {
-//     view: viewHandler('#app'),
-//   },
-// })
