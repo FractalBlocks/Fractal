@@ -24,41 +24,24 @@ Soon ... We follow the Fractal Standards for Software Quality (TODO: put the lin
 
 There are no dependencies for Fractal core, this has a design choice.
 
-## Third party dependencies support
+## Third party dependencies
 
-We support use of:
+We make use of:
 
 - Snabbdom for vdom: used in examples and view interface handlers
 - Typestyle for safe styles: used in examples
 
 ## TODOs - Short Term
 
-What are missing for this repo:
-
-- Cancelable callbacks from subcribables in tasks, via an instance index
-- Document use cases on stateless components and modules
-- Implement an example of charts (D3) (SERVICE 3PARTY-DOM-INTEGRATION)
-- Implement on demand large app loading example (@carloslfu)
-- Implement pouchdb integration example (@carloslfu)
-- Implement an example of whole service pattern, serviceTest module and API definitions
-- Implement ui-modules as an example of setting-up an own design framework for an app, take the button from quickstart repo
-- Evaluate if multiple handlers in an element are an ati-pattern, if so deprecate it
+Shor term tasks are documented in [CHANGES Document](/CHANGES.md)
 
 ## Roadmap (What is next?)
 
-There are TODOs for short term:
-
-- Build the test suite
-- Add realtime example
-- Add animation example
-- Create a library with PouchDB utils and patterns
-- Easy traductions and per component example
+- Complete the test suite
+- Implement and document test utils
 - Document component lifecycle
-- Introduce a template language for AOT / SSR
 - OPTIMIZATION: Implement 'prepare' function for dynamic components. This allow to not reprocess styles (groups) for every component added
 - Document prerendering (AOT) and SSR
-- Remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
-- Simplify toHTML function
 - Document sizeTask
 - Document Cached interfaces, this is basically that interfaces are cached by default
 - Document interfaceOrder. This method is used to set the order of the initial evaluation of interfaces
@@ -69,57 +52,25 @@ There are TODOs for short term:
 - Document and build an example of pausing View events (global and local)
 - Document and build an example of global listeners
 - Document ignored and passed view event handlers
-- Start prototyping of core implementation in WebAssembly (ASAP)
 - Flux-Challenge example and do a PR to Staltz repo (WIP)
 - Todo-mvc example in a separated repo
+- Implement an example of charts (D3) (SERVICE 3PARTY-DOM-INTEGRATION)
+- Evaluate if multiple handlers in an element are an ati-pattern, if so deprecate it
 - Change examples for the way we import components as router example does, note that hot-swaping changes too
-- Evaluate a way for keeping state in inputs, maybe support use of generators e.g. keep waiting for 3 messages after execute some action or task
 - Add error index (DX)
+- Cancelable callbacks from subcribables in tasks, via an instance index
 - Router Docs (ASAP)
-- Build an example of Scuttlebott integration
-- Use complexList inside manyLists example and add adapter to complexList
-- Document adapters like a way for nesting complex lists (dynamic component trees)
-- Refactor examples to make use of typesafe actions
-- Timetravel debugging
-- Example of lazy loading
-- Official support for [Popmotion](https://github.com/Popmotion/popmotion) as an optional animation library
-- Integrate standard linter + trailing commas with tslint
-- Improve test suite with isolated tests
+- Simplify toHTML function and remove lodash stuff (CRITICAL - Introduced as a hotfix for toHTML function)
 - Example of RTC in Fractal
+- Official support for [Popmotion](https://github.com/Popmotion/popmotion) as an optional animation library
 - Split patch and diff in Snabbdom
 - Porting all the drivers and task handlers from fractal.js to handlers in Fractal
-- Larger examples
-- Tutorials and videos
-- Proff of concept: Fractal-Java
-
-There are TODOs for medium term:
-
-- Research(experiment, observe and write) about multi-module apps
-- Implement fractal-native using anvil
-- Implement fractal-native iOS
-  - Implement anvil-ios, Note that we can use [PortalView](https://github.com/guidomb/PortalView)
 
 ## Ideas
 
 What maybe great for this repo:
 
-- Build Fractal logo in Haskell Diagrams and include source code (FANCY)
-- Evaluate usage of Fractal for backend and nano-micro services approach
-- Document integration of manifest.json for webapps
-- Implement live examples
-- Implement online editor that allows live preview and hot-swaping, using: Monaco and Fractal
 - Implement the forms example and document the composing tools
 - Implement an i18n middleware example
-- Implement examples and document the service pattern
-- Implement fractalMail example using an IMAP and XMPP client, with OAuth 2.0
-- Implement and document server side routing example
-- Improve documentation of fractal
-- Improve documentation of fractal-examples
-- Publish fractal-examples to github
-- Implement fractal-tutorial and publish to github
 - Implement ramda-mori helpers for Persistent Data Structures
-- Implement an app that uses PouchDB
-- Implement more examples and tutorials
-- Make videotutorials and start a difusion campaign
-- Put a rank function to data utils
-- Explore porting Fractal to Haskell, makes sense build a DSL. A good starting point [Threepenny-gui] (https://wiki.haskell.org/Threepenny-gui) and [Haste Language](http://haste-lang.org/)
+- Upgrate old Fractal examples and publish them

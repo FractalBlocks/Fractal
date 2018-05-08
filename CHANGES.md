@@ -2,24 +2,18 @@
 
 ## Whats next?
 
-- Internal flag to seamlessly support other view libraries such as React
-- Publish fractal-react repository for React support
 - Add event bus functions to ModuleAPI
-- Implement timetravel UI
-- Implement tree view
-- Filtered console logs in AppViewer UI and console
-- Implement component dispose hook for future implementation of automatic event channel unsubscribe
-- Automatic management of event channel subscriptions in Components, when disposed
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
 - Add `fork` helper that returns a Promise (with setImmediate)
-- Implement a way for merging module definitions
-- Implement an alternative module for running playground in a worker
-- Implement bulk matching for event bus
-- Fix hmr on examples
-- Find a way for to hotSwapp dyamic components
+- Publish fractal-react repository for React support
+- Implement timetravel UI
+- Implement tree view
+- Implement component dispose hook for future implementation of automatic event channel unsubscribe
+- Automatic management of event channel subscriptions in Components, when disposed
+- Implement a way for merging module definitions (FANCY)
 - Evaluate how to handle errors when a task fails
+- Filtered console logs in AppViewer UI and console
 - Simplify worker helpers
-- Implement filtered logs with a console interface
 
 ## Done (v6.0.0 in progress)
 
