@@ -33,18 +33,19 @@ export interface ModuleDef {
   log?: boolean
   render?: boolean // initial render flag
   active?: boolean
+  // Handlers
   groups?: HandlerInterfaceIndex
   tasks?: HandlerInterfaceIndex
   interfaces: HandlerInterfaceIndex
   interfaceOrder?: Array<string>
-  // lifecycle hooks for modules
+  // Lifecycle hooks for modules
   onBeforeInit? (mod: ModuleAPI): Promise<void>
   onInit? (mod: ModuleAPI): Promise<void>
   onDestroy? (mod: ModuleAPI): Promise<void>
-  // hooks for inputs
+  // Hooks for inputs
   beforeInput? (ctxIn: Context<any>, inputName: string, data: any): void
   afterInput? (ctxIn: Context<any>, inputName: string, data: any): void
-  // callbacks (side effects) for log messages
+  // Callbacks for log messages
   warn? (source: string, description: string): Promise<void>
   error? (source: string, description: string): Promise<void>
 }
