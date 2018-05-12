@@ -249,10 +249,10 @@ export interface ExceptionsObject {
   groups: string[]
 }
 
-export const runInWorker = (moduleDef: ModuleDef, exceptions?: ExceptionsObject): Promise<Module> => {
+export const runInWorker = (moduleDef: ModuleDef, exceptions?: ExceptionsObject, workerAPI?: WorkerAPI): Promise<Module> => {
   const syncQueue = makeSyncQueue()
   const workerModule: ModuleDef = clone(moduleDef)
-  const workerListener = createWorkerListener(syncQueue)
+  const workerListener = createWorkerListener(syncQueue, workerAPI)
 
   // Inject into onBeforeInit hook
   workerModule.onBeforeInit
@@ -269,7 +269,7 @@ export const runInWorker = (moduleDef: ModuleDef, exceptions?: ExceptionsObject)
     handlerTypePlural = handlerType + 's'
     for (handlerName in moduleDef[handlerTypePlural]) {
       if (exceptions && exceptions[handlerTypePlural].indexOf(handlerName) === -1 || !exceptions) {
-        workerModule[handlerTypePlural][handlerName] = workerHandler(handlerType, handlerName, syncQueue)
+        workerModule[handlerTypePlural][handlerName] = workerHandler(handlerType, handlerName, syncQueue, workerAPI)
       }
     }
   }
