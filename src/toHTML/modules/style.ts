@@ -1,8 +1,8 @@
 
-import assign = require('object-assign')
-import forOwn = require('lodash.forown')
-import escape = require('lodash.escape')
-import kebabCase = require('lodash.kebabcase')
+import * as assign from 'object-assign'
+import * as forOwn from 'lodash.forown'
+import * as escape from 'lodash.escape'
+import * as kebabCase from 'lodash.kebabcase'
 
 // data.style
 

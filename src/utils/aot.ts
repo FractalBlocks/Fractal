@@ -1,4 +1,4 @@
-import fs = require('fs-jetpack')
+import * as fs from 'fs-jetpack'
 import { renderHTML, StaticRenderOptions } from './ssr'
 
 export interface PrerenderOptions {

@@ -1,6 +1,6 @@
 
-import forOwn = require('lodash.forown')
-import escape = require('lodash.escape')
+import * as forOwn from 'lodash.forown'
+import * as escape from 'lodash.escape'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/element
 var omit = [

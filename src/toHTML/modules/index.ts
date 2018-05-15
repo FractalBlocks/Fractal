@@ -1,7 +1,11 @@
+import * as classModule from './class'
+import * as props from './props'
+import * as attributes from './attributes'
+import * as style from './style'
 
 export default {
-  class: require('./class'),
-  props: require('./props'),
-  attributes: require('./attributes'),
-  style: require('./style')
+  class: classModule,
+  props,
+  attributes,
+  style
 }

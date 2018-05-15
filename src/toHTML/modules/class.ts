@@ -1,7 +1,7 @@
 
-import forOwn = require('lodash.forown')
-import remove = require('lodash.remove')
-import uniq = require('lodash.uniq')
+import * as forOwn from 'lodash.forown'
+import * as remove from 'lodash.remove'
+import * as uniq from 'lodash.uniq'
 
 // data.class
 

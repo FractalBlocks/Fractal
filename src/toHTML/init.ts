@@ -1,5 +1,5 @@
 
-import parseSelector = require('parse-sel')
+import * as parseSelector from 'parse-sel'
 import { VOID as VOID_ELEMENTS } from './elements'
 import { CONTAINER as CONTAINER_ELEMENTS } from './elements'
 
