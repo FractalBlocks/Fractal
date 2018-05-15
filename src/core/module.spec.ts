@@ -53,3 +53,49 @@ test('Propagation: Global', async t => {
   await app.moduleAPI.toComp('Root$A_1', 'inc')
   t.deepEqual(app.rootCtx.components.Root.state.result, ['A_1', 1], 'Expect the component name and the value')
 })
+
+test('Lifecycle Hooks', async t => {
+
+  const compSeq = []
+  const moduleSeq = []
+
+  const mod = await createApp({
+    state: { sequence: [] },
+    inputs: (s, F) => ({
+      onInit: async () => {
+        compSeq.push('onInit')
+      },
+      onDestroy: async () => {
+        compSeq.push('onDestroy')
+      },
+    }),
+  }, {
+    onBeforeInit: () => {
+      moduleSeq.push('onBeforeInit')
+    },
+    onInit: () => {
+      moduleSeq.push('onInit')
+    },
+    onBeforeDestroy: () => {
+      moduleSeq.push('onBeforeDestroy')
+    },
+    onDestroy: () => {
+      moduleSeq.push('onDestroy')
+    },
+  })
+
+  await mod.moduleAPI.dispose()
+
+  t.deepEqual(
+    compSeq,
+    ['onInit', 'onDestroy'],
+    'Component Lifecycle'
+  )
+
+  t.deepEqual(
+    moduleSeq,
+    ['onBeforeInit', 'onInit', 'onBeforeDestroy', 'onDestroy'],
+    'Module Lifecycle'
+  )
+
+})
