@@ -16,7 +16,7 @@
 
 ## Done
 
-# v6.0.1
+# v6.0.2
 
 - Remove component, log and worker from main barrel
 
