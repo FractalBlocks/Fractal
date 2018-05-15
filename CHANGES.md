@@ -14,7 +14,9 @@
 - Evaluate how to handle errors when a task fails
 - Filtered console logs in AppViewer UI and console
 
-## Done (v6.0.0 in progress)
+## Done
+
+# v6.0.0
 
 - Rename `dispose` APIs with `destroy`
 - Add `onBeforeDestroy` module lifecycle hook
