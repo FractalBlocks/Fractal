@@ -544,9 +544,9 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
 
   }
 
-  function dispose () {
+  async function dispose () {
     if (moduleDef.onBeforeDestroy) {
-      moduleDef.onBeforeDestroy(moduleAPI)
+      await moduleDef.onBeforeDestroy(moduleAPI)
     }
     // dispose all handlers
     let handlers: HandlerObjectIndex
@@ -554,14 +554,14 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
       handlers  = ctx[`${handlerTypes[c]}Handlers`]
       let name
       for (name in handlers) {
-        handlers[name].dispose()
+        await handlers[name].dispose()
       }
     }
-    unnest(ctx)()
+    await unnest(ctx.global.rootCtx)()
     ctx = undefined
     this.isDisposed = true
     if (moduleDef.onDestroy) {
-      moduleDef.onDestroy(moduleAPI)
+      await moduleDef.onDestroy(moduleAPI)
     }
   }
 
