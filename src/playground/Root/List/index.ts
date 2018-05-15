@@ -5,11 +5,11 @@ import {
   assoc,
   StyleGroup,
   clickable,
-  props,
   _,
   getStyle,
 } from '../../../core'
 import { View, h } from '../../../interfaces/view'
+import { props } from '../../../utils/component'
 
 import * as Item from './Item'
 

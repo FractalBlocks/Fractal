@@ -1,12 +1,13 @@
 import { Context, InterfaceHelpers, CtxPerformTask, EventData, dispatchEv, State } from '.'
 import { Emit, Off, Descriptor } from 'pullable-event-bus'
 import { _in, _act, _actFn, _inFn } from './interface'
-import { getDescendantIds, getPath } from './index'
+import { getPath } from './index'
 import {
   toIn,
   CtxToIn,
   performTask,
 } from './module'
+import { getDescendantIds } from '../utils/component';
 
 export interface FractalOn {
   (evName: string, evData: EventData, pullable?: boolean): Descriptor

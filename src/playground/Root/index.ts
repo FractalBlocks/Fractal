@@ -4,7 +4,6 @@ import {
   Interfaces,
   StyleGroup,
   clone,
-  styles,
   Interface,
   getStyle,
   State,
@@ -12,6 +11,7 @@ import {
   isBrowser,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
+import { styles } from '../../utils/component'
 
 import * as List from './List'
 import * as Note from './Note'

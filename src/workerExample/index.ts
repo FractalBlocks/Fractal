@@ -1,5 +1,6 @@
-import { runWorker, run } from '../core'
+import { run } from '../core'
 import { moduleDef } from './module'
+import { runWorker } from '../utils/worker'
 
 // TODO: make this variable dynamic, implement a toggle button for that
 const runInWorker = true

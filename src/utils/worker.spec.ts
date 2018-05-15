@@ -1,5 +1,6 @@
 import test from 'ava'
-import { runWorker, WorkerAPI, runInWorker, ModuleDef } from '../core'
+import { ModuleDef } from '../core'
+import { runInWorker, WorkerAPI, runWorker } from './worker'
 
 test('Should run a Module in a worker', async t => {
 
