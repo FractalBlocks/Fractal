@@ -2,12 +2,12 @@
 
 ## Whats next?
 
-- Add event bus functions to ModuleAPI
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
 - Add `fork` helper that returns a Promise (with setImmediate)
 - Publish fractal-react repository for React support
 - Implement timetravel UI
 - Implement tree view
+- Implement worker support for ModuleAPI event bus functions
 - Implement component dispose hook for future implementation of automatic event channel unsubscribe
 - Automatic management of event channel subscriptions in Components, when disposed
 - Implement a way for merging module definitions (FANCY)
@@ -16,10 +16,15 @@
 
 ## Done
 
+# v6.0.1
+
+- Remove component, log and worker from main barrel
+
 # v6.0.0
 
 - Rename `dispose` APIs with `destroy`
 - Add `onBeforeDestroy` module lifecycle hook
+- Add event bus functions to ModuleAPI
 - Worker helper to automatically proxy all stuff inside a Module Definition
 - Implement worker performance example
 - `invokeHandler` now performs event object data extraction
