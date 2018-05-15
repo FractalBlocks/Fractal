@@ -41,6 +41,7 @@ export interface ModuleDef {
   // Lifecycle hooks for modules
   onBeforeInit? (mod: ModuleAPI): Promise<void>
   onInit? (mod: ModuleAPI): Promise<void>
+  onBeforeDestroy? (mod: ModuleAPI): Promise<void>
   onDestroy? (mod: ModuleAPI): Promise<void>
   // Hooks for inputs
   beforeInput? (ctxIn: Context<any>, inputName: string, data: any): void
@@ -544,8 +545,8 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
   }
 
   function dispose () {
-    if (moduleDef.onDestroy) {
-      moduleDef.onDestroy(moduleAPI)
+    if (moduleDef.onBeforeDestroy) {
+      moduleDef.onBeforeDestroy(moduleAPI)
     }
     // dispose all handlers
     let handlers: HandlerObjectIndex
@@ -559,6 +560,9 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
     unnest(ctx)()
     ctx = undefined
     this.isDisposed = true
+    if (moduleDef.onDestroy) {
+      moduleDef.onDestroy(moduleAPI)
+    }
   }
 
   return await attach(undefined)
