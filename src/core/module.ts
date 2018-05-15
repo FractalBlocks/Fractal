@@ -79,7 +79,7 @@ export interface ModuleAPI {
   dispatchEv (event: any, iData: InputData): Promise<void>
   dispatch (eventData: EventData): Promise<void>
   toComp (id: string, inputName: string, data?: any): Promise<void>
-  dispose (): void
+  destroy (): void
   attach (comp: Component<any>, app?: Module, middleFn?: MiddleFn): Promise<Module>
   setGroup (id: string, name: string, space: any): void
   task: CtxPerformTask
@@ -217,7 +217,7 @@ export interface CtxUnnest {
   (name?:  string): Promise<void>
 }
 
-// remove a component to the component index, if name is not defined dispose the root
+// remove a component to the component index, if name is not defined destroy the root
 export const unnest = <S>(ctx: Context<S>): CtxUnnest => async name => {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
@@ -443,7 +443,7 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
         dispatchEv: dispatchEv(ctx),
         dispatch: dispatch(ctx),
         toComp: toComp(ctx),
-        dispose,
+        destroy,
         // set a space of a certain component
         setGroup: (id, name, space) => {
           ctx.components[id].groups[name] = space
@@ -544,17 +544,17 @@ export async function run (moduleDef: ModuleDef): Promise<Module> {
 
   }
 
-  async function dispose () {
+  async function destroy () {
     if (moduleDef.onBeforeDestroy) {
       await moduleDef.onBeforeDestroy(moduleAPI)
     }
-    // dispose all handlers
+    // destroy all handlers
     let handlers: HandlerObjectIndex
     for (let c = 0, len = handlerTypes.length; c < len; c++) {
       handlers  = ctx[`${handlerTypes[c]}Handlers`]
       let name
       for (name in handlers) {
-        await handlers[name].dispose()
+        await handlers[name].destroy()
       }
     }
     await unnest(ctx.global.rootCtx)()

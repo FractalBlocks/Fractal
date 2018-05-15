@@ -65,8 +65,8 @@ export const workerHandler = (type: 'interface' | 'task' | 'group', name: string
       _self.postMessage([type, name, 'handle', id, value])
       return waiter
     },
-    dispose: () => {
-      _self.postMessage([type, name, 'dispose'])
+    destroy: () => {
+      _self.postMessage([type, name, 'destroy'])
     },
   }
 }
@@ -100,9 +100,9 @@ export const createWorkerListener = (syncQueue: SyncQueue, workerAPI?: WorkerAPI
       case 'task':
         mod.task(data[1], data[2])
         break
-      case 'dispose':
-        mod.dispose()
-        _self.postMessage(['dispose'])
+      case 'destroy':
+        mod.destroy()
+        _self.postMessage(['destroy'])
         break
       case 'nest':
         // not implemented yet, should deserialize a component with a safe eval
@@ -163,7 +163,7 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
     dispatch: async (eventData: EventData) => worker.postMessage(['dispatch', eventData]),
     toComp: async (id: string, inputName: string, data: any) =>
       worker.postMessage(['toComp', id, inputName, data]),
-    dispose,
+    destroy,
     attach,
     // delegated methods
     setGroup: (id, name, group) => worker.postMessage(['setGroup', id, name, group]),
@@ -199,24 +199,24 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
         if (data[2] === 'handle') {
           await interfaceObjects[data[1]].handle('Root', data[4])
           break
-        } else if (data[2] === 'dispose') {
-          interfaceObjects[data[1]].dispose()
+        } else if (data[2] === 'destroy') {
+          interfaceObjects[data[1]].destroy()
           break
         }
       case 'task':
         if (data[2] === 'handle') {
           await taskObjects[data[1]].handle(data[3], data[4])
           break
-        } else if (data[2] === 'dispose') {
-          await taskObjects[data[1]].dispose()
+        } else if (data[2] === 'destroy') {
+          await taskObjects[data[1]].destroy()
           break
         }
       case 'group':
         if (data[2] === 'handle') {
           await groupObjects[data[1]].handle(data[3], data[4])
           break
-        } else if (data[2] === 'dispose') {
-          groupObjects[data[1]].dispose()
+        } else if (data[2] === 'destroy') {
+          groupObjects[data[1]].destroy()
           break
         }
       case 'log':
@@ -224,7 +224,7 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
           moduleAPI[data[1]](data[2], data[3])
           break
         }
-      case 'dispose':
+      case 'destroy':
         if (def.onDestroy) {
           def.onDestroy(moduleAPI)
         }
@@ -238,8 +238,8 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
     initTrap = resolve
   })
 
-  function dispose () {
-    worker.postMessage(['dispose'])
+  function destroy () {
+    worker.postMessage(['destroy'])
   }
 
   return {

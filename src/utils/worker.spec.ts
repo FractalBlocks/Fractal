@@ -32,7 +32,7 @@ test('Should run a Module in a worker', async t => {
           results.interfaceValue = value.value
           results.groupValue = value.group
         },
-        dispose: () => {},
+        destroy: () => {},
       }),
     },
     groups: {
@@ -41,7 +41,7 @@ test('Should run a Module in a worker', async t => {
         handle: async (id, value) => {
           mod.setGroup(id, 'myGroup', { value: value.value + 1 })
         },
-        dispose: () => {},
+        destroy: () => {},
       }),
     },
     tasks: {
@@ -50,7 +50,7 @@ test('Should run a Module in a worker', async t => {
         handle: async (id, value) => {
           results.taskValue = value.value
         },
-        dispose: () => {},
+        destroy: () => {},
       }),
     },
   }

@@ -16,6 +16,8 @@
 
 ## Done (v6.0.0 in progress)
 
+- Rename `dispose` APIs with `destroy`
+- Add `onBeforeDestroy` module lifecycle hook
 - Worker helper to automatically proxy all stuff inside a Module Definition
 - Implement worker performance example
 - `invokeHandler` now performs event object data extraction

@@ -62,6 +62,6 @@ export const viewHandler: Handler = (selectorElm, cb?: { (value: VNode): void })
         cb(value)
       }
     },
-    dispose: () => {},
+    destroy: () => {},
   }
 }

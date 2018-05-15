@@ -106,7 +106,7 @@ export const dbTask: Handler = () => mod => {
         return
       }
     },
-    dispose: () => {},
+    destroy: () => {},
   }
 }
 

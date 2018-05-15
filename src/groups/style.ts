@@ -32,7 +32,7 @@ export const styleHandler: Handler = (containerName?: string, debug = false, gro
       instance.forceRenderStyles()
       mod.setGroup(id, groupName, style)
     },
-    dispose: () => {
+    destroy: () => {
       state = {}
       if (container) {
         container.remove()

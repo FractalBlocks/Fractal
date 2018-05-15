@@ -13,7 +13,7 @@ export interface HandlerInterface {
 export interface HandlerObject {
   state: any
   handle: HandlerFunction
-  dispose: {
+  destroy: {
     (): void | Promise<void>
   }
 }

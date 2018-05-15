@@ -12,5 +12,5 @@ export const sizeHandler: Handler = () => mod => ({
     }
     mod.dispatchEv(propValues, cb)
   },
-  dispose: () => {},
+  destroy: () => {},
 })

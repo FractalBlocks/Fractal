@@ -84,7 +84,7 @@ test('Lifecycle Hooks', async t => {
     },
   })
 
-  await mod.moduleAPI.dispose()
+  await mod.moduleAPI.destroy()
 
   t.deepEqual(
     compSeq,
