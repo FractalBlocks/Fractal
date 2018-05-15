@@ -1,7 +1,5 @@
 import {
   run,
-  Module,
-  Component,
   // DEV
   RunModule,
 } from '../core'
