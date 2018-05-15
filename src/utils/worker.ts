@@ -48,12 +48,12 @@ export function makeSyncQueue (): SyncQueue {
 
 export const workerHandler = (type: 'interface' | 'task' | 'group', name: string, syncQueue: SyncQueue, workerAPI?: WorkerAPI) => (mod: ModuleAPI) => {
   let _self = workerAPI ? workerAPI : self
+  let waiter
   return {
     state: undefined,
     handle: async (id, value) => {
-      _self.postMessage([type, name, 'handle', id, value])
       if (type === 'group') {
-        return new Promise<any>((resolve) => {
+        waiter = new Promise<any>((resolve) => {
           syncQueue.addWaiter(data => {
             if (data[0] === 'setGroup') {
               resolve()
@@ -62,6 +62,8 @@ export const workerHandler = (type: 'interface' | 'task' | 'group', name: string
           })
         })
       }
+      _self.postMessage([type, name, 'handle', id, value])
+      return waiter
     },
     dispose: () => {
       _self.postMessage([type, name, 'dispose'])
@@ -185,15 +187,19 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
     }
   }
 
+  let initTrap
+
   worker.onmessage = async ev => {
     let data = ev.data
     switch (data[0]) {
+      case 'initialized':
+        initTrap()
+        break
       case 'interface':
         if (data[2] === 'handle') {
           await interfaceObjects[data[1]].handle('Root', data[4])
           break
-        }
-        if (data[2] === 'dispose') {
+        } else if (data[2] === 'dispose') {
           interfaceObjects[data[1]].dispose()
           break
         }
@@ -201,8 +207,7 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
         if (data[2] === 'handle') {
           await taskObjects[data[1]].handle(data[3], data[4])
           break
-        }
-        if (data[2] === 'dispose') {
+        } else if (data[2] === 'dispose') {
           await taskObjects[data[1]].dispose()
           break
         }
@@ -210,8 +215,7 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
         if (data[2] === 'handle') {
           await groupObjects[data[1]].handle(data[3], data[4])
           break
-        }
-        if (data[2] === 'dispose') {
+        } else if (data[2] === 'dispose') {
           groupObjects[data[1]].dispose()
           break
         }
@@ -229,6 +233,10 @@ export async function runWorker (def: WorkerModuleDef): Promise<WorkerModule> {
         moduleAPI.error('runWorker', `unknown message type recived from worker: ${data.join(', ')}`)
     }
   }
+
+  await new Promise(resolve => {
+    initTrap = resolve
+  })
 
   function dispose () {
     worker.postMessage(['dispose'])
@@ -249,11 +257,11 @@ export interface ExceptionsObject {
   groups: string[]
 }
 
-export const runInWorker = (moduleDef: ModuleDef, exceptions?: ExceptionsObject, workerAPI?: WorkerAPI): Promise<Module> => {
+export const runInWorker = async (moduleDef: ModuleDef, exceptions?: ExceptionsObject, workerAPI?: WorkerAPI): Promise<Module> => {
+  let _self = workerAPI ? workerAPI : self
   const syncQueue = makeSyncQueue()
   const workerModule: ModuleDef = clone(moduleDef)
   const workerListener = createWorkerListener(syncQueue, workerAPI)
-
   // Inject into onBeforeInit hook
   workerModule.onBeforeInit
     = moduleDef.onBeforeInit
@@ -274,5 +282,8 @@ export const runInWorker = (moduleDef: ModuleDef, exceptions?: ExceptionsObject,
     }
   }
 
-  return run(workerModule)
+  const mod = await run(workerModule)
+  _self.postMessage(['initialized'])
+
+  return mod
 }
