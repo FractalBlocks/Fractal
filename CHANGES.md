@@ -16,6 +16,10 @@
 
 ## Done
 
+# v6.0.3
+
+- Change compile target to es6
+
 # v6.0.2
 
 - Remove component, log and worker from main barrel
