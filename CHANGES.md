@@ -16,6 +16,10 @@
 
 ## Done
 
+# v6.0.4
+
+- Reorganize functionality
+
 # v6.0.3
 
 - Change compile target to es6
