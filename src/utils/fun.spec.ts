@@ -6,8 +6,15 @@ import {
   pipe,
   mapToObj,
   merge,
+  mapAsync,
+  filterAsync,
+  reduceAsync,
+  all,
+  range,
+  sum,
+  getPath,
+  getPaths
 } from './fun'
-import { mapAsync, filterAsync, reduceAsync, all, range, sum, getPath, getPaths } from '.';
 
 // Functional utils tests
 

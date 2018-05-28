@@ -1,6 +1,6 @@
 import {
   hotSwap,
-} from '../core'
+} from '../utils/hot-swap'
 
 declare const FuseBox
 

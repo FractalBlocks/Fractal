@@ -1,4 +1,4 @@
-// -- Functional functions (just fun)
+// -- Useful Functions
 // Use them for building actions in a declarative and concise way
 
 export const assoc = (key: string) => (value: any) => obj => {

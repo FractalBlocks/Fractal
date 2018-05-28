@@ -1,5 +1,5 @@
 import { run, Module } from '../core'
-import { guid } from '../utils'
+import { guid } from '../utils/fun'
 import { styleHandler } from '../groups/style'
 import { viewHandler } from '../interfaces/view'
 

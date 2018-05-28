@@ -1,5 +1,6 @@
-import { run, deepmerge, Module } from '../core'
-import { logFns } from '../utils/log';
+import { run, Module } from '../core'
+import { logFns } from '../utils/log'
+import { deepmerge } from '../utils/fun'
 
 export const ChildComp = {
   state: { count: 0 },

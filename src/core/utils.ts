@@ -1,4 +1,5 @@
-import { Context, deepmerge } from '.'
+import { Context } from '.'
+import { deepmerge } from '../utils/fun'
 
 /**
  * Deep clone object

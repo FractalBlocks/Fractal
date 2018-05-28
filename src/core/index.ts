@@ -7,7 +7,5 @@ export * from './interface'
 export * from './handler'
 export * from './common'
 export * from './utils'
-
-// other functions
-
-export * from '../utils'
+export * from './style'
+export * from './component'

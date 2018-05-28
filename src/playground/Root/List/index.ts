@@ -2,14 +2,14 @@ import {
   Actions,
   Inputs,
   Interfaces,
-  assoc,
   StyleGroup,
   clickable,
   _,
   getStyle,
+  props,
 } from '../../../core'
 import { View, h } from '../../../interfaces/view'
-import { props } from '../../../utils/component'
+import { assoc } from '../../../utils/fun'
 
 import * as Item from './Item'
 

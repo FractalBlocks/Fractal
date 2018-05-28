@@ -5,9 +5,9 @@ import {
   StyleGroup,
   _,
   getStyle,
-  waitMS,
 } from '../../core'
 import { View, h } from '../../interfaces/view'
+import { waitMS } from '../../utils/fun'
 
 export const state = {
   activeChild: '',

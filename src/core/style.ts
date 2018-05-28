@@ -1,6 +1,6 @@
 import { types, getStyles as _getStyles } from 'typestyle'
 import { TypeStyle } from 'typestyle/lib/internal/typestyle'
-import { deepmerge } from './fun'
+import { deepmerge } from '../utils/fun'
 import { h } from '../interfaces/view'
 import { VNode } from '../interfaces/view/vnode'
 import { InterfaceHelpers } from '../core'

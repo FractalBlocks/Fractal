@@ -1,4 +1,4 @@
-import { CSS } from '../../utils/style'
+import { CSS } from '../../core'
 import { Hooks } from 'snabbdom/hooks'
 import { AttachData } from 'snabbdom/helpers/attachto'
 import { On } from './eventListeners'
