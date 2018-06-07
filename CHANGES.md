@@ -16,6 +16,9 @@
 
 ## Done
 
+- Fix stateOf type signature
+- Remove proxy from `state` in `InputHelpers`, now do not modify state outside actions is a strong convention
+
 # v6.0.4
 
 - Reorganize functionality

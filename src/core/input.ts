@@ -29,7 +29,7 @@ export interface InputHelpers<S> extends InterfaceHelpers<S> {
 }
 
 export const makeInputHelpers = <S extends State>(ctx: Context<S>): InputHelpers<S> => ({
-  state: makeImmutableState(ctx, ctx.state),
+  state: ctx.state,
   ctx,
   in: _in(ctx),
   act: _act(ctx),
@@ -52,26 +52,15 @@ export const makeInputHelpers = <S extends State>(ctx: Context<S>): InputHelpers
   _clearCache: _clearCache(ctx),
 })
 
-export const disallowMutation = <S>(ctx: Context<S>) => () => {
-  ctx.error(`'${ctx.id}' context (component)`, 'State mutations are not allowed inside inputs')
-  return false
+export interface CtxStateOf<S> {
+  (name?: string): S
 }
 
-export const makeImmutableState = <S>(ctx: Context<S>, s: S): S => new Proxy(<any> s, {
-  set: disallowMutation(ctx),
-  deleteProperty: disallowMutation(ctx),
-  defineProperty: disallowMutation(ctx),
-})
-
-export interface CtxStateOf {
-  (name?: string): State
-}
-
-export const _stateOf = <S extends State>(ctx: Context<S>): CtxStateOf => name => {
+export const _stateOf = <S>(ctx: Context<S>): CtxStateOf<S> => name => {
   let id = name ? ctx.id + '$' + name : ctx.id
   let childCtx = ctx.components[id]
   if (childCtx) {
-    return makeImmutableState(childCtx, childCtx.state)
+    return childCtx.state
   } else {
     ctx.error('stateOf',
       name

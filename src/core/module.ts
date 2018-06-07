@@ -16,7 +16,6 @@ import {
   toComp,
   makeInputHelpers,
   State,
-  makeImmutableState,
   dispatch,
   EventData,
 } from '.'
@@ -144,7 +143,7 @@ async function _nest <S extends State>(ctx: Context<S>, name: string, component:
 
   if (component.inputs) {
     childCtx.inputs = component.inputs(
-      makeImmutableState(childCtx, childCtx.state),
+      childCtx.state,
       makeInputHelpers(childCtx),
     )
   } else {

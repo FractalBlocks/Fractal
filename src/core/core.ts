@@ -87,7 +87,7 @@ export interface EventData extends Array<any> {
 }
 
 export interface Update<S> {
-  (state: S): Promise<void | State> | void | State
+  (state: S): Promise<void | S> | void | S
 }
 
 export interface Interface<Type, S> {
@@ -123,7 +123,7 @@ export interface Context<S> {
     [name: string]: Group,
   },
   // global component index
-  components: ContextIndex<State>
+  components: ContextIndex<S>
   groupHandlers: {
     [name: string]: HandlerObject
   }
