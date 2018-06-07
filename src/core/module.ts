@@ -217,7 +217,7 @@ export interface CtxUnnest {
 }
 
 // remove a component to the component index, if name is not defined destroy the root
-export const unnest = <S>(ctx: Context<S>): CtxUnnest => async name => {
+export const unnest = <S extends State>(ctx: Context<S>): CtxUnnest => async name => {
   let id = name !== undefined ? ctx.id + '$' + name : ctx.id
   let componentSpace = ctx.components[id]
   if (!componentSpace) {
