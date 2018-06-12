@@ -7,7 +7,6 @@ import {
   CtxToIn,
   performTask,
 } from './module'
-import {  } from '../utils/component';
 
 export interface FractalOn {
   (evName: string, evData: EventData, pullable?: boolean): Descriptor
