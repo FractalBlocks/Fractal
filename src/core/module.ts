@@ -201,7 +201,7 @@ async function handleGroups <S>(ctx: Context<S>, component: Component<any>) {
 }
 
 export interface CtxNestAll {
-  (components: Components, isStatic?: boolean): Promise<void>
+  (components: Components<any>, isStatic?: boolean): Promise<void>
 }
 
 // add many components to the component index

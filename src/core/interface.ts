@@ -14,7 +14,7 @@ import { _stateOf, _componentHelpers, CtxStateOf } from './input'
 export interface InterfaceHelpers<S> {
   ctx: Context<S>
   interfaceOf?: CtxInterfaceOf
-  stateOf: CtxStateOf<S>
+  stateOf: CtxStateOf<any>
   in: CtxIn
   act: CtxAct
   inFn: CtxInFn

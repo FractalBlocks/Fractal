@@ -2,7 +2,7 @@
 
 ## Whats next?
 
-- Imlement app proxies as a way for easy compose Fractal applications
+- Implement app proxies as a way for easy compose Fractal applications
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
 - Add `fork` helper that returns a Promise (with setImmediate)
 - Publish fractal-react repository for React support
@@ -17,6 +17,8 @@
 
 ## Done
 
+- Fix StateOf type signature
+- Fix Components type signature
 - Fix stateOf type signature
 - Remove proxy from `state` in `InputHelpers`, now do not modify state outside actions is a strong convention
 

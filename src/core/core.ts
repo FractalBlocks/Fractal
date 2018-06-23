@@ -21,13 +21,13 @@ export interface Component<S extends State> {
 
 export interface State {
   [prop: string]: any
-  _nest?: Components
+  _nest?: Components<any>
   _compNames?: string[]
   _compUpdated?: boolean
 }
 
-export interface Components {
-  [name: string]: Component<any>
+export interface Components<S> {
+  [name: string]: Component<S>
 }
 
 export interface Interfaces {

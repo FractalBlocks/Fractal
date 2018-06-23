@@ -51,21 +51,18 @@ export const makeInputHelpers = <S extends State>(ctx: Context<S>): InputHelpers
   _clearCache: _clearCache(ctx),
 })
 
-export interface CtxStateOf<S> {
+export interface CtxStateOf<S extends State> {
   (name?: string): S
 }
 
-export const _stateOf = <S>(ctx: Context<S>): CtxStateOf<S> => name => {
-  let id = name ? ctx.id + '$' + name : ctx.id
+// extract state from a child component
+export const _stateOf = (ctx: Context<any>): CtxStateOf<any> => (name: string) => {
+  let id = ctx.id + '$' + name
   let childCtx = ctx.components[id]
   if (childCtx) {
     return childCtx.state
   } else {
-    ctx.error('stateOf',
-      name
-      ? `there are no child '${name}' in context '${ctx.id}'`
-      : `there are no context '${id}'`
-    )
+    ctx.error('stateOf', `there are no child '${name}' in context '${ctx.id}'`)
   }
 }
 
