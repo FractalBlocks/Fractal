@@ -17,6 +17,8 @@
 
 ## Done
 
+# v6.0.5
+
 - Fix StateOf type signature
 - Fix Components type signature
 - Fix stateOf type signature
