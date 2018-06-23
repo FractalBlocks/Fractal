@@ -8,9 +8,8 @@ export const ChildComp = {
   state: { result: '', count: 0 },
   inputs: (s, F) => ({
     inc: async () => {
-      let state = F.stateOf()
       await F.toAct('Inc')
-      let res = await F.emit('myEvent', state.count)
+      let res = await F.emit('myEvent', s.count)
       await F.set('result', res)
     },
     changed: async value => {},
