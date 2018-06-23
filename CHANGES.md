@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Imlement app proxies as a way for easy compose Fractal applications
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
 - Add `fork` helper that returns a Promise (with setImmediate)
 - Publish fractal-react repository for React support
