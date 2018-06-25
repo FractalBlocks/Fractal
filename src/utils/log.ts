@@ -1,4 +1,4 @@
-import { clone, _stateOf, Context } from '../core'
+import { clone, Context } from '../core'
 
 export const warn = async (source: string, description: string) =>
   console.warn(`source: ${source}, description: ${description}`)
@@ -9,7 +9,7 @@ export const error = (source: string, description: string) => {
 
 export const beforeInput = <S>(ctx: Context<S>, inputName, data) => {
   if (!ctx.global.log) return
-  let state = _stateOf(ctx)()
+  let state = ctx.components[ctx.id].state
   if (typeof state === 'object') {
     state = clone(state)
   }
@@ -28,7 +28,7 @@ export const beforeInput = <S>(ctx: Context<S>, inputName, data) => {
 
 export const afterInput = <S>(ctx: Context<S>, inputName, data) => {
   if (!ctx.global.log) return
-  let state = _stateOf(ctx)()
+  let state = ctx.components[ctx.id].state
   if (typeof state === 'object') {
     state = clone(state)
   }
