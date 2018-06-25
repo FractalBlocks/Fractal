@@ -17,6 +17,10 @@
 
 ## Done
 
+# v6.0.6
+
+- Fix log helpers bug
+
 # v6.0.5
 
 - Fix StateOf type signature
