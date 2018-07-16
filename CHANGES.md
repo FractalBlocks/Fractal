@@ -2,6 +2,7 @@
 
 ## Whats next?
 
+- Use of objects instead of style helper, improve style group handler
 - Implement app proxies as a way for easy compose Fractal applications
 - Add `nextFrame` helper that returns a Promise (with requestAnimationFrame)
 - Add `fork` helper that returns a Promise (with setImmediate)
